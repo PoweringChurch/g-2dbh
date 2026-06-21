@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://bcwdac2rpls8n"]
+
+[node name="Model" type="VBoxContainer" unique_id=1736051174]
+
+[node name="Id" type="HBoxContainer" parent="." unique_id=1753404751]
+layout_mode = 2
+
+[node name="Color" type="ColorRect" parent="Id" unique_id=2129280854]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="Id" unique_id=1263674094]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Id"
+
+[node name="Field" type="Label" parent="Id" unique_id=1958548627]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "field"
+horizontal_alignment = 2
+
+[node name="Interact" type="HBoxContainer" parent="." unique_id=238500348]
+layout_mode = 2
+
+[node name="Select" type="Button" parent="Interact" unique_id=1907630206]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select"
+
+[node name="Delete" type="Button" parent="Interact" unique_id=1166875481]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Delete"

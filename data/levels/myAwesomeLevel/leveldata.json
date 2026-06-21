@@ -1,0 +1,9 @@
+{
+    "displayName":  "myAwesomeLevel",
+    "author":       "power",
+    "bgImage":      "ice-girl",
+    "difficulty":   "easy",
+    "health":       2,
+    "duration":     1005,
+    "aspectRatio":  1
+}

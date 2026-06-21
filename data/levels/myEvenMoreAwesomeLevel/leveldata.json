@@ -1,0 +1,9 @@
+{
+	"displayName":  "myEvenMoreAwesomeLevel",
+	"author":       "power",
+	"bgImage":      "witch",
+	"difficulty":   "hard",
+	"health":       2,
+	"duration":     1005,
+	"aspectRatio":  2
+}

@@ -1,0 +1,20 @@
+[
+    {
+        "id":          "bullet_fast",
+        "fnX":         "0",
+        "speed":       40,
+        "radius":      4,
+        "lifetime":    300,
+        "persistant":  false,
+        "texture":     "default"
+    },
+    {
+        "id":          "sine_bullet",
+        "fnX":          "65*sin(3*x)",
+        "fnY":          "45*cos(3*x)",
+        "speed":       2,
+        "radius":      10,
+        "lifetime":    400,
+        "texture":     "default"
+    }
+]

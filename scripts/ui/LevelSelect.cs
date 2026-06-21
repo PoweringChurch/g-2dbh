@@ -1,0 +1,131 @@
+using Godot;
+using System.Text.Json;
+
+public partial class LevelSelect : CanvasLayer
+{
+    [Export] protected VBoxContainer _levelList;      // sidebar scroll container's VBox
+    [Export] protected Label _previewId;
+    [Export] protected Label _previewRatio;
+    [Export] protected Label _previewCount;
+    [Export] protected Label _previewDuration;
+    [Export] protected Button _returnButton;
+    [Export] protected Button _playButton;
+
+    protected LevelLoader _loader;
+    protected string _selectedLevel;
+    protected string _levelDirectory = "res://data/levels/";
+    public override void _Ready()
+    {
+        _loader = GetNode<LevelLoader>("/root/LevelLoader");
+        _playButton.Pressed += OnPlayPressed;
+        _playButton.Disabled = true;
+        _returnButton.Pressed += OnReturnPressed;
+        PopulateList();
+    }
+    // List
+    public void PopulateList()
+    {
+        // clear existing buttons
+        foreach (Node child in _levelList.GetChildren())
+            child.QueueFree();
+
+        var dir = DirAccess.Open(_levelDirectory);
+        if (dir == null)
+        {
+            GD.Print($"[LevelSelect] Could not open {_levelDirectory}, attempting to create directory");
+            var err = DirAccess.MakeDirRecursiveAbsolute(_levelDirectory);
+            dir = DirAccess.Open(_levelDirectory);
+            if (dir == null)
+            {
+                GD.PrintErr($"[LevelSelect] Error creating directory {_levelDirectory}: " + err);
+                return;
+            }
+        }
+
+        dir.ListDirBegin();
+        string entry = dir.GetNext();
+        while (entry != "")
+        {
+            if (dir.CurrentIsDir() && !entry.StartsWith("."))
+                AddLevelButton(entry);
+            entry = dir.GetNext();
+        }
+        dir.ListDirEnd();
+    }
+
+    protected virtual void AddLevelButton(string levelName)
+    {
+        var levelData = ReadJson<LevelData>($"{_levelDirectory}{levelName}/leveldata.json");
+        var buttonText = "INVALID LEVEL";
+        if (levelData != null)
+        {
+            buttonText = levelData.DisplayName == "_" ? levelName : levelData.DisplayName;
+        }
+        var btn = new Button { Text = buttonText, ToggleMode = true, CustomMinimumSize = new Vector2(150, 0), ClipText = true };
+        btn.Pressed += () => OnLevelSelected(levelName, btn);
+        _levelList.AddChild(btn);
+    }
+
+    // Selection
+    protected virtual void OnLevelSelected(string levelName, Button pressed)
+    {
+        foreach (Node child in _levelList.GetChildren())
+            if (child is Button btn && btn != pressed)
+                btn.ButtonPressed = false;
+
+        _selectedLevel = levelName;
+        _playButton.Disabled = false;
+        LoadPreview(levelName);
+    }
+
+    protected void LoadPreview(string levelName)
+    {
+        string basePath = $"{_levelDirectory}{levelName}/";
+
+        var levelData = ReadJson<LevelData>(basePath + "leveldata.json");
+        var projectiles = ReadJson<ProjectileReference[]>(basePath + "projectileData.json");
+
+        if (levelData == null) { ClearPreview(); return; }
+
+        string ratioLabel = levelData.AspectRatio switch
+        {
+            0 => "9:16",
+            1 => "1:1",
+            2 => "3:2",
+            _ => "unknown"
+        };
+        _previewId.Text = levelData.DisplayName == "_" ? levelName : levelData.DisplayName;
+        _previewRatio.Text = ratioLabel;
+        _previewCount.Text = projectiles != null ? $"{projectiles.Length} projectiles" : "-";
+        _previewDuration.Text = $"{levelData.Duration:F1}s";
+    }
+
+    protected void ClearPreview()
+    {
+        _previewId.Text = _previewRatio.Text = _previewCount.Text = _previewDuration.Text = "-";
+        _playButton.Disabled = true;
+    }
+
+    // Play
+    protected void OnPlayPressed()
+    {
+        if (string.IsNullOrEmpty(_selectedLevel)) return;
+        Hide();
+        _loader.BeginLevel(_levelDirectory, _selectedLevel);
+    }
+    protected void OnReturnPressed()
+    {
+        var ui = GetNode<UIManager>("/root/UIManager");
+        ui.ShowMainMenu();
+        PopulateList();
+    }
+    // Helpers
+    protected T ReadJson<T>(string path)
+    {
+        if (!FileAccess.FileExists(path)) return default;
+        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+        if (file == null) return default;
+        try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
+        catch { return default; }
+    }
+}
