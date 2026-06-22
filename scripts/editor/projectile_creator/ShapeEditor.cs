@@ -7,7 +7,7 @@ public partial class ShapeEditor : Control
     [Export] public VBoxContainer PointContainer;
     [Export] public Button NewPoint;
     public Editor e;
-    private PackedScene pointUi = ResourceLoader.Load<PackedScene>("res://data/scenes/point_ui.tscn");
+    private PackedScene pointUi = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/point_ui.tscn");
     private float[][] points = [];
     public float[][] Points => points;
     private Texture2D texture;

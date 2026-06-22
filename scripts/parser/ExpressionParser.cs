@@ -74,7 +74,7 @@ public class FuncExpr : Expr
             "exp"  => Math.Exp(a),  "log"  => Math.Log(a),
             "log2" => Math.Log2(a), "log10"=> Math.Log10(a),
             "ceil" => Math.Ceiling(a), "floor"=> Math.Floor(a),
-            "sign" => Math.Sign(a),
+            "sign" => Math.Sign(a), "tanh" => Math.Tanh(a),
             _ => throw new Exception($"Unknown function '{_name}'")
         };
     }

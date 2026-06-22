@@ -6,7 +6,7 @@ public partial class LevelSelect : CanvasLayer
     [Export] protected VBoxContainer _levelList;      // sidebar scroll container's VBox
     [Export] protected Label _previewId;
     [Export] protected Label _previewRatio;
-    [Export] protected Label _previewCount;
+    [Export] protected Label _previewHealth;
     [Export] protected Label _previewDuration;
     [Export] protected Button _returnButton;
     [Export] protected Button _playButton;
@@ -83,8 +83,6 @@ public partial class LevelSelect : CanvasLayer
         string basePath = $"{_levelDirectory}{levelName}/";
 
         var levelData = ReadJson<LevelData>(basePath + "leveldata.json");
-        var projectiles = ReadJson<ProjectileReference[]>(basePath + "projectileData.json");
-
         if (levelData == null) { ClearPreview(); return; }
 
         string ratioLabel = levelData.AspectRatio switch
@@ -96,28 +94,34 @@ public partial class LevelSelect : CanvasLayer
         };
         _previewId.Text = levelData.DisplayName == "_" ? levelName : levelData.DisplayName;
         _previewRatio.Text = ratioLabel;
-        _previewCount.Text = projectiles != null ? $"{projectiles.Length} projectiles" : "-";
-        _previewDuration.Text = $"{levelData.Duration:F1}s";
+        _previewHealth.Text = levelData.Health.ToString();
+        _previewDuration.Text = $"{levelData.Duration:F2}s";
     }
-
-    protected void ClearPreview()
+    protected virtual void ClearPreview()
     {
-        _previewId.Text = _previewRatio.Text = _previewCount.Text = _previewDuration.Text = "-";
+        _previewId.Text = "-";
+        _previewRatio.Text = "-";
+        _previewHealth.Text = "-";
+        _previewDuration.Text = "-";
         _playButton.Disabled = true;
     }
-
     // Play
     protected void OnPlayPressed()
     {
         if (string.IsNullOrEmpty(_selectedLevel)) return;
-        Hide();
-        _loader.BeginLevel(_levelDirectory, _selectedLevel);
+        bool success = _loader.BeginLevel(_levelDirectory, _selectedLevel);
+        if (!success)
+        {
+            Show();
+            Popups.Show(GetNode<CanvasLayer>("/root/main/Popups"),Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
+        }
     }
     protected void OnReturnPressed()
     {
         var ui = GetNode<UIManager>("/root/UIManager");
         ui.ShowMainMenu();
         PopulateList();
+        ClearPreview();
     }
     // Helpers
     protected T ReadJson<T>(string path)

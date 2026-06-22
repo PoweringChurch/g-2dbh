@@ -7,6 +7,7 @@ public partial class PatternCreator : Control
     [Export] PatternPreview Preview;
     [Export] SpinBox TInput; // float
     [Export] HSlider TSlider;
+    [Export] VSlider Zoom;
     private float time = 0;
     [Export] LineEdit FnXInput;
     [Export] LineEdit FnYInput;
@@ -38,12 +39,16 @@ public partial class PatternCreator : Control
         ModelIdInput.TextChanged += OnProjectileModelIdChanged;
         CountInput.ValueChanged += OnCountChanged;
         Save.Pressed += OnSavePressed;
+        Zoom.ValueChanged += OnZoomChanged;
+    }
+    public void OnZoomChanged(double value)
+    {
+        Preview.Scale = Vector2.One*(float)value;
     }
     public void OnOptionSelected(long index)
     {
         var model = e.ProjectileRegistry.Models[(int)index];
         Preview.ProjModel = model;
-        
     }
     public void OnProjectileModelIdChanged(string text)
     {
@@ -73,7 +78,7 @@ public partial class PatternCreator : Control
     private void UpdateTime(bool tinput)
     {
         if (tinput)
-            TInput.Value = time;
+            TInput.SetValueNoSignal(time);
         else
             TSlider.SetValueNoSignal(time);
     }
@@ -99,6 +104,7 @@ public partial class PatternCreator : Control
             e.PatternRegistry.AddModel(model);
         ErrorDisplay.ClearMessage("Save");
         ModelSaved?.Invoke(model, null);
+        LoadPattern(model);
     }
     // input & input validation functions
     private void OnFnXChanged(string text)
@@ -167,10 +173,8 @@ public partial class PatternCreator : Control
         FnTInput.Text = loadModel.FunctionT;
         FnFwdInput.Text = loadModel.FunctionFwd;
         ModelIdInput.Text = loadModel.ProjectileId;
+        CountInput.Value = loadModel.Count;
         OnProjectileModelIdChanged(ModelIdInput.Text);
-        OnFnFwdChanged(FnFwdInput.Text);
-        OnFnTChanged(FnTInput.Text);
-        OnFnXChanged(FnXInput.Text);
-        OnFnYChanged(FnYInput.Text);
+        OnCountChanged(loadModel.Count);
     }
 }

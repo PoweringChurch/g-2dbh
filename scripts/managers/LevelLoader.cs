@@ -15,7 +15,7 @@ public partial class LevelLoader : Node
     [Export] public string LevelDataJsonPath = "/data.json";
     private Node2D _gameRoot;
     private LevelData _level;
-    private List<ProjectileReference> _queue; // remaining refs, sorted by T
+    private List<ISpatialReference> _queue;
     private float _elapsed;
     private bool _running;
     private static string currentLevelDirectory;
@@ -49,7 +49,10 @@ public partial class LevelLoader : Node
         // drain every ref whose scheduled time has arrived
         while (_queue.Count > 0 && _queue[0].T <= _elapsed)
         {
-            SpawnProjectile(_queue[0]);
+            if (_queue[0] is ProjectileReference pr)
+                SpawnProjectile(pr);
+            else if (_queue[0] is PatternReference ptr)
+                SpawnPattern(ptr);
             _queue.RemoveAt(0);
         }
         float duration = _level.Duration;
@@ -91,14 +94,10 @@ public partial class LevelLoader : Node
             GD.PrintErr($"[LevelLoader] Level folder not found: {CurrentLevelPath}");
             return false;
         }
-        string[] requiredFiles = ["leveldata.json", "models.json", "projectileData.json"];
-        foreach (var file in requiredFiles)
+        if (!FileAccess.FileExists(CurrentLevelPath + "leveldata.json"))
         {
-            if (!FileAccess.FileExists(CurrentLevelPath + file))
-            {
-                GD.PrintErr($"[LevelLoader] Missing required file: {CurrentLevelPath}{file}");
-                return false;
-            }
+            GD.PrintErr($"[LevelLoader] Missing required file: {CurrentLevelPath}leveldata.json");
+            return false;
         }
         if (!DirAccess.DirExistsAbsolute(CurrentLevelPath + "images/"))
         {
@@ -106,15 +105,7 @@ public partial class LevelLoader : Node
             return false;
         }
         var levelData = ReadJson<LevelData>(CurrentLevelPath + "leveldata.json");
-        var patternModels = ReadJson<List<PatternModel>>(CurrentLevelPath + "patternModels.json");
-        var patterns = ReadJson<List<PatternReference>>(CurrentLevelPath + "patternData.json");
-        var projectileModels = ReadJson<List<ProjectileModel>>(CurrentLevelPath + "projectileModels.json");
-        var projectiles = ReadJson<List<ProjectileReference>>(CurrentLevelPath + "projectileData.json");
-        levelData.ProjectileModels = projectileModels;
-        levelData.Projectiles = projectiles;
         levelData.LevelId = levelId;
-        levelData.PatternModels = patternModels;
-        levelData.Patterns = patterns;
         GD.Print($"Loading level {levelId}...");
         GD.Print("Validating models...");
         if (levelData.ProjectileModels == null || levelData.ProjectileModels.Count == 0)
@@ -132,7 +123,11 @@ public partial class LevelLoader : Node
 
         // Sort refs ascending by spawn time
         GD.Print("Sorting references...");
-        _queue = projectiles;
+        var merged = (levelData.Projectiles ?? Enumerable.Empty<ProjectileReference>())
+            .Cast<ISpatialReference>()
+            .Concat((levelData.Patterns ?? Enumerable.Empty<PatternReference>()).Cast<ISpatialReference>())
+            .ToList();
+        _queue = merged;
         _queue.Sort((a, b) => a.T.CompareTo(b.T));
 
         _level = levelData;
@@ -150,9 +145,6 @@ public partial class LevelLoader : Node
         _ui.HUD.SetHealth(levelData.Health);
         _ui.HUD.SetCompletion(0);
         _ui.HUD.SetLevelName(levelId);
-        foreach (var p in projectiles)
-            if (p.T > levelData.Duration)
-                GD.PushWarning($"[LevelLoader] Projectile spawn time ({p.T}) exceeds level duration ({levelData.Duration})");
         _ui.HUD.SetDuration(levelData.Duration);
 
         // start
@@ -162,10 +154,9 @@ public partial class LevelLoader : Node
         GD.Print($"[LevelLoader] Started level '{levelId}' - {_queue.Count} projectiles queued");
         return true;
     }
-    /// <summary>Instantiate a projectile and reattach its MotionFn</summary>
     public Projectile InstantiateProjectile(string modelId)
     {
-        ProjectileModel model = _level.ProjectileModels.FirstOrDefault(m => m.Id == modelId);
+        ProjectileModel model = _level.GetProjectileModel(modelId);
         Expr motionFnX = null;
         Expr motionFnY = null;
         if (!string.IsNullOrWhiteSpace(model.FunctionX) && model.FunctionX != "0")
@@ -193,7 +184,7 @@ public partial class LevelLoader : Node
     }
     public Pattern InstantiatePattern(string modelId)
     {
-        PatternModel model = _level.PatternModels.FirstOrDefault(m => m.Id == modelId);
+        PatternModel model = _level.GetPatternModel(modelId);
         Expr fnX = null;
         Expr fnY = null;
         Expr fnT = null;
@@ -234,6 +225,7 @@ public partial class LevelLoader : Node
         var pattern = InstantiatePattern(pref.Id);
         pattern.Position = new Vector2(pref.X, pref.Y);
         pattern.Forward = pref.Forward;
+
         _gameRoot.AddChild(pattern);
     }
     public static Shape2D BuildShape(ProjectileModel model)

@@ -1,13 +1,14 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Intrinsics;
 public partial class ProjectileCreator : Control
 {
     // Preview
     [Export] ProjectileModelPreview Preview;
-    [Export] SubViewportContainer VPContainer;
     [Export] SpinBox TInput; // float
     [Export] HSlider TSlider;
+    [Export] VSlider Zoom;
     [Export] LineEdit TextureInput;
     [Export] Label XDisplay;
     [Export] Label YDisplay;
@@ -46,7 +47,7 @@ public partial class ProjectileCreator : Control
         UseShapeCheckbutton.Toggled  += OnUseShapeToggled;
         Radius.ValueChanged          += OnRadiusChanged;
         Save.Pressed                 += OnSavePressed;
-        VPContainer.GuiInput         += OnVPGuiInput;
+        Zoom.ValueChanged            += OnZoomChanged;
 
         ShapeEditor.ShapeUpdated     += OnShapeUpdated;
     }
@@ -65,7 +66,7 @@ public partial class ProjectileCreator : Control
     private void UpdateTime(bool tinput)
     {
         if (tinput)
-            TInput.Value = time;
+            TInput.SetValueNoSignal(time);
         else
             TSlider.SetValueNoSignal(time);
         Preview.T = time;
@@ -86,15 +87,9 @@ public partial class ProjectileCreator : Control
         model.Shape = ShapeEditor.Points;
         Preview.Shape = ShapeEditor.Points;
     }
-    private void OnVPGuiInput(InputEvent @event)
+    private void OnZoomChanged(double value)
     {
-        if (@event is InputEventMouseButton mb && mb.Pressed)
-        {
-            if (mb.ButtonIndex == MouseButton.WheelUp)
-                Preview.Scale = Vector2.One * Mathf.Clamp(Preview.Scale.X + 0.1f, 0.1f, 4f);
-            else if (mb.ButtonIndex == MouseButton.WheelDown)
-                Preview.Scale = Vector2.One * Mathf.Clamp(Preview.Scale.X - 0.1f, 0.1f, 4f);
-        }
+        Preview.Scale = Vector2.One*(float)value;
     }
     private void OnSavePressed()
     {
@@ -112,12 +107,13 @@ public partial class ProjectileCreator : Control
         }
         ErrorDisplay.ClearMessage("Save");
         var existing = e.ProjectileRegistry.GetModel(model.Id);
+        var newmodel = new ProjectileModel(model);
         if (existing != null)
-            e.ProjectileRegistry.UpdateModel(model);
+            e.ProjectileRegistry.UpdateModel(newmodel);
         else
-            e.ProjectileRegistry.AddModel(model);
+            e.ProjectileRegistry.AddModel(newmodel);
         ErrorDisplay.ClearMessage("Save");
-        ModelSaved?.Invoke(model, null);
+        ModelSaved?.Invoke(newmodel, null);
     }
     private void RecalculatePosition()
     {

@@ -31,7 +31,7 @@ public partial class PlayingField : Node
 	}
 	private void Fit(Vector2I res)
 	{
-		if (_gameRoot == null) return;
+		if (!IsInstanceValid(_gameRoot) || _gameRoot == null) return;
         var win    = GetTree().Root.GetVisibleRect().Size;
 		_resScale = Mathf.Min(win.X / res.X, win.Y / res.Y);
 		Viewport.Size = (Vector2I)((Vector2)res*_resScale);

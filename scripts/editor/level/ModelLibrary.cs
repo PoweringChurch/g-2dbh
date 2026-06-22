@@ -6,7 +6,7 @@ using System.Linq;
 public partial class ModelLibrary : Control
 {
     [Export] VBoxContainer ModelList;
-    private PackedScene ModelUITemplate = ResourceLoader.Load<PackedScene>("res://data/scenes/model_ui.tscn");
+    private PackedScene ModelUITemplate = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/model_ui.tscn");
     private Editor e;
 
     public IEditorModel SelectedModel { get; private set; }

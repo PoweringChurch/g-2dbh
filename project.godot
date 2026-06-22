@@ -25,6 +25,8 @@ Editor="*uid://xfqoie77c8co"
 
 window/size/viewport_width=1600
 window/size/viewport_height=900
+window/stretch/mode="viewport"
+window/stretch/aspect="ignore"
 
 [dotnet]
 

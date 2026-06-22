@@ -23,11 +23,14 @@ public partial class Projectile : Hitbox
     }
     public override void _Process(double dt)
     {
+        QueueRedraw();
+    }
+    public override void _PhysicsProcess(double dt)
+    {
         ctx["t"] += dt;
         if (ctx["t"] > Lifetime)
             QueueFree();
         Position = CalculatePositionAt(SpawnPosition, Forward, MotionFnX, MotionFnY, ctx);
-        QueueRedraw();
     }
     public override void _Draw()
     {
@@ -51,8 +54,8 @@ public partial class Projectile : Hitbox
     {
         var forward = Vector2.FromAngle(fwdRad);
         var perp = new Vector2(-forward.Y, forward.X);
-        float lateral = fnx != null ? (float)fnx.Eval(ctx) : 0f;
-        float fwd = fny != null ? (float)fny.Eval(ctx) : 0f;
+        float fwd = fnx != null ? (float)fnx.Eval(ctx) : 0f;
+        float lateral = fny != null ? (float)fny.Eval(ctx) : 0f;
         return pos
             + forward * fwd
             + perp * lateral;

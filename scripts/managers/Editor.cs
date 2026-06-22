@@ -39,8 +39,8 @@ public partial class Editor : CanvasLayer
     public NodePath ModelLibraryPath = Modules + "/Middle/ModelLibrary";
     public NodePath LevelMetaPath = Modules + "/Left/LevelMetadata";
     public NodePath LevelPreviewPath = Modules + "/Left/LevelPreview/Sort/Container/SubViewport/Preview";
-    public NodePath ProjCreatorPath = Modules + "/ProjectileCreator";
-    public NodePath PatternCreatorPath = Modules + "/PatternCreator";
+    public NodePath ProjCreatorPath = Modules + "/Right/ProjectileCreator";
+    public NodePath PatternCreatorPath = Modules + "/Right/PatternCreator";
     public NodePath InspectorPath = Modules + "/Middle/Inspector";
 
     const string ToolbarButtons = "/root/main/EditorLayer/Sections/Toolbar/Buttons";
@@ -73,6 +73,7 @@ public partial class Editor : CanvasLayer
         _patternCreator = GetNode<PatternCreator>(PatternCreatorPath);
         _inspector = GetNode<Inspector>(InspectorPath);
 
+        // events
         _inspector.ReferenceUpdated += _timeline.RefreshMarker;
 
         _levelMeta.AspectRatioChanged += _preview.Fit;
@@ -86,7 +87,9 @@ public partial class Editor : CanvasLayer
 
         _patternCreator.ModelSaved += PatternRegistry.UpdateModel;
         _patternCreator.ModelSaved += _modelLibrary.OnModelSaved;
-        _projCreator.ModelSaved += _preview.OnModelUpdate;
+        _patternCreator.ModelSaved += _preview.OnModelUpdate;
+
+        GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
         // toolbar
         _placeButton = GetNode<Button>(PlaceButtonPath);
         _selectButton = GetNode<Button>(SelectButtonPath);
@@ -118,36 +121,22 @@ public partial class Editor : CanvasLayer
         string levelPath = $"{_levelDirectory}{data.LevelId}/";
         DirAccess.MakeDirRecursiveAbsolute(levelPath);
         DirAccess.MakeDirRecursiveAbsolute(levelPath + "images/");
-
-        WriteJson(levelPath + "leveldata.json", levelData);
-        WriteJson(levelPath + "projectileModels.json", new List<ProjectileModel>());
-        WriteJson(levelPath + "projectileData.json", new List<ProjectileReference>());
-        WriteJson(levelPath + "patternModels.json", new List<PatternModel>());
-        WriteJson(levelPath + "patternData.json", new List<PatternReference>());
-
+        WriteJson(levelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
-    public void OpenLevel(string levelId)
+    public bool OpenLevel(string levelId)
     {
         string levelDataPath = $"{_levelDirectory}{levelId}/leveldata.json";
-        string projectilesPath = $"{_levelDirectory}{levelId}/projectileData.json";
-        string projectileModelsPath = $"{_levelDirectory}{levelId}/projectileModels.json";
-        string patternModelsPath = $"{_levelDirectory}{levelId}/patternModels.json";
-        string patternsPath = $"{_levelDirectory}{levelId}/patternData.json";
 
         if (!FileAccess.FileExists(levelDataPath))
         {
             GD.PrintErr($"[Editor] Level not found: {levelDataPath}");
-            return;
+            return false;
         }
         LevelData data = ReadJson<LevelData>(levelDataPath);
         data.LevelId = levelId;
-        data.ProjectileModels = ReadJson<List<ProjectileModel>>(projectileModelsPath);
-        data.Projectiles = ReadJson<List<ProjectileReference>>(projectilesPath);
-        data.PatternModels = ReadJson<List<PatternModel>>(patternModelsPath);
-        data.Patterns = ReadJson<List<PatternReference>>(patternsPath);
-
         ApplyLevelData(data);
+        return true;
     }
     private void ApplyLevelData(LevelData data)
     {
@@ -170,13 +159,7 @@ public partial class Editor : CanvasLayer
     {
         string levelPath = $"{_levelDirectory}{levelData.LevelId}/";
         GD.Print($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
-        // Write files
         WriteJson(levelPath + "leveldata.json", levelData);
-        WriteJson(levelPath + "projectileModels.json", levelData.ProjectileModels);
-        WriteJson(levelPath + "projectileData.json", levelData.Projectiles);
-        WriteJson(levelPath + "patternModels.json", levelData.PatternModels);
-        WriteJson(levelPath + "patternData.json", levelData.Patterns);
-
         GD.Print("[Editor] Saved level successfully");
     }
     public void AddReference(ISpatialReference reference)
@@ -204,7 +187,7 @@ public partial class Editor : CanvasLayer
         else if (reference is PatternReference ptr)
         {
             levelData.Patterns.Remove(ptr);
-            _preview.AddInstance(ptr);
+            _preview.RemoveInstance(ptr);
         }
     }
     // opens a model in its respective creator

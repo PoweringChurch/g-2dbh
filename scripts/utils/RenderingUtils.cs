@@ -25,6 +25,8 @@ public static class RenderingUtils
         }
         return null;
     }
+    public static void EmptyTextureCache() =>
+        _textureCache.Clear();
     private static readonly Dictionary<string, Color> _colorCache = new();
     public static Color ColorFromString(string input)
     {

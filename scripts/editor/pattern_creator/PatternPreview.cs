@@ -108,21 +108,6 @@ public partial class PatternPreview : Node2D
         }
         DrawPath(Vector2.Zero, fnX, fnY, lctx, "i", lctx["n"], 0,  Colors.Green, 32);
     }
-    private void DrawPath(Vector2 pos,
-    Expr fnx, Expr fny,
-    Dictionary<string, double> pctx, string input,
-    double len, double fwd,
-    Color color, int steps = 16)
-    {
-        Vector2[] points = new Vector2[steps];
-        for (int j = 0; j < steps; j++)
-        {
-            pctx[input] = len / steps * j;
-            points[j] = Projectile.CalculatePositionAt(pos, (float)fwd, fnx, fny, pctx);
-        }
-        DrawPolyline(points, color, 1.5f, true);
-        DrawCircle(points[0], 3f, color);
-    }
     private void DrawProjectileShape(ProjectileModel model,
     Texture2D texture, Vector2 pos,
     float forward, Color color)
@@ -142,5 +127,20 @@ public partial class PatternPreview : Node2D
         }
         else
             DrawCircle(Vector2.Zero, model.Radius, color);
+    }
+    private void DrawPath(Vector2 pos,
+    Expr fnx, Expr fny,
+    Dictionary<string, double> pctx, string input,
+    double len, double fwd,
+    Color color, int steps = 16)
+    {
+        Vector2[] points = new Vector2[steps];
+        for (int j = 0; j < steps; j++)
+        {
+            pctx[input] = len / steps * j;
+            points[j] = Projectile.CalculatePositionAt(pos, (float)fwd, fnx, fny, pctx);
+        }
+        DrawPolyline(points, color, 1.5f, true);
+        DrawCircle(points[0], 3f, color);
     }
 }

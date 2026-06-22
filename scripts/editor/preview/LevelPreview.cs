@@ -23,6 +23,8 @@ public partial class LevelPreview : Node2D
         ClearInstances();
         foreach (var r in data.Projectiles)
             AddInstance(r);
+        foreach (var r in data.Patterns)
+            AddInstance(r);
         BackgroundImage.Texture = RenderingUtils.LoadTexture(e.LevelPath+"images/",data.BgImage);
         Fit(PlayingField.Resolutions[data.AspectRatio]);
     }
@@ -48,9 +50,9 @@ public partial class LevelPreview : Node2D
         (screenPos - GlobalPosition) / resScale;
     public override void _Input(InputEvent @event)
     {
-        if (@event is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+        if (@event is InputEventMouseButton mb && mb.Pressed)
         {
-            if (mb.Pressed)
+            if ( mb.ButtonIndex == MouseButton.Left)
             {
                 var (reference, offset) = GetNearestReference(mb.Position);
                 if (GetNearestReference == null)
@@ -88,8 +90,10 @@ public partial class LevelPreview : Node2D
                         break;
                 }
             }
+            else if (mb.ButtonIndex == MouseButton.Right && e.CurrentMode == Editor.Mode.Select)
+                e.SelectedReference = null;
             else if (e.CurrentMode == Editor.Mode.Place)
-                    e.SelectedReference = null;
+                e.SelectedReference = null;
         }
         if (@event is InputEventMouseMotion mm && e.SelectedReference != null)
         {
@@ -103,7 +107,6 @@ public partial class LevelPreview : Node2D
         var local = ToPreviewLocal(pos);
         var (projRef, projOffset) = _projectiles.GetNearestReference(local, e.CurrentTime);
         var (patRef, patOffset)   = _patterns.GetNearestReference(local, e.CurrentTime);
-
         // pick whichever is actually non-null and, if both found, the closer one
         if (projRef != null && patRef != null)
         {

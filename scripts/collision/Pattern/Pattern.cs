@@ -19,12 +19,13 @@ public partial class Pattern : Node2D
     public override void _Ready()
     {
         levelLoader = GetNode<LevelLoader>("/root/LevelLoader/");
+        Play();
     }
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double dt)
     {
         if (nextIndex >= pending.Count)
             return;
-        elapsed += (float)delta;
+        elapsed += (float)dt;
         while (nextIndex < pending.Count && elapsed >= pending[nextIndex].T)
         {
             levelLoader.SpawnProjectile(pending[nextIndex]);
@@ -40,17 +41,15 @@ public partial class Pattern : Node2D
         for (int i = 0; i < Count; i++)
         {
             ctx["i"] = i;
-
             float genFwd = FnFwd != null ? (float)FnFwd.Eval(ctx) : 0;
-            float genX   = FnX   != null ? (float)FnX.Eval(ctx)   : 0;
-            float genY   = FnY   != null ? (float)FnY.Eval(ctx)   : 0;
             float genT   = FnT   != null ? (float)FnT.Eval(ctx)   : 0;
+            var startPos = Projectile.CalculatePositionAt(Vector2.Zero, Forward, FnX, FnY, ctx);
 
             pending.Add(new ProjectileReference
             {
                 Id = ProjectileModelId,
-                X = GlobalPosition.X + genX,
-                Y = GlobalPosition.Y + genY,
+                X = Position.X + startPos.X,
+                Y = Position.Y + startPos.Y,
                 Forward = Forward + genFwd,
                 T = genT,
             });

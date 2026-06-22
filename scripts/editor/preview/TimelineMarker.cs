@@ -23,7 +23,6 @@ public partial class TimelineMarker : ColorRect
         {
             if (e.CurrentMode == Editor.Mode.Select)
             {
-               e.SelectedReference = Reference;
                 _dragging = mb.Pressed; 
             }
             else if (e.CurrentMode == Editor.Mode.Delete)
@@ -32,7 +31,6 @@ public partial class TimelineMarker : ColorRect
                     e.DeleteReference(proj);
                 else
                     e.DeleteReference((PatternReference)Reference);
-                e.SelectedReference = null;
             }
         }
         if (@event is InputEventMouseMotion mm 

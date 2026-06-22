@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 public interface ISpatialReference
@@ -98,11 +99,23 @@ public class LevelData
     [JsonPropertyName("health")]        public int      Health      { get; set; } = 3;
     [JsonPropertyName("aspectRatio")]   public int      AspectRatio { get; set; } = 1;
     [JsonPropertyName("duration")]      public float    Duration     { get; set; } = 1;
-    public string                       LevelId  {get; set;}
-    public List<ProjectileModel>        ProjectileModels  {get; set;} = null;
-    public List<ProjectileReference>    Projectiles {get; set;} = null;
-    public List<PatternModel>           PatternModels  {get; set;} = null;
-    public List<PatternReference>       Patterns {get; set;} = null;
+    [JsonPropertyName("projectileModels")]  public List<ProjectileModel>        ProjectileModels  {get; set;} = null;
+    [JsonPropertyName("projectiles")]       public List<ProjectileReference>    Projectiles {get; set;} = null;
+    [JsonPropertyName("patternModels")]     public List<PatternModel>           PatternModels  {get; set;} = null;
+    [JsonPropertyName("patterns")]          public List<PatternReference>       Patterns {get; set;} = null;
+    [JsonIgnore]    public string   LevelId  {get; set;}
+    [JsonIgnore]    private Dictionary<string, ProjectileModel> _projectileModelsById;
+    [JsonIgnore]    private Dictionary<string, PatternModel> _patternModelsById;
+    public ProjectileModel GetProjectileModel(string id)
+    {
+        _projectileModelsById ??= ProjectileModels.ToDictionary(m => m.Id);
+        return _projectileModelsById.GetValueOrDefault(id);
+    }
+    public PatternModel GetPatternModel(string id)
+    {
+        _patternModelsById ??= PatternModels.ToDictionary(m => m.Id);
+        return _patternModelsById.GetValueOrDefault(id);
+    }
 }
 public class EditorPrefs
 {

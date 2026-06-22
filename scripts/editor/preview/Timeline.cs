@@ -1,15 +1,21 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-
 public partial class Timeline : Control
 {
     [Export] public HSlider Playhead;
-    [Export] public LineEdit PlayheadPositionInput;
+    [Export] public SpinBox PlayheadPositionInput;
     [Export] public Control TimelineBar;
     [Export] public MessageDisplay ErrorDisplay;
+    [Export] public Button PlayPauseButton;
+    [Export] public SpinBox SpeedInput;
+    [Export] public CheckButton LoopToggle;
+
     private float currentTime = 0;
     public float CurrentTime => currentTime;
+    private bool _playing = false;
+    private float _speed = 1f;
+    private bool _loop = false;
     private Dictionary<ISpatialReference, TimelineMarker> _markers = new();
     private Dictionary<string, bool> _visibleModels = new();
     private Editor e;
@@ -17,23 +23,66 @@ public partial class Timeline : Control
     {
         base._Ready();
         e = GetNode<Editor>("/root/Editor");
-        PlayheadPositionInput.TextChanged += OnTimeChange;
-        Playhead.ValueChanged +=  OnValueChanged;
+        PlayheadPositionInput.ValueChanged += OnTimeChange;
+        Playhead.ValueChanged +=  OnTimeValueChanged;
+
+        PlayPauseButton.Pressed += TogglePlaying;
+        SpeedInput.ValueChanged += OnSpeedChanged;
+        LoopToggle.Toggled += OnLoopToggled;
+
+        _speed = (float)SpeedInput.Value;
+        _loop = LoopToggle.ButtonPressed;
+        UpdatePlayPauseLabel();
     }
-    private void OnTimeChange(string text)
+    public override void _Process(double delta)
     {
-        if (float.TryParse(text, out float time) && time > 0) 
+        if (!_playing)
+            return;
+
+        float duration = (float)Playhead.MaxValue;
+        currentTime += (float)delta * _speed;
+
+        if (currentTime >= duration)
         {
-            currentTime = time;
-            Playhead.SetValueNoSignal(time);
-            ErrorDisplay.ClearMessage("Time");
+            if (_loop)
+                currentTime = duration > 0 ? currentTime % duration : 0;
+            else
+            {
+                currentTime = duration;
+                SetPlaying(false);
+            }
         }
-        else ErrorDisplay.SetMessage("Time", "[Time] Must be number and greater than 0.");
+        Playhead.SetValueNoSignal(currentTime);
+        PlayheadPositionInput.SetValueNoSignal(currentTime);
     }
-    private void OnValueChanged(double to)
+    private void TogglePlaying() => SetPlaying(!_playing);
+    private void SetPlaying(bool playing)
+    {
+        _playing = playing;
+        UpdatePlayPauseLabel();
+    }
+    private void UpdatePlayPauseLabel() =>
+        PlayPauseButton.Text = _playing ? "❚❚" : "▶";
+    private void OnSpeedChanged(double value) =>
+        _speed = (float)value;
+    private void OnLoopToggled(bool toggled) =>
+        _loop = toggled;
+    private void OnTimeChange(double time)
+    {
+        currentTime = (float)time;
+        UpdateTime(false);
+    }
+    private void OnTimeValueChanged(double to)
     {
         currentTime = (float)to;
-        PlayheadPositionInput.Text = $"{currentTime:F2}";
+        UpdateTime(true);
+    }
+    private void UpdateTime(bool tinput)
+    {
+        if (tinput)
+            PlayheadPositionInput.SetValueNoSignal(currentTime);
+        else
+            Playhead.SetValueNoSignal(currentTime);
     }
     public void UpdateDuration(float newDuration)
     {

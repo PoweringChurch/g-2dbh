@@ -33,6 +33,8 @@ public partial class ProjectileEditorInstance : ReferenceInstance
     }
     public override bool IsAlive(float time)
     {
+        if (Invalid)
+            return false;
         float t = time - _reference.T;
         return t >= 0 && t <= _model.Lifetime;
     }
@@ -51,15 +53,15 @@ public partial class ProjectileEditorInstance : ReferenceInstance
         float t = e.CurrentTime - _reference.T;
         bool alive = t >= 0 && t <= _model.Lifetime;
         Visible = alive || _isSelected;
-        if (Visible)
-        {
-            ctx["t"] = Mathf.Clamp(t, 0, _model.Lifetime);
-            Position = Projectile.CalculatePositionAt(new Vector2(_reference.X,_reference.Y), _reference.Forward, _motionFnX, _motionFnY, ctx);
-            QueueRedraw();
-        }
+        if (!Visible) return;
+        ctx["t"] = Mathf.Clamp(t, 0, _model.Lifetime);
+        Position = Projectile.CalculatePositionAt(new Vector2(_reference.X,_reference.Y), _reference.Forward, _motionFnX, _motionFnY, ctx);
+        QueueRedraw();
     }
     public override void _Draw()
     {
+        if (Invalid)
+            return;
         // draw path
         if (_isSelected)
             DrawPath();

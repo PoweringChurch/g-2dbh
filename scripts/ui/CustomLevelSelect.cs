@@ -32,13 +32,24 @@ public partial class CustomLevelSelect : LevelSelect
         Hide();
         var ui = GetNode<UIManager>("/root/UIManager");
         ui.ShowEditor();
-        e.OpenLevel(_selectedLevel);
+        bool success = e.OpenLevel(_selectedLevel);
+        if (!success)
+        {
+            Show();
+            Popups.Show(GetNode<CanvasLayer>("/root/main/Popups"),Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
+        }
     }
     protected override void OnLevelSelected(string levelName, Button pressed)
     {
         base.OnLevelSelected(levelName, pressed);
         _editButton.Disabled = false;
         _deleteButton.Disabled = false;
+    }
+    protected override void ClearPreview()
+    {
+        base.ClearPreview();
+        _editButton.Disabled = true;
+        _deleteButton.Disabled = true;
     }
     protected void OnDeletePressed()
     {
@@ -55,6 +66,7 @@ public partial class CustomLevelSelect : LevelSelect
             DeleteDirectoryRecursive(levelDirectory);
         }
         DirAccess.RemoveAbsolute(levelDirectory);
+        ClearPreview();
     }
     private void DeleteDirectoryRecursive(string path)
     {
