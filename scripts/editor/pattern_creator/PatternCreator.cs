@@ -14,7 +14,7 @@ public partial class PatternCreator : Control
     [Export] LineEdit FnTInput;
     [Export] LineEdit FnFwdInput;
     [Export] SpinBox  CountInput;
-    [Export] LineEdit ModelIdInput;
+    [Export] LineEdit ProjectileIdInput;
 
     [Export] LineEdit IdInput;
     [Export] Button Save;
@@ -36,10 +36,19 @@ public partial class PatternCreator : Control
         FnYInput.TextChanged += OnFnYChanged;
         FnTInput.TextChanged += OnFnTChanged;
         FnFwdInput.TextChanged += OnFnFwdChanged;
-        ModelIdInput.TextChanged += OnProjectileModelIdChanged;
+        ProjectileIdInput.TextChanged += OnProjectileModelIdChanged;
         CountInput.ValueChanged += OnCountChanged;
         Save.Pressed += OnSavePressed;
         Zoom.ValueChanged += OnZoomChanged;
+    }
+    public void OnModelUpdate(ProjectileModel newmodel, string oldId)
+    {
+        if (oldId == ProjectileIdInput.Text || newmodel.Id == model.ProjectileId)
+        {
+            ProjectileIdInput.Text = newmodel.Id;
+            model.ProjectileId = newmodel.Id;
+            OnProjectileModelIdChanged(newmodel.Id);
+        }
     }
     public void OnZoomChanged(double value)
     {
@@ -172,9 +181,9 @@ public partial class PatternCreator : Control
         FnYInput.Text = loadModel.FunctionY;
         FnTInput.Text = loadModel.FunctionT;
         FnFwdInput.Text = loadModel.FunctionFwd;
-        ModelIdInput.Text = loadModel.ProjectileId;
+        ProjectileIdInput.Text = loadModel.ProjectileId;
         CountInput.Value = loadModel.Count;
-        OnProjectileModelIdChanged(ModelIdInput.Text);
+        OnProjectileModelIdChanged(ProjectileIdInput.Text);
         OnCountChanged(loadModel.Count);
     }
 }

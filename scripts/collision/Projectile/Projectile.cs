@@ -20,10 +20,7 @@ public partial class Projectile : Hitbox
         base._Ready();
         Position = CalculatePositionAt(SpawnPosition, Forward, MotionFnX, MotionFnY, ctx);
         HitType = HurtType.Friendly;
-    }
-    public override void _Process(double dt)
-    {
-        QueueRedraw();
+        QueueRedraw(); // once
     }
     public override void _PhysicsProcess(double dt)
     {

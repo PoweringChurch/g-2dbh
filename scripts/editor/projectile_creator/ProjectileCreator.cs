@@ -30,38 +30,36 @@ public partial class ProjectileCreator : Control
     public delegate void ProjectileModelUpdatedEventHandler(ProjectileModel model, string oldId);
     public event ProjectileModelUpdatedEventHandler ModelSaved;
     private double time = 0;
-    private static readonly Dictionary<string, double> testCtx = new() {["t"] = 0};
+    private static readonly Dictionary<string, double> testCtx = new() { ["t"] = 0 };
     public override void _Ready()
     {
         base._Ready();
         e = GetNode<Editor>("/root/Editor");
         UseShapeCheckbutton.Toggled += ToggleCollisionParams;
 
-        TInput.ValueChanged          += OnTChanged;
-        TSlider.ValueChanged         += OnTSliderChanged;
-        TextureInput.TextChanged     += OnTextureChanged;
-        FnXInput.TextChanged         += OnFnXChanged;
-        FnYInput.TextChanged         += OnFnYChanged;
-        LifetimeInput.ValueChanged   += OnLifetimeChanged;
-        PersistantCheckbutton.Toggled+= OnPersistantToggled;
-        UseShapeCheckbutton.Toggled  += OnUseShapeToggled;
-        Radius.ValueChanged          += OnRadiusChanged;
-        Save.Pressed                 += OnSavePressed;
-        Zoom.ValueChanged            += OnZoomChanged;
+        TInput.ValueChanged += OnTChanged;
+        TSlider.ValueChanged += OnTSliderChanged;
+        TextureInput.TextChanged += OnTextureChanged;
+        FnXInput.TextChanged += OnFnXChanged;
+        FnYInput.TextChanged += OnFnYChanged;
+        LifetimeInput.ValueChanged += OnLifetimeChanged;
+        PersistantCheckbutton.Toggled += OnPersistantToggled;
+        UseShapeCheckbutton.Toggled += OnUseShapeToggled;
+        Radius.ValueChanged += OnRadiusChanged;
+        Save.Pressed += OnSavePressed;
+        Zoom.ValueChanged += OnZoomChanged;
 
-        ShapeEditor.ShapeUpdated     += OnShapeUpdated;
+        ShapeEditor.ShapeUpdated += OnShapeUpdated;
     }
     private void OnTChanged(double t)
     {
         time = t;
         UpdateTime(false);
-        RecalculatePosition();
     }
-    private void OnTSliderChanged(double value) 
+    private void OnTSliderChanged(double value)
     {
         time = value;
         UpdateTime(true);
-        RecalculatePosition();
     }
     private void UpdateTime(bool tinput)
     {
@@ -70,17 +68,18 @@ public partial class ProjectileCreator : Control
         else
             TSlider.SetValueNoSignal(time);
         Preview.T = time;
+        RecalculatePosition();
     }
     private void OnTextureChanged(string text)
     {
-        Texture2D found = RenderingUtils.LoadTexture(e.LevelPath+"images/",text);
-		if (found != null || text == "default")
-		{
-			model.Texture = text;
+        Texture2D found = RenderingUtils.LoadTexture(e.LevelPath + "images/", text);
+        if (found != null || text == "default")
+        {
+            model.Texture = text;
             Preview.TextureName = text;
-			ErrorDisplay.ClearMessage("Texture");
-		}
-        else ErrorDisplay.SetMessage("Texture",$"[Texture] Could not find texture of name {text} in {e.LevelPath}/images/");
+            ErrorDisplay.ClearMessage("Texture");
+        }
+        else ErrorDisplay.SetMessage("Texture", $"[Texture] Could not find texture of name {text} in {e.LevelPath}/images/");
     }
     private void OnShapeUpdated()
     {
@@ -89,7 +88,7 @@ public partial class ProjectileCreator : Control
     }
     private void OnZoomChanged(double value)
     {
-        Preview.Scale = Vector2.One*(float)value;
+        Preview.Scale = Vector2.One * (float)value;
     }
     private void OnSavePressed()
     {
@@ -118,8 +117,8 @@ public partial class ProjectileCreator : Control
     private void RecalculatePosition()
     {
         Preview.T = time;
-        XDisplay.Text = (Preview.Position.X-128).ToString("F2");
-        YDisplay.Text = (Preview.Position.Y-128).ToString("F2");
+        XDisplay.Text = (Preview.PreviewPosition.X - 128).ToString("F2");
+        YDisplay.Text = (Preview.PreviewPosition.Y - 128).ToString("F2");
     }
     private void ToggleCollisionParams(bool to)
     {
@@ -156,6 +155,8 @@ public partial class ProjectileCreator : Control
     {
         model.Lifetime = (float)lifetime;
         Preview.Lifetime = (float)lifetime;
+        TSlider.MaxValue = lifetime;
+        TInput.MaxValue = lifetime;
     }
     private void OnPersistantToggled(bool on) =>
         model.Persistant = on;
@@ -170,22 +171,25 @@ public partial class ProjectileCreator : Control
         Preview.Radius = (float)radius;
         model.Radius = (float)radius;
     }
-        
+
     public void LoadProjectile(ProjectileModel newModel)
     {
         model = new ProjectileModel(newModel);
-        IdInput.Text          = newModel.Id;
-        TextureInput.Text     = newModel.Texture;
-        FnXInput.Text         = newModel.FunctionX;
-        FnYInput.Text         = newModel.FunctionY;
-        LifetimeInput.Value    = newModel.Lifetime;
-        Radius.Value           = newModel.Radius;
-        PersistantCheckbutton.SetPressed(newModel.Persistant);
-        UseShapeCheckbutton.SetPressed(newModel.UseShape);
-
-        Preview.FnX = ExpressionParser.Parse(newModel.FunctionX);
-        Preview.FnY = ExpressionParser.Parse(newModel.FunctionY);
-        Preview.T         = 0;
+        IdInput.Text = newModel.Id;
+        TextureInput.Text = newModel.Texture;
+        FnXInput.Text = newModel.FunctionX;
+        FnYInput.Text = newModel.FunctionY;
+        LifetimeInput.Value = newModel.Lifetime;
+        Radius.Value = newModel.Radius;
+        PersistantCheckbutton.ButtonPressed = newModel.Persistant;
+        UseShapeCheckbutton.ButtonPressed =newModel.UseShape; // doesnt need its on changed function because setting it like this automatically calls it 
+        Preview.T = 0;
         ToggleCollisionParams(newModel.UseShape);
+
+        OnFnXChanged(newModel.FunctionX);
+        OnFnYChanged(newModel.FunctionY);
+        OnLifetimeChanged(newModel.Lifetime);
+        OnRadiusChanged(newModel.Radius);
+        OnTextureChanged(newModel.Texture);
     }
 }

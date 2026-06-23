@@ -26,4 +26,10 @@ public partial class HUD : CanvasLayer
         TimeSpan ts = TimeSpan.FromSeconds(duration);
         _Duration.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
     }
+    public void ResetStats()
+    {
+        _scoreLabel.Text = "0";
+        _grazeLabel.Text = "0";
+        _HP.Text = "0";
+    }
 }

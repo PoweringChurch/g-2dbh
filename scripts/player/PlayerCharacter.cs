@@ -3,14 +3,14 @@ using Godot;
 
 public partial class PlayerCharacter : Node2D
 {
-    public string characterSprite = "default";
-    float baseSpeed = 100f;
+    public Vector2I ScreenResolution;
+    public string textureName = "default";
+    float baseSpeed = 75f;
     int iframes = 0;
     int framesFocusHeld = 0; // for fading hurtbox display
     int grazeFrames = 0; // for showing graze
     int health = 0;
-    int grazeCount = 0;
-    int score = 0;
+    int scoreTimer = 15;
     // references
     Hurtbox hurtbox;
     Hurtbox grazebox;
@@ -25,38 +25,39 @@ public partial class PlayerCharacter : Node2D
         grazebox = GetNode<Hurtbox>("Grazebox");
         hurtboxDisplay = GetNode<Sprite2D>("HurtboxDisplay");
         grazeDisplay = GetNode<Sprite2D>("GrazeDisplay");
-
         loader = GetNode<LevelLoader>("/root/LevelLoader");
         characterDisplay = GetNode<Sprite2D>("CharacterDisplay");
-
-        if (!FileAccess.FileExists("res://data/characters/"+characterSprite+".png"))
-            {GD.Print($"[PlayerCharacter] Character image of name '{characterSprite}' is invalid, using default sprite"); characterSprite = "default";}
-        characterDisplay.Texture = ResourceLoader.Load<Texture2D>("res://data/characters/"+characterSprite+".png");
+        characterDisplay.Texture = RenderingUtils.LoadTexture("user://data/characters/", textureName);
+        characterDisplay.Texture ??= ResourceLoader.Load<Texture2D>("res://data/characters/default.png");
         hurtbox.OnHurt += _OnHurt;
         grazebox.OnHurt += _OnGraze;
-        loader.LevelFinished += _OnLevelFinished;
     }
     private void Movement(float dt)
     {
         Vector2 inputDirection = Input.GetVector("left", "right", "up", "down").Normalized();
         bool focused = Input.IsActionPressed("focus");
-
         framesFocusHeld = Math.Clamp(framesFocusHeld + (focused ? 1 : -1), 0, 10);
-        hurtboxDisplay.Modulate = new Color(1,1,1,framesFocusHeld/10f);
-        characterDisplay.Modulate = new Color (1,1,1,1-(framesFocusHeld/20f));
-        grazeDisplay.Modulate = new Color (1,1,1,grazeFrames--/20f);
-
         float speed =  focused ? baseSpeed*0.5f : baseSpeed;
         Position += inputDirection*speed*dt;
+        Vector2 newPosition = Position + inputDirection*speed*dt;
+        newPosition.X = Mathf.Clamp(newPosition.X, 0, ScreenResolution.X);
+        newPosition.Y = Mathf.Clamp(newPosition.Y, 0, ScreenResolution.Y);
+        Position = newPosition;
     }
     public override void _PhysicsProcess(double dt)
     {
         Movement((float)dt);
-        // after movement to ensure player transparency is correct
-        if (iframes > 0) {
-            iframes--;
+        hurtboxDisplay.Modulate = new Color(1,1,1,framesFocusHeld/10f);
+        characterDisplay.Modulate = new Color (1,1,1,1-(framesFocusHeld/20f));
+        grazeDisplay.Modulate = new Color (1,1,1,grazeFrames--/20f);
+        if (iframes-- > 0) {
             float a = (iframes / 4 % 2 == 0) ? 0.5f : 0.75f;
             characterDisplay.Modulate = new Color(1, 1, 1, a);
+        }
+        if (--scoreTimer <= 0)
+        {
+            scoreTimer = 15;
+            loader.IncrementScore(10*health);
         }
     }
     protected void _OnHurt(Hitbox hitbox)
@@ -67,27 +68,15 @@ public partial class PlayerCharacter : Node2D
         if (hitbox is Projectile proj && !proj.Persistant)
             proj.QueueFree();
         health--;
-        var ui = GetNode<UIManager>("/root/UIManager");
-        ui.HUD.SetHealth(health);
+        loader.DecrementHealth(1);
         if (health <= 0)
-        {
-            ui.ShowGameOver();
-            loader.Abort();
-        }
+            loader.FinishLevel();
     }
     protected void _OnGraze(Hitbox _) 
     {
-        var ui = GetNode<UIManager>("/root/UIManager");
+        if (iframes > 0)
+            return;
         grazeFrames = 20;
-        grazeCount++;
-        score += 10*health;
-        ui.HUD.SetGraze(grazeCount);
-    }
-    protected void _OnLevelFinished(string levelName)
-    {
-        var ui = GetNode<UIManager>("/root/UIManager");
-        ui.ScoreSummary.SetGraze(grazeCount);
-        ui.ScoreSummary.SetHP(health);
-        ui.ScoreSummary.SetScore(score);
+        loader.IncrementGraze(1);
     }
 }

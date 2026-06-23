@@ -56,12 +56,13 @@ public partial class LevelSelect : CanvasLayer
     protected virtual void AddLevelButton(string levelName)
     {
         var levelData = ReadJson<LevelData>($"{_levelDirectory}{levelName}/leveldata.json");
+        bool invalid = levelData == null;
         var buttonText = "INVALID LEVEL";
-        if (levelData != null)
-        {
-            buttonText = levelData.DisplayName == "_" ? levelName : levelData.DisplayName;
-        }
+        if (!invalid)
+            buttonText = string.IsNullOrWhiteSpace(levelData.DisplayName) ? levelName : levelData.DisplayName;
         var btn = new Button { Text = buttonText, ToggleMode = true, CustomMinimumSize = new Vector2(150, 0), ClipText = true };
+        if (invalid)
+            btn.Pressed += ClearPreview;
         btn.Pressed += () => OnLevelSelected(levelName, btn);
         _levelList.AddChild(btn);
     }
@@ -77,7 +78,6 @@ public partial class LevelSelect : CanvasLayer
         _playButton.Disabled = false;
         LoadPreview(levelName);
     }
-
     protected void LoadPreview(string levelName)
     {
         string basePath = $"{_levelDirectory}{levelName}/";
@@ -92,7 +92,7 @@ public partial class LevelSelect : CanvasLayer
             2 => "3:2",
             _ => "unknown"
         };
-        _previewId.Text = levelData.DisplayName == "_" ? levelName : levelData.DisplayName;
+        _previewId.Text = string.IsNullOrWhiteSpace(levelData.DisplayName) ? levelName : levelData.DisplayName;
         _previewRatio.Text = ratioLabel;
         _previewHealth.Text = levelData.Health.ToString();
         _previewDuration.Text = $"{levelData.Duration:F2}s";

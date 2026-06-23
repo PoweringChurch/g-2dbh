@@ -1119,7 +1119,7 @@ label_settings = ExtResource("7_cegan")
 autowrap_mode = 2
 script = ExtResource("8_074og")
 
-[node name="PatternCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1409250504 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ModelIdInput", "IdInput", "Save", "ErrorDisplay")]
+[node name="PatternCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1409250504 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "IdInput", "Save", "ErrorDisplay")]
 custom_minimum_size = Vector2(355, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -1134,7 +1134,7 @@ FnYInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnY/FnYInput")
 FnTInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnT/FnTInput")
 FnFwdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnFwd/FnFwdInput")
 CountInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/Count/Count")
-ModelIdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect/ModelId")
+ProjectileIdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect/ModelId")
 IdInput = NodePath("ScrollContainer/Sort/Id/IdInput")
 Save = NodePath("ScrollContainer/Sort/Save")
 ErrorDisplay = NodePath("ScrollContainer/Sort/Errors")
@@ -1355,8 +1355,6 @@ size_flags_vertical = 3
 text = "Quit"
 
 [node name="ScoreSummary" type="CanvasLayer" parent="." unique_id=492281522 node_paths=PackedStringArray("Score", "Graze", "HP", "ResetButton", "QuitButton")]
-process_mode = 2
-visible = false
 script = ExtResource("17_cegan")
 Score = NodePath("Panel/VBoxContainer/Score/Score")
 Graze = NodePath("Panel/VBoxContainer/Graze/Graze")

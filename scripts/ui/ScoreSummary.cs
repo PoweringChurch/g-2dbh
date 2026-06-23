@@ -15,6 +15,7 @@ public partial class ScoreSummary : CanvasLayer
     {
         ResetButton.Pressed += OnResetPressed;
         QuitButton.Pressed += OnQuitPressed;
+        GD.Print("linked ? ??");
     }
     public void SetScore(int score) =>
         Score.Text = score.ToString();

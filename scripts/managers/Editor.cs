@@ -84,7 +84,8 @@ public partial class Editor : CanvasLayer
         _projCreator.ModelSaved += ProjectileRegistry.UpdateModel;
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
         _projCreator.ModelSaved += _preview.OnModelUpdate;
-
+        _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
+        
         _patternCreator.ModelSaved += PatternRegistry.UpdateModel;
         _patternCreator.ModelSaved += _modelLibrary.OnModelSaved;
         _patternCreator.ModelSaved += _preview.OnModelUpdate;

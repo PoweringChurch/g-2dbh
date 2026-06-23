@@ -1,4 +1,3 @@
-// ProjectileReference.cs  (updated — rotOffset renamed to direction)
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +17,9 @@ public partial class LevelLoader : Node
     private List<ISpatialReference> _queue;
     private float _elapsed;
     private bool _running;
+    private int score;
+    private int graze;
+    private int health;
     private static string currentLevelDirectory;
     private static string currentLevelId;
     public static string CurrentLevelPath => $"{currentLevelDirectory}{currentLevelId}/";
@@ -39,9 +41,26 @@ public partial class LevelLoader : Node
     public override void _Ready()
     {
         SetProcess(false);  // only ticks while a level is active
+        if (!DirAccess.DirExistsAbsolute("user://data/characters/"))
+            DirAccess.MakeDirAbsolute("user://data/characters/");
         _ui = GetNode<UIManager>("/root/UIManager");
     }
 
+    public void IncrementScore(int by)
+    {
+        score += by;
+        _ui.HUD.SetScore(score);
+    }
+    public void DecrementHealth(int by)
+    {
+        health -= by;
+        _ui.HUD.SetHealth(health);
+    }
+    public void IncrementGraze(int by)
+    {
+        graze += by;
+        _ui.HUD.SetGraze(graze);
+    }
     public override void _Process(double dt)
     {
         if (!_running) return;
@@ -134,6 +153,7 @@ public partial class LevelLoader : Node
         _elapsed = 0;
         _running = true;
         _gameRoot = new Node2D() { Name = "GameRoot" };
+        health = levelData.Health;
         svp.AddChild(_gameRoot);
 
         // Set aspect ratio
@@ -144,6 +164,8 @@ public partial class LevelLoader : Node
         GD.Print("Setting up UI...");
         _ui.HUD.SetHealth(levelData.Health);
         _ui.HUD.SetCompletion(0);
+        _ui.HUD.SetScore(0);
+        _ui.HUD.SetGraze(0);
         _ui.HUD.SetLevelName(levelId);
         _ui.HUD.SetDuration(levelData.Duration);
 
@@ -245,16 +267,25 @@ public partial class LevelLoader : Node
     private void SpawnPlayerCharacter(string characterSprite = "default")
     {
         var playerCharacter = playerCharacterScene.Instantiate<PlayerCharacter>();
-        playerCharacter.characterSprite = characterSprite;
+        playerCharacter.textureName = "default";
         playerCharacter.SetHealth(_level.Health);
+        playerCharacter.ScreenResolution = PlayingField.Resolutions[_level.AspectRatio];
         playerCharacter.Position = new Vector2(PlayingField.Resolutions[_level.AspectRatio].X / 2, PlayingField.Resolutions[_level.AspectRatio].Y * 0.9f);
         _gameRoot.AddChild(playerCharacter);
     }
-    private void FinishLevel()
+    public void FinishLevel()
     {
         _running = false;
         SetProcess(false);
         _gameRoot.QueueFree();
+        _ui.ScoreSummary.SetHP(health);
+        _ui.ScoreSummary.SetScore(score);
+        _ui.ScoreSummary.SetGraze(graze);
+        _ui.ShowScoreSummary();
+        health = 0;
+        score = 0;
+        graze = 0;
+        _ui.HUD.ResetStats();
         GD.Print($"[LevelLoader] Level '{_level.LevelId}' finished.");
         EmitSignal(SignalName.LevelFinished, _level.LevelId);
     }

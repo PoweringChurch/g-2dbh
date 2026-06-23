@@ -95,11 +95,11 @@ public partial class PatternEditorInstance : ReferenceInstance
             double genFwd = _fnFwd != null ? _fnFwd.Eval(ctx) : 0;
             double genT = _fnT != null ? _fnT.Eval(ctx) : 0;
 
-            var startPos = Projectile.CalculatePositionAt(Vector2.Zero, 0, _fnX, _fnY, ctx);
+            var startPos = Projectile.CalculatePositionAt(Vector2.Zero, _reference.Forward, _fnX, _fnY, ctx);
             double rawT = t - genT;
             bool alive = rawT >= 0 && rawT < projModel.Lifetime;
             ctx["t"] = Math.Clamp(rawT, 0, projModel.Lifetime);
-            var pos = Projectile.CalculatePositionAt(startPos, (float)genFwd, _projModelFnX, _projModelFnY, ctx);
+            var pos = Projectile.CalculatePositionAt(startPos, _reference.Forward+(float)genFwd, _projModelFnX, _projModelFnY, ctx);
             // draw
             var texture = projModel.Texture != "default" ?
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", projModel.Texture)

@@ -93,11 +93,12 @@ public partial class Timeline : Control
     public void Load(List<ProjectileReference> projRefs, List<PatternReference> patternRefs, float duration)
     {
         ClearMarkers();
+        Playhead.MaxValue = duration;
         foreach (var r in projRefs)
             AddMarker(r);
         foreach (var r in patternRefs)
             AddMarker(r);
-        Playhead.MaxValue = duration;
+
     }
     public void AddMarker(ISpatialReference r)
     {

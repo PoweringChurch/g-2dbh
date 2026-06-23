@@ -86,6 +86,8 @@ public partial class ProjectileModelPreview : Node2D
             _dirty = true;
         }
     }
+    private Vector2 pos = Vector2.Zero;
+    public Vector2 PreviewPosition => pos;
     public override void _Ready()
     {
         e = GetNode<Editor>("/root/Editor");
@@ -100,7 +102,7 @@ public partial class ProjectileModelPreview : Node2D
     }
     public override void _Draw()
     {
-        var pos = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, ctx);
+        pos = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, ctx);
         // draw projectile
         var texture = textureName != "default" ? 
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", textureName) 
