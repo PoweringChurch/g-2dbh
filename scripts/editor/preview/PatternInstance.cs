@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PatternEditorInstance : ReferenceInstance
+public partial class PatternEditorInstance : EditorInstance
 {
     static Color deadColor = new(1, 1, 1, 0.3f);
-    private PatternReference _reference;
-    public override ISpatialReference Reference => _reference;
+    private Reference _reference;
+    public override Reference Reference => _reference;
     private PatternModel _model => e.PatternRegistry.GetModel(_reference.Id);
     private ProjectileModel _projModel => e.ProjectileRegistry.GetModel(_model.ProjectileId);
     private Editor e;
-    private float _projLifetime => e.ProjectileRegistry.GetModel(_model.ProjectileId).Lifetime;
+    private double _projLifetime => e.ProjectileRegistry.GetModel(_model.ProjectileId).Lifetime;
     private float _maxGenT;
     private Expr _fnFwd;
     private Expr _fnX;
@@ -19,15 +19,15 @@ public partial class PatternEditorInstance : ReferenceInstance
     private Expr _fnT;
     private Expr _projModelFnX;
     private Expr _projModelFnY;
-    private Dictionary<string, double> ctx = new() { ["i"] = 0, ["n"] = 0 };
+    private EvalContext ctx = new() { I = 0, N = 0 };
 
     public override bool Invalid => _model == null;
     private bool _isSelected => e.SelectedReference == _reference;
 
-    public override void Init(ISpatialReference r)
+    public override void Init(Reference r)
     {
         e = GetNode<Editor>("/root/Editor");
-        _reference = (PatternReference)r;
+        _reference = r;
         OnModelUpdate();
     }
 
@@ -35,20 +35,20 @@ public partial class PatternEditorInstance : ReferenceInstance
     {
         if (Invalid)
             return;
-        ctx["n"] = _model.Count;
-        _fnFwd = ExpressionParser.Parse(_model.FunctionFwd);
-        _fnX   = ExpressionParser.Parse(_model.FunctionX);
-        _fnY   = ExpressionParser.Parse(_model.FunctionY);
-        _fnT   = ExpressionParser.Parse(_model.FunctionT);
+        ctx.N = _model.Count;
+        _fnFwd = ExpressionHandler.Parse(_model.FunctionFwd);
+        _fnX   = ExpressionHandler.Parse(_model.FunctionX);
+        _fnY   = ExpressionHandler.Parse(_model.FunctionY);
+        _fnT   = ExpressionHandler.Parse(_model.FunctionT);
 
         var projModel = _projModel;
-        _projModelFnX = ExpressionParser.Parse(projModel.FunctionX);
-        _projModelFnY = ExpressionParser.Parse(projModel.FunctionY);
+        _projModelFnX = ExpressionHandler.Parse(projModel.FunctionX);
+        _projModelFnY = ExpressionHandler.Parse(projModel.FunctionY);
 
         _maxGenT = float.MinValue;
         for (int i = 0; i < _model.Count; i++)
         {
-            ctx["i"] = i;
+            ctx.I = i;
             float genT = (float)_fnT.Eval(ctx);
             if (genT > _maxGenT)
                 _maxGenT = genT;
@@ -90,21 +90,21 @@ public partial class PatternEditorInstance : ReferenceInstance
         for (int i = 0; i < count; i++)
         {
             DrawSetTransform(Vector2.Zero, 0, Vector2.One);
-            ctx["i"] = i;
+            ctx.I = i;
             // generate values
             double genFwd = _fnFwd != null ? _fnFwd.Eval(ctx) : 0;
             double genT = _fnT != null ? _fnT.Eval(ctx) : 0;
 
-            var startPos = Projectile.CalculatePositionAt(Vector2.Zero, _reference.Forward, _fnX, _fnY, ctx);
+            var startxy = Projectile.CalculatePositionAt(_reference.Forward, _fnX, _fnY, ctx);
             double rawT = t - genT;
             bool alive = rawT >= 0 && rawT < projModel.Lifetime;
-            ctx["t"] = Math.Clamp(rawT, 0, projModel.Lifetime);
-            var pos = Projectile.CalculatePositionAt(startPos, _reference.Forward+(float)genFwd, _projModelFnX, _projModelFnY, ctx);
+            ctx.T = Math.Clamp(rawT, 0, projModel.Lifetime);
+            var (x, y) = Projectile.CalculatePositionAt(_reference.Forward+(float)genFwd, _projModelFnX, _projModelFnY, ctx);
             // draw
             var texture = projModel.Texture != "default" ?
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", projModel.Texture)
                 : null;
-            DrawProjectileShape(projModel, texture, pos, (float)genFwd, alive ? Colors.White : deadColor);
+            DrawProjectileShape(projModel, texture, new Vector2(startxy.x+x,startxy.y+y), (float)genFwd, alive ? Colors.White : deadColor);
         }
     }
     private void DrawProjectileShape(ProjectileModel model,

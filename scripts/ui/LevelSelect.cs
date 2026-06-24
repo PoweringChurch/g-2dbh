@@ -11,12 +11,12 @@ public partial class LevelSelect : CanvasLayer
     [Export] protected Button _returnButton;
     [Export] protected Button _playButton;
 
-    protected LevelLoader _loader;
+    protected GameSession _gameSession;
     protected string _selectedLevel;
     protected string _levelDirectory = "res://data/levels/";
     public override void _Ready()
     {
-        _loader = GetNode<LevelLoader>("/root/LevelLoader");
+        _gameSession = GetNode<GameSession>("/root/GameSession");
         _playButton.Pressed += OnPlayPressed;
         _playButton.Disabled = true;
         _returnButton.Pressed += OnReturnPressed;
@@ -109,7 +109,7 @@ public partial class LevelSelect : CanvasLayer
     protected void OnPlayPressed()
     {
         if (string.IsNullOrEmpty(_selectedLevel)) return;
-        bool success = _loader.BeginLevel(_levelDirectory, _selectedLevel);
+        bool success = _gameSession.StartLevel(_levelDirectory, _selectedLevel);
         if (!success)
         {
             Show();

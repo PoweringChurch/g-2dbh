@@ -13,59 +13,63 @@ using System.Collections.Generic;
 
 public abstract class Expr
 {
-    public abstract double Eval(Dictionary<string, double> context);
+    public abstract double Eval(EvalContext context);
 }
 public class NumberExpr : Expr
 {
-    readonly double _v;
-    public NumberExpr(double v) => _v = v;
-    public override double Eval(Dictionary<string, double> context) => _v;
+    public readonly double v;
+    public NumberExpr(double v) => this.v = v;
+    public override double Eval(EvalContext context) => v;
 }
 
 public class VariableExpr : Expr
 {
     public string name;
     public VariableExpr(string n) { name = n; }
-    public override double Eval(Dictionary<string, double> context)
+    public override double Eval(EvalContext ctx) => name switch
     {
-        if (context != null && context.TryGetValue(name, out double value))
-            return value;
-        throw new Exception($"Undefined variable '{name}'");
-    }
+        "t" => ctx.T,
+        "i" => ctx.I,
+        "n" => ctx.N,
+        _ => throw new NotSupportedException($"Unknown variable: {name}")
+    };
 }
+/// <summary>
+/// i.e. Negative
+/// </summary>
 public class UnaryExpr : Expr
 {
-    readonly Expr _operand;
-    public UnaryExpr(Expr e) => _operand = e;
-    public override double Eval(Dictionary<string, double> context) => -_operand.Eval(context);
+    public readonly Expr op;
+    public UnaryExpr(Expr e) => op = e;
+    public override double Eval(EvalContext context) => -op.Eval(context);
 }
 
 public class BinaryExpr : Expr
 {
-    readonly Expr _l, _r;
-    readonly char _op;
-    public BinaryExpr(char op, Expr l, Expr r) { _op = op; _l = l; _r = r; }
-    public override double Eval(Dictionary<string, double> context) => _op switch
+    public readonly Expr l, r;
+    public readonly char op;
+    public BinaryExpr(char op, Expr l, Expr r) { this.op = op; this.l = l; this.r = r; }
+    public override double Eval(EvalContext context) => op switch
     {
-        '+' => _l.Eval(context) + _r.Eval(context),
-        '-' => _l.Eval(context) - _r.Eval(context),
-        '*' => _l.Eval(context) * _r.Eval(context),
-        '/' => _l.Eval(context) / _r.Eval(context),
-        '%' => _l.Eval(context) % _r.Eval(context),
-        '^' => Math.Pow(_l.Eval(context), _r.Eval(context)),
-        _   => throw new Exception($"Unknown op '{_op}'")
+        '+' => l.Eval(context) + r.Eval(context),
+        '-' => l.Eval(context) - r.Eval(context),
+        '*' => l.Eval(context) * r.Eval(context),
+        '/' => l.Eval(context) / r.Eval(context),
+        '%' => l.Eval(context) % r.Eval(context),
+        '^' => Math.Pow(l.Eval(context), r.Eval(context)),
+        _   => throw new Exception($"Unknown op '{op}'")
     };
 }
 
 public class FuncExpr : Expr
 {
-    readonly string _name;
-    readonly Expr   _arg;
-    public FuncExpr(string name, Expr arg) { _name = name.ToLowerInvariant(); _arg = arg; }
-    public override double Eval(Dictionary<string, double> context)
+    public readonly string name;
+    public readonly Expr   arg;
+    public FuncExpr(string name, Expr arg) { this.name = name.ToLowerInvariant(); this.arg = arg; }
+    public override double Eval(EvalContext context)
     {
-        double a = _arg.Eval(context);
-        return _name switch
+        double a = arg.Eval(context);
+        return name switch
         {
             "sin"  => Math.Sin(a),  "cos"  => Math.Cos(a),
             "tan"  => Math.Tan(a),  "asin" => Math.Asin(a),
@@ -75,36 +79,41 @@ public class FuncExpr : Expr
             "log2" => Math.Log2(a), "log10"=> Math.Log10(a),
             "ceil" => Math.Ceiling(a), "floor"=> Math.Floor(a),
             "sign" => Math.Sign(a), "tanh" => Math.Tanh(a),
-            _ => throw new Exception($"Unknown function '{_name}'")
+            _ => throw new Exception($"Unknown function '{name}'")
         };
     }
 }
 
 public class ConstExpr : Expr
 {
-    readonly double _v;
-    public ConstExpr(string name) => _v = name.ToLowerInvariant() switch
+    public readonly double v;
+    public ConstExpr(string name) => v = name.ToLowerInvariant() switch
     {
         "pi"  => Math.PI,
         "e"   => Math.E,
         "tau" => Math.Tau,
         _ => throw new Exception($"Unknown constant '{name}'")
     };
-    public override double Eval(Dictionary<string, double> context) => _v;
+    public override double Eval(EvalContext context) => v;
 }
 
-// Parser 
-
-public class ExpressionParser
+public struct EvalContext
 {
-    readonly List<Token> _tokens;
+    public double T;
+    public double I;
+    public double N;
+}
+// Handler
+public class ExpressionHandler
+{
+    public readonly List<Token> tokens;
     int _pos;
 
-    Token Peek => _tokens[_pos];
-    Token Consume() => _tokens[_pos++];
+    Token Peek => tokens[_pos];
+    Token Consume() => tokens[_pos++];
     bool Match(TokenType t) { if (Peek.Type == t) { _pos++; return true; } return false; }
     private static Dictionary<string, Expr> _parsedCache = new();
-    public ExpressionParser(List<Token> tokens) => _tokens = tokens;
+    public ExpressionHandler(List<Token> tokens) => this.tokens = tokens;
     /// <summary>
     /// Parse expecting t to be the sole variable
     /// </summary>
@@ -118,7 +127,7 @@ public class ExpressionParser
         if (_parsedCache.TryGetValue(expression, out var cached))
             return cached;
         var tokens = ExpressionLexer.Tokenize(expression);
-        var parser = new ExpressionParser(tokens);
+        var parser = new ExpressionHandler(tokens);
         var tree   = parser.ParseExpr();
         if (parser.Peek.Type != TokenType.End)
             throw new Exception($"Unexpected token '{parser.Peek.Raw}' after expression");
@@ -186,7 +195,73 @@ public class ExpressionParser
 
              return new VariableExpr(name);
         }
-
         throw new Exception($"Unexpected token '{Peek.Raw}' ({Peek.Type})");
+    }
+    public static Func<EvalContext, double> Compile(Expr expr)
+    {
+        if (expr == null)
+            return _ => 0.0;
+
+        switch (expr)
+        {
+            case NumberExpr n:
+            {
+                double val = n.v;
+                return _ => val;
+            }
+            case ConstExpr c:
+            {
+                double val = c.v;
+                return _ => val;
+            }
+            case UnaryExpr u:
+            {
+                var negFn = Compile(u.op);
+                return ctx => -negFn(ctx);
+            }
+            case VariableExpr v:
+                return v.name switch
+                {
+                    "t" => ctx => ctx.T,
+                    "i" => ctx => ctx.I,
+                    "n" => ctx => ctx.N,
+                    _ => throw new NotSupportedException($"Unknown variable: {v.name}")
+                };
+
+            case BinaryExpr b:
+            {
+                var leftFn = Compile(b.l);
+                var rightFn = Compile(b.r);
+                return b.op switch
+                {
+                    '+' => ctx => leftFn(ctx) + rightFn(ctx),
+                    '-' => ctx => leftFn(ctx) - rightFn(ctx),
+                    '*' => ctx => leftFn(ctx) * rightFn(ctx),
+                    '/' => ctx => leftFn(ctx) / rightFn(ctx),
+                    '%' => ctx => leftFn(ctx) % rightFn(ctx),
+                    '^' => ctx => Math.Pow(leftFn(ctx), rightFn(ctx)),
+                    _ => throw new NotSupportedException($"Unknown op: {b.op}")
+                };
+            }
+            case FuncExpr f:
+            {
+                var name = f.name;
+                var argFn = Compile(f.arg);
+                return ctx => name switch
+                {
+                    "sin"  => Math.Sin(argFn(ctx)),  "cos"  => Math.Cos(argFn(ctx)),
+                    "tan"  => Math.Tan(argFn(ctx)),  "asin" => Math.Asin(argFn(ctx)),
+                    "acos" => Math.Acos(argFn(ctx)), "atan" => Math.Atan(argFn(ctx)),
+                    "sqrt" => Math.Sqrt(argFn(ctx)), "abs"  => Math.Abs(argFn(ctx)),
+                    "exp"  => Math.Exp(argFn(ctx)),  "log"  => Math.Log(argFn(ctx)),
+                    "log2" => Math.Log2(argFn(ctx)), "log10"=> Math.Log10(argFn(ctx)),
+                    "ceil" => Math.Ceiling(argFn(ctx)), "floor"=> Math.Floor(argFn(ctx)),
+                    "sign" => Math.Sign(argFn(ctx)), "tanh" => Math.Tanh(argFn(ctx)),
+                    _ => throw new Exception($"Unknown function '{name}'")
+                };
+            }
+            default:
+                throw new NotSupportedException($"Unknown expr node: {expr.GetType()}");
+        }
     }
 }

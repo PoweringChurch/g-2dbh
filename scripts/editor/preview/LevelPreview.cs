@@ -8,22 +8,20 @@ public partial class LevelPreview : Node2D
     Editor e;
     float resScale = 1;
     private Vector2 _dragOffset = Vector2.Zero;
-    private ReferenceTracker<ProjectileReference, ProjectileEditorInstance> _projectiles;
-    private ReferenceTracker<PatternReference, PatternEditorInstance> _patterns;
+    private ReferenceTracker<ProjectileEditorInstance> _projectiles;
+    private ReferenceTracker<PatternEditorInstance> _patterns;
 
     public override void _Ready()
     {
         e = GetNode<Editor>("/root/Editor");
 		GetTree().Root.SizeChanged += OnWindowResized;
-        _projectiles = new ReferenceTracker<ProjectileReference, ProjectileEditorInstance>(this);
-        _patterns    = new ReferenceTracker<PatternReference, PatternEditorInstance>(this);
+        _projectiles = new ReferenceTracker<ProjectileEditorInstance>(this);
+        _patterns    = new ReferenceTracker<PatternEditorInstance>(this);
     }
     public void Load(LevelData data)
     {
         ClearInstances();
-        foreach (var r in data.Projectiles)
-            AddInstance(r);
-        foreach (var r in data.Patterns)
+        foreach (var r in data.References)
             AddInstance(r);
         BackgroundImage.Texture = RenderingUtils.LoadTexture(e.LevelPath+"images/",data.BgImage);
         Fit(PlayingField.Resolutions[data.AspectRatio]);
@@ -64,11 +62,10 @@ public partial class LevelPreview : Node2D
                 {
                     case Editor.Mode.Place:
                         var local = ToPreviewLocal(mb.Position);
-                        ISpatialReference newRef = e.SelectedModel switch
+                        Reference newRef = new Reference
                         {
-                            ProjectileModel => new ProjectileReference { Id = e.SelectedModel.Id, X = local.X, Y = local.Y, T = e.CurrentTime },
-                            PatternModel     => new PatternReference   { Id = e.SelectedModel.Id, X = local.X, Y = local.Y, T = e.CurrentTime },
-                            _ => null
+                            Id = e.SelectedModel.Id,
+                            Type = e.SelectedModel is ProjectileModel v ? ModelType.Projectile : ModelType.Pattern
                         };
                         if (newRef != null)
                         {
@@ -82,10 +79,7 @@ public partial class LevelPreview : Node2D
                         _dragOffset         = offset;
                         break;
                     case Editor.Mode.Delete:
-                        if (reference is ProjectileReference proj)
-                            e.DeleteReference(proj);
-                        else
-                            e.DeleteReference((PatternReference)reference);
+                        e.DeleteReference(reference);
                         e.SelectedReference = null; // just in case
                         break;
                 }
@@ -102,7 +96,7 @@ public partial class LevelPreview : Node2D
             e.SelectedReference.Y = local.Y;
         }
     }
-    private (ISpatialReference reference, Vector2 offset) GetNearestReference(Vector2 pos)
+    private (Reference reference, Vector2 offset) GetNearestReference(Vector2 pos)
     {
         var local = ToPreviewLocal(pos);
         var (projRef, projOffset) = _projectiles.GetNearestReference(local, e.CurrentTime);
@@ -120,10 +114,20 @@ public partial class LevelPreview : Node2D
     }
     public void OnModelUpdate(ProjectileModel model, string oldId) => _projectiles.OnModelUpdate(model.Id, oldId);
     public void OnModelUpdate(PatternModel model, string oldId) => _patterns.OnModelUpdate(model.Id, oldId);
-    public void AddInstance(ProjectileReference r) => _projectiles.Add(r);
-    public void AddInstance(PatternReference r)    => _patterns.Add(r);
-    public void RemoveInstance(ProjectileReference r) => _projectiles.Remove(r);
-    public void RemoveInstance(PatternReference r)    => _patterns.Remove(r);
+    public void AddInstance(Reference r) 
+    {
+        if (r.Type == ModelType.Projectile)
+            _projectiles.Add(r);
+        else
+            _patterns.Add(r);
+    }
+    public void RemoveInstance(Reference r) 
+    {
+        if (r.Type == ModelType.Projectile)
+            _projectiles.Add(r);
+        else
+            _patterns.Add(r);
+    }
     public void ClearInstances()
     {
         _projectiles.Clear();

@@ -1,31 +1,12 @@
 [gd_scene format=3 uid="uid://cmdv85ht0w5k2"]
 
-[ext_resource type="Script" uid="uid://cuajbmgrrg0u" path="res://scripts/player/PlayerCharacter.cs" id="1_ggc6b"]
+[ext_resource type="Script" uid="uid://c50av0fb4ugr4" path="res://scripts/game/PlayerCharacter.cs" id="1_eiuk8"]
 [ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/characters/default.png" id="2_ggc6b"]
-[ext_resource type="Script" uid="uid://cpmog4igxbj2p" path="res://scripts/collision/Hurtbox.cs" id="3_recms"]
-[ext_resource type="Shape2D" uid="uid://ckyjyejx3klaj" path="res://data/shapes/circle_5px.tres" id="4_eo44v"]
-[ext_resource type="Shape2D" uid="uid://dqnnl42yspcji" path="res://data/shapes/circle_20px.tres" id="5_3nwcc"]
 [ext_resource type="Texture2D" uid="uid://e4ijaikmsvec" path="res://data/images/player_hurtbox.png" id="6_6gieq"]
 [ext_resource type="Texture2D" uid="uid://ion1t1umju4y" path="res://data/images/graze.png" id="7_qtl5y"]
 
 [node name="PlayerCharacter" type="Node2D" unique_id=647619310]
-script = ExtResource("1_ggc6b")
-
-[node name="Hurtbox" type="Area2D" parent="." unique_id=740100035]
-script = ExtResource("3_recms")
-HurtType = 1
-metadata/_custom_type_script = "uid://cpmog4igxbj2p"
-
-[node name="Shape" type="CollisionShape2D" parent="Hurtbox" unique_id=323391894]
-shape = ExtResource("4_eo44v")
-
-[node name="Grazebox" type="Area2D" parent="." unique_id=2054625340]
-script = ExtResource("3_recms")
-HurtType = 1
-metadata/_custom_type_script = "uid://cpmog4igxbj2p"
-
-[node name="Shape" type="CollisionShape2D" parent="Grazebox" unique_id=230434025]
-shape = ExtResource("5_3nwcc")
+script = ExtResource("1_eiuk8")
 
 [node name="CharacterDisplay" type="Sprite2D" parent="." unique_id=878056239]
 z_index = 1

@@ -10,7 +10,7 @@ public partial class CustomLevelSelect : LevelSelect
     private Editor e;
     public override void _Ready()
     {
-        _loader = GetNode<LevelLoader>("/root/LevelLoader");
+        _gameSession = GetNode<GameSession>("/root/GameSession");
         e = GetNode<Editor>("/root/Editor");
         _levelDirectory = "user://data/levels/";
 

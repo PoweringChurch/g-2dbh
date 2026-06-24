@@ -76,13 +76,13 @@ public partial class ProjectileModelPreview : Node2D
         }
     }
     private bool _dirty = false;
-    private Dictionary<string, double> ctx = new() {["t"] = 0};
+    private EvalContext ctx = new() {T = 0};
     public double T
     {
-        get => ctx["t"];
+        get => ctx.T;
         set
         {
-            ctx["t"] = Math.Max(value, 0);
+            ctx.T = Math.Max(value, 0);
             _dirty = true;
         }
     }
@@ -102,7 +102,8 @@ public partial class ProjectileModelPreview : Node2D
     }
     public override void _Draw()
     {
-        pos = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, ctx);
+        var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, ctx);
+        pos = new(x,y);
         // draw projectile
         var texture = textureName != "default" ? 
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", textureName) 
@@ -126,11 +127,12 @@ public partial class ProjectileModelPreview : Node2D
     private void DrawPath(int steps = 32)
     {
         Vector2[] points = new Vector2[steps];
-        var ctx = new Dictionary<string, double>();
+        var lctx = new EvalContext();
         for (int i = 0; i < steps; i++)
         {
-            ctx["t"] = lifetime / steps * i;
-            points[i] = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, ctx);
+            lctx.T = lifetime / steps * i;
+            var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
+            points[i] = new(x,y);
         }
         DrawPolyline(points, Colors.Yellow, 1.5f, true);
         DrawCircle(points[0], 3f, Colors.Yellow);

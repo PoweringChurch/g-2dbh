@@ -10,9 +10,9 @@ public partial class Inspector : Control
     [Export] LineEdit ModelIdInput;
     [Export] MessageDisplay ErrorDisplay;
     private Editor e;
-    private ISpatialReference _reference;
-    public ISpatialReference Reference => _reference;
-    public delegate void ReferenceUpdatedEventHandler(ISpatialReference r);
+    private Reference _reference;
+    public Reference Reference => _reference;
+    public delegate void ReferenceUpdatedEventHandler(Reference r);
     public event ReferenceUpdatedEventHandler ReferenceUpdated;
     public override void _Ready()
     {
@@ -24,7 +24,7 @@ public partial class Inspector : Control
         SpawnTimeInput.TextChanged += OnSpawnTimeChanged;
         ModelIdInput.TextChanged += OnIdChanged;
     }
-    public void SelectReference(ISpatialReference r)
+    public void SelectReference(Reference r)
     {
         if (r == null)
         {

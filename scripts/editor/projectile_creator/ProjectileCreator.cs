@@ -30,7 +30,7 @@ public partial class ProjectileCreator : Control
     public delegate void ProjectileModelUpdatedEventHandler(ProjectileModel model, string oldId);
     public event ProjectileModelUpdatedEventHandler ModelSaved;
     private double time = 0;
-    private static readonly Dictionary<string, double> testCtx = new() { ["t"] = 0 };
+    private static readonly EvalContext testCtx = new() { T = 0 };
     public override void _Ready()
     {
         base._Ready();
@@ -129,7 +129,7 @@ public partial class ProjectileCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnX = fn;
             model.FunctionX = text;
@@ -142,7 +142,7 @@ public partial class ProjectileCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnY = fn;
             model.FunctionY = text;

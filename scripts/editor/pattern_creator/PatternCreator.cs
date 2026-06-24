@@ -24,7 +24,7 @@ public partial class PatternCreator : Control
     public PatternModel PatternModel => model;
     public delegate void PatternModelUpdatedEventHandler(PatternModel model, string oldId);
     public event PatternModelUpdatedEventHandler ModelSaved;
-    private static readonly Dictionary<string, double> testCtx = new() {["i"] = 0, ["n"] = 1};
+    private static readonly EvalContext testCtx = new() {I = 0, N = 1};
     public override void _Ready()
     {
         e = GetNode<Editor>("/root/Editor");
@@ -66,8 +66,8 @@ public partial class PatternCreator : Control
         {
             ErrorDisplay.ClearMessage("ProjectileId");
             Preview.ProjModel = projmodel;
-            Preview.ProjModelFnX = ExpressionParser.Parse(projmodel.FunctionX);
-            Preview.ProjModelFnY = ExpressionParser.Parse(projmodel.FunctionY);
+            Preview.ProjModelFnX = ExpressionHandler.Parse(projmodel.FunctionX);
+            Preview.ProjModelFnY = ExpressionHandler.Parse(projmodel.FunctionY);
             model.ProjectileId = text;
         }
         else ErrorDisplay.SetMessage("ProjectileId", $"[Projectile Model Id] Projectile of id '{text}' does not exist.");
@@ -120,7 +120,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnX = fn;
             model.FunctionX = text;
@@ -132,7 +132,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnY = fn;
             model.FunctionY = text;
@@ -144,7 +144,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnT = fn;
             model.FunctionT = text;
@@ -156,7 +156,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnFwd = fn;
             model.FunctionFwd = text;

@@ -1,32 +1,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-public partial class ProjectileEditorInstance : ReferenceInstance
+public partial class ProjectileEditorInstance : EditorInstance
 {
-    private ProjectileReference _reference;
-    public override ISpatialReference Reference => _reference;
+    private Reference _reference;
+    public override Reference Reference => _reference;
     private ProjectileModel _model => e.ProjectileRegistry.GetModel(_reference.Id);
     private Editor e;
     private Expr _motionFnX;
     private Expr _motionFnY;
     private Texture2D _texture;
-    private Dictionary<string, double> ctx = new () {["t"] = 0};
+    private EvalContext ctx = new () {T = 0};
     // calc
     Vector2 perp;
     public override bool Invalid => _model == null;
     private bool _isSelected => e.SelectedReference == _reference;
-    public override void Init(ISpatialReference r)
+    public override void Init(Reference r)
     {
         e = GetNode<Editor>("/root/Editor");
-        _reference = (ProjectileReference)r;
+        _reference = r;
         OnModelUpdate();
     }
     public override void OnModelUpdate()
     {
         if (Invalid)
             return;
-        _motionFnX = ExpressionParser.Parse(_model.FunctionX);
-        _motionFnY = ExpressionParser.Parse(_model.FunctionY);
+        _motionFnX = ExpressionHandler.Parse(_model.FunctionX);
+        _motionFnY = ExpressionHandler.Parse(_model.FunctionY);
         _texture = null;
         if (_model.Texture != "default")
             _texture   = RenderingUtils.LoadTexture(e.LevelPath+"images/", _model.Texture);
@@ -54,8 +54,9 @@ public partial class ProjectileEditorInstance : ReferenceInstance
         bool alive = t >= 0 && t <= _model.Lifetime;
         Visible = alive || _isSelected;
         if (!Visible) return;
-        ctx["t"] = Mathf.Clamp(t, 0, _model.Lifetime);
-        Position = Projectile.CalculatePositionAt(new Vector2(_reference.X,_reference.Y), _reference.Forward, _motionFnX, _motionFnY, ctx);
+        ctx.T = Mathf.Clamp(t, 0, _model.Lifetime);
+        var (x,y) = Projectile.CalculatePositionAt(_reference.Forward, _motionFnX, _motionFnY, ctx);
+        Position = new Vector2(_reference.X,_reference.Y) + new Vector2(x,y);
         QueueRedraw();
     }
     public override void _Draw()
@@ -85,11 +86,12 @@ public partial class ProjectileEditorInstance : ReferenceInstance
     {
         int steps = 32;
         Vector2[] points = new Vector2[steps];
-        var ctx = new Dictionary<string, double>();
+        var lctx = new EvalContext();
         for (int i = 0; i < steps; i++)
         {
-            ctx["t"] = _model.Lifetime / steps * i;
-            points[i] = Projectile.CalculatePositionAt(new Vector2(_reference.X,_reference.Y), _reference.Forward, _motionFnX, _motionFnY, ctx)-Position;
+            lctx.T = _model.Lifetime / steps * i;
+            var (x,y) = Projectile.CalculatePositionAt(_reference.Forward, _motionFnX, _motionFnY, lctx);
+            points[i] = new Vector2(x,y);
         }
         DrawPolyline(points, RenderingUtils.ColorFromString(_model.Id), 1.5f, true);
         DrawCircle(points[0], 3f, RenderingUtils.ColorFromString(_model.Id));

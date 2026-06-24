@@ -2,10 +2,10 @@ using Godot;
 
 public partial class TimelineMarker : ColorRect
 {
-    public ISpatialReference Reference;
+    public Reference Reference;
     private bool _dragging = false;
     private Editor e;
-    public void Init(ISpatialReference reference, float duration, float timelineWidth)
+    public void Init(Reference reference, float duration, float timelineWidth)
     {
         e = GetNode<Editor>("/root/Editor");
         Size = new Vector2(6, 16);
@@ -27,10 +27,7 @@ public partial class TimelineMarker : ColorRect
             }
             else if (e.CurrentMode == Editor.Mode.Delete)
             {
-                if (Reference is ProjectileReference proj)
-                    e.DeleteReference(proj);
-                else
-                    e.DeleteReference((PatternReference)Reference);
+                e.DeleteReference(Reference);
             }
         }
         if (@event is InputEventMouseMotion mm 

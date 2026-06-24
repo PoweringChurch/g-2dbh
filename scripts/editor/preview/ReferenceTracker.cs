@@ -1,16 +1,24 @@
 using System.Collections.Generic;
 using Godot;
-public class ReferenceTracker<TRef, TInstance>
-    where TRef : ISpatialReference
-    where TInstance : ReferenceInstance, new()
+public abstract partial class EditorInstance : Node2D
 {
-    private readonly Dictionary<TRef, TInstance> _instances = new();
+    public abstract Reference Reference {get;}
+    public abstract bool Invalid {get;}
+    public abstract void Init(Reference r);
+    public abstract void OnModelUpdate();
+    public abstract bool IsAlive(float currentTime);
+    public abstract float DistanceTo(Vector2 localPos);
+}
+public class ReferenceTracker<TEditorInstance>
+    where TEditorInstance : EditorInstance, new()
+{
+    private readonly Dictionary<Reference, EditorInstance> _instances = new();
     private readonly Node2D _parent;
     public ReferenceTracker(Node2D parent) => _parent = parent;
-    public (TRef reference, Vector2 offset) GetNearestReference(Vector2 local, float currentTime, float maxDist = 50f)
+    public (Reference reference, Vector2 offset) GetNearestReference(Vector2 local, float currentTime, float maxDist = 50f)
     {
-        TRef nearestRef = default;
-        ReferenceInstance nearestInstance = null;
+        Reference nearestRef = default;
+        EditorInstance nearestInstance = null;
         float nearestDist = float.MaxValue;
 
         foreach (var kvp in _instances)
@@ -39,15 +47,15 @@ public class ReferenceTracker<TRef, TInstance>
             if (kvp.Key.Id == modelId)
                 kvp.Value.OnModelUpdate();
     }
-    public void Add(TRef r)
+    public void Add(Reference r)
     {
-        var instance = new TInstance();
+        var instance = new TEditorInstance();
         _parent.AddChild(instance);
         instance.Init(r);
         _instances[r] = instance;
     }
 
-    public void Remove(TRef r)
+    public void Remove(Reference r)
     {
         if (_instances.TryGetValue(r, out var instance))
         {
@@ -64,12 +72,3 @@ public class ReferenceTracker<TRef, TInstance>
     }
 }
 
-public abstract partial class ReferenceInstance : Node2D
-{
-    public abstract ISpatialReference Reference {get;}
-    public abstract bool Invalid {get;}
-    public abstract void Init(ISpatialReference r);
-    public abstract void OnModelUpdate();
-    public abstract bool IsAlive(float currentTime);
-    public abstract float DistanceTo(Vector2 localPos);
-}

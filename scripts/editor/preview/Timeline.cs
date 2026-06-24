@@ -16,7 +16,7 @@ public partial class Timeline : Control
     private bool _playing = false;
     private float _speed = 1f;
     private bool _loop = false;
-    private Dictionary<ISpatialReference, TimelineMarker> _markers = new();
+    private Dictionary<Reference, TimelineMarker> _markers = new();
     private Dictionary<string, bool> _visibleModels = new();
     private Editor e;
     public override void _Ready()
@@ -90,24 +90,22 @@ public partial class Timeline : Control
         foreach (var m in _markers)
             m.Value.Refresh(newDuration, Size.X);
     }
-    public void Load(List<ProjectileReference> projRefs, List<PatternReference> patternRefs, float duration)
+    public void Load(List<Reference> references, float duration)
     {
         ClearMarkers();
         Playhead.MaxValue = duration;
-        foreach (var r in projRefs)
-            AddMarker(r);
-        foreach (var r in patternRefs)
+        foreach (var r in references)
             AddMarker(r);
 
     }
-    public void AddMarker(ISpatialReference r)
+    public void AddMarker(Reference r)
     {
         var marker = new TimelineMarker();
         TimelineBar.AddChild(marker);
         marker.Init(r, e.levelData.Duration, Size.X);
         _markers[r] = marker;
     }
-    public void RemoveMarker(ISpatialReference r)
+    public void RemoveMarker(Reference r)
     {
         if (_markers.TryGetValue(r, out var marker))
         {
@@ -121,7 +119,7 @@ public partial class Timeline : Control
             marker.QueueFree();
         _markers.Clear();
     }
-    public void RefreshMarker(ISpatialReference r) =>
+    public void RefreshMarker(Reference r) =>
         _markers[r].Refresh(e.levelData.Duration, Size.X);
     public void SetModelVisible(string modelId, bool visible)
     {

@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/HUD.cs" id="2_dg77c"]
 [ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/MainMenu.cs" id="2_ycdy4"]
-[ext_resource type="Script" uid="uid://bpl5nbe8wjkax" path="res://scripts/managers/PlayingField.cs" id="3_4c57u"]
 [ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/PauseMenu.cs" id="3_ycdy4"]
 [ext_resource type="Texture2D" uid="uid://n7p62r7iu40y" path="res://data/images/9slice.png" id="4_272bh"]
 [ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/LevelSelect.cs" id="4_vivmo"]
@@ -1481,7 +1480,3 @@ offset_right = 43.5
 grow_horizontal = 2
 grow_vertical = 0
 text = "pre alpha 0"
-
-[node name="PlayingField" type="Node" parent="." unique_id=1102236914 node_paths=PackedStringArray("Viewport")]
-script = ExtResource("3_4c57u")
-Viewport = NodePath("../HUD/HBoxContainer/SubViewportContainer/SubViewport")

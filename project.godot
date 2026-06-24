@@ -17,9 +17,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-LevelLoader="*uid://de61fciu07gvp"
 UIManager="*uid://bpcx5qyxrct03"
 Editor="*uid://xfqoie77c8co"
+GameSession="*uid://qah1bfxp7wrq"
+PlayingField="*uid://bpl5nbe8wjkax"
 
 [display]
 
