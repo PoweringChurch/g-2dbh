@@ -15,7 +15,6 @@ public partial class ScoreSummary : CanvasLayer
     {
         ResetButton.Pressed += OnResetPressed;
         QuitButton.Pressed += OnQuitPressed;
-        GD.Print("linked ? ??");
     }
     public void SetScore(int score) =>
         Score.Text = score.ToString();
@@ -26,5 +25,5 @@ public partial class ScoreSummary : CanvasLayer
     public void OnResetPressed() =>
         EmitSignal(SignalName.ResetRequested);
     public void OnQuitPressed() =>
-        EmitSignal(SignalName.ResetRequested);
+        EmitSignal(SignalName.QuitRequested);
 }

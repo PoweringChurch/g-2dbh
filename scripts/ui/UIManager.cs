@@ -64,7 +64,6 @@ public partial class UIManager : Node
     public void ShowEditorSelect() => SetVisible(_customLevelSelect);
     public void TogglePause(bool to)
     {
-        GD.Print("toggle paused set to : " + to);
         GetTree().Paused = to;
         _pause.Visible = to;
     }
@@ -92,7 +91,7 @@ public partial class UIManager : Node
         else
             _levelSelect.PopulateList();
         TogglePause(false); 
-        gameSession.StopLevel(); 
+        gameSession.StopLevel();
     }
     void OnQuit() => GetTree().Quit();
     void OnReset()

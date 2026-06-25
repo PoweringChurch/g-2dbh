@@ -12,7 +12,6 @@ public class LevelCompiler
         Dictionary<string, int> pattMap = [];
         Dictionary<Texture2D, int> textMap = [];
         // compile projectiles
-        int sharedCircleGroupId = -1;
         for (int i = 0; i < level.ProjectileModels.Count; i++)
         {
             // create projectile
@@ -32,21 +31,40 @@ public class LevelCompiler
             // set up render group
             int renderGroupId;
             float renderScale = 1f;
-
-            Texture2D tex = level.IsMainLevel ? 
+            GD.Print("user://data/levels/{level.LevelId}/images/"+model.Texture);
+            Texture2D tex = RenderingUtils.LoadTexture($"user://data/levels/{level.LevelId}/images/", model.Texture);
+            /* ? 
             ResourceLoader.Load<Texture2D>($"res://data/levels/{level.LevelId}/images/{model.Texture}")  
-            : RenderingUtils.LoadTexture($"user://data/levels/{level.LevelId}/images/", model.Texture);
+            : ;*/
+            GD.Print(tex);
             if (tex != null)
-                renderGroupId = GetOrCreateTexturedGroup(tex, textMap, gameRoot, compiled);
+            {
+                if (textMap.TryGetValue(tex, out int existing))
+                    renderGroupId = existing;
+                else
+                {
+                    GD.Print("projectile is a texture mesh");
+                    var mesh = new QuadMesh { Size = tex.GetSize() };
+                    mesh.Orientation = PlaneMesh.OrientationEnum.Z;
+                    renderGroupId = CreateRenderGroup(mesh, tex, gameRoot, compiled);
+                    textMap[tex] = renderGroupId;
+                }
+                GD.Print($"projectile {model.Id} is a polygon with radius {model.Radius}");
+            }
             else if (model.UseShape && model.Shape != null)
-                renderGroupId = CreatePolygonGroup(newProjectile.Shape, gameRoot, compiled);
+            {
+                var mesh = RenderingUtils.BuildPolygonMesh(newProjectile.Shape);
+                renderGroupId = CreateRenderGroup(mesh, null, gameRoot, compiled);
+                GD.Print($"projectile {model.Id} is a polygon");
+            }
             else
             {
-                if (sharedCircleGroupId < 0)
-                    sharedCircleGroupId = CreateSharedCircleGroup(gameRoot, compiled);
-                renderGroupId = sharedCircleGroupId;
+                GD.Print($"projectile {model.Id} is a circle with radius {model.Radius}");
+                var mesh = RenderingUtils.BuildUnitCircleMesh();
+                renderGroupId = CreateRenderGroup(mesh, null, gameRoot, compiled);
                 renderScale = (float)model.Radius; // radius baked per-instance via transform scale
             }
+            GD.Print($"assign projcetile {model.Id} to render group {renderGroupId}");
             newProjectile.RenderGroupId = renderGroupId;
             newProjectile.RenderScale = renderScale;
             compiled.Projectiles.Add(newProjectile);
@@ -97,8 +115,8 @@ public class LevelCompiler
                         double t = patt.fnt(ctx);
                         double xTravel = patt.fnx(ctx);
                         double yTravel = patt.fny(ctx);
-                        double cos = Math.Cos(fwd + r.Forward);
-                        double sin = Math.Sin(fwd + r.Forward);
+                        double cos = Math.Cos(r.Forward);
+                        double sin = Math.Sin(r.Forward);
                         float x = (float)(cos * xTravel - sin * yTravel);
                         float y = (float)(sin * xTravel + cos * yTravel);
                         var b = new Bullet()
@@ -118,43 +136,18 @@ public class LevelCompiler
         compiled.Queue = [.. compiled.Queue.OrderBy(b => b.T)];
         return compiled;
     }
-    private static int GetOrCreateTexturedGroup(
-    Texture2D tex, Dictionary<Texture2D, int> lookup, Node2D parent, CompiledLevel compiled)
-    {
-        if (lookup.TryGetValue(tex, out int existing))
-            return existing;
-
-        var mesh = new QuadMesh { Size = tex.GetSize() };
-        int id = CreateRenderGroup(mesh, tex, parent, compiled);
-        lookup[tex] = id;
-        return id;
-    }
-
-    private static int CreatePolygonGroup(Vector2[] points, Node2D parent, CompiledLevel compiled)
-    {
-        var mesh = RenderingUtils.BuildPolygonMesh(points);
-        return CreateRenderGroup(mesh, null, parent, compiled); // one group per unique shape — no dedup attempted
-    }
-
-    private static int CreateSharedCircleGroup(Node2D parent, CompiledLevel compiled)
-    {
-        var mesh = RenderingUtils.BuildUnitCircleMesh();
-        return CreateRenderGroup(mesh, null, parent, compiled);
-    }
-
     private static int CreateRenderGroup(Mesh mesh, Texture2D tex, Node2D parent, CompiledLevel compiled)
     {
         var multiMesh = new MultiMesh
         {
             Mesh = mesh,
             TransformFormat = MultiMesh.TransformFormatEnum.Transform2D,
-            UseColors = true, // every group supports per-instance tint, textured included (white = no tint)
             InstanceCount = 0
         };
         var node = new MultiMeshInstance2D { Multimesh = multiMesh, Texture = tex };
         parent.AddChild(node);
-
-        compiled.RenderGroups.Add(new RenderGroup { Mesh = mesh, Texture = tex, Node = node, MultiMesh = multiMesh });
+        compiled.RenderGroups.Add(new RenderGroup { Mesh = mesh, Texture = tex, Node = node, MultiMesh = multiMesh});
+        GD.Print($"added render group, count is now {compiled.RenderGroups.Count}");
         return compiled.RenderGroups.Count - 1;
     }
 }

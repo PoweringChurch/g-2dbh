@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://byrpidyii8f8t"]
+[gd_scene format=4 uid="uid://byrpidyii8f8t"]
 
 [ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/HUD.cs" id="2_dg77c"]
 [ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/MainMenu.cs" id="2_ycdy4"]
@@ -20,6 +20,44 @@
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
 [ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/ScoreSummary.cs" id="17_cegan"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_82xsv"]
+lightmap_size_hint = Vector2i(122, 122)
+size = Vector2(24, 24)
+
+[sub_resource type="MultiMesh" id="MultiMesh_getpj"]
+instance_count = 9
+mesh = SubResource("QuadMesh_82xsv")
+buffer = PackedFloat32Array(0.495, 1.71, 2.915, 25.735, 1.46, 1.125, 5.02, 24.95, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[sub_resource type="Image" id="Image_ryguw"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AABp/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAAaQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAGr/AAD//wAA0/8AABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABb/AADT/wAA//8AAGoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGQAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZ/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAA0/8AAP//AADT/wAA0/8AAP//AADT/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAA0/8AAP//AADT/wAA0/8AAP//AADT/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAY/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAGr/AAD//wAA0/8AABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABb/AADT/wAA//8AAGoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AABp/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAAaQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+"format": "RGBA8",
+"height": 24,
+"mipmaps": false,
+"width": 24
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_368cx"]
+image = SubResource("Image_ryguw")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_01b3n"]
+_surfaces = [{
+"aabb": AABB(-1, -1, 0, 2, 2, 1e-05),
+"format": 34359742465,
+"index_count": 60,
+"index_data": PackedByteArray("AAABAAIAAAACAAMAAAADAAQAAAAEAAUAAAAFAAYAAAAGAAcAAAAHAAgAAAAIAAkAAAAJAAoAAAAKAAsAAAALAAwAAAAMAA0AAAANAA4AAAAOAA8AAAAPABAAAAAQABEAAAARABIAAAASABMAAAATABQAAAAUAAEA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 22,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAcXhzP3o3nj4AAAAAvRtPPxh5Fj8AAAAAGHkWP70bTz8AAAAAeTeePnF4cz8AAAAALr07swAAgD8AAAAAezeevnB4cz8AAAAAG3kWv7sbTz8AAAAAvhtPvxd5Fj8AAAAAcHhzv3s3nj4AAAAAAACAvy69u7MAAAAAb3hzv4E3nr4AAAAAvBtPvxp5Fr8AAAAAFXkWv78bT78AAAAAbjeevnJ4c78AAAAALt5MMgAAgL8AAAAAfjeePnB4c78AAAAAHHkWP7obT78AAAAAvBtPPxl5Fr8AAAAAcXhzP3g3nr4AAAAAAACAPy69OzQAAAAA")
+}]
+
+[sub_resource type="MultiMesh" id="MultiMesh_rjm0q"]
+instance_count = 79
+mesh = SubResource("ArrayMesh_01b3n")
+buffer = PackedFloat32Array(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -443,6 +481,7 @@ layout_mode = 2
 text = "Delete"
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
+visible = false
 
 [node name="Sections" type="VBoxContainer" parent="EditorLayer" unique_id=563806448]
 anchors_preset = 15
@@ -504,7 +543,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(303, 361)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 anchors_preset = 15
@@ -894,7 +933,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=1448176052]
 position = Vector2(128, 128)
@@ -1171,7 +1210,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview" unique_id=449177170]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=67918048]
 position = Vector2(128, 128)
@@ -1354,6 +1393,7 @@ size_flags_vertical = 3
 text = "Quit"
 
 [node name="ScoreSummary" type="CanvasLayer" parent="." unique_id=492281522 node_paths=PackedStringArray("Score", "Graze", "HP", "ResetButton", "QuitButton")]
+visible = false
 script = ExtResource("17_cegan")
 Score = NodePath("Panel/VBoxContainer/Score/Score")
 Graze = NodePath("Panel/VBoxContainer/Graze/Graze")
@@ -1465,6 +1505,17 @@ size_flags_vertical = 3
 text = "Quit"
 
 [node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
+
+[node name="GameRoot" type="Node2D" parent="." unique_id=1103239742]
+visible = false
+
+[node name="_MultiMeshInstance2D_34" type="MultiMeshInstance2D" parent="GameRoot" unique_id=1008332369]
+position = Vector2(1, 1)
+multimesh = SubResource("MultiMesh_getpj")
+texture = SubResource("ImageTexture_368cx")
+
+[node name="_MultiMeshInstance2D_35" type="MultiMeshInstance2D" parent="GameRoot" unique_id=539385468]
+multimesh = SubResource("MultiMesh_rjm0q")
 
 [node name="VersionInfo" type="CanvasLayer" parent="." unique_id=34902471]
 

@@ -80,7 +80,7 @@ public class LevelData
     [JsonPropertyName("references")] public List<Reference> References { get; set; } = null;
     [JsonPropertyName("patternModels")] public List<PatternModel> PatternModels { get; set; } = null;
     [JsonPropertyName("isMainLevel")] public bool IsMainLevel { get; set; } = false;
-    [JsonIgnore] public string LevelId { get; set; }
+    [JsonPropertyName("id")] public string LevelId { get; set; }
     [JsonIgnore] private Dictionary<string, ProjectileModel> _projectileModelsById;
     [JsonIgnore] private Dictionary<string, PatternModel> _patternModelsById;
     public ProjectileModel GetProjectileModel(string id)
