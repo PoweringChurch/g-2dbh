@@ -3,7 +3,7 @@ using Godot;
 
 public partial class GameSession : Node
 {
-    public NodePath SubViewportPath = "/root/main/HUD/HBoxContainer/SubViewportContainer/SubViewport";
+    public NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
     private Node2D _gameRoot;
     private SubViewport _svp;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
@@ -14,6 +14,7 @@ public partial class GameSession : Node
     private PlayingField _playingField;
     private string _lastStartedLevelDirectory, _lastStartedLevelId;
     private int score, health, graze;
+    private float maxHealth, duration;
     public override void _Ready()
     {
         _ui = GetNode<UIManager>("/root/UIManager");
@@ -21,18 +22,19 @@ public partial class GameSession : Node
         _playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
         SetProcess(false);
+        _director.LevelFinished += StopLevel;
     }
-    public void StopLevel()
+    public void Abort()
     {
         SetPhysicsProcess(false);
         SetProcess(false);
-        _character.OnHurt -= OnHurt;
-        _character.OnGraze -= OnGraze;
+        if (IsInstanceValid(_character))
+        {
+            _character.OnHurt -= OnHurt;
+            _character.OnGraze -= OnGraze;
+        }
         if (IsInstanceValid(_gameRoot))
             _gameRoot.QueueFree();
-        _ui.ScoreSummary.SetHP(health);
-        _ui.ScoreSummary.SetScore(score);
-        _ui.ScoreSummary.SetGraze(graze);
     }
     public bool ResetLevel()
     {
@@ -65,12 +67,14 @@ public partial class GameSession : Node
         health = levelData.Health;
         score = 0;
         graze = 0;
+        duration = levelData.Duration;
+        maxHealth = levelData.Health;
         // setup ui
         _ui.HUD.SetHealth(health);
         _ui.HUD.SetGraze(0);
         _ui.HUD.SetScore(0);
         _ui.HUD.SetLevelName(levelId);
-
+        _ui.HUD.SetDuration(levelData.Duration);
         _character.OnHurt += OnHurt;
         _character.OnGraze += OnGraze;
 
@@ -84,6 +88,14 @@ public partial class GameSession : Node
         SetProcess(true);
         return true;
     }
+    public void StopLevel()
+    {
+        Abort();
+        _ui.ScoreSummary.SetHP(health);
+        _ui.ScoreSummary.SetScore(score);
+        _ui.ScoreSummary.SetGraze(graze);
+        _ui.ShowScoreSummary();
+    }
     public void OnHurt()
     {
         health--;
@@ -94,6 +106,8 @@ public partial class GameSession : Node
     public void OnGraze()
     {
         graze++;
+        score += (int)(graze*100*health/maxHealth);
+        _ui.HUD.SetScore(score);
         _ui.HUD.SetGraze(graze);
     }
     public override void _PhysicsProcess(double dt)
@@ -101,7 +115,7 @@ public partial class GameSession : Node
         _character.Movement(dt);
         _director.Tick(dt);
         _character.VisualFeedback();
-        _ui.HUD.SetTime((float)_director.Elapsed);
+        _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
     }
     public override void _Process(double dt)
     {

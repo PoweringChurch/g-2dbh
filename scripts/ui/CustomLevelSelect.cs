@@ -7,6 +7,7 @@ public partial class CustomLevelSelect : LevelSelect
     [Export] protected Button _deleteButton;
     [Export] protected Button _newLevelButton;
     [Export] protected Button _refreshButton;
+    [Export] protected Label _author;
     private Editor e;
     public override void _Ready()
     {
@@ -39,11 +40,12 @@ public partial class CustomLevelSelect : LevelSelect
             Popups.Show(GetNode<CanvasLayer>("/root/main/Popups"),Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
         }
     }
-    protected override void OnLevelSelected(string levelName, Button pressed)
+    protected override void OnLevelSelected(LevelData levelData, Button pressed)
     {
-        base.OnLevelSelected(levelName, pressed);
+        base.OnLevelSelected(levelData, pressed);
         _editButton.Disabled = false;
         _deleteButton.Disabled = false;
+        _author.Text = levelData.Author;
     }
     protected override void ClearPreview()
     {

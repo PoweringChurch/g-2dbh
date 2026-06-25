@@ -134,6 +134,8 @@ public class LevelCompiler
         }
         // sort references into a queue
         compiled.Queue = [.. compiled.Queue.OrderBy(b => b.T)];
+        // set duration
+        compiled.Duration = level.Duration;
         return compiled;
     }
     private static int CreateRenderGroup(Mesh mesh, Texture2D tex, Node2D parent, CompiledLevel compiled)

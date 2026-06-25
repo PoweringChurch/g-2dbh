@@ -107,7 +107,6 @@ public partial class Editor : CanvasLayer
         {
             DisplayName = "New Level",
             Author = "Unknown",
-            Difficulty = "Unknown",
             BgImage = "none",
             Health = 3,
             AspectRatio = 0,
@@ -143,7 +142,8 @@ public partial class Editor : CanvasLayer
         levelData = data;
         ProjectileRegistry.SetModels(data.ProjectileModels);
         PatternRegistry.SetModels(data.PatternModels);
-        _timeline.Load(data.References, levelData.Duration);
+        _timeline.Load(data.References);
+        _timeline.UpdateDuration();
         _preview.Load(data);
         _levelMeta.Load(data);
 
@@ -165,14 +165,14 @@ public partial class Editor : CanvasLayer
     public void AddReference(Reference reference)
     {
         _timeline.AddMarker(reference);
-        levelData.References.Add(reference);
         _preview.AddInstance(reference);
+        levelData.References.Add(reference);
     }
     public void DeleteReference(Reference reference)
     {
         _timeline.RemoveMarker(reference);
-        levelData.References.Remove(reference);
         _preview.RemoveInstance(reference);
+        levelData.References.Remove(reference);
     }
     // opens a model in its respective creator
     public void OpenModel(IEditorModel model)

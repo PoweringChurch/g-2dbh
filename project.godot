@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="BeatIt"
+config/name="DanmakuMania"
 run/main_scene="uid://byrpidyii8f8t"
 config/features=PackedStringArray("4.6", "C#", "Mobile")
 config/icon="res://icon.svg"

@@ -25,6 +25,7 @@ public partial class LevelSelect : CanvasLayer
     // List
     public void PopulateList()
     {
+        ClearPreview();
         // clear existing buttons
         foreach (Node child in _levelList.GetChildren())
             child.QueueFree();
@@ -59,32 +60,27 @@ public partial class LevelSelect : CanvasLayer
         bool invalid = levelData == null;
         var buttonText = "INVALID LEVEL";
         if (!invalid)
-            buttonText = string.IsNullOrWhiteSpace(levelData.DisplayName) ? levelName : levelData.DisplayName;
+            buttonText = string.IsNullOrWhiteSpace(levelData.DisplayName) ? "unnamed" : levelData.DisplayName;
         var btn = new Button { Text = buttonText, ToggleMode = true, CustomMinimumSize = new Vector2(150, 0), ClipText = true };
         if (invalid)
             btn.Pressed += ClearPreview;
-        btn.Pressed += () => OnLevelSelected(levelName, btn);
+        btn.Pressed += () => OnLevelSelected(levelData, btn);
         _levelList.AddChild(btn);
     }
 
     // Selection
-    protected virtual void OnLevelSelected(string levelName, Button pressed)
+    protected virtual void OnLevelSelected(LevelData levelData, Button pressed)
     {
         foreach (Node child in _levelList.GetChildren())
             if (child is Button btn && btn != pressed)
                 btn.ButtonPressed = false;
 
-        _selectedLevel = levelName;
+        _selectedLevel = levelData.LevelId;
         _playButton.Disabled = false;
-        LoadPreview(levelName);
+        LoadPreview(levelData);
     }
-    protected void LoadPreview(string levelName)
+    protected void LoadPreview(LevelData levelData)
     {
-        string basePath = $"{_levelDirectory}{levelName}/";
-
-        var levelData = ReadJson<LevelData>(basePath + "leveldata.json");
-        if (levelData == null) { ClearPreview(); return; }
-
         string ratioLabel = levelData.AspectRatio switch
         {
             0 => "9:16",
@@ -92,7 +88,7 @@ public partial class LevelSelect : CanvasLayer
             2 => "3:2",
             _ => "unknown"
         };
-        _previewId.Text = string.IsNullOrWhiteSpace(levelData.DisplayName) ? levelName : levelData.DisplayName;
+        _previewId.Text = string.IsNullOrWhiteSpace(levelData.DisplayName) ? "unnamed" : levelData.DisplayName;
         _previewRatio.Text = ratioLabel;
         _previewHealth.Text = levelData.Health.ToString();
         _previewDuration.Text = $"{levelData.Duration:F2}s";

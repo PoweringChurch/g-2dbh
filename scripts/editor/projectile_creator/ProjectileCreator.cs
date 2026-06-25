@@ -117,8 +117,8 @@ public partial class ProjectileCreator : Control
     private void RecalculatePosition()
     {
         Preview.T = time;
-        XDisplay.Text = (Preview.PreviewPosition.X - 128).ToString("F2");
-        YDisplay.Text = (Preview.PreviewPosition.Y - 128).ToString("F2");
+        XDisplay.Text = (Preview.PreviewPosition.X).ToString("F2");
+        YDisplay.Text = (Preview.PreviewPosition.Y).ToString("F2");
     }
     private void ToggleCollisionParams(bool to)
     {

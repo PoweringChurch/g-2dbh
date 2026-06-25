@@ -53,7 +53,7 @@ public partial class LevelPreview : Node2D
             if ( mb.ButtonIndex == MouseButton.Left)
             {
                 var (reference, offset) = GetNearestReference(mb.Position);
-                if (GetNearestReference == null)
+                if (reference == null)
                 {
                     e.SelectedReference = null;
                     return;
@@ -65,7 +65,10 @@ public partial class LevelPreview : Node2D
                         Reference newRef = new Reference
                         {
                             Id = e.SelectedModel.Id,
-                            Type = e.SelectedModel is ProjectileModel v ? ModelType.Projectile : ModelType.Pattern
+                            Type = e.SelectedModel is ProjectileModel v ? ModelType.Projectile : ModelType.Pattern,
+                            T = e.CurrentTime,
+                            X = local.X,
+                            Y = local.Y
                         };
                         if (newRef != null)
                         {
@@ -124,9 +127,9 @@ public partial class LevelPreview : Node2D
     public void RemoveInstance(Reference r) 
     {
         if (r.Type == ModelType.Projectile)
-            _projectiles.Add(r);
+            _projectiles.Remove(r);
         else
-            _patterns.Add(r);
+            _patterns.Remove(r);
     }
     public void ClearInstances()
     {

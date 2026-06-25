@@ -1,16 +1,17 @@
 [gd_scene format=4 uid="uid://byrpidyii8f8t"]
 
 [ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/HUD.cs" id="2_dg77c"]
+[ext_resource type="Theme" uid="uid://dq7qa8sty0ce0" path="res://data/other/themes/default_ui.tres" id="2_ryguw"]
 [ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/MainMenu.cs" id="2_ycdy4"]
+[ext_resource type="LabelSettings" uid="uid://dou3cdouhk0b8" path="res://data/other/label_settings/hud_label_settings.tres" id="3_d13ii"]
 [ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/PauseMenu.cs" id="3_ycdy4"]
-[ext_resource type="Texture2D" uid="uid://n7p62r7iu40y" path="res://data/images/9slice.png" id="4_272bh"]
 [ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/LevelSelect.cs" id="4_vivmo"]
-[ext_resource type="Script" uid="uid://cgfgwpnu5gqnl" path="res://scripts/ui/GameOver.cs" id="4_w48qg"]
 [ext_resource type="Script" uid="uid://d4h74kguhbi00" path="res://scripts/editor/projectile_creator/ProjectileModelPreview.cs" id="5_2cqfq"]
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/level/LevelMetadata.cs" id="5_ycdy4"]
 [ext_resource type="Script" uid="uid://bju7haqyrgrrg" path="res://scripts/editor/projectile_creator/ShapeEditor.cs" id="6_074og"]
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="7_cegan"]
+[ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/author_label_settings.tres" id="7_getpj"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/MessageDisplay.cs" id="8_074og"]
 [ext_resource type="Script" uid="uid://7a6jo6fmtk3r" path="res://scripts/editor/preview/Timeline.cs" id="8_yaehf"]
 [ext_resource type="Script" uid="uid://cfv0pu48f5qa2" path="res://scripts/editor/preview/LevelPreview.cs" id="10_074og"]
@@ -63,18 +64,25 @@ buffer = PackedFloat32Array(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0
 
 [node name="Debug" type="Node" parent="." unique_id=646397022]
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Time", "_Duration", "_Completion")]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Duration", "_Completion")]
 visible = false
 script = ExtResource("2_dg77c")
-_scoreLabel = NodePath("HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Score/Score")
-_grazeLabel = NodePath("HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Graze/Graze")
+_scoreLabel = NodePath("Sort/PanelContainer/Sort/Score/Score")
+_grazeLabel = NodePath("Sort/PanelContainer/Sort/Graze/Graze")
 _LevelName = NodePath("../LevelSelect/Sort/LevelPreview/VBoxContainer/LevelName")
-_HP = NodePath("HBoxContainer/PanelContainer/VBoxContainer/PlayerData/HP/HP")
-_Time = NodePath("HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Time/Time")
-_Duration = NodePath("HBoxContainer/PanelContainer/VBoxContainer/LevelData/Duration/Dur")
-_Completion = NodePath("HBoxContainer/PanelContainer/VBoxContainer/LevelData/Completion/Completion")
+_HP = NodePath("Sort/PanelContainer/Sort/HP/HP")
+_Duration = NodePath("Sort/PanelContainer/Sort/Duration/Dur")
+_Completion = NodePath("Sort/PanelContainer/Sort/Completion/Completion")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD" unique_id=1667310011]
+[node name="Fill" type="ColorRect" parent="HUD" unique_id=1069094631]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Sort" type="HBoxContainer" parent="HUD" unique_id=1667310011]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -82,20 +90,29 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("2_ryguw")
 
-[node name="LeftSide" type="PanelContainer" parent="HUD/HBoxContainer" unique_id=1074278480]
+[node name="LeftSide" type="PanelContainer" parent="HUD/Sort" unique_id=1074278480]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="HUD/HBoxContainer" unique_id=469624102]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HUD/Sort" unique_id=469624102]
 layout_mode = 2
 
-[node name="SubViewport" type="SubViewport" parent="HUD/HBoxContainer/SubViewportContainer" unique_id=1965502961]
+[node name="SubViewport" type="SubViewport" parent="HUD/Sort/SubViewportContainer" unique_id=1965502961]
 handle_input_locally = false
 size = Vector2i(531, 900)
 render_target_update_mode = 0
 
-[node name="BackgroundImage" type="TextureRect" parent="HUD/HBoxContainer/SubViewportContainer/SubViewport" unique_id=791300721]
+[node name="BackgroundColor" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1148617783]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+
+[node name="BackgroundImage" type="TextureRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=791300721]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -104,124 +121,122 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="PanelContainer" type="PanelContainer" parent="HUD/HBoxContainer" unique_id=651642514]
+[node name="PanelContainer" type="PanelContainer" parent="HUD/Sort" unique_id=651642514]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD/HBoxContainer/PanelContainer" unique_id=1122627008]
+[node name="Sort" type="VBoxContainer" parent="HUD/Sort/PanelContainer" unique_id=1122627008]
 layout_mode = 2
+size_flags_vertical = 0
 
-[node name="LevelData" type="VBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer" unique_id=1652567210]
-layout_mode = 2
-
-[node name="LevelName" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData" unique_id=873949230]
+[node name="LevelName" type="Label" parent="HUD/Sort/PanelContainer/Sort" unique_id=873949230]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "myLevel"
+label_settings = ExtResource("3_d13ii")
 horizontal_alignment = 1
 
-[node name="Duration" type="HBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData" unique_id=1853301605]
+[node name="HP" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=2138227605]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData/Duration" unique_id=1700591027]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Duration"
-horizontal_alignment = 1
-
-[node name="Dur" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData/Duration" unique_id=264219706]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "00.00"
-
-[node name="Completion" type="HBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData" unique_id=576995216]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData/Completion" unique_id=941309314]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Completion"
-horizontal_alignment = 1
-
-[node name="Completion" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/LevelData/Completion" unique_id=1649597517]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "XX.X%"
-
-[node name="PlayerData" type="VBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer" unique_id=2108190825]
-layout_mode = 2
-
-[node name="Score" type="HBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData" unique_id=1667356597]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Score" unique_id=1679042165]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Score"
-horizontal_alignment = 1
-
-[node name="Score" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Score" unique_id=1863213064]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "000"
-
-[node name="Graze" type="HBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData" unique_id=1943209603]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Graze" unique_id=768841482]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Graze"
-horizontal_alignment = 1
-
-[node name="Graze" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Graze" unique_id=742328323]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "0"
-
-[node name="HP" type="HBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData" unique_id=2138227605]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/HP" unique_id=394312831]
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/HP" unique_id=394312831]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "HP"
+label_settings = ExtResource("3_d13ii")
 horizontal_alignment = 1
 
-[node name="HP" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/HP" unique_id=1516828342]
+[node name="HP" type="Label" parent="HUD/Sort/PanelContainer/Sort/HP" unique_id=1516828342]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "0"
+label_settings = ExtResource("3_d13ii")
 
-[node name="Time" type="HBoxContainer" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData" unique_id=845502287]
+[node name="Duration" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=1853301605]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Time" unique_id=233163802]
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Duration" unique_id=1700591027]
 layout_mode = 2
 size_flags_horizontal = 2
-text = "Time"
+text = "Duration"
+label_settings = ExtResource("3_d13ii")
 horizontal_alignment = 1
 
-[node name="Time" type="Label" parent="HUD/HBoxContainer/PanelContainer/VBoxContainer/PlayerData/Time" unique_id=1126179937]
+[node name="Dur" type="Label" parent="HUD/Sort/PanelContainer/Sort/Duration" unique_id=264219706]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "00.00"
+label_settings = ExtResource("3_d13ii")
+
+[node name="Completion" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=576995216]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Completion" unique_id=941309314]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Completion"
+label_settings = ExtResource("3_d13ii")
+horizontal_alignment = 1
+
+[node name="Completion" type="Label" parent="HUD/Sort/PanelContainer/Sort/Completion" unique_id=1649597517]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "XX.XX%"
+label_settings = ExtResource("3_d13ii")
+
+[node name="Score" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=1667356597]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Score" unique_id=1679042165]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Score"
+label_settings = ExtResource("3_d13ii")
+horizontal_alignment = 1
+
+[node name="Score" type="Label" parent="HUD/Sort/PanelContainer/Sort/Score" unique_id=1863213064]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "000000"
+label_settings = ExtResource("3_d13ii")
+
+[node name="Graze" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=1943209603]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Graze" unique_id=768841482]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Graze"
+label_settings = ExtResource("3_d13ii")
+horizontal_alignment = 1
+
+[node name="Graze" type="Label" parent="HUD/Sort/PanelContainer/Sort/Graze" unique_id=742328323]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "0"
+label_settings = ExtResource("3_d13ii")
 
 [node name="MainMenu" type="CanvasLayer" parent="." unique_id=692766472 node_paths=PackedStringArray("_startButton", "_customsButton", "_settingsButton", "_quitButton")]
-visible = false
 script = ExtResource("2_ycdy4")
-_startButton = NodePath("VBoxContainer/Start")
-_customsButton = NodePath("VBoxContainer/Custom")
-_settingsButton = NodePath("VBoxContainer/Settings")
-_quitButton = NodePath("VBoxContainer/Quit")
+_startButton = NodePath("Sort/Start")
+_customsButton = NodePath("Sort/Custom")
+_settingsButton = NodePath("Sort/Settings")
+_quitButton = NodePath("Sort/Quit")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu" unique_id=234966351]
+[node name="Fill" type="ColorRect" parent="MainMenu" unique_id=323880761]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Sort" type="VBoxContainer" parent="MainMenu" unique_id=234966351]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -233,23 +248,24 @@ offset_right = 75.0
 offset_bottom = 75.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_ryguw")
 
-[node name="Start" type="Button" parent="MainMenu/VBoxContainer" unique_id=833321538]
+[node name="Start" type="Button" parent="MainMenu/Sort" unique_id=833321538]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Start"
 
-[node name="Custom" type="Button" parent="MainMenu/VBoxContainer" unique_id=1872407800]
+[node name="Custom" type="Button" parent="MainMenu/Sort" unique_id=1872407800]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Custom Levels"
 
-[node name="Settings" type="Button" parent="MainMenu/VBoxContainer" unique_id=1153225555]
+[node name="Settings" type="Button" parent="MainMenu/Sort" unique_id=1153225555]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Settings"
 
-[node name="Quit" type="Button" parent="MainMenu/VBoxContainer" unique_id=130927533]
+[node name="Quit" type="Button" parent="MainMenu/Sort" unique_id=130927533]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Quit"
@@ -265,6 +281,21 @@ _previewDuration = NodePath("Sort/LevelPreview/VBoxContainer/Duration/Dur")
 _returnButton = NodePath("Sort/Levels/Sort/Return")
 _playButton = NodePath("Sort/LevelPreview/VBoxContainer/Play")
 
+[node name="Fill" type="ColorRect" parent="LevelSelect" unique_id=1201615672]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+
+[node name="FillTexture" type="TextureRect" parent="LevelSelect" unique_id=44323622]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Sort" type="HBoxContainer" parent="LevelSelect" unique_id=501791858]
 anchors_preset = 15
 anchor_right = 1.0
@@ -273,9 +304,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("2_ryguw")
 
 [node name="Levels" type="PanelContainer" parent="LevelSelect/Sort" unique_id=1911249937]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
@@ -291,7 +323,7 @@ text = "Return"
 layout_mode = 2
 
 [node name="LevelPreview" type="PanelContainer" parent="LevelSelect/Sort" unique_id=1111099756]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(220, 100)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
@@ -354,13 +386,14 @@ text = "-"
 layout_mode = 2
 text = "Play"
 
-[node name="CustomLevelSelect" type="CanvasLayer" parent="." unique_id=664724313 node_paths=PackedStringArray("_editButton", "_deleteButton", "_newLevelButton", "_refreshButton", "_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
+[node name="CustomLevelSelect" type="CanvasLayer" parent="." unique_id=664724313 node_paths=PackedStringArray("_editButton", "_deleteButton", "_newLevelButton", "_refreshButton", "_author", "_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
 visible = false
 script = ExtResource("11_w48qg")
 _editButton = NodePath("Sort/LevelPreview/Sort/Edit")
 _deleteButton = NodePath("Sort/LevelPreview/Sort/Delete")
 _newLevelButton = NodePath("Sort/Levels/Sort/Buttons/NewLevel")
 _refreshButton = NodePath("Sort/Levels/Sort/Buttons/Refresh")
+_author = NodePath("Sort/LevelPreview/Sort/Author")
 _levelList = NodePath("Sort/Levels/Sort/List")
 _previewId = NodePath("Sort/LevelPreview/Sort/LevelName")
 _previewRatio = NodePath("Sort/LevelPreview/Sort/AspectRatio/Ratio")
@@ -369,17 +402,33 @@ _previewDuration = NodePath("Sort/LevelPreview/Sort/Duration/Dur")
 _returnButton = NodePath("Sort/Levels/Sort/Buttons/Return")
 _playButton = NodePath("Sort/LevelPreview/Sort/Play")
 
+[node name="Fill" type="ColorRect" parent="CustomLevelSelect" unique_id=1890243431]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+
+[node name="FillTexture" type="TextureRect" parent="CustomLevelSelect" unique_id=229412542]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Sort" type="HBoxContainer" parent="CustomLevelSelect" unique_id=1860503944]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-rotation = 0.0013209071
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("2_ryguw")
 
 [node name="Levels" type="PanelContainer" parent="CustomLevelSelect/Sort" unique_id=1558096198]
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 
@@ -403,13 +452,14 @@ text = "Refresh"
 
 [node name="NewLevel" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Buttons" unique_id=1270255316]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "New Level"
 
 [node name="List" type="VBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=1681721272]
 layout_mode = 2
 
 [node name="LevelPreview" type="PanelContainer" parent="CustomLevelSelect/Sort" unique_id=598667516]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(220, 160)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
@@ -421,6 +471,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "myLevel"
+horizontal_alignment = 1
+
+[node name="Author" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=2099407255]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "author"
+label_settings = ExtResource("7_getpj")
 horizontal_alignment = 1
 
 [node name="Duration" type="HBoxContainer" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=625849443]
@@ -481,7 +538,14 @@ layout_mode = 2
 text = "Delete"
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
-visible = false
+
+[node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Sections" type="VBoxContainer" parent="EditorLayer" unique_id=563806448]
 anchors_preset = 15
@@ -489,6 +553,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_ryguw")
 
 [node name="Toolbar" type="PanelContainer" parent="EditorLayer/Sections" unique_id=651581558]
 layout_mode = 2
@@ -543,7 +608,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(303, 361)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 anchors_preset = 15
@@ -553,7 +618,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color(0.2, 0.2, 0.2, 1)
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
 [node name="BackgroundImage" type="TextureRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1003447320]
 anchors_preset = 15
@@ -571,12 +636,13 @@ script = ExtResource("10_074og")
 BackgroundImage = NodePath("../BackgroundImage")
 PreviewVP = NodePath("..")
 
-[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("LevelNameInput", "BGImageInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "ErrorDisplay")]
+[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("LevelNameInput", "AuthorInput", "BGImageInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "ErrorDisplay")]
 layout_mode = 2
 size_flags_vertical = 3
 title = "Level Data"
 script = ExtResource("5_ycdy4")
 LevelNameInput = NodePath("Sort/LevelName/LevelName")
+AuthorInput = NodePath("Sort/Author/Author")
 BGImageInput = NodePath("Sort/BgImage/BgImage")
 HealthInput = NodePath("Sort/Health/Health")
 DurationInput = NodePath("Sort/Duration/Duration")
@@ -610,6 +676,19 @@ size_flags_horizontal = 3
 text = "Level name"
 
 [node name="LevelName" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/LevelName" unique_id=988703600]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "..."
+
+[node name="Author" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=1015832539]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Author" unique_id=1216529059]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Author"
+
+[node name="Author" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Author" unique_id=1971239857]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
@@ -775,79 +854,76 @@ script = ExtResource("8_074og")
 layout_mode = 2
 title = "Timeline"
 script = ExtResource("8_yaehf")
-Playhead = NodePath("VBoxContainer/Playhead")
-PlayheadPositionInput = NodePath("VBoxContainer/Tools/TimeControl/Time")
-TimelineBar = NodePath("VBoxContainer/Timeline")
-ErrorDisplay = NodePath("VBoxContainer/Errors")
-PlayPauseButton = NodePath("VBoxContainer/Tools/PlayPause")
-SpeedInput = NodePath("VBoxContainer/Tools/SpeedControl/Speed")
-LoopToggle = NodePath("VBoxContainer/Tools/LoopToggle/Loop")
+Playhead = NodePath("Sort/Playhead")
+PlayheadPositionInput = NodePath("Sort/Tools/TimeControl/Time")
+TimelineBar = NodePath("Sort/TimelineBar")
+ErrorDisplay = NodePath("Sort/Errors")
+PlayPauseButton = NodePath("Sort/Tools/PlayPause")
+SpeedInput = NodePath("Sort/Tools/SpeedControl/Speed")
+LoopToggle = NodePath("Sort/Tools/LoopToggle/Loop")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline" unique_id=1165193795]
+[node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline" unique_id=1165193795]
 layout_mode = 2
 
-[node name="Tools" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer" unique_id=770941306]
+[node name="Tools" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort" unique_id=770941306]
 layout_mode = 2
 
-[node name="PlayPause" type="Button" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools" unique_id=2097833708]
+[node name="PlayPause" type="Button" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools" unique_id=2097833708]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 text = "❚❚"
 
-[node name="SpeedControl" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools" unique_id=222082011]
+[node name="SpeedControl" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools" unique_id=222082011]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools/SpeedControl" unique_id=1126394953]
+[node name="Label2" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools/SpeedControl" unique_id=1126394953]
 layout_mode = 2
 text = "Speed"
 
-[node name="Speed" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools/SpeedControl" unique_id=500040283]
+[node name="Speed" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools/SpeedControl" unique_id=500040283]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 min_value = 0.2
 max_value = 4.0
 step = 0.1
 value = 1.0
 
-[node name="TimeControl" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools" unique_id=2078007366]
+[node name="TimeControl" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools" unique_id=2078007366]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools/TimeControl" unique_id=54268721]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools/TimeControl" unique_id=54268721]
 layout_mode = 2
 text = "Time"
 
-[node name="Time" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools/TimeControl" unique_id=1030474019]
+[node name="Time" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools/TimeControl" unique_id=1030474019]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 step = 0.01
 value = 1.03
 
-[node name="LoopToggle" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools" unique_id=1682128282]
+[node name="LoopToggle" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools" unique_id=1682128282]
 layout_mode = 2
 size_flags_horizontal = 10
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools/LoopToggle" unique_id=814858228]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools/LoopToggle" unique_id=814858228]
 layout_mode = 2
 text = "Loop"
 
-[node name="Loop" type="CheckButton" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer/Tools/LoopToggle" unique_id=1638273385]
+[node name="Loop" type="CheckButton" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools/LoopToggle" unique_id=1638273385]
 layout_mode = 2
 
-[node name="Playhead" type="HSlider" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer" unique_id=662247104]
+[node name="Playhead" type="HSlider" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort" unique_id=662247104]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 
-[node name="Timeline" type="NinePatchRect" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer" unique_id=225102264]
+[node name="TimelineBar" type="Panel" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort" unique_id=1984643441]
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("4_272bh")
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-axis_stretch_vertical = 2
 
-[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/VBoxContainer" unique_id=893046203]
+[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort" unique_id=893046203]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -933,7 +1009,17 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 0
+render_target_update_mode = 4
+
+[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=872621113]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
 [node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=1448176052]
 position = Vector2(128, 128)
@@ -1019,7 +1105,7 @@ text = "Function X"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
-placeholder_text = "20*t"
+placeholder_text = "0"
 
 [node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer" unique_id=663279918]
 layout_mode = 2
@@ -1210,7 +1296,17 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview" unique_id=449177170]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 0
+render_target_update_mode = 4
+
+[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=1734361611]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
 [node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=67918048]
 position = Vector2(128, 128)
@@ -1268,7 +1364,7 @@ text = "Function X"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
-placeholder_text = "50*sin(i/n)"
+placeholder_text = "50*sin(tau*i/n)"
 
 [node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1835444005]
 layout_mode = 2
@@ -1282,7 +1378,7 @@ text = "Function Y"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
-placeholder_text = "50*cos(i/n)"
+placeholder_text = "50*cos(tau*i/n)"
 
 [node name="FnT" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=95664483]
 layout_mode = 2
@@ -1296,7 +1392,7 @@ text = "Function Time"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
-placeholder_text = "i"
+placeholder_text = "i/n*5"
 
 [node name="FnFwd" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1307103656]
 layout_mode = 2
@@ -1310,7 +1406,7 @@ text = "Function Forward"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
-placeholder_text = "pi*i/n"
+placeholder_text = "-tau*i/n"
 
 [node name="Count" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=791907995]
 layout_mode = 2
@@ -1361,6 +1457,14 @@ _resumeButton = NodePath("Panel/VBoxContainer/Resume")
 _resetButton = NodePath("Panel/VBoxContainer/Reset")
 _quitButton = NodePath("Panel/VBoxContainer/Quit")
 
+[node name="Fill" type="ColorRect" parent="PauseMenu" unique_id=1166834549]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3137255)
+
 [node name="Panel" type="PanelContainer" parent="PauseMenu" unique_id=360039679]
 anchors_preset = 8
 anchor_left = 0.5
@@ -1373,6 +1477,7 @@ offset_right = 100.0
 offset_bottom = 104.5
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_ryguw")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Panel" unique_id=193199972]
 layout_mode = 2
@@ -1401,6 +1506,14 @@ HP = NodePath("Panel/VBoxContainer/HP/HP")
 ResetButton = NodePath("Panel/VBoxContainer/Reset")
 QuitButton = NodePath("Panel/VBoxContainer/Quit")
 
+[node name="Fill" type="ColorRect" parent="ScoreSummary" unique_id=690930831]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
 [node name="Panel" type="PanelContainer" parent="ScoreSummary" unique_id=415145686]
 anchors_preset = 8
 anchor_left = 0.5
@@ -1413,6 +1526,7 @@ offset_right = 100.0
 offset_bottom = 104.5
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_ryguw")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ScoreSummary/Panel" unique_id=1170531105]
 layout_mode = 2
@@ -1472,38 +1586,6 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Quit"
 
-[node name="GameOver" type="CanvasLayer" parent="." unique_id=1619035792 node_paths=PackedStringArray("_resetButton", "_quitButton")]
-visible = false
-script = ExtResource("4_w48qg")
-_resetButton = NodePath("Panel/VBoxContainer/Reset")
-_quitButton = NodePath("Panel/VBoxContainer/Quit")
-
-[node name="Panel" type="PanelContainer" parent="GameOver" unique_id=1195863939]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -104.5
-offset_right = 100.0
-offset_bottom = 104.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="GameOver/Panel" unique_id=488397238]
-layout_mode = 2
-
-[node name="Reset" type="Button" parent="GameOver/Panel/VBoxContainer" unique_id=95993278]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Reset"
-
-[node name="Quit" type="Button" parent="GameOver/Panel/VBoxContainer" unique_id=887310509]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Quit"
-
 [node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
 
 [node name="GameRoot" type="Node2D" parent="." unique_id=1103239742]
@@ -1530,4 +1612,5 @@ offset_top = -23.0
 offset_right = 43.5
 grow_horizontal = 2
 grow_vertical = 0
-text = "pre alpha 0"
+theme = ExtResource("2_ryguw")
+text = "danmaku mania pre alpha 1"

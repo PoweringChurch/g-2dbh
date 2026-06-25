@@ -71,7 +71,6 @@ public class LevelData
 {
     [JsonPropertyName("displayName")] public string DisplayName { get; set; }
     [JsonPropertyName("author")] public string Author { get; set; }
-    [JsonPropertyName("difficulty")] public string Difficulty { get; set; }
     [JsonPropertyName("bgImage")] public string BgImage { get; set; }
     [JsonPropertyName("health")] public int Health { get; set; } = 3;
     [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 1;

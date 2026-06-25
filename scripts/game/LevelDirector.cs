@@ -1,7 +1,10 @@
 using System;
+using System.Diagnostics.Tracing;
 using Godot;
 public partial class LevelDirector
 {
+    public delegate void LevelFinishedEventHandler();
+    public event LevelFinishedEventHandler LevelFinished;
     private PlayerCharacter _character;
     private CompiledLevel _level;
     private double elapsed;
@@ -23,6 +26,11 @@ public partial class LevelDirector
     public void Tick(double dt)
     {
         elapsed += dt;
+        if (elapsed >= _level.Duration)
+        {
+            LevelFinished?.Invoke();
+            return;
+        }
         _ctx.T = elapsed;
         // spawn queue
         while (_level.Queue.Count > 0 && _level.Queue[0].T <= elapsed)

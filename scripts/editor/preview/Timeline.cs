@@ -16,6 +16,7 @@ public partial class Timeline : Control
     private bool _playing = false;
     private float _speed = 1f;
     private bool _loop = false;
+    private bool _dirty = false;
     private Dictionary<Reference, TimelineMarker> _markers = new();
     private Dictionary<string, bool> _visibleModels = new();
     private Editor e;
@@ -36,6 +37,13 @@ public partial class Timeline : Control
     }
     public override void _Process(double delta)
     {
+        if (_dirty) // the dirty flag is necessary
+        {
+            Playhead.MaxValue = e.levelData.Duration;
+            foreach (var m in _markers)
+                m.Value.Refresh(e.levelData.Duration, Size.X);
+            _dirty = false;
+        }
         if (!_playing)
             return;
 
@@ -84,19 +92,16 @@ public partial class Timeline : Control
         else
             Playhead.SetValueNoSignal(currentTime);
     }
-    public void UpdateDuration(float newDuration)
+
+    public void UpdateDuration()
     {
-        Playhead.MaxValue = newDuration;
-        foreach (var m in _markers)
-            m.Value.Refresh(newDuration, Size.X);
+        _dirty = true;
     }
-    public void Load(List<Reference> references, float duration)
+    public void Load(List<Reference> references)
     {
         ClearMarkers();
-        Playhead.MaxValue = duration;
         foreach (var r in references)
             AddMarker(r);
-
     }
     public void AddMarker(Reference r)
     {

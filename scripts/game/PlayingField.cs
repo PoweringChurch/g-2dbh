@@ -9,7 +9,7 @@ public partial class PlayingField : Node
 		new(900 , 900 ),   // 1:1
 		new(1350 , 900 ),   // 3:2
 	];
-	public NodePath SubViewportPath = "/root/main/HUD/HBoxContainer/SubViewportContainer/SubViewport";
+	public NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
 	private SubViewport _svp;
 	public Node2D _gameRoot = null;
 	private float _resScale = 1;

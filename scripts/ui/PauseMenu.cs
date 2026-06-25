@@ -14,7 +14,10 @@ public partial class PauseMenu : CanvasLayer
         _resetButton.Pressed  += OnResetPressed;
         _quitButton.Pressed   += OnQuitPressed;
     }
-
+    public void DisableReset(bool disable)
+    {
+        _resetButton.Disabled = disable;
+    }
     void OnResumePressed() => EmitSignal(SignalName.ResumeRequested);
     void OnResetPressed() => EmitSignal(SignalName.ResetRequested);
     void OnQuitPressed()   => EmitSignal(SignalName.QuitRequested);
