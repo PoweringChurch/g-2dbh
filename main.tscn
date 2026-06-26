@@ -14,8 +14,7 @@
 [ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/author_label_settings.tres" id="7_getpj"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/MessageDisplay.cs" id="8_074og"]
 [ext_resource type="Script" uid="uid://7a6jo6fmtk3r" path="res://scripts/editor/preview/Timeline.cs" id="8_yaehf"]
-[ext_resource type="Script" uid="uid://cfv0pu48f5qa2" path="res://scripts/editor/preview/LevelPreview.cs" id="10_074og"]
-[ext_resource type="Script" uid="uid://cxf8qv5qk4vmf" path="res://scripts/editor/preview/Inspector.cs" id="10_cegan"]
+[ext_resource type="Script" uid="uid://dt773ymqw2vko" path="res://scripts/editor/preview/LevelPreview.cs" id="10_074og"]
 [ext_resource type="Script" uid="uid://bwj0kla3iaqvo" path="res://scripts/editor/level/ModelLibrary.cs" id="11_ryguw"]
 [ext_resource type="Script" uid="uid://bvfi3mg55g7iw" path="res://scripts/ui/CustomLevelSelect.cs" id="11_w48qg"]
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
@@ -31,7 +30,7 @@ instance_count = 9
 mesh = SubResource("QuadMesh_82xsv")
 buffer = PackedFloat32Array(0.495, 1.71, 2.915, 25.735, 1.46, 1.125, 5.02, 24.95, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
-[sub_resource type="Image" id="Image_ryguw"]
+[sub_resource type="Image" id="Image_82xsv"]
 data = {
 "data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AABp/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAAaQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAGr/AAD//wAA0/8AABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABb/AADT/wAA//8AAGoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGQAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZ/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAA0/8AAP//AADT/wAA0/8AAP//AADT/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAA0/8AAP//AADT/wAA0/8AAP//AADT/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAY/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAGr/AAD//wAA0/8AABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABb/AADT/wAA//8AAGoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AABp/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAAaQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
 "format": "RGBA8",
@@ -41,7 +40,7 @@ data = {
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_368cx"]
-image = SubResource("Image_ryguw")
+image = SubResource("Image_82xsv")
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_01b3n"]
 _surfaces = [{
@@ -588,11 +587,15 @@ size_flags_vertical = 3
 [node name="Left" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=1996319426]
 layout_mode = 2
 
-[node name="LevelPreview" type="PanelContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1344970830]
+[node name="LevelPreview" type="PanelContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1344970830 node_paths=PackedStringArray("PreviewRoot", "BackgroundImage", "PreviewVP")]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+script = ExtResource("10_074og")
+PreviewRoot = NodePath("Sort/Container/SubViewport/Preview")
+BackgroundImage = NodePath("Sort/Container/SubViewport/BackgroundImage")
+PreviewVP = NodePath("Sort/Container/SubViewport")
 
 [node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelPreview" unique_id=1988492208]
 layout_mode = 2
@@ -631,10 +634,7 @@ size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Preview" type="Node2D" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=624726340 node_paths=PackedStringArray("BackgroundImage", "PreviewVP")]
-script = ExtResource("10_074og")
-BackgroundImage = NodePath("../BackgroundImage")
-PreviewVP = NodePath("..")
+[node name="Preview" type="Node2D" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=624726340]
 
 [node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("LevelNameInput", "AuthorInput", "BGImageInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "ErrorDisplay")]
 layout_mode = 2
@@ -763,17 +763,10 @@ script = ExtResource("8_074og")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Inspector" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=77464520 node_paths=PackedStringArray("XInput", "YInput", "ForwardInput", "SpawnTimeInput", "ModelIdInput", "ErrorDisplay")]
+[node name="Inspector" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=77464520]
 layout_mode = 2
 size_flags_vertical = 0
 title = "Inspector"
-script = ExtResource("10_cegan")
-XInput = NodePath("Sort/Position/X")
-YInput = NodePath("Sort/Position/Y")
-ForwardInput = NodePath("Sort/Rotation/Fwd")
-SpawnTimeInput = NodePath("Sort/Time/Time")
-ModelIdInput = NodePath("Sort/ModelId/ModelId")
-ErrorDisplay = NodePath("Sort/Errors")
 
 [node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector" unique_id=932218770]
 layout_mode = 2
@@ -787,10 +780,10 @@ size_flags_horizontal = 3
 text = "X"
 horizontal_alignment = 1
 
-[node name="X" type="LineEdit" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=1584439616]
+[node name="X" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=499847051]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "(num)"
+step = 0.01
 
 [node name="YLabel" type="Label" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=338785722]
 layout_mode = 2
@@ -798,10 +791,12 @@ size_flags_horizontal = 3
 text = "Y"
 horizontal_alignment = 1
 
-[node name="Y" type="LineEdit" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=546610946]
+[node name="Y" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=1391266152]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "(num)"
+step = 0.01
+allow_greater = true
+allow_lesser = true
 
 [node name="Rotation" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=1509341078]
 layout_mode = 2
@@ -811,10 +806,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Forward"
 
-[node name="Fwd" type="LineEdit" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Rotation" unique_id=1695436889]
+[node name="Fwd" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Rotation" unique_id=1237532746]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "(radians)"
+step = 0.01
+allow_greater = true
+allow_lesser = true
 
 [node name="Time" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=478060010]
 layout_mode = 2
@@ -952,12 +949,14 @@ size_flags_vertical = 3
 [node name="Right" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=129711909]
 layout_mode = 2
 
-[node name="ProjectileCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1452542516 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "IdInput", "Save")]
+[node name="ProjectileCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1452542516 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "Save")]
 custom_minimum_size = Vector2(355, 0)
 layout_mode = 2
 size_flags_vertical = 3
 title = "Projectile Creator"
 script = ExtResource("5_w48qg")
+IdInput = NodePath("ScrollContainer/VBoxContainer/Id/IdInput")
+NameInput = NodePath("ScrollContainer/VBoxContainer/Name/NameInput")
 Preview = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport/ModelPreview")
 TInput = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T/TInput")
 TSlider = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T/TSlider")
@@ -968,12 +967,11 @@ YDisplay = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContaine
 ErrorDisplay = NodePath("ScrollContainer/VBoxContainer/Errors")
 FnXInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnX/FnXInput")
 FnYInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnY/FnYInput")
-LifetimeInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime/Lifetime")
+LifetimeInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime/TInput")
 PersistantCheckbutton = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Persistant/CheckButton")
 UseShapeCheckbutton = NodePath("ScrollContainer/VBoxContainer/Collision/VBoxContainer/UseShape/UseShapeCheck")
 Radius = NodePath("ScrollContainer/VBoxContainer/Collision/VBoxContainer/Radius/Radius")
 ShapeEditor = NodePath("ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor")
-IdInput = NodePath("ScrollContainer/VBoxContainer/Id/IdInput")
 Save = NodePath("ScrollContainer/VBoxContainer/Save")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator" unique_id=1699904652]
@@ -1129,12 +1127,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Lifetime"
 
-[node name="Lifetime" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime" unique_id=1719806785]
+[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime" unique_id=1000369693]
 layout_mode = 2
-size_flags_horizontal = 3
-min_value = 1.0
+size_flags_horizontal = 0
 step = 0.01
-value = 2.42
 allow_greater = true
 
 [node name="Persistant" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer" unique_id=2020770499]
@@ -1218,18 +1214,32 @@ custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 text = "+"
 
-[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=740438102]
+[node name="Name" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=740438102]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Id" unique_id=1495345120]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Name" unique_id=1495345120]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Id"
 
-[node name="IdInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Id" unique_id=775295581]
+[node name="NameInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Name" unique_id=1271846511]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "..."
+text = "0"
+placeholder_text = "30*sin(t)"
+
+[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=336509970]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Id" unique_id=486520325]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Id"
+
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Id" unique_id=1366249995]
+layout_mode = 2
+max_value = 128.0
+rounded = true
 
 [node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=538124694]
 layout_mode = 2
@@ -1243,7 +1253,7 @@ label_settings = ExtResource("7_cegan")
 autowrap_mode = 2
 script = ExtResource("8_074og")
 
-[node name="PatternCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1409250504 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "IdInput", "Save", "ErrorDisplay")]
+[node name="PatternCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1409250504 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "IdInput", "NameInput", "Save", "ErrorDisplay")]
 custom_minimum_size = Vector2(355, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -1258,8 +1268,9 @@ FnYInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnY/FnYInput")
 FnTInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnT/FnTInput")
 FnFwdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnFwd/FnFwdInput")
 CountInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/Count/Count")
-ProjectileIdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect/ModelId")
+ProjectileIdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect/IdInput")
 IdInput = NodePath("ScrollContainer/Sort/Id/IdInput")
+NameInput = NodePath("ScrollContainer/Sort/Name/NameInput")
 Save = NodePath("ScrollContainer/Sort/Save")
 ErrorDisplay = NodePath("ScrollContainer/Sort/Errors")
 
@@ -1347,10 +1358,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Projectile Id"
 
-[node name="ModelId" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect" unique_id=810909359]
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect" unique_id=502450669]
 layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "..."
+max_value = 128.0
+rounded = true
 
 [node name="FnX" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1026916229]
 layout_mode = 2
@@ -1424,18 +1435,32 @@ value = 1.0
 rounded = true
 allow_greater = true
 
-[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=1882049864]
+[node name="Name" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=1972979124]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Id" unique_id=1660230419]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Name" unique_id=897253841]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Id"
 
-[node name="IdInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Id" unique_id=729756557]
+[node name="NameInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Name" unique_id=902891240]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "..."
+text = "0"
+placeholder_text = "30*sin(t)"
+
+[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=339645853]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Id" unique_id=1014415866]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Id"
+
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Id" unique_id=695486686]
+layout_mode = 2
+max_value = 128.0
+rounded = true
 
 [node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=1446723958]
 layout_mode = 2

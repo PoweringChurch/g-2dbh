@@ -24,21 +24,38 @@ public partial class Editor : CanvasLayer
     public float CurrentTime => _timeline.CurrentTime;
     private const string _levelDirectory = "user://data/levels/";
     public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
-    public Reference SelectedReference
-    {
-        get => _inspector.Reference;
-        set => _inspector.SelectReference(value);
-    }
     public IEditorModel SelectedModel => _modelLibrary.SelectedModel;
-    public ProjectileRegistry ProjectileRegistry = new();
-    public PatternRegistry PatternRegistry = new();
+    private ProjectileModel[] projectileModels = new ProjectileModel[128];
+    private PatternModel[] patternModels = new PatternModel[128];
+    public IReadOnlyList<ProjectileModel> ProjectileModels => projectileModels;
+    public IReadOnlyList<PatternModel> PatternModels => patternModels;
+    // Save the input model at the specified id. This function will set the models id to match what was provided.
+    public void SaveProjectileModel(ProjectileModel model, int id)
+    {
+        projectileModels[id] = model;
+        model.Id = id;
+    }
+    // Save the input model at the specified id. This function will set the models id to match what was provided.
+    public void SavePatternModel(PatternModel model, int id)
+    {
+        patternModels[id] = model;
+        model.Id = id;
+    }
+    public void RemoveProjectileModel(int id)
+    {
+        projectileModels[id] = null;
+    }
+    public void RemovePatternModel(int id)
+    {
+        patternModels[id] = null;
+    }
     public LevelData levelData;
     // paths
     const string Modules = "/root/main/EditorLayer/Sections/Modules";
     public NodePath TimelinePath = Modules + "/Middle/Timeline";
     public NodePath ModelLibraryPath = Modules + "/Middle/ModelLibrary";
     public NodePath LevelMetaPath = Modules + "/Left/LevelMetadata";
-    public NodePath LevelPreviewPath = Modules + "/Left/LevelPreview/Sort/Container/SubViewport/Preview";
+    public NodePath LevelPreviewPath = Modules + "/Left/LevelPreview";
     public NodePath ProjCreatorPath = Modules + "/Right/ProjectileCreator";
     public NodePath PatternCreatorPath = Modules + "/Right/PatternCreator";
     public NodePath InspectorPath = Modules + "/Middle/Inspector";
@@ -55,9 +72,6 @@ public partial class Editor : CanvasLayer
     private LevelPreview _preview;
     private ProjectileCreator _projCreator;
     private PatternCreator _patternCreator;
-
-    private Inspector _inspector;
-
     private Button _placeButton;
     private Button _selectButton;
     private Button _deleteButton;
@@ -71,24 +85,19 @@ public partial class Editor : CanvasLayer
         _preview = GetNode<LevelPreview>(LevelPreviewPath);
         _projCreator = GetNode<ProjectileCreator>(ProjCreatorPath);
         _patternCreator = GetNode<PatternCreator>(PatternCreatorPath);
-        _inspector = GetNode<Inspector>(InspectorPath);
 
         // events
-        _inspector.ReferenceUpdated += _timeline.RefreshMarker;
-
         _levelMeta.AspectRatioChanged += _preview.Fit;
         _levelMeta.DurationChanged += _timeline.UpdateDuration;
         _levelMeta.SaveLevelRequested += SaveLevel;
-        _levelMeta.BgImageChanged += _preview.OnBackgroundImageChanged;
+        _levelMeta.BgImageChanged += _preview.ChangeBackgroundImage;
 
-        _projCreator.ModelSaved += ProjectileRegistry.UpdateModel;
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
-        _projCreator.ModelSaved += _preview.OnModelUpdate;
+        _projCreator.ModelSaved += _preview.Sync;
         _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
-        
-        _patternCreator.ModelSaved += PatternRegistry.UpdateModel;
+
         _patternCreator.ModelSaved += _modelLibrary.OnModelSaved;
-        _patternCreator.ModelSaved += _preview.OnModelUpdate;
+        _patternCreator.ModelSaved += _preview.Sync;
 
         GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
         // toolbar
@@ -140,13 +149,18 @@ public partial class Editor : CanvasLayer
     private void ApplyLevelData(LevelData data)
     {
         levelData = data;
-        ProjectileRegistry.SetModels(data.ProjectileModels);
-        PatternRegistry.SetModels(data.PatternModels);
+        foreach (var model in data.ProjectileModels)
+        {
+            projectileModels[model.Id] = model;
+        }
+        foreach (var model in data.PatternModels)
+        {
+            patternModels[model.Id] = model;
+        }
         _timeline.Load(data.References);
         _timeline.UpdateDuration();
-        _preview.Load(data);
         _levelMeta.Load(data);
-
+        _preview.ChangeBackgroundImage(data.BgImage);
         _projCreator.LoadProjectile(new());
         _patternCreator.LoadPattern(new());
         var merged = (data.ProjectileModels ?? Enumerable.Empty<ProjectileModel>())
@@ -162,17 +176,17 @@ public partial class Editor : CanvasLayer
         WriteJson(levelPath + "leveldata.json", levelData);
         GD.Print("[Editor] Saved level successfully");
     }
-    public void AddReference(Reference reference)
+    public void AddReference(EditorReference bullet)
     {
-        _timeline.AddMarker(reference);
-        _preview.AddInstance(reference);
-        levelData.References.Add(reference);
+        _timeline.AddMarker(bullet);
+        levelData.References.Add(bullet);
+        _preview.Sync();
     }
-    public void DeleteReference(Reference reference)
+    public void DeleteBullet(EditorReference bullet)
     {
-        _timeline.RemoveMarker(reference);
-        _preview.RemoveInstance(reference);
-        levelData.References.Remove(reference);
+        _timeline.RemoveMarker(bullet);
+        levelData.References.Remove(bullet);
+        _preview.Sync();
     }
     // opens a model in its respective creator
     public void OpenModel(IEditorModel model)

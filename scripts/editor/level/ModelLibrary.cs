@@ -17,14 +17,14 @@ public partial class ModelLibrary : Control
         e = GetNode<Editor>("/root/Editor");
     }
 
-    public void OnModelSaved(ProjectileModel _, string __) => Refresh();
-    public void OnModelSaved(PatternModel _, string __) => Refresh();
+    public void OnModelSaved(ProjectileModel _) => Refresh();
+    public void OnModelSaved(PatternModel _) => Refresh();
 
     public void Refresh()
     {
         var combined = new List<IEditorModel>();
-        combined.AddRange(e.ProjectileRegistry.Models);
-        combined.AddRange(e.PatternRegistry.Models);
+        combined.AddRange(e.ProjectileModels);
+        combined.AddRange(e.PatternModels);
         Load(combined);
     }
 
@@ -41,8 +41,8 @@ public partial class ModelLibrary : Control
             var selectButton = newTemplate.GetNode<Button>("Interact/Select");
             var deleteButton = newTemplate.GetNode<Button>("Interact/Delete");
 
-            idField.Text = m.Id;
-            colorDisplay.Color = RenderingUtils.ColorFromString(m.Id);
+            idField.Text = m.Id.ToString();
+            colorDisplay.Color = RenderingUtils.ColorFromString(m.Name);
 
             selectButton.Pressed += () =>
             {
@@ -58,16 +58,15 @@ public partial class ModelLibrary : Control
                 {
                     if (e.SelectedModel == pm)
                         e.OpenModel(new ProjectileModel());
-                    e.ProjectileRegistry.RemoveModel(pm.Id);
+                    e.RemoveProjectileModel(pm.Id);
                 }
                 else if (m is PatternModel ptm)
                 {
                     if (e.SelectedModel == ptm)
                         e.OpenModel(new PatternModel());
-                    e.PatternRegistry.RemoveModel(ptm.Id);
+                    e.RemovePatternModel(ptm.Id);
                 }
-
-                GD.Print($"[ModelLibrary] Deleted model {m.Id}");
+                GD.Print($"[ModelLibrary] Deleted model {m.Name}");
                 newTemplate.QueueFree();
             };
 

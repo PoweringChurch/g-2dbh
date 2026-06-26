@@ -2,20 +2,22 @@ using Godot;
 
 public partial class TimelineMarker : ColorRect
 {
-    public Reference Reference;
+    public EditorReference Bullet;
     private bool _dragging = false;
     private Editor e;
-    public void Init(Reference reference, float duration, float timelineWidth)
+    public void Init(EditorReference reference, float duration, float timelineWidth)
     {
         e = GetNode<Editor>("/root/Editor");
         Size = new Vector2(6, 16);
-        Reference = reference;
+        Bullet = reference;
         Refresh(duration, timelineWidth);
     }
     public void Refresh(float duration, float timelineWidth)
     {
-        Color = RenderingUtils.ColorFromString(Reference.Id);
-        Position = new Vector2((Reference.T / duration) * timelineWidth - Size.X / 2f, 43);
+        Color = Bullet.Type == ModelType.Projectile ? 
+        RenderingUtils.ColorFromString(e.ProjectileModels[Bullet.Id].Name) 
+        : RenderingUtils.ColorFromString(e.PatternModels[Bullet.Id].Name);
+        Position = new Vector2((float)(Bullet.T / duration * timelineWidth - Size.X / 2f), 43);
     }
     public override void _GuiInput(InputEvent @event)
     {
@@ -27,7 +29,7 @@ public partial class TimelineMarker : ColorRect
             }
             else if (e.CurrentMode == Editor.Mode.Delete)
             {
-                e.DeleteReference(Reference);
+                e.DeleteBullet(Bullet);
             }
         }
         if (@event is InputEventMouseMotion mm 
@@ -36,7 +38,7 @@ public partial class TimelineMarker : ColorRect
         {
             float newX = Mathf.Clamp(Position.X + mm.Relative.X, 0, GetParent<Control>().Size.X - Size.X);
             Position = new Vector2(newX, Position.Y);
-            Reference.T = (newX + Size.X / 2f) / GetParent<Control>().Size.X * e.levelData.Duration;
+            Bullet.T = (newX + Size.X / 2f) / GetParent<Control>().Size.X * e.levelData.Duration;
         }
     }
 }

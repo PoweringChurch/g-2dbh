@@ -9,3 +9,7 @@ public class RenderGroup
     public MultiMesh MultiMesh;
     public List<int> BulletIndices = new();
 }
+public class EditorRenderGroup : RenderGroup
+{
+    public List<int> PatternBulletIndices = new();
+}

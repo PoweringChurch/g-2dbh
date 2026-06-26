@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 public partial class Timeline : Control
 {
@@ -17,7 +16,7 @@ public partial class Timeline : Control
     private float _speed = 1f;
     private bool _loop = false;
     private bool _dirty = false;
-    private Dictionary<Reference, TimelineMarker> _markers = new();
+    private Dictionary<EditorReference, TimelineMarker> _markers = new();
     private Dictionary<string, bool> _visibleModels = new();
     private Editor e;
     public override void _Ready()
@@ -97,20 +96,20 @@ public partial class Timeline : Control
     {
         _dirty = true;
     }
-    public void Load(List<Reference> references)
+    public void Load(List<EditorReference> references)
     {
         ClearMarkers();
         foreach (var r in references)
             AddMarker(r);
     }
-    public void AddMarker(Reference r)
+    public void AddMarker(EditorReference r)
     {
         var marker = new TimelineMarker();
         TimelineBar.AddChild(marker);
         marker.Init(r, e.levelData.Duration, Size.X);
         _markers[r] = marker;
     }
-    public void RemoveMarker(Reference r)
+    public void RemoveMarker(EditorReference r)
     {
         if (_markers.TryGetValue(r, out var marker))
         {
@@ -124,13 +123,6 @@ public partial class Timeline : Control
             marker.QueueFree();
         _markers.Clear();
     }
-    public void RefreshMarker(Reference r) =>
+    public void RefreshMarker(EditorReference r) =>
         _markers[r].Refresh(e.levelData.Duration, Size.X);
-    public void SetModelVisible(string modelId, bool visible)
-    {
-        _visibleModels[modelId] = visible;
-        foreach (var (r, marker) in _markers)
-            if (r.Id == modelId)
-                marker.Visible = visible;
-    }
 }

@@ -43,14 +43,14 @@ public static class RenderingUtils
         _colorCache[input] = color;
         return color;
     }
-    public static ArrayMesh BuildUnitCircleMesh(int segments = 20)
+    public static ArrayMesh BuildCircleMesh(float radius, int segments = 20)
     {
         var verts = new Vector3[segments + 2];
         verts[0] = Vector3.Zero;
         for (int i = 0; i <= segments; i++)
         {
             float angle = i * Mathf.Tau / segments;
-            verts[i + 1] = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0);
+            verts[i + 1] = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
         }
 
         var indices = new int[segments * 3];

@@ -5,6 +5,8 @@ using System.Runtime.Intrinsics;
 public partial class ProjectileCreator : Control
 {
     // Preview
+    [Export] SpinBox IdInput;
+    [Export] LineEdit NameInput;
     [Export] ProjectileModelPreview Preview;
     [Export] SpinBox TInput; // float
     [Export] HSlider TSlider;
@@ -22,14 +24,14 @@ public partial class ProjectileCreator : Control
     [Export] CheckButton UseShapeCheckbutton;
     [Export] SpinBox Radius; // float
     [Export] ShapeEditor ShapeEditor;
-    [Export] LineEdit IdInput;
     [Export] Button Save;
     private ProjectileModel model = null;
     public ProjectileModel ProjectileModel => model;
     private Editor e;
-    public delegate void ProjectileModelUpdatedEventHandler(ProjectileModel model, string oldId);
-    public event ProjectileModelUpdatedEventHandler ModelSaved;
+    public delegate void ModelSaveEventHandler(ProjectileModel model);
+    public event ModelSaveEventHandler ModelSaved;
     private double time = 0;
+    private int _currentId = 0;
     private static readonly EvalContext testCtx = new() { T = 0 };
     public override void _Ready()
     {
@@ -98,21 +100,11 @@ public partial class ProjectileCreator : Control
             ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors.");
             return;
         }
-        model.Id = IdInput.Text;
-        if (string.IsNullOrWhiteSpace(model.Id))
-        {
-            ErrorDisplay.SetMessage("Save", "[Save] Model must have an ID.");
-            return;
-        }
         ErrorDisplay.ClearMessage("Save");
-        var existing = e.ProjectileRegistry.GetModel(model.Id);
+        model.Name = NameInput.Text;
         var newmodel = new ProjectileModel(model);
-        if (existing != null)
-            e.ProjectileRegistry.UpdateModel(newmodel);
-        else
-            e.ProjectileRegistry.AddModel(newmodel);
-        ErrorDisplay.ClearMessage("Save");
-        ModelSaved?.Invoke(newmodel, null);
+        e.SaveProjectileModel(newmodel, (int)IdInput.Value);
+        ModelSaved?.Invoke(newmodel);
     }
     private void RecalculatePosition()
     {
@@ -175,7 +167,8 @@ public partial class ProjectileCreator : Control
     public void LoadProjectile(ProjectileModel newModel)
     {
         model = new ProjectileModel(newModel);
-        IdInput.Text = newModel.Id;
+        IdInput.Value = newModel.Id;
+        NameInput.Text = newModel.Name;
         TextureInput.Text = newModel.Texture;
         FnXInput.Text = newModel.FunctionX;
         FnYInput.Text = newModel.FunctionY;

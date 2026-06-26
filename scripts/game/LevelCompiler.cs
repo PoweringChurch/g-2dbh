@@ -8,8 +8,8 @@ public class LevelCompiler
     public static CompiledLevel CompileLevel(LevelData level, Node2D gameRoot)
     {
         CompiledLevel compiled = new();
-        Dictionary<string, int> projMap = [];
-        Dictionary<string, int> pattMap = [];
+        Dictionary<int, int> projMap = [];
+        Dictionary<int, int> pattMap = [];
         Dictionary<Texture2D, int> textMap = [];
         // compile projectiles
         for (int i = 0; i < level.ProjectileModels.Count; i++)
@@ -29,14 +29,10 @@ public class LevelCompiler
             else
                 newProjectile.Radius = model.Radius;
             // set up render group
-            int renderGroupId;
-            float renderScale = 1f;
+            int renderGroupId = 0;
+            float renderScale = model.RenderScale;
             GD.Print("user://data/levels/{level.LevelId}/images/"+model.Texture);
             Texture2D tex = RenderingUtils.LoadTexture($"user://data/levels/{level.LevelId}/images/", model.Texture);
-            /* ? 
-            ResourceLoader.Load<Texture2D>($"res://data/levels/{level.LevelId}/images/{model.Texture}")  
-            : ;*/
-            GD.Print(tex);
             if (tex != null)
             {
                 if (textMap.TryGetValue(tex, out int existing))
@@ -46,25 +42,25 @@ public class LevelCompiler
                     GD.Print("projectile is a texture mesh");
                     var mesh = new QuadMesh { Size = tex.GetSize() };
                     mesh.Orientation = PlaneMesh.OrientationEnum.Z;
-                    renderGroupId = CreateRenderGroup(mesh, tex, gameRoot, compiled);
-                    textMap[tex] = renderGroupId;
+                    var rendergroup = CreateRenderGroup(mesh, tex, gameRoot);
+                    compiled.RenderGroups.Add(rendergroup);
+                    textMap[tex] = compiled.RenderGroups.Count - 1;
                 }
-                GD.Print($"projectile {model.Id} is a polygon with radius {model.Radius}");
             }
             else if (model.UseShape && model.Shape != null)
             {
                 var mesh = RenderingUtils.BuildPolygonMesh(newProjectile.Shape);
-                renderGroupId = CreateRenderGroup(mesh, null, gameRoot, compiled);
-                GD.Print($"projectile {model.Id} is a polygon");
+                var rendergroup = CreateRenderGroup(mesh, null, gameRoot);
+                compiled.RenderGroups.Add(rendergroup);
+                renderGroupId = compiled.RenderGroups.Count - 1;
             }
             else
             {
-                GD.Print($"projectile {model.Id} is a circle with radius {model.Radius}");
-                var mesh = RenderingUtils.BuildUnitCircleMesh();
-                renderGroupId = CreateRenderGroup(mesh, null, gameRoot, compiled);
-                renderScale = (float)model.Radius; // radius baked per-instance via transform scale
+                var mesh = RenderingUtils.BuildCircleMesh(model.Radius);
+                var rendergroup = CreateRenderGroup(mesh, null, gameRoot);
+                compiled.RenderGroups.Add(rendergroup);
+                renderGroupId = compiled.RenderGroups.Count - 1;
             }
-            GD.Print($"assign projcetile {model.Id} to render group {renderGroupId}");
             newProjectile.RenderGroupId = renderGroupId;
             newProjectile.RenderScale = renderScale;
             compiled.Projectiles.Add(newProjectile);
@@ -96,9 +92,9 @@ public class LevelCompiler
                 {
                     var b = new Bullet()
                     {
-                        SpawnPos = new (r.X,r.Y),
+                        SpawnPos = r.SpawnPos,
                         T = r.T,
-                        F = r.Forward,
+                        F = r.F,
                         ProjectileId = projMap[r.Id]
                     };
                     compiled.Queue.Add(b);
@@ -115,15 +111,15 @@ public class LevelCompiler
                         double t = patt.fnt(ctx);
                         double xTravel = patt.fnx(ctx);
                         double yTravel = patt.fny(ctx);
-                        double cos = Math.Cos(r.Forward);
-                        double sin = Math.Sin(r.Forward);
+                        double cos = Math.Cos(r.F);
+                        double sin = Math.Sin(r.F);
                         float x = (float)(cos * xTravel - sin * yTravel);
                         float y = (float)(sin * xTravel + cos * yTravel);
                         var b = new Bullet()
                         {
-                            SpawnPos = new (r.X+x,r.Y+y),
+                            SpawnPos = r.SpawnPos+new Vector2(x,y),
                             T = r.T+t,
-                            F = r.Forward + fwd,
+                            F = r.F + fwd,
                             ProjectileId = patt.ProjectileId
                         };
                         compiled.Queue.Add(b);
@@ -138,7 +134,7 @@ public class LevelCompiler
         compiled.Duration = level.Duration;
         return compiled;
     }
-    private static int CreateRenderGroup(Mesh mesh, Texture2D tex, Node2D parent, CompiledLevel compiled)
+    public static RenderGroup CreateRenderGroup(Mesh mesh, Texture2D tex, Node2D parent)
     {
         var multiMesh = new MultiMesh
         {
@@ -148,8 +144,6 @@ public class LevelCompiler
         };
         var node = new MultiMeshInstance2D { Multimesh = multiMesh, Texture = tex };
         parent.AddChild(node);
-        compiled.RenderGroups.Add(new RenderGroup { Mesh = mesh, Texture = tex, Node = node, MultiMesh = multiMesh});
-        GD.Print($"added render group, count is now {compiled.RenderGroups.Count}");
-        return compiled.RenderGroups.Count - 1;
+        return new RenderGroup { Mesh = mesh, Texture = tex, Node = node, MultiMesh = multiMesh};
     }
 }
