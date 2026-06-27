@@ -1,10 +1,11 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 public partial class Editor : CanvasLayer
 {
+    public static bool Open = false;
+    public const int MaxModelCount = 128;
     public enum Mode { Place, Select, Delete }
     private Mode currentMode = Mode.Select;
     public Mode CurrentMode
@@ -25,8 +26,8 @@ public partial class Editor : CanvasLayer
     private const string _levelDirectory = "user://data/levels/";
     public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
     public IEditorModel SelectedModel => _modelLibrary.SelectedModel;
-    private ProjectileModel[] projectileModels = new ProjectileModel[128];
-    private PatternModel[] patternModels = new PatternModel[128];
+    private ProjectileModel[] projectileModels = new ProjectileModel[MaxModelCount];
+    private PatternModel[] patternModels = new PatternModel[MaxModelCount];
     public IReadOnlyList<ProjectileModel> ProjectileModels => projectileModels;
     public IReadOnlyList<PatternModel> PatternModels => patternModels;
     // Save the input model at the specified id. This function will set the models id to match what was provided.
@@ -56,8 +57,8 @@ public partial class Editor : CanvasLayer
     public NodePath ModelLibraryPath = Modules + "/Middle/ModelLibrary";
     public NodePath LevelMetaPath = Modules + "/Left/LevelMetadata";
     public NodePath LevelPreviewPath = Modules + "/Left/LevelPreview";
-    public NodePath ProjCreatorPath = Modules + "/Right/ProjectileCreator";
-    public NodePath PatternCreatorPath = Modules + "/Right/PatternCreator";
+    public NodePath ProjCreatorPath = Modules + "/Right/Creators/ProjectileCreator";
+    public NodePath PatternCreatorPath = Modules + "/Right/Creators/PatternCreator";
     public NodePath InspectorPath = Modules + "/Middle/Inspector";
 
     const string ToolbarButtons = "/root/main/EditorLayer/Sections/Toolbar/Buttons";
@@ -93,10 +94,12 @@ public partial class Editor : CanvasLayer
         _levelMeta.BgImageChanged += _preview.ChangeBackgroundImage;
 
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
+        _projCreator.ModelSaved += _preview.CompileProjectile;
         _projCreator.ModelSaved += _preview.Sync;
         _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
 
         _patternCreator.ModelSaved += _modelLibrary.OnModelSaved;
+        _patternCreator.ModelSaved += _preview.CompilePattern;
         _patternCreator.ModelSaved += _preview.Sync;
 
         GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
@@ -110,6 +113,30 @@ public partial class Editor : CanvasLayer
         _selectButton.Pressed += () => CurrentMode = Mode.Select;
         _deleteButton.Pressed += () => CurrentMode = Mode.Delete;
     }
+    public override void _Input(InputEvent @event)
+    {
+        if (!Open) return;
+        if (@event.IsActionPressed("place_bind"))
+        {
+            CurrentMode = Mode.Place;
+        }
+        else if (@event.IsActionPressed("select_bind"))
+        {
+            CurrentMode = Mode.Select;
+        }
+        else if (@event.IsActionPressed("delete_bind"))
+        {
+            CurrentMode = Mode.Delete;
+        }
+        else if (@event.IsActionPressed("save_bind"))
+        {
+            SaveLevel();
+        }
+        else if (@event.IsActionPressed("playback_toggle"))
+        {
+            _timeline.TogglePlaying();
+        }
+    }
     public void NewLevel()
     {
         LevelData data = new()
@@ -121,8 +148,8 @@ public partial class Editor : CanvasLayer
             AspectRatio = 0,
             Duration = 1f,
             LevelId = Guid.NewGuid().ToString(),
-            ProjectileModels = [],
-            PatternModels = [],
+            ProjectileModels = new ProjectileModel[MaxModelCount],
+            PatternModels =  new PatternModel[MaxModelCount],
             References = [],
         };
 
@@ -149,40 +176,44 @@ public partial class Editor : CanvasLayer
     private void ApplyLevelData(LevelData data)
     {
         levelData = data;
-        foreach (var model in data.ProjectileModels)
+        for (int i = 0; i < MaxModelCount; i++)
         {
-            projectileModels[model.Id] = model;
+            var m = data.ProjectileModels[i];
+            projectileModels[i] = m;
         }
-        foreach (var model in data.PatternModels)
+        for (int i = 0; i < MaxModelCount; i++)
         {
-            patternModels[model.Id] = model;
+            var m = data.PatternModels[i];
+            patternModels[i] = m;
         }
         _timeline.Load(data.References);
         _timeline.UpdateDuration();
-        _levelMeta.Load(data);
+        _preview.CompileAll();
         _preview.ChangeBackgroundImage(data.BgImage);
+        _preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
+        _levelMeta.Load(data);
         _projCreator.LoadProjectile(new());
         _patternCreator.LoadPattern(new());
-        var merged = (data.ProjectileModels ?? Enumerable.Empty<ProjectileModel>())
-            .Cast<IEditorModel>()
-            .Concat((data.PatternModels ?? Enumerable.Empty<PatternModel>()).Cast<IEditorModel>())
-            .ToList();
-        _modelLibrary.Load(merged);
+        _modelLibrary.Refresh();
     }
     private void SaveLevel()
     {
+        levelData.PatternModels = [.. patternModels];
+        levelData.ProjectileModels = [.. projectileModels];
         string levelPath = $"{_levelDirectory}{levelData.LevelId}/";
         GD.Print($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
         WriteJson(levelPath + "leveldata.json", levelData);
         GD.Print("[Editor] Saved level successfully");
     }
+    public void SyncPreview() =>
+        _preview.Sync();
     public void AddReference(EditorReference bullet)
     {
         _timeline.AddMarker(bullet);
         levelData.References.Add(bullet);
         _preview.Sync();
     }
-    public void DeleteBullet(EditorReference bullet)
+    public void DeleteReference(EditorReference bullet)
     {
         _timeline.RemoveMarker(bullet);
         levelData.References.Remove(bullet);
@@ -209,7 +240,7 @@ public partial class Editor : CanvasLayer
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file == null)
         {
-            GD.PrintErr($"[Editor] Failed to open file for writing: {path}");
+            GD.PrintErr($"Failed to open file for writing: {path}");
         }
         var s = JsonSerializer.Serialize(data);
         file.StoreString(s);

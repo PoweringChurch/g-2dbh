@@ -34,6 +34,7 @@ public partial class CustomLevelSelect : LevelSelect
         var ui = GetNode<UIManager>("/root/UIManager");
         ui.ShowEditor();
         bool success = e.OpenLevel(_selectedLevel);
+        Editor.Open = true;
         if (!success)
         {
             Show();

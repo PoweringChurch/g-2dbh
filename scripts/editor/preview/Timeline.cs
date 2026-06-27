@@ -61,8 +61,10 @@ public partial class Timeline : Control
         }
         Playhead.SetValueNoSignal(currentTime);
         PlayheadPositionInput.SetValueNoSignal(currentTime);
+
+        e.SyncPreview();
     }
-    private void TogglePlaying() => SetPlaying(!_playing);
+    public void TogglePlaying() => SetPlaying(!_playing);
     private void SetPlaying(bool playing)
     {
         _playing = playing;
@@ -90,6 +92,7 @@ public partial class Timeline : Control
             PlayheadPositionInput.SetValueNoSignal(currentTime);
         else
             Playhead.SetValueNoSignal(currentTime);
+        e.SyncPreview();
     }
 
     public void UpdateDuration()

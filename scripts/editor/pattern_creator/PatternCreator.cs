@@ -94,11 +94,7 @@ public partial class PatternCreator : Control
             ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors.");
             return;
         }
-        if (string.IsNullOrWhiteSpace(model.Name))
-        {
-            ErrorDisplay.SetMessage("Save", "[Save] Model must have an ID.");
-            return;
-        }
+        model.Name = NameInput.Text;
         ErrorDisplay.ClearMessage("Save");
         var clone = new PatternModel(model);
         e.SavePatternModel(clone, (int)IdInput.Value);

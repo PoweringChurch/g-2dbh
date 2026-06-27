@@ -1,11 +1,10 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class ModelLibrary : Control
 {
-    [Export] VBoxContainer ModelList;
+    [Export] VBoxContainer PatternModelList;
+    [Export] VBoxContainer ProjectileModelList;
     private PackedScene ModelUITemplate = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/model_ui.tscn");
     private Editor e;
 
@@ -22,28 +21,26 @@ public partial class ModelLibrary : Control
 
     public void Refresh()
     {
-        var combined = new List<IEditorModel>();
-        combined.AddRange(e.ProjectileModels);
-        combined.AddRange(e.PatternModels);
-        Load(combined);
+        Load((IEditorModel[])e.PatternModels, PatternModelList);
+        Load((IEditorModel[])e.ProjectileModels, ProjectileModelList);
     }
-
-    public void Load(List<IEditorModel> models)
+    private void Load(IEditorModel[] models, VBoxContainer container)
     {
-        foreach (var child in ModelList.GetChildren())
+        foreach (var child in container.GetChildren())
             child.QueueFree();
-
         foreach (var m in models)
         {
+            if (m == null)
+                continue;
             var newTemplate  = ModelUITemplate.Instantiate<VBoxContainer>();
             var colorDisplay = newTemplate.GetNode<ColorRect>("Id/Color");
             var idField      = newTemplate.GetNode<Label>("Id/Field");
+            var nameField    = newTemplate.GetNode<Label>("Name/Field");
             var selectButton = newTemplate.GetNode<Button>("Interact/Select");
             var deleteButton = newTemplate.GetNode<Button>("Interact/Delete");
-
+            nameField.Text = m.Name;
             idField.Text = m.Id.ToString();
             colorDisplay.Color = RenderingUtils.ColorFromString(m.Name);
-
             selectButton.Pressed += () =>
             {
                 SelectedModel = m;
@@ -70,7 +67,7 @@ public partial class ModelLibrary : Control
                 newTemplate.QueueFree();
             };
 
-            ModelList.AddChild(newTemplate);
+            container.AddChild(newTemplate);
         }
     }
 }

@@ -6,7 +6,8 @@ using System.Text.Json.Serialization;
 public enum ModelType { Projectile, Pattern }
 public class EditorReference
 {
-    public Vector2 SpawnPos {get; set;}
+    public float SpawnX {get; set;}
+    public float SpawnY {get; set;}
     public double T { get; set; }
     public double F { get; set; }
     public ModelType Type { get; set; }
@@ -71,7 +72,6 @@ public class PatternModel : IEditorModel
     [JsonIgnore] public Func<EvalContext, double> efny;
     [JsonIgnore] public Func<EvalContext, double> efnt;
     [JsonIgnore] public Func<EvalContext, double> efnfwd;
-    [JsonIgnore] public int RenderGroupId;
     public PatternModel() { }
     public PatternModel(PatternModel other)
     {
@@ -91,8 +91,40 @@ public class LevelData
     [JsonPropertyName("health")] public int Health { get; set; } = 3;
     [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 1;
     [JsonPropertyName("duration")] public float Duration { get; set; } = 1;
-    [JsonPropertyName("projectileModels")] public List<ProjectileModel> ProjectileModels { get; set; } = null;
+    [JsonPropertyName("projectileModels")] public ProjectileModel[] ProjectileModels { get; set; } = null;
     [JsonPropertyName("bullets")] public List<EditorReference> References { get; set; } = null;
-    [JsonPropertyName("patternModels")] public List<PatternModel> PatternModels { get; set; } = null;
+    [JsonPropertyName("patternModels")] public PatternModel[] PatternModels { get; set; } = null;
     [JsonPropertyName("id")] public string LevelId { get; set; }
+}
+
+[AttributeUsage(AttributeTargets.Property)]
+public class ConfigFieldAttribute : Attribute
+{
+    public string Category { get; }
+    public string Label { get; }
+    public double Min { get; }
+    public double Max { get; }
+    public double Step { get; }
+
+    public ConfigFieldAttribute(string category, string label, double min = 0, double max = 1000, double step = 1)
+    {
+        Category = category;
+        Label = label;
+        Min = min;
+        Max = max;
+        Step = step;
+    }
+}
+public class Config
+{
+    // GAME
+    [ConfigField("Game", "Slow render updates on far projectiles")]
+    [JsonPropertyName("slowRenderUpdatesOnFarProjectiles")] public bool SlowRenderUpdatesOnFarProjectiles { get; set; } = false;
+
+    // EDITOR
+    [ConfigField("Editor", "Path fidelity", 1, 256, 1)]
+    [JsonPropertyName("pathFidelity")] public int PathFidelity { get; set; } = 64;
+
+    [ConfigField("Editor", "Max path length", 1, 2048, 0.5)]
+    [JsonPropertyName("MaxPathLength")] public float MaxPathLength { get; set; } = 128;
 }

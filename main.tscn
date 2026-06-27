@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://byrpidyii8f8t"]
+[gd_scene format=3 uid="uid://byrpidyii8f8t"]
 
 [ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/HUD.cs" id="2_dg77c"]
 [ext_resource type="Theme" uid="uid://dq7qa8sty0ce0" path="res://data/other/themes/default_ui.tres" id="2_ryguw"]
@@ -20,44 +20,7 @@
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
 [ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/ScoreSummary.cs" id="17_cegan"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_82xsv"]
-lightmap_size_hint = Vector2i(122, 122)
-size = Vector2(24, 24)
-
-[sub_resource type="MultiMesh" id="MultiMesh_getpj"]
-instance_count = 9
-mesh = SubResource("QuadMesh_82xsv")
-buffer = PackedFloat32Array(0.495, 1.71, 2.915, 25.735, 1.46, 1.125, 5.02, 24.95, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-
-[sub_resource type="Image" id="Image_82xsv"]
-data = {
-"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AABp/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAAaQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAGr/AAD//wAA0/8AABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABb/AADT/wAA//8AAGoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGQAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZ/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAA0/8AAP//AADT/wAA0/8AAP//AADT/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAA0/8AAP//AADT/wAA0/8AAP//AADT/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAY/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABgAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGAAAAAAAAAAAAAAAAAAAAAD/AAAV/wAA0v8AAP//AADX/wAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABX/AADS/wAA//8AANf/AAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAFf8AANL/AAD//wAA1/8AABkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAGr/AAD//wAA0/8AABYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AABb/AADT/wAA//8AAGoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AABp/wAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAW/wAAaQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-"format": "RGBA8",
-"height": 24,
-"mipmaps": false,
-"width": 24
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_368cx"]
-image = SubResource("Image_82xsv")
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_01b3n"]
-_surfaces = [{
-"aabb": AABB(-1, -1, 0, 2, 2, 1e-05),
-"format": 34359742465,
-"index_count": 60,
-"index_data": PackedByteArray("AAABAAIAAAACAAMAAAADAAQAAAAEAAUAAAAFAAYAAAAGAAcAAAAHAAgAAAAIAAkAAAAJAAoAAAAKAAsAAAALAAwAAAAMAA0AAAANAA4AAAAOAA8AAAAPABAAAAAQABEAAAARABIAAAASABMAAAATABQAAAAUAAEA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 22,
-"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAcXhzP3o3nj4AAAAAvRtPPxh5Fj8AAAAAGHkWP70bTz8AAAAAeTeePnF4cz8AAAAALr07swAAgD8AAAAAezeevnB4cz8AAAAAG3kWv7sbTz8AAAAAvhtPvxd5Fj8AAAAAcHhzv3s3nj4AAAAAAACAvy69u7MAAAAAb3hzv4E3nr4AAAAAvBtPvxp5Fr8AAAAAFXkWv78bT78AAAAAbjeevnJ4c78AAAAALt5MMgAAgL8AAAAAfjeePnB4c78AAAAAHHkWP7obT78AAAAAvBtPPxl5Fr8AAAAAcXhzP3g3nr4AAAAAAACAPy69OzQAAAAA")
-}]
-
-[sub_resource type="MultiMesh" id="MultiMesh_rjm0q"]
-instance_count = 79
-mesh = SubResource("ArrayMesh_01b3n")
-buffer = PackedFloat32Array(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
+[ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/SettingsMenu.cs" id="21_getpj"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -928,20 +891,33 @@ label_settings = ExtResource("7_cegan")
 autowrap_mode = 2
 script = ExtResource("8_074og")
 
-[node name="ModelLibrary" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=2022637299 node_paths=PackedStringArray("ModelList")]
+[node name="ModelLibrary" type="TabContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=2067613034 node_paths=PackedStringArray("PatternModelList", "ProjectileModelList")]
 layout_mode = 2
-size_flags_horizontal = 3
 size_flags_vertical = 3
-title = "Library"
+current_tab = 0
 script = ExtResource("11_ryguw")
-ModelList = NodePath("ScrollContainer/List")
+PatternModelList = NodePath("Patterns/List")
+ProjectileModelList = NodePath("Projectiles/List")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary" unique_id=1905273804]
+[node name="Projectiles" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary" unique_id=689027904]
 custom_minimum_size = Vector2(0, 240)
 layout_mode = 2
 horizontal_scroll_mode = 0
+metadata/_tab_index = 0
 
-[node name="List" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary/ScrollContainer" unique_id=984567383]
+[node name="List" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary/Projectiles" unique_id=1261164839]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Patterns" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary" unique_id=1905273804]
+visible = false
+custom_minimum_size = Vector2(0, 240)
+layout_mode = 2
+horizontal_scroll_mode = 0
+metadata/_tab_index = 1
+
+[node name="List" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary/Patterns" unique_id=984567383]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -949,67 +925,67 @@ size_flags_vertical = 3
 [node name="Right" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=129711909]
 layout_mode = 2
 
-[node name="ProjectileCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1452542516 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "Save")]
-custom_minimum_size = Vector2(355, 0)
+[node name="Creators" type="TabContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=3987318]
+custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 size_flags_vertical = 3
-title = "Projectile Creator"
-script = ExtResource("5_w48qg")
-IdInput = NodePath("ScrollContainer/VBoxContainer/Id/IdInput")
-NameInput = NodePath("ScrollContainer/VBoxContainer/Name/NameInput")
-Preview = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport/ModelPreview")
-TInput = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T/TInput")
-TSlider = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T/TSlider")
-Zoom = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Zoom")
-TextureInput = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/Texture/TInput")
-XDisplay = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/ReadInfo/XField")
-YDisplay = NodePath("ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/ReadInfo/YField")
-ErrorDisplay = NodePath("ScrollContainer/VBoxContainer/Errors")
-FnXInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnX/FnXInput")
-FnYInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnY/FnYInput")
-LifetimeInput = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime/TInput")
-PersistantCheckbutton = NodePath("ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Persistant/CheckButton")
-UseShapeCheckbutton = NodePath("ScrollContainer/VBoxContainer/Collision/VBoxContainer/UseShape/UseShapeCheck")
-Radius = NodePath("ScrollContainer/VBoxContainer/Collision/VBoxContainer/Radius/Radius")
-ShapeEditor = NodePath("ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor")
-Save = NodePath("ScrollContainer/VBoxContainer/Save")
+current_tab = 0
+tab_0/title = "Projectile Editor"
+tab_1/title = "Pattern Editor"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator" unique_id=1699904652]
+[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "Save")]
 layout_mode = 2
 horizontal_scroll_mode = 0
+script = ExtResource("5_w48qg")
+IdInput = NodePath("Sort/Id/IdInput")
+NameInput = NodePath("Sort/Name/NameInput")
+Preview = NodePath("Sort/Preview/HBoxContainer/Preview/SubViewport/ModelPreview")
+TInput = NodePath("Sort/Preview/T/TInput")
+TSlider = NodePath("Sort/Preview/T/TSlider")
+Zoom = NodePath("Sort/Preview/HBoxContainer/Zoom")
+TextureInput = NodePath("Sort/Preview/Texture/TInput")
+XDisplay = NodePath("Sort/Preview/ReadInfo/XField")
+YDisplay = NodePath("Sort/Preview/ReadInfo/YField")
+ErrorDisplay = NodePath("Sort/Errors")
+FnXInput = NodePath("Sort/Behavior/FnX/FnXInput")
+FnYInput = NodePath("Sort/Behavior/FnY/FnYInput")
+LifetimeInput = NodePath("Sort/Behavior/Lifetime/TInput")
+PersistantCheckbutton = NodePath("Sort/Behavior/Persistant/CheckButton")
+UseShapeCheckbutton = NodePath("Sort/Collision/UseShape/UseShapeCheck")
+Radius = NodePath("Sort/Collision/Radius/Radius")
+ShapeEditor = NodePath("Sort/Collision/ShapeEditor")
+Save = NodePath("Sort/Save")
+metadata/_tab_index = 0
+metadata/_tab_name = "Projectile Editor"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer" unique_id=638310919]
+[node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator" unique_id=638310919]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PreviewContainer" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=294302563]
-layout_mode = 2
-title = "Preview"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer" unique_id=1090705826]
+[node name="Preview" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1090705826]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer" unique_id=866320103]
+[node name="HBoxContainer" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=866320103]
 layout_mode = 2
 
-[node name="Zoom" type="VSlider" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer" unique_id=2124792877]
+[node name="Zoom" type="VSlider" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer" unique_id=2124792877]
 layout_mode = 2
 min_value = 0.1
 max_value = 2.0
 step = 0.1
 value = 1.0
 
-[node name="Preview" type="SubViewportContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer" unique_id=817696129]
+[node name="Preview" type="SubViewportContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer" unique_id=817696129]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 
-[node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview" unique_id=1778793856]
+[node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
 render_target_update_mode = 4
 
-[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=872621113]
+[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1017,26 +993,26 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+color = Color(0.019139709, 0.06515412, 0.074752696, 1)
 
-[node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=1448176052]
+[node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=1448176052]
 position = Vector2(128, 128)
 script = ExtResource("5_2cqfq")
 
-[node name="T" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer" unique_id=1891606173]
+[node name="T" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=1891606173]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T" unique_id=1707503616]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/T" unique_id=1707503616]
 layout_mode = 2
 text = "T"
 
-[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T" unique_id=598001664]
+[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/T" unique_id=598001664]
 layout_mode = 2
 size_flags_horizontal = 0
 step = 0.01
 allow_greater = true
 
-[node name="TSlider" type="HSlider" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/T" unique_id=1862415905]
+[node name="TSlider" type="HSlider" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/T" unique_id=1862415905]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -1044,125 +1020,122 @@ max_value = 15.708
 step = 0.1
 allow_greater = true
 
-[node name="Texture" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer" unique_id=428064828]
+[node name="Texture" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=428064828]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/Texture" unique_id=699212874]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/Texture" unique_id=699212874]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Texture"
 
-[node name="TInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/Texture" unique_id=1224502102]
+[node name="TInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/Texture" unique_id=1224502102]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
 
-[node name="ReadInfo" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer" unique_id=537574864]
+[node name="ReadInfo" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=537574864]
 layout_mode = 2
 
-[node name="PosX" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/ReadInfo" unique_id=1750195110]
+[node name="PosX" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/ReadInfo" unique_id=1750195110]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Pos x:"
 horizontal_alignment = 2
 
-[node name="XField" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/ReadInfo" unique_id=1078877439]
+[node name="XField" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/ReadInfo" unique_id=1078877439]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0.00"
 horizontal_alignment = 1
 
-[node name="PosY" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/ReadInfo" unique_id=39101817]
+[node name="PosY" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/ReadInfo" unique_id=39101817]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Pos Y:"
 horizontal_alignment = 2
 
-[node name="YField" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/PreviewContainer/VBoxContainer/ReadInfo" unique_id=552291964]
+[node name="YField" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/ReadInfo" unique_id=552291964]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0.00"
 horizontal_alignment = 1
 
-[node name="Behavior" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=1964731826]
-layout_mode = 2
-title = "Behavior"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior" unique_id=1801113374]
+[node name="Seperator0" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=523016264]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="FnX" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer" unique_id=916097322]
+[node name="Behavior" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1801113374]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnX" unique_id=1714355710]
+[node name="FnX" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=916097322]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/FnX" unique_id=1714355710]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Function X"
 
-[node name="FnXInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnX" unique_id=319294738]
+[node name="FnXInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/FnX" unique_id=319294738]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "0"
 
-[node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer" unique_id=663279918]
+[node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=663279918]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnY" unique_id=1101603724]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/FnY" unique_id=1101603724]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Function Y"
 
-[node name="FnYInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/FnY" unique_id=1608793106]
+[node name="FnYInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/FnY" unique_id=1608793106]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "30*sin(t)"
 
-[node name="Lifetime" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer" unique_id=630256805]
+[node name="Lifetime" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=630256805]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime" unique_id=2132404657]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Lifetime" unique_id=2132404657]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Lifetime"
 
-[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Lifetime" unique_id=1000369693]
+[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Lifetime" unique_id=1000369693]
 layout_mode = 2
 size_flags_horizontal = 0
 step = 0.01
 allow_greater = true
 
-[node name="Persistant" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer" unique_id=2020770499]
+[node name="Persistant" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=2020770499]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Persistant" unique_id=1246886216]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Persistant" unique_id=1246886216]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Persistant"
 
-[node name="CheckButton" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Behavior/VBoxContainer/Persistant" unique_id=1890542924]
+[node name="CheckButton" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Persistant" unique_id=1890542924]
 layout_mode = 2
 
-[node name="Collision" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=2033491913]
-custom_minimum_size = Vector2(345, 0)
-layout_mode = 2
-folded = true
-title = "Collision"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision" unique_id=1903081312]
-visible = false
+[node name="Seperator1" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=584102311]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Radius" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer" unique_id=1860882032]
+[node name="Collision" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1903081312]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/Radius" unique_id=1003993250]
+[node name="Radius" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=1860882032]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/Radius" unique_id=1003993250]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Radius"
 
-[node name="Radius" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/Radius" unique_id=1855829463]
+[node name="Radius" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/Radius" unique_id=1855829463]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 1.0
@@ -1171,18 +1144,19 @@ value = 2.42
 allow_greater = true
 allow_lesser = true
 
-[node name="UseShape" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer" unique_id=1249334427]
+[node name="UseShape" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=1249334427]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/UseShape" unique_id=2139568408]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/UseShape" unique_id=2139568408]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Use Shape"
 
-[node name="UseShapeCheck" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/UseShape" unique_id=1563563340]
+[node name="UseShapeCheck" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/UseShape" unique_id=1563563340]
 layout_mode = 2
 
-[node name="ShapeEditor" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer" unique_id=647831941 node_paths=PackedStringArray("TextureDisplay", "TextureTransparency", "PointContainer", "NewPoint")]
+[node name="ShapeEditor" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=647831941 node_paths=PackedStringArray("TextureDisplay", "TextureTransparency", "PointContainer", "NewPoint")]
+visible = false
 layout_mode = 2
 script = ExtResource("6_074og")
 TextureDisplay = NodePath("TextureRect")
@@ -1190,62 +1164,66 @@ TextureTransparency = NodePath("Transparency")
 PointContainer = NodePath("ScrollContainer/Points")
 NewPoint = NodePath("ScrollContainer/Points/NewPoint")
 
-[node name="Transparency" type="VSlider" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor" unique_id=1396601161]
+[node name="Transparency" type="VSlider" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1396601161]
 layout_mode = 2
 max_value = 1.0
 step = 0.1
 
-[node name="TextureRect" type="TextureRect" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor" unique_id=827913099]
+[node name="TextureRect" type="TextureRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=827913099]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 expand_mode = 4
 
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor" unique_id=1002758548]
+[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1002758548]
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="Points" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor/ScrollContainer" unique_id=12223036]
+[node name="Points" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor/ScrollContainer" unique_id=12223036]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NewPoint" type="Button" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Collision/VBoxContainer/ShapeEditor/ScrollContainer/Points" unique_id=132318333]
+[node name="NewPoint" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor/ScrollContainer/Points" unique_id=132318333]
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 text = "+"
 
-[node name="Name" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=740438102]
+[node name="Seperator2" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=530103548]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Name" unique_id=1495345120]
+[node name="Name" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=740438102]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Name" unique_id=1495345120]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Id"
+text = "Name"
 
-[node name="NameInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Name" unique_id=1271846511]
+[node name="NameInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Name" unique_id=1271846511]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
-placeholder_text = "30*sin(t)"
+placeholder_text = "..."
 
-[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=336509970]
+[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=336509970]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Id" unique_id=486520325]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Id" unique_id=486520325]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Id"
 
-[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer/Id" unique_id=1366249995]
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Id" unique_id=1366249995]
 layout_mode = 2
 max_value = 128.0
 rounded = true
 
-[node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=538124694]
+[node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=538124694]
 layout_mode = 2
 text = "Save"
 
-[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Right/ProjectileCreator/ScrollContainer/VBoxContainer" unique_id=1903436747]
+[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1903436747]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1253,63 +1231,56 @@ label_settings = ExtResource("7_cegan")
 autowrap_mode = 2
 script = ExtResource("8_074og")
 
-[node name="PatternCreator" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=1409250504 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "IdInput", "NameInput", "Save", "ErrorDisplay")]
-custom_minimum_size = Vector2(355, 0)
-layout_mode = 2
-size_flags_vertical = 3
-title = "Pattern Creator"
-script = ExtResource("15_getpj")
-Preview = NodePath("ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport/ModelPreview")
-TInput = NodePath("ScrollContainer/Sort/PreviewContainer/VBoxContainer/T/TInput")
-TSlider = NodePath("ScrollContainer/Sort/PreviewContainer/VBoxContainer/T/TSlider")
-Zoom = NodePath("ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Zoom")
-FnXInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnX/FnXInput")
-FnYInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnY/FnYInput")
-FnTInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnT/FnTInput")
-FnFwdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/FnFwd/FnFwdInput")
-CountInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/Count/Count")
-ProjectileIdInput = NodePath("ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect/IdInput")
-IdInput = NodePath("ScrollContainer/Sort/Id/IdInput")
-NameInput = NodePath("ScrollContainer/Sort/Name/NameInput")
-Save = NodePath("ScrollContainer/Sort/Save")
-ErrorDisplay = NodePath("ScrollContainer/Sort/Errors")
-
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator" unique_id=2050226747]
+[node name="PatternCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=2050226747 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "IdInput", "NameInput", "Save", "ErrorDisplay")]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
+script = ExtResource("15_getpj")
+Preview = NodePath("Sort/Preview/HBoxContainer/Preview/SubViewport/ModelPreview")
+TInput = NodePath("Sort/Preview/T/TInput")
+TSlider = NodePath("Sort/Preview/T/TSlider")
+Zoom = NodePath("Sort/Preview/HBoxContainer/Zoom")
+FnXInput = NodePath("Sort/Placement/FnX/FnXInput")
+FnYInput = NodePath("Sort/Placement/FnY/FnYInput")
+FnTInput = NodePath("Sort/Placement/FnT/FnTInput")
+FnFwdInput = NodePath("Sort/Placement/FnFwd/FnFwdInput")
+CountInput = NodePath("Sort/Placement/Count/Count")
+ProjectileIdInput = NodePath("Sort/Placement/ModelSelect/IdInput")
+IdInput = NodePath("Sort/Id/IdInput")
+NameInput = NodePath("Sort/Name/NameInput")
+Save = NodePath("Sort/Save")
+ErrorDisplay = NodePath("Sort/Errors")
+metadata/_tab_index = 1
+metadata/_tab_name = "Pattern Editor"
 
-[node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer" unique_id=164185964]
+[node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator" unique_id=164185964]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PreviewContainer" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=588377282]
-layout_mode = 2
-title = "Preview"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer" unique_id=1401360210]
+[node name="Preview" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=1401360210]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer" unique_id=1401726228]
+[node name="HBoxContainer" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview" unique_id=1401726228]
 layout_mode = 2
 
-[node name="Zoom" type="VSlider" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer" unique_id=1658362115]
+[node name="Zoom" type="VSlider" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer" unique_id=1658362115]
 layout_mode = 2
 min_value = 0.1
 max_value = 2.0
 step = 0.1
 value = 1.0
 
-[node name="Preview" type="SubViewportContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer" unique_id=2094006819]
+[node name="Preview" type="SubViewportContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer" unique_id=2094006819]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 
-[node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview" unique_id=449177170]
+[node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview" unique_id=449177170]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
-[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=1734361611]
+[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=1734361611]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1317,25 +1288,25 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+color = Color(0.019139709, 0.06515412, 0.074752696, 1)
 
-[node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/HBoxContainer/Preview/SubViewport" unique_id=67918048]
+[node name="ModelPreview" type="Node2D" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=67918048]
 position = Vector2(128, 128)
 script = ExtResource("16_ryguw")
 
-[node name="T" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer" unique_id=414826015]
+[node name="T" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview" unique_id=414826015]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/T" unique_id=529424437]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/T" unique_id=529424437]
 layout_mode = 2
 text = "T"
 
-[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/T" unique_id=1188432992]
+[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/T" unique_id=1188432992]
 layout_mode = 2
 step = 0.01
 allow_greater = true
 
-[node name="TSlider" type="HSlider" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/PreviewContainer/VBoxContainer/T" unique_id=742373462]
+[node name="TSlider" type="HSlider" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/T" unique_id=742373462]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -1343,91 +1314,91 @@ max_value = 15.708
 step = 0.1
 allow_greater = true
 
-[node name="Placement" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=1974928064]
-layout_mode = 2
-title = "Behavior"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement" unique_id=2144086405]
+[node name="Seperator0" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=1366863452]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="ModelSelect" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1983766838]
+[node name="Placement" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=2144086405]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect" unique_id=1259893055]
+[node name="ModelSelect" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=1983766838]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/ModelSelect" unique_id=1259893055]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Projectile Id"
 
-[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/ModelSelect" unique_id=502450669]
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/ModelSelect" unique_id=502450669]
 layout_mode = 2
 max_value = 128.0
 rounded = true
 
-[node name="FnX" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1026916229]
+[node name="FnX" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=1026916229]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnX" unique_id=404444172]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnX" unique_id=404444172]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Function X"
 
-[node name="FnXInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnX" unique_id=1251621203]
+[node name="FnXInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnX" unique_id=1251621203]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "50*sin(tau*i/n)"
 
-[node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1835444005]
+[node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=1835444005]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnY" unique_id=657635050]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnY" unique_id=657635050]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Function Y"
 
-[node name="FnYInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnY" unique_id=939582763]
+[node name="FnYInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnY" unique_id=939582763]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "50*cos(tau*i/n)"
 
-[node name="FnT" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=95664483]
+[node name="FnT" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=95664483]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnT" unique_id=1200750581]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnT" unique_id=1200750581]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Function Time"
 
-[node name="FnTInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnT" unique_id=1514420381]
+[node name="FnTInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnT" unique_id=1514420381]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "i/n*5"
 
-[node name="FnFwd" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=1307103656]
+[node name="FnFwd" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=1307103656]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnFwd" unique_id=1483360471]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnFwd" unique_id=1483360471]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Function Forward"
 
-[node name="FnFwdInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/FnFwd" unique_id=701743450]
+[node name="FnFwdInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/FnFwd" unique_id=701743450]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "-tau*i/n"
 
-[node name="Count" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer" unique_id=791907995]
+[node name="Count" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=791907995]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/Count" unique_id=2091682535]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/Count" unique_id=2091682535]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Count"
 
-[node name="Count" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Placement/VBoxContainer/Count" unique_id=986195766]
+[node name="Count" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement/Count" unique_id=986195766]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 1.0
@@ -1435,38 +1406,41 @@ value = 1.0
 rounded = true
 allow_greater = true
 
-[node name="Name" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=1972979124]
+[node name="Seperator1" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=656266574]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Name" unique_id=897253841]
+[node name="Name" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=1972979124]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Name" unique_id=897253841]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="NameInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Name" unique_id=902891240]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "..."
+
+[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=339645853]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Id" unique_id=1014415866]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Id"
 
-[node name="NameInput" type="LineEdit" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Name" unique_id=902891240]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "0"
-placeholder_text = "30*sin(t)"
-
-[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=339645853]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Id" unique_id=1014415866]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Id"
-
-[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort/Id" unique_id=695486686]
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Id" unique_id=695486686]
 layout_mode = 2
 max_value = 128.0
 rounded = true
 
-[node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=1446723958]
+[node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=1446723958]
 layout_mode = 2
 text = "Save"
 
-[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Right/PatternCreator/ScrollContainer/Sort" unique_id=327677971]
+[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=327677971]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1611,18 +1585,59 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Quit"
 
-[node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
-
-[node name="GameRoot" type="Node2D" parent="." unique_id=1103239742]
+[node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_returnButton", "_fieldContainer")]
+process_mode = 2
 visible = false
+script = ExtResource("21_getpj")
+_saveButton = NodePath("Stuff/Sort/Tools/Save")
+_returnButton = NodePath("Stuff/Sort/Tools/Return")
+_fieldContainer = NodePath("Stuff/Sort/Container")
 
-[node name="_MultiMeshInstance2D_34" type="MultiMeshInstance2D" parent="GameRoot" unique_id=1008332369]
-position = Vector2(1, 1)
-multimesh = SubResource("MultiMesh_getpj")
-texture = SubResource("ImageTexture_368cx")
+[node name="Fill" type="ColorRect" parent="Settings" unique_id=1333139257]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
-[node name="_MultiMeshInstance2D_35" type="MultiMeshInstance2D" parent="GameRoot" unique_id=539385468]
-multimesh = SubResource("MultiMesh_rjm0q")
+[node name="Stuff" type="PanelContainer" parent="Settings" unique_id=1402330802]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -233.5
+offset_right = 450.0
+offset_bottom = 233.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_ryguw")
+
+[node name="Sort" type="VBoxContainer" parent="Settings/Stuff" unique_id=734017190]
+layout_mode = 2
+
+[node name="Container" type="VBoxContainer" parent="Settings/Stuff/Sort" unique_id=1874091712]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Tools" type="HBoxContainer" parent="Settings/Stuff/Sort" unique_id=1685518385]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Settings/Stuff/Sort/Tools" unique_id=1105254704]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save"
+
+[node name="Return" type="Button" parent="Settings/Stuff/Sort/Tools" unique_id=649342039]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Return"
+
+[node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
 
 [node name="VersionInfo" type="CanvasLayer" parent="." unique_id=34902471]
 
@@ -1638,4 +1653,4 @@ offset_right = 43.5
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("2_ryguw")
-text = "danmaku mania pre alpha 1"
+text = "danmaku mania pre alpha 2"

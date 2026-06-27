@@ -105,7 +105,7 @@ public partial class PatternPreview : Node2D
             DrawProjectileShape(projModel, texture, new Vector2(startxy.x + x, startxy.y+y), (float)genFwd, alive ? Colors.White : deadColor);
         }
         DrawSetTransform(Vector2.Zero, 0, Vector2.One);
-        DrawPath(fnX, fnY, lctx, lctx.N, 0,  Colors.Green, 32);
+        DrawPath(fnX, fnY, lctx, 0,  Colors.Green);
     }
     private void DrawProjectileShape(ProjectileModel model,
     Texture2D texture, Vector2 pos,
@@ -128,14 +128,14 @@ public partial class PatternPreview : Node2D
             DrawCircle(Vector2.Zero, model.Radius, color);
     }
     private void DrawPath(Expr fnx, Expr fny,
-    EvalContext pctx,
-    double len, double fwd,
-    Color color, int steps = 16)
+    EvalContext pctx, double fwd,
+    Color color)
     {
+        int steps = ConfigHelper.Current.PathFidelity;
         Vector2[] points = new Vector2[steps];
         for (int j = 0; j < steps; j++)
         {
-            pctx.I = len / steps * j;
+            pctx.I = Math.Min(pctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
             var (x, y) = Projectile.CalculatePositionAt((float)fwd, fnx, fny, pctx);
             points[j] = new Vector2(x,y);
         }

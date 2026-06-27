@@ -124,13 +124,14 @@ public partial class ProjectileModelPreview : Node2D
         }
         DrawPath();
     }
-    private void DrawPath(int steps = 32)
+    private void DrawPath()
     {
+        int steps = ConfigHelper.Current.PathFidelity;
         Vector2[] points = new Vector2[steps];
         var lctx = new EvalContext();
         for (int i = 0; i < steps; i++)
         {
-            lctx.T = lifetime / steps * i;
+            lctx.T = Math.Min(lifetime,ConfigHelper.Current.MaxPathLength) / steps * i;
             var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
             points[i] = new(x,y);
         }
