@@ -22,6 +22,8 @@
 [ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/ScoreSummary.cs" id="17_cegan"]
 [ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/SettingsMenu.cs" id="21_getpj"]
 [ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
+[ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="23_1u8w0"]
+[ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://Console.cs" id="23_d13ii"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -32,6 +34,7 @@ script = ExtResource("22_ryguw")
 volume_db = 17.851
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Duration", "_Completion")]
+visible = false
 script = ExtResource("2_dg77c")
 _scoreLabel = NodePath("Sort/PanelContainer/Sort/Score/Score")
 _grazeLabel = NodePath("Sort/PanelContainer/Sort/Graze/Graze")
@@ -68,7 +71,7 @@ layout_mode = 2
 [node name="SubViewport" type="SubViewport" parent="HUD/Sort/SubViewportContainer" unique_id=1965502961]
 handle_input_locally = false
 size = Vector2i(531, 900)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1148617783]
 z_index = -2
@@ -191,7 +194,6 @@ text = "0"
 label_settings = ExtResource("3_d13ii")
 
 [node name="MainMenu" type="CanvasLayer" parent="." unique_id=692766472 node_paths=PackedStringArray("_startButton", "_customsButton", "_settingsButton", "_quitButton")]
-visible = false
 script = ExtResource("2_ycdy4")
 _startButton = NodePath("Sort/Start")
 _customsButton = NodePath("Sort/Custom")
@@ -508,7 +510,6 @@ layout_mode = 2
 text = "Delete"
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
-visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -552,6 +553,14 @@ text = "Delete (3)"
 layout_mode = 2
 text = "Mode : Select"
 
+[node name="SnapAngle" type="Button" parent="EditorLayer/Sections/Toolbar/Buttons/ModeSelection" unique_id=1991394899]
+layout_mode = 2
+text = "Snap Angle (Shift)"
+
+[node name="SnapDisplay" type="Label" parent="EditorLayer/Sections/Toolbar/Buttons/ModeSelection" unique_id=1614060566]
+layout_mode = 2
+text = "Snap : On"
+
 [node name="Modules" type="HBoxContainer" parent="EditorLayer/Sections" unique_id=1944798638]
 layout_mode = 2
 size_flags_vertical = 3
@@ -583,7 +592,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(303, 361)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 anchors_preset = 15
@@ -651,6 +660,8 @@ text = "Level name"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Author" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=1015832539]
 layout_mode = 2
@@ -664,6 +675,8 @@ text = "Author"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="BgImage" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=794296215]
 layout_mode = 2
@@ -677,6 +690,8 @@ text = "Background"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Health" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=148922302]
 layout_mode = 2
@@ -690,6 +705,8 @@ text = "Health"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "(integer)"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Duration" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=329847440]
 layout_mode = 2
@@ -703,6 +720,8 @@ text = "Duration"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "(seconds)"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="AspectRatio" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=2112971349]
 layout_mode = 2
@@ -797,6 +816,8 @@ text = "Spawn Time"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "(seconds)"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="ModelId" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=945394233]
 layout_mode = 2
@@ -810,6 +831,8 @@ text = "Model Id"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=1003191319]
 custom_minimum_size = Vector2(20, 0)
@@ -992,7 +1015,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15
@@ -1596,6 +1619,7 @@ text = "Quit"
 
 [node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_openDataButton", "_returnButton", "_fieldContainer")]
 process_mode = 2
+visible = false
 script = ExtResource("21_getpj")
 _saveButton = NodePath("Stuff/Sort/Tools/Save")
 _openDataButton = NodePath("Stuff/Sort/Tools/OpenData")
@@ -1653,6 +1677,7 @@ size_flags_horizontal = 3
 text = "Open data folder"
 
 [node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
+script = ExtResource("23_1u8w0")
 
 [node name="VersionInfo" type="CanvasLayer" parent="." unique_id=34902471]
 
@@ -1669,3 +1694,47 @@ grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("2_ryguw")
 text = "danmaku mania pre alpha 2"
+
+[node name="Console" type="CanvasLayer" parent="." unique_id=1952028464 node_paths=PackedStringArray("_consoleText", "_save")]
+process_mode = 3
+visible = false
+script = ExtResource("23_d13ii")
+_consoleText = NodePath("Stuff/Sort/ConsoleText")
+_save = NodePath("Stuff/Sort/Tools/Save")
+
+[node name="Stuff" type="PanelContainer" parent="Console" unique_id=190996372]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -233.5
+offset_right = 450.0
+offset_bottom = 233.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_ryguw")
+
+[node name="Sort" type="VBoxContainer" parent="Console/Stuff" unique_id=622197934]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Console/Stuff/Sort" unique_id=870566543]
+layout_mode = 2
+text = "Console (F1)"
+
+[node name="ConsoleText" type="TextEdit" parent="Console/Stuff/Sort" unique_id=1174321941]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "<There is nothing in the console right now.>"
+editable = false
+context_menu_enabled = false
+
+[node name="Tools" type="HBoxContainer" parent="Console/Stuff/Sort" unique_id=136362119]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Console/Stuff/Sort/Tools" unique_id=407117122]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save"

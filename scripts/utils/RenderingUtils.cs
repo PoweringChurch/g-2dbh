@@ -77,7 +77,7 @@ public static class RenderingUtils
         int[] indices = Geometry2D.TriangulatePolygon(points);
         if (indices == null || indices.Length == 0)
         {
-            GD.PrintErr("[LevelCompiler] Polygon failed to triangulate (self-intersecting or degenerate shape) — skipping render mesh.");
+            Console.Instance.LogErr("[LevelCompiler] Polygon failed to triangulate (self-intersecting or degenerate shape) — skipping render mesh.");
             return null;
         }
 

@@ -14,6 +14,7 @@ public partial class ConfigHelper : Node
             DirAccess.MakeDirAbsolute("user://data/levels");
             DirAccess.MakeDirAbsolute("user://data/characters");
             DirAccess.MakeDirAbsolute("user://data/sounds");
+            DirAccess.MakeDirAbsolute("user://data/logs");
             WriteJson(_configPath, new Config());
         }
         Current = ReadJson<Config>(_configPath);
@@ -35,7 +36,7 @@ public partial class ConfigHelper : Node
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file == null)
         {
-            GD.PrintErr($"Failed to open file for writing: {path}");
+            Console.Instance.LogErr($"[Config Helper] Failed to open file for writing: {path}");
         }
         var s = JsonSerializer.Serialize(data);
         file.StoreString(s);

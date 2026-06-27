@@ -95,6 +95,7 @@ public partial class LevelMetadata : Control
 		e.levelData.DisplayName = text;
 	public void Load(LevelData data)
 	{
+		AuthorInput.Text = data.Author;
 		AspectRatioInput.Selected = data.AspectRatio;
 		HealthInput.Text = data.Health.ToString();
 		DurationInput.Text = data.Duration.ToString();

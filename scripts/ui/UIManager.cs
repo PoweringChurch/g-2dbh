@@ -93,11 +93,13 @@ public partial class UIManager : Node
     void OnResume() => TogglePause(false);
     void OnStart()
     {
+        _levelSelect.PopulateList();
         SetVisible(_levelSelect);
         inCustoms = false;
     }
     void OnCustoms() 
     {
+        _customLevelSelect.PopulateList();
         SetVisible(_customLevelSelect);
         inCustoms = true;
     }

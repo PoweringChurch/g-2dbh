@@ -13,15 +13,21 @@ public partial class LevelPreview : Control
 	private List<EditorRenderGroup> _renderGroups = new();
 	private Dictionary<Texture2D, int> textMap = [];
 	private float[][] _groupBuffers = new float[Editor.MaxModelCount][];
-	private EditorReference _selectedReference;
 	public override void _Ready()
 	{
 		e = GetNode<Editor>("/root/Editor");
 		GetTree().Root.SizeChanged += OnWindowResized;
-		PreviewRoot.Draw += () => DrawPath(_selectedReference);
+		PreviewRoot.Draw += () => DrawGizmos(_selectedReference);
 		_renderGroups.Add(CreateRenderGroup(RenderingUtils.BuildCircleMesh(15), null, PreviewRoot));
 	}
-    private bool dragging = false;
+	private EditorReference _selectedReference;
+	private bool _inGroup = false;
+    private bool lmbDragging = false;
+    private bool rmbDragging = false;
+	private bool snap => e.Snap;
+	private Vector2 mousePoint0;
+	private Vector2 mousePoint1;
+	private List<EditorReference> _groupSelection = new();
     public override void _GuiInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton mb)
@@ -32,7 +38,7 @@ public partial class LevelPreview : Control
                 switch (e.CurrentMode)
 				{
 					case Editor.Mode.Place: HandlePlacePress(mb); break;
-					case Editor.Mode.Select: HandleSelectPress(mb); break;
+					case Editor.Mode.Select: HandleSelectLMBPress(mb); break;
 					case Editor.Mode.Delete: HandleDeletePress(mb); break;
 				}
             }
@@ -41,8 +47,22 @@ public partial class LevelPreview : Control
 				switch (e.CurrentMode)
 				{
 					case Editor.Mode.Place: HandlePlaceRelease(mb); break;
-					case Editor.Mode.Select: HandleSelectRelease(); break;
+					case Editor.Mode.Select: HandleSelectLMBRelease(); break;
 					case Editor.Mode.Delete: HandleDeleteRelease(); break;
+				}
+			}
+			else if (mb.ButtonIndex == MouseButton.Right && mb.Pressed)
+			{
+				switch (e.CurrentMode)
+				{
+					case Editor.Mode.Select: HandleSelectRMBPress(mb); break;
+				}
+			}
+			else if (mb.ButtonIndex == MouseButton.Right && !mb.Pressed)
+			{
+				switch (e.CurrentMode)
+				{
+					case Editor.Mode.Select: HandleSelectRMBRelease(mb); break;
 				}
 			}
         }
@@ -70,23 +90,55 @@ public partial class LevelPreview : Control
 			SpawnY = local.Y,
 			Pos = new(local.X, local.Y)
 		};
-		dragging = true;
+		lmbDragging = true;
 		_selectedReference = newRef;
+		_groupSelection.Clear();
 		e.AddReference(newRef);
 	}
-	private void HandleSelectPress(InputEventMouseButton mb)
+	private void HandleSelectRMBPress(InputEventMouseButton mb)
 	{
+		rmbDragging = true;
+		if (_selectedReference != null) // dont have a selected reference
+			return;
+		else if (_groupSelection.Count > 0) // but do have a group
+		{
+			_groupSelection.Clear();
+		}
+		mousePoint0 = ToPreviewLocal(mb.Position);
+	}
+	private void HandleSelectLMBPress(InputEventMouseButton mb)
+	{
+		lmbDragging = true;
+		if (rmbDragging == true && _inGroup)
+		{
+			return;
+		}
 		var r = GetNearestReference(mb.Position);
 		_selectedReference = r;
-		dragging = r != null;
+		_inGroup = _groupSelection.Find((s)=> s == _selectedReference) != null; // if the newly selected object is not in the group or doesnt exist
+		if (!_inGroup)
+		{
+			mousePoint0 = Vector2.Zero;
+			mousePoint1 = Vector2.Zero;
+			_groupSelection.Clear();
+		}
 		PreviewRoot.QueueRedraw();
 	}
 	private void HandleDeletePress(InputEventMouseButton mb)
 	{
 		var r = GetNearestReference(mb.Position);
-		if (r != null)
+		if (r != null) // if we got a reference
+		{
 			e.DeleteReference(r);
-		dragging = true;
+			if (_inGroup) // if the reference is in the selection group
+			{
+				foreach (var sr in _groupSelection)
+				{
+					e.DeleteReference(sr);
+				}
+			}
+		}
+		lmbDragging = true;
 		_selectedReference = null;
 	}
 	private void HandlePlaceRelease(InputEventMouseButton mb)
@@ -94,51 +146,168 @@ public partial class LevelPreview : Control
 		if (e.SelectedModel == null)
 			return;
 		var local = ToPreviewLocal(mb.Position);
-		float f = (new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY) - local).Angle()+(Mathf.Pi/2);
+		var rPos = new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY);
+		float f = (rPos - local).Angle()+(Mathf.Pi/2);
+		if (snap)
+		{
+			float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
+			f = Mathf.Round(f / step) * step;
+		}
 		_selectedReference.F = f;
-		dragging = false;
+		lmbDragging = false;
 		_selectedReference = null;
 		e.SyncPreview();
 		PreviewRoot.QueueRedraw();
 	}
-	private void HandleSelectRelease()
+	private void HandleSelectRMBRelease(InputEventMouseButton mb)
 	{
-		dragging = false;
+		rmbDragging = false;
+		if (_inGroup) // if we are grabbing something inside of the group
+		{	
+			var local = ToPreviewLocal(mb.Position);
+			var rPos = new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY);
+			float f = (rPos - local).Angle()+(Mathf.Pi/2);
+			if (snap)
+			{
+				float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
+				f = Mathf.Round(f / step) * step;
+			}
+			_selectedReference.F = f;
+			e.SyncPreview();
+			PreviewRoot.QueueRedraw();
+			return;
+		}
+		mousePoint1 = ToPreviewLocal(mb.Position);
+		var min = new Vector2(
+			Math.Min(mousePoint0.X, mousePoint1.X),
+			Math.Min(mousePoint0.Y, mousePoint1.Y)
+		);
+		var max = new Vector2(
+			Math.Max(mousePoint0.X, mousePoint1.X),
+			Math.Max(mousePoint0.Y, mousePoint1.Y)
+		);
+		for (int i = 0; i < e.levelData.References.Count; i++)
+		{
+			var r = e.levelData.References[i];
+			bool alive = false;
+			if (r.Type == ModelType.Projectile)
+			{
+				var proj = e.ProjectileModels[r.Id];
+				alive = _ctx.T >= 0 && _ctx.T <= proj.Lifetime;
+			}
+			else if (r.Type == ModelType.Pattern)
+			{
+				var patt = e.PatternModels[r.Id];
+				var lt = e.CurrentTime - r.T;
+				alive = lt >= 0 && lt <= patt.lifetime;
+			}
+			if (!alive) 
+				continue;
+			var pos = r.Type == ModelType.Pattern ? new(r.SpawnX, r.SpawnY) : r.Pos;
+			if (pos.X >= min.X && pos.X <= max.X &&
+				pos.Y >= min.Y && pos.Y <= max.Y)
+			{
+				_groupSelection.Add(r);
+			}
+		}
+	}
+	private void HandleSelectLMBRelease()
+	{
+		lmbDragging = false;
 	}
 	private void HandleDeleteRelease()
 	{
-		dragging = false;
+		lmbDragging = false;
+		_inGroup = false;
 	}
 	private void HandlePlaceMM(InputEventMouseMotion mm)
 	{
-		if (_selectedReference != null && dragging)
+		if (_selectedReference != null && lmbDragging)
 		{
 			var local = ToPreviewLocal(mm.Position);
-			float f = (new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY) - local).Angle()+(Mathf.Pi/2);
+			var rPos = new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY);
+			float f = (rPos - local).Angle()+(Mathf.Pi/2);
+			if (snap)
+			{
+				float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
+				f = Mathf.Round(f / step) * step;
+			}
 			_selectedReference.F = f;
+			
 			e.SyncPreview();
 			PreviewRoot.QueueRedraw();
 		}
 	}
 	private void HandleSelectMM(InputEventMouseMotion mm)
 	{
-		if (_selectedReference != null && dragging)
+		if (_selectedReference != null && lmbDragging && !rmbDragging) // have a selected reference and holding lmb but not holding rmb
 		{
 			var local = ToPreviewLocal(mm.Position);
 			_selectedReference.SpawnX = local.X;
 			_selectedReference.SpawnY = local.Y;
+			if (_inGroup) // and in group
+			{
+				foreach (var r in _groupSelection)
+				{
+					var rPos = new Vector2(r.SpawnX, r.SpawnY);
+					var offset = rPos - local; // local is mouse pos
+					r.SpawnX = (local+offset).X;
+					r.SpawnY = (local+offset).Y;
+				}
+			}
 			e.SyncPreview();
+			PreviewRoot.QueueRedraw();
+		}
+		else if (_selectedReference != null && rmbDragging) // have a selected reference and holding rmb
+		{
+			var local = ToPreviewLocal(mm.Position);
+			var selectedPos = new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY);
+			float f = (selectedPos - local).Angle()+(Mathf.Pi/2);
+			if (snap)
+			{
+				float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
+				f = Mathf.Round(f / step) * step;
+			}
+			_selectedReference.F = f;
+			if (_inGroup) // and in group
+			{
+				foreach (var r in _groupSelection)
+				{
+					if (r == _selectedReference) continue;
+					if (lmbDragging) // and holding mb, then point every selected projectile at cursor
+					{
+						var rPos = new Vector2(r.SpawnX, r.SpawnY);
+						float rf = (rPos - local).Angle()+(Mathf.Pi/2);
+						if (snap)
+						{
+							float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
+							rf = Mathf.Round(rf / step) * step;
+						}
+						r.F = rf;
+					}
+					else // otherwise make the follow whatever is being set
+					{
+						r.F = f;
+					}
+				}
+			}
+			e.SyncPreview();
+			PreviewRoot.QueueRedraw();
+		}
+		else if (_selectedReference == null && rmbDragging) // dont have a reference and holding rmb
+		{
+			mousePoint1 = ToPreviewLocal(mm.Position);
 			PreviewRoot.QueueRedraw();
 		}
 	}
 	private void HandleDeleteMM(InputEventMouseMotion mm)
 	{
-		if (dragging)
+		if (lmbDragging)
 		{
 			var r = GetNearestReference(mm.Position);
 			if (r != null)
 			e.DeleteReference(r);
-				dragging = true;
+				lmbDragging = true;
 				_selectedReference = null;
 		}
 	}
@@ -183,10 +352,16 @@ public partial class LevelPreview : Control
             return (nearRef);
         return (null);
 	}
-	private void DrawPath(EditorReference r)
+	private void DrawGizmos(EditorReference r)
     {
+		var c0 = new Vector2(mousePoint0.X, mousePoint1.Y);
+		var c1 = new Vector2(mousePoint1.X, mousePoint0.Y);
+		Vector2[] grabbox = [mousePoint0, c0, mousePoint1, c1, mousePoint0];
+		PreviewRoot.DrawPolyline(grabbox, Colors.DarkRed, 3);
 		if (r == null)
+		{
 			return;
+		}
         int steps = ConfigHelper.Current.PathFidelity;
 		if (r.Type == ModelType.Projectile)
 		{
@@ -201,6 +376,7 @@ public partial class LevelPreview : Control
 			}
 			PreviewRoot.DrawPolyline(points, RenderingUtils.ColorFromString(proj.Name), 2f, true);
 			PreviewRoot.DrawCircle(points[0], 4f, RenderingUtils.ColorFromString(proj.Name));
+			PreviewRoot.DrawDashedLine(r.Pos, r.Pos+(Vector2.FromAngle((float)r.F+(Mathf.Pi/2))*50), Colors.DarkRed, 4f);
 		}
 		else if (r.Type == ModelType.Pattern)
 		{
@@ -215,6 +391,8 @@ public partial class LevelPreview : Control
 				PreviewRoot.DrawCircle(points[i], 4f, RenderingUtils.ColorFromString(e.ProjectileModels[patt.ProjectileId].Name));
 			}
 			PreviewRoot.DrawPolyline(points, RenderingUtils.ColorFromString(patt.Name), 2f, true);
+			var spawnPos = new Vector2(r.SpawnX, r.SpawnY);
+			PreviewRoot.DrawDashedLine(spawnPos, spawnPos+(Vector2.FromAngle((float)r.F+(Mathf.Pi/2))*50), Colors.DarkRed, 4f);
 		}
     }
 	public void Fit(Vector2I res)
@@ -240,6 +418,7 @@ public partial class LevelPreview : Control
 	// only call on load
 	public void CompileAll()
 	{
+		Console.Instance.Log("[LevelPreview] Attempting to compile");
 		for (int i = 0; i < Editor.MaxModelCount; i++)
         {
             var m = e.ProjectileModels[i];
@@ -250,7 +429,7 @@ public partial class LevelPreview : Control
             var m = e.PatternModels[i];
 			CompilePattern(m);
         }
-		GD.Print("[LevelPreview] Completed compile all");
+		Console.Instance.Log("[LevelPreview] Completed compile all");
 	}
 	public void Sync(IEditorModel _) =>
 		Sync();

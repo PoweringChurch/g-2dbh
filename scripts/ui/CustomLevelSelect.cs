@@ -24,7 +24,6 @@ public partial class CustomLevelSelect : LevelSelect
         _deleteButton.Disabled = true;
         _newLevelButton.Pressed += OnNewLevelPressed;
         _refreshButton.Pressed  += PopulateList;
-        PopulateList();
     }
     // Play
     protected void OnEditPressed()
@@ -38,7 +37,7 @@ public partial class CustomLevelSelect : LevelSelect
         if (!success)
         {
             Show();
-            Popups.Show(GetNode<CanvasLayer>("/root/main/Popups"),Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
+            Popups.Instance.Show(Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
         }
     }
     protected override void OnLevelSelected(LevelData levelData, Button pressed)
@@ -60,16 +59,23 @@ public partial class CustomLevelSelect : LevelSelect
         var levelDirectory = ProjectSettings.GlobalizePath($"{_levelDirectory}{_selectedLevel}");
         if (!DirAccess.DirExistsAbsolute(levelDirectory))
         {
-            GD.PrintErr($"[Editor Level Select] Could not find directory {levelDirectory}");
+            Console.Instance.LogErr($"[Editor Level Select] Could not find directory {levelDirectory}");
             return;
         }
-        using var dir = DirAccess.Open(levelDirectory);
-        if (DirAccess.DirExistsAbsolute(levelDirectory))
+        
+        var popup = Popups.Instance.Show(Popups.DefaultType.YN, "Are you sure you want to delete this level?");
+        popup.CloseOnPress = true;
+        popup.Options[0].Pressed += () => 
         {
-            DeleteDirectoryRecursive(levelDirectory);
-        }
-        DirAccess.RemoveAbsolute(levelDirectory);
-        ClearPreview();
+            using var dir = DirAccess.Open(levelDirectory);
+            if (DirAccess.DirExistsAbsolute(levelDirectory))
+            {
+                DeleteDirectoryRecursive(levelDirectory);
+            }
+            DirAccess.RemoveAbsolute(levelDirectory);
+            PopulateList();
+            ClearPreview();
+        };
     }
     private void DeleteDirectoryRecursive(string path)
     {

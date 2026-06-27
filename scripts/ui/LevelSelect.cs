@@ -20,7 +20,6 @@ public partial class LevelSelect : CanvasLayer
         _playButton.Pressed += OnPlayPressed;
         _playButton.Disabled = true;
         _returnButton.Pressed += OnReturnPressed;
-        PopulateList();
     }
     // List
     public void PopulateList()
@@ -40,6 +39,7 @@ public partial class LevelSelect : CanvasLayer
             entry = dir.GetNext();
         }
         dir.ListDirEnd();
+        Console.Instance.Log($"[Level Select] Populated level list");
     }
 
     protected virtual void AddLevelButton(string levelName)
@@ -62,7 +62,6 @@ public partial class LevelSelect : CanvasLayer
         foreach (Node child in _levelList.GetChildren())
             if (child is Button btn && btn != pressed)
                 btn.ButtonPressed = false;
-
         _selectedLevel = levelData.LevelId;
         _playButton.Disabled = false;
         LoadPreview(levelData);
@@ -97,7 +96,7 @@ public partial class LevelSelect : CanvasLayer
         if (!success)
         {
             Show();
-            Popups.Show(GetNode<CanvasLayer>("/root/main/Popups"),Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
+            Popups.Instance.Show(Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
         }
     }
     protected void OnReturnPressed()

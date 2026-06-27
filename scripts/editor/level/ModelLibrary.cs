@@ -63,7 +63,7 @@ public partial class ModelLibrary : Control
                         e.OpenModel(new PatternModel());
                     e.RemovePatternModel(ptm.Id);
                 }
-                GD.Print($"[ModelLibrary] Deleted model {m.Name}");
+                Console.Instance.Log($"[ModelLibrary] Deleted model {m.Name}");
                 newTemplate.QueueFree();
             };
 

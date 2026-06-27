@@ -90,7 +90,8 @@ public partial class SettingsMenu : CanvasLayer
             if (newValue != null)
                 prop.SetValue(_config, newValue);
         }
-
+        // special
+        GetWindow().Mode = _config.Fullscreen ? Window.ModeEnum.Fullscreen : Window.ModeEnum.Windowed;
         ConfigHelper.Save();
     }
 

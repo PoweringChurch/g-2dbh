@@ -22,6 +22,16 @@ public partial class Editor : CanvasLayer
             currentMode = value;
         }
     }
+    private bool snap;
+    public bool Snap 
+    {
+        get => snap; 
+        set
+        {
+            snap = value;
+            _snapDisplay.Text = value ? "Snap : On" : "Snap : Off";
+        }
+    }
     public float CurrentTime => _timeline.CurrentTime;
     private const string _levelDirectory = "user://data/levels/";
     public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
@@ -66,6 +76,8 @@ public partial class Editor : CanvasLayer
     public NodePath SelectButtonPath = ToolbarButtons + "/ModeSelection/Select";
     public NodePath DeleteButtonPath = ToolbarButtons + "/ModeSelection/Delete";
     public NodePath ModeDisplayPath = ToolbarButtons + "/ModeSelection/ModeDisplay";
+    public NodePath SnapAngleTogglePath = ToolbarButtons + "/ModeSelection/SnapAngle";
+    public NodePath SnapAnglePath = ToolbarButtons + "/ModeSelection/SnapDisplay";
     // references
     private Timeline _timeline;
     private ModelLibrary _modelLibrary;
@@ -77,6 +89,8 @@ public partial class Editor : CanvasLayer
     private Button _selectButton;
     private Button _deleteButton;
     private Label _modeDisplay;
+    private Button _snapButton;
+    private Label _snapDisplay;
     public override void _Ready()
     {
         // modules
@@ -108,10 +122,13 @@ public partial class Editor : CanvasLayer
         _selectButton = GetNode<Button>(SelectButtonPath);
         _deleteButton = GetNode<Button>(DeleteButtonPath);
         _modeDisplay = GetNode<Label>(ModeDisplayPath);
-
+        _snapButton = GetNode<Button>(SnapAngleTogglePath);
+        _snapDisplay = GetNode<Label>(SnapAnglePath);
+        // toolbar events
         _placeButton.Pressed += () => CurrentMode = Mode.Place;
         _selectButton.Pressed += () => CurrentMode = Mode.Select;
         _deleteButton.Pressed += () => CurrentMode = Mode.Delete;
+        _snapButton.Pressed += () => Snap = !Snap;
     }
     public override void _Input(InputEvent @event)
     {
@@ -136,6 +153,10 @@ public partial class Editor : CanvasLayer
         {
             _timeline.TogglePlaying();
         }
+        else if (@event.IsActionPressed("snap"))
+		{
+			Snap = !Snap;
+		}
     }
     public void NewLevel()
     {
@@ -165,7 +186,7 @@ public partial class Editor : CanvasLayer
 
         if (!FileAccess.FileExists(levelDataPath))
         {
-            GD.PrintErr($"[Editor] Level not found: {levelDataPath}");
+            Console.Instance.Log($"[Editor] Level not found: {levelDataPath}");
             return false;
         }
         LevelData data = ReadJson<LevelData>(levelDataPath);
@@ -201,9 +222,9 @@ public partial class Editor : CanvasLayer
         levelData.PatternModels = [.. patternModels];
         levelData.ProjectileModels = [.. projectileModels];
         string levelPath = $"{_levelDirectory}{levelData.LevelId}/";
-        GD.Print($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
+        Console.Instance.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
         WriteJson(levelPath + "leveldata.json", levelData);
-        GD.Print("[Editor] Saved level successfully");
+        Console.Instance.Log("[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
         _preview.Sync();
@@ -240,7 +261,7 @@ public partial class Editor : CanvasLayer
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file == null)
         {
-            GD.PrintErr($"Failed to open file for writing: {path}");
+            Console.Instance.LogErr($"Failed to open file for writing: {path}");
         }
         var s = JsonSerializer.Serialize(data);
         file.StoreString(s);
