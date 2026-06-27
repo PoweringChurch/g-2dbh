@@ -4,6 +4,7 @@ using Godot;
 public static class ValidExtensions
 {
     public static string[] Image = [".png", ".jpg"];
+    public static string[] Audio = [".wav", ".mp3", ".ogg"];
 }
 public static class RenderingUtils
 {

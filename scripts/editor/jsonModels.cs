@@ -120,9 +120,19 @@ public class ConfigFieldAttribute : Attribute
 public class Config
 {
     // GAME
-    [ConfigField("Game", "Slow render updates on far projectiles")]
-    [JsonPropertyName("slowRenderUpdatesOnFarProjectiles")] public bool SlowRenderUpdatesOnFarProjectiles { get; set; } = false;
-
+    // personalization
+    [ConfigField("Game", "Character")]
+    [JsonPropertyName("character")] public string Character { get; set; } = "default";
+    [ConfigField("Game", "Character Scale", 0, 1, 0.05f)]
+    [JsonPropertyName("characterScale")] public float CharacterScale { get; set; } = 0.3f;
+    // performance
+    // sound
+    [ConfigField("Game", "Music volume", 0, 1, 0.05f)]
+    [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; } = 1;
+    [ConfigField("Game", "Graze volume", 0, 1, 0.05f)]
+    [JsonPropertyName("grazeVolume")] public float GrazeVolume { get; set; } = 0.1f;
+    [ConfigField("Game", "Hurt volume", 0, 1, 0.05f)]
+    [JsonPropertyName("hurtVolume")] public float HurtVolume { get; set; } = 0.1f;
     // EDITOR
     [ConfigField("Editor", "Path fidelity", 1, 256, 1)]
     [JsonPropertyName("pathFidelity")] public int PathFidelity { get; set; } = 64;

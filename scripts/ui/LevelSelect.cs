@@ -31,18 +31,6 @@ public partial class LevelSelect : CanvasLayer
             child.QueueFree();
 
         var dir = DirAccess.Open(_levelDirectory);
-        if (dir == null)
-        {
-            GD.Print($"[LevelSelect] Could not open {_levelDirectory}, attempting to create directory");
-            var err = DirAccess.MakeDirRecursiveAbsolute(_levelDirectory);
-            dir = DirAccess.Open(_levelDirectory);
-            if (dir == null)
-            {
-                GD.PrintErr($"[LevelSelect] Error creating directory {_levelDirectory}: " + err);
-                return;
-            }
-        }
-
         dir.ListDirBegin();
         string entry = dir.GetNext();
         while (entry != "")

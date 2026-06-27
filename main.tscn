@@ -21,10 +21,15 @@
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
 [ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/ScoreSummary.cs" id="17_cegan"]
 [ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/SettingsMenu.cs" id="21_getpj"]
+[ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
-[node name="Debug" type="Node" parent="." unique_id=646397022]
+[node name="Audio" type="Node" parent="." unique_id=583500001]
+script = ExtResource("22_ryguw")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Audio" unique_id=370560247]
+volume_db = 17.851
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Duration", "_Completion")]
 script = ExtResource("2_dg77c")
@@ -66,6 +71,7 @@ size = Vector2i(531, 900)
 render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1148617783]
+z_index = -2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -74,6 +80,7 @@ grow_vertical = 2
 color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
 [node name="BackgroundImage" type="TextureRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=791300721]
+z_index = -2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1587,11 +1594,11 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Quit"
 
-[node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_returnButton", "_fieldContainer")]
+[node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_openDataButton", "_returnButton", "_fieldContainer")]
 process_mode = 2
-visible = false
 script = ExtResource("21_getpj")
 _saveButton = NodePath("Stuff/Sort/Tools/Save")
+_openDataButton = NodePath("Stuff/Sort/Tools/OpenData")
 _returnButton = NodePath("Stuff/Sort/Tools/Return")
 _fieldContainer = NodePath("Stuff/Sort/Container")
 
@@ -1638,6 +1645,12 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Return"
+
+[node name="OpenData" type="Button" parent="Settings/Stuff/Sort/Tools" unique_id=1187098292]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Open data folder"
 
 [node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
 

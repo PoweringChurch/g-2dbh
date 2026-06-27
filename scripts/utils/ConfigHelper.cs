@@ -11,6 +11,9 @@ public partial class ConfigHelper : Node
         if (!FileAccess.FileExists(_configPath))
         {
             DirAccess.MakeDirRecursiveAbsolute("user://data");
+            DirAccess.MakeDirAbsolute("user://data/levels");
+            DirAccess.MakeDirAbsolute("user://data/characters");
+            DirAccess.MakeDirAbsolute("user://data/sounds");
             WriteJson(_configPath, new Config());
         }
         Current = ReadJson<Config>(_configPath);

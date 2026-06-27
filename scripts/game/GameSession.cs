@@ -102,6 +102,7 @@ public partial class GameSession : Node
         _ui.HUD.SetHealth(health);
         if (health <= 0)
             StopLevel();
+        AudioUtils.Instance.PlayAudio("hurt", ConfigHelper.Current.HurtVolume);
     }
     public void OnGraze()
     {
@@ -109,6 +110,7 @@ public partial class GameSession : Node
         score += (int)(graze*100*health/maxHealth);
         _ui.HUD.SetScore(score);
         _ui.HUD.SetGraze(graze);
+        AudioUtils.Instance.PlayAudio("graze", ConfigHelper.Current.GrazeVolume);
     }
     public override void _PhysicsProcess(double dt)
     {

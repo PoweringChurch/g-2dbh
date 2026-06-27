@@ -21,7 +21,8 @@ public partial class PlayerCharacter : Node2D
         hurtboxDisplay = GetNode<Sprite2D>("HurtboxDisplay");
         grazeDisplay = GetNode<Sprite2D>("GrazeDisplay");
         characterDisplay = GetNode<Sprite2D>("CharacterDisplay");
-        characterDisplay.Texture = RenderingUtils.LoadTexture("user://data/characters/", TextureName);
+        characterDisplay.Scale = Vector2.One*ConfigHelper.Current.CharacterScale;
+        characterDisplay.Texture = RenderingUtils.LoadTexture("user://data/characters/", ConfigHelper.Current.Character);
         characterDisplay.Texture ??= ResourceLoader.Load<Texture2D>("res://data/characters/default.png");
     }
     public void Movement(double dt)

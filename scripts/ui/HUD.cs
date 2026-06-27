@@ -15,12 +15,10 @@ public partial class HUD : CanvasLayer
         _scoreLabel.Text = score.ToString().PadLeft(6, '0');
     }
     public void SetGraze(int graze) => _grazeLabel.Text = graze.ToString();
-    public void SetHealth(int lives) => _HP.Text = lives.ToString(); // this sets
+    public void SetHealth(int lives) => _HP.Text = lives.ToString();
     public void SetLevelName(string name)
     {
-        _LevelName.Text = name; // this dont set?
-        GD.Print("name set to : "+name); // this prints
-        GD.Print("value is : "+_LevelName.Text);
+        _LevelName.Text = name;
     }
     public void SetCompletion(float completion) => _Completion.Text = $"{completion:P2}";
     public void SetDuration(float duration)

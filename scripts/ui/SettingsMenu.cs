@@ -5,6 +5,7 @@ using System.Reflection;
 public partial class SettingsMenu : CanvasLayer
 {
     [Export] public Button _saveButton;
+    [Export] public Button _openDataButton;
     [Export] public Button _returnButton;
     [Export] public VBoxContainer _fieldContainer; // where generated rows go
 
@@ -20,6 +21,7 @@ public partial class SettingsMenu : CanvasLayer
 
         _saveButton.Pressed += OnSavePressed;
         _returnButton.Pressed += OnReturnPressed;
+        _openDataButton.Pressed += OnOpenDataPressed;
     }
 
     private void BuildFields()
@@ -39,14 +41,14 @@ public partial class SettingsMenu : CanvasLayer
             }
             var row = new HBoxContainer();
             row.AddChild(new Label { Text = attr.Label, CustomMinimumSize = new Vector2(180, 0) });
-            Control control;
+            Control control = null;
             object currentValue = prop.GetValue(_config);
             if (prop.PropertyType == typeof(bool))
             {
                 var check = new CheckBox { ButtonPressed = (bool)currentValue };
                 control = check;
             }
-            else
+            else if (prop.PropertyType == typeof(float) || prop.PropertyType == typeof(int))
             {
                 var spin = new SpinBox
                 {
@@ -58,7 +60,15 @@ public partial class SettingsMenu : CanvasLayer
                 };
                 control = spin;
             }
-
+            else if (prop.PropertyType == typeof(string))
+            {
+                var textInput = new LineEdit
+                {
+                    Text = Convert.ToString(currentValue),
+                    CustomMinimumSize = new Vector2(100, 0)
+                };
+                control = textInput;
+            }
             row.AddChild(control);
             _fieldContainer.AddChild(row);
             _bindings.Add((prop, control));
@@ -73,6 +83,7 @@ public partial class SettingsMenu : CanvasLayer
             {
                 CheckBox check => check.ButtonPressed,
                 SpinBox spin => Convert.ChangeType(spin.Value, prop.PropertyType),
+                LineEdit lineEdit => lineEdit.Text,
                 _ => null
             };
 
@@ -83,6 +94,11 @@ public partial class SettingsMenu : CanvasLayer
         ConfigHelper.Save();
     }
 
+    private void OnOpenDataPressed()
+    {
+		var path = ProjectSettings.GlobalizePath("user://data"); ;
+		OS.ShellOpen(path);
+    }
     private void OnReturnPressed()
     {
         _ui.ToggleSettings(false);
