@@ -58,6 +58,8 @@ public partial class LevelPreview : Control
     }
 	private void HandlePlacePress(InputEventMouseButton mb)
 	{
+		if (e.SelectedModel == null)
+			return;
 		var local = ToPreviewLocal(mb.Position);
 		var newRef = new EditorReference
 		{
@@ -66,6 +68,7 @@ public partial class LevelPreview : Control
 			T = e.CurrentTime,
 			SpawnX = local.X,
 			SpawnY = local.Y,
+			Pos = new(local.X, local.Y)
 		};
 		dragging = true;
 		_selectedReference = newRef;
@@ -88,11 +91,14 @@ public partial class LevelPreview : Control
 	}
 	private void HandlePlaceRelease(InputEventMouseButton mb)
 	{
+		if (e.SelectedModel == null)
+			return;
 		var local = ToPreviewLocal(mb.Position);
 		float f = (new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY) - local).Angle()+(Mathf.Pi/2);
 		_selectedReference.F = f;
 		dragging = false;
 		_selectedReference = null;
+		e.SyncPreview();
 		PreviewRoot.QueueRedraw();
 	}
 	private void HandleSelectRelease()
@@ -110,6 +116,7 @@ public partial class LevelPreview : Control
 			var local = ToPreviewLocal(mm.Position);
 			float f = (new Vector2(_selectedReference.SpawnX, _selectedReference.SpawnY) - local).Angle()+(Mathf.Pi/2);
 			_selectedReference.F = f;
+			e.SyncPreview();
 			PreviewRoot.QueueRedraw();
 		}
 	}
@@ -142,17 +149,35 @@ public partial class LevelPreview : Control
 		EditorReference nearRef = null;
         foreach (var r in e.levelData.References)
         {
-			double lt = e.CurrentTime - r.T;
-			var proj = e.ProjectileModels[r.Id];
-			bool alive = lt >= 0 && lt <= proj.Lifetime;
-            if (!alive)
-                continue;
-            float dist = r.Pos.DistanceTo(local);
-            if (dist < nearDist)
-            {
-                nearDist = dist;
-                nearRef = r;
-            }
+			if (r.Type == ModelType.Pattern)
+			{
+				var patt = e.PatternModels[r.Id];
+				var lt = e.CurrentTime - r.T;
+				bool alive = lt >= 0 && lt <= patt.lifetime;
+				if (!alive)
+                	continue;
+				float dist = new Vector2(r.SpawnX, r.SpawnY).DistanceTo(local);
+				if (dist < nearDist)
+				{
+					nearDist = dist;
+					nearRef = r;
+				}
+			}
+			else
+			{
+				double lt = e.CurrentTime - r.T;
+				var proj = e.ProjectileModels[r.Id];
+				bool alive = lt >= 0 && lt <= proj.Lifetime;
+				if (!alive)
+					continue;
+				float dist = r.Pos.DistanceTo(local);
+				if (dist < nearDist)
+				{
+					nearDist = dist;
+					nearRef = r;
+				}
+			}
+			
         }
         if (nearRef != null && nearDist < 20)
             return (nearRef);
@@ -255,7 +280,6 @@ public partial class LevelPreview : Control
 			}
 			else if (r.Type == ModelType.Pattern)
 			{
-				r.Alive = true;
 				var patt = e.PatternModels[r.Id];
 				var proj = e.ProjectileModels[patt.ProjectileId];
 				var lctx = new EvalContext() { N = patt.Count };
@@ -263,21 +287,20 @@ public partial class LevelPreview : Control
 				{
 					lctx.I = j;
 					double t = patt.efnt(lctx);
-					_ctx.T = e.CurrentTime - r.T + t;
-					bool alive = _ctx.T >= 0 && _ctx.T <= proj.Lifetime;
+					lctx.T = e.CurrentTime - r.T + t;
+					bool alive = lctx.T >= 0 && lctx.T <= proj.Lifetime;
 					if (!alive) continue;
 					double fwd = patt.efnfwd(lctx);
 					var spawnPos = CalculatePosDelta(patt.efnx, patt.efny, lctx, r.F);
-					var movement = CalculatePosDelta(proj.efnx, proj.efny, lctx, r.F);
-					var b = new EditorReference()
+					var movement = CalculatePosDelta(proj.efnx, proj.efny, lctx, r.F+fwd);
+					var pr = new EditorReference()
 					{
 						Pos = new Vector2(r.SpawnX, r.SpawnY) + spawnPos + movement,
 						T = r.T + t,
 						F = r.F + fwd,
 						Type = ModelType.Projectile
 					};
-					GD.Print(b.Pos);
-					patternReferences.Add(b);
+					patternReferences.Add(pr);
 					_renderGroups[proj.RenderGroupId].PatternBulletIndices.Add(patternReferences.Count - 1);
 				}
 			}
@@ -289,12 +312,15 @@ public partial class LevelPreview : Control
 			var group = _renderGroups[g];
 			int count = group.BulletIndices.Count;
 			int patternCount = group.PatternBulletIndices.Count;
-			group.MultiMesh.InstanceCount = count + patternCount;
-			if (count == 0) continue;
-			int required = count * floatsPerInstance;
+			int total = count + patternCount;
+			group.MultiMesh.InstanceCount = total;
+			if (total == 0) continue;
+
+			int required = total * floatsPerInstance;
 			if (_groupBuffers[g].Length != required)
 				_groupBuffers[g] = new float[required];
 			ref float[] buffer = ref _groupBuffers[g];
+
 			// draw references (this is fine)
 			for (int n = 0; n < count; n++)
 			{
@@ -303,33 +329,33 @@ public partial class LevelPreview : Control
 				var proj = e.ProjectileModels[r.Id];
 				float scale = proj.RenderScale;
 				int oj = n * floatsPerInstance;
-				buffer[oj + 0] = 0; // shear x
-				buffer[oj + 1] = scale; // scale x
-				buffer[oj + 2] = 0; // dont know dont care x
-				buffer[oj + 3] = r.Pos.X; // x
-				buffer[oj + 4] = scale; // scale y
-				buffer[oj + 5] = 0; // shear y
-				buffer[oj + 6] = 0; // dont know dont care y
-				buffer[oj + 7] = r.Pos.Y; // y
+				buffer[oj + 0] = 0;
+				buffer[oj + 1] = scale;
+				buffer[oj + 2] = 0;
+				buffer[oj + 3] = r.Pos.X;
+				buffer[oj + 4] = scale;
+				buffer[oj + 5] = 0;
+				buffer[oj + 6] = 0;
+				buffer[oj + 7] = r.Pos.Y;
 			}
-			// this doesnt work like at all vvv
 			// draw references in pattern projectiles
-			for (int n = count; n < count + patternCount; n++)
+			for (int n = count; n < total; n++)
 			{
-				int idx = group.PatternBulletIndices[n];
+				int idx = group.PatternBulletIndices[n - count]; // fixed index
 				EditorReference r = patternReferences[idx];
 				var model = e.ProjectileModels[r.Id];
 				float scale = model.RenderScale;
 				int o = n * floatsPerInstance;
-				buffer[o + 0] = 0; // shear x
-				buffer[o + 1] = scale; // scale x
-				buffer[o + 2] = 0; // dont know dont care x
-				buffer[o + 3] = r.Pos.X; // x
-				buffer[o + 4] = scale; // scale y
-				buffer[o + 5] = 0; // shear y
-				buffer[o + 6] = 0; // dont know dont care y
-				buffer[o + 7] = r.Pos.Y; // y
+				buffer[o + 0] = 0;
+				buffer[o + 1] = scale;
+				buffer[o + 2] = 0;
+				buffer[o + 3] = r.Pos.X;
+				buffer[o + 4] = scale;
+				buffer[o + 5] = 0;
+				buffer[o + 6] = 0;
+				buffer[o + 7] = r.Pos.Y;
 			}
+
 			RenderingServer.MultimeshSetBuffer(group.MultiMesh.GetRid(), buffer);
 		}
 	}
@@ -384,6 +410,17 @@ public partial class LevelPreview : Control
 		model.efny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
 		model.efnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
 		model.efnfwd = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionFwd));
+		var proj = e.ProjectileModels[model.ProjectileId];
+		var lctx = new EvalContext { N = model.Count };
+		double maxSpawnT = 0;
+		for (int j = 0; j < model.Count; j++)
+		{
+			lctx.I = j;
+			double t = model.efnt(lctx);
+			if (t > maxSpawnT)
+				maxSpawnT = t;
+		}
+		model.lifetime = (float)(maxSpawnT + proj.Lifetime);
 		PreviewRoot.QueueRedraw();
 	}
 	private static Vector2 CalculatePosDelta(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, EvalContext ctx, double f = 0)

@@ -10,8 +10,8 @@ public partial class LevelDirector
     private double elapsed;
     public double Elapsed => elapsed;
     EvalContext _ctx = new();
-    private bool[] _hasGrazed = new bool[4096];
-    private Bullet[] bullets = new Bullet[4096];
+    private bool[] _hasGrazed = new bool[65536];
+    private Bullet[] bullets = new Bullet[65536];
     public ref Bullet[] Bullets => ref bullets;
     private int bulletCount = 0;
     public int BulletCount => bulletCount;

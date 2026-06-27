@@ -27,11 +27,10 @@
 [node name="Debug" type="Node" parent="." unique_id=646397022]
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Duration", "_Completion")]
-visible = false
 script = ExtResource("2_dg77c")
 _scoreLabel = NodePath("Sort/PanelContainer/Sort/Score/Score")
 _grazeLabel = NodePath("Sort/PanelContainer/Sort/Graze/Graze")
-_LevelName = NodePath("../LevelSelect/Sort/LevelPreview/VBoxContainer/LevelName")
+_LevelName = NodePath("Sort/PanelContainer/Sort/LevelName")
 _HP = NodePath("Sort/PanelContainer/Sort/HP/HP")
 _Duration = NodePath("Sort/PanelContainer/Sort/Duration/Dur")
 _Completion = NodePath("Sort/PanelContainer/Sort/Completion/Completion")
@@ -64,7 +63,7 @@ layout_mode = 2
 [node name="SubViewport" type="SubViewport" parent="HUD/Sort/SubViewportContainer" unique_id=1965502961]
 handle_input_locally = false
 size = Vector2i(531, 900)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1148617783]
 anchors_preset = 15
@@ -80,10 +79,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1, 0.99662435)
 expand_mode = 1
 stretch_mode = 6
 
 [node name="PanelContainer" type="PanelContainer" parent="HUD/Sort" unique_id=651642514]
+custom_minimum_size = Vector2(245, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -91,10 +92,9 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="LevelName" type="Label" parent="HUD/Sort/PanelContainer/Sort" unique_id=873949230]
+[node name="LevelName" type="Label" parent="HUD/Sort/PanelContainer/Sort" unique_id=1125105104]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "myLevel"
+text = "0"
 label_settings = ExtResource("3_d13ii")
 horizontal_alignment = 1
 
@@ -146,7 +146,7 @@ horizontal_alignment = 1
 [node name="Completion" type="Label" parent="HUD/Sort/PanelContainer/Sort/Completion" unique_id=1649597517]
 layout_mode = 2
 size_flags_horizontal = 10
-text = "XX.XX%"
+text = "100.00%"
 label_settings = ExtResource("3_d13ii")
 
 [node name="Score" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=1667356597]
@@ -184,6 +184,7 @@ text = "0"
 label_settings = ExtResource("3_d13ii")
 
 [node name="MainMenu" type="CanvasLayer" parent="." unique_id=692766472 node_paths=PackedStringArray("_startButton", "_customsButton", "_settingsButton", "_quitButton")]
+visible = false
 script = ExtResource("2_ycdy4")
 _startButton = NodePath("Sort/Start")
 _customsButton = NodePath("Sort/Custom")
@@ -500,6 +501,7 @@ layout_mode = 2
 text = "Delete"
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
+visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -574,7 +576,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(303, 361)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 anchors_preset = 15
@@ -983,7 +985,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15

@@ -72,6 +72,7 @@ public class PatternModel : IEditorModel
     [JsonIgnore] public Func<EvalContext, double> efny;
     [JsonIgnore] public Func<EvalContext, double> efnt;
     [JsonIgnore] public Func<EvalContext, double> efnfwd;
+    [JsonIgnore] public float lifetime;
     public PatternModel() { }
     public PatternModel(PatternModel other)
     {
@@ -81,6 +82,7 @@ public class PatternModel : IEditorModel
         FunctionY = other.FunctionY;
         FunctionT = other.FunctionT;
         FunctionFwd = other.FunctionFwd;
+        Count = other.Count;
     }
 }
 public class LevelData

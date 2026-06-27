@@ -70,10 +70,10 @@ public partial class GameSession : Node
         duration = levelData.Duration;
         maxHealth = levelData.Health;
         // setup ui
-        _ui.HUD.SetHealth(health);
+        _ui.HUD.SetHealth(health); // works
         _ui.HUD.SetGraze(0);
         _ui.HUD.SetScore(0);
-        _ui.HUD.SetLevelName(levelId);
+        _ui.HUD.SetLevelName(levelData.DisplayName); // called but dont work?
         _ui.HUD.SetDuration(levelData.Duration);
         _character.OnHurt += OnHurt;
         _character.OnGraze += OnGraze;
