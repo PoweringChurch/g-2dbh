@@ -75,6 +75,16 @@ public partial class ProjectileModelPreview : Node2D
             _dirty = true;
         }
     }
+    private float renderScale;
+    public float RenderScale
+    {
+        get => renderScale;
+        set
+        {
+            renderScale = value;
+            _dirty = true;
+        }
+    }
     private bool _dirty = false;
     private EvalContext ctx = new() {T = 0};
     public double T
@@ -103,25 +113,28 @@ public partial class ProjectileModelPreview : Node2D
     public override void _Draw()
     {
         var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, ctx);
-        pos = new(x,y);
+        pos = new Vector2(x,y)/renderScale;
         // draw projectile
         var texture = textureName != "default" ? 
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", textureName) 
                 : null;
+        DrawSetTransform(Vector2.Zero,0,renderScale*Vector2.One);
         if (texture != null)
+        {
             DrawTexture(texture, (-texture.GetSize() / 2)+pos);
+        }
+        else if (useShape && shape != null)
+        {
+            var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
+            DrawPolyline(points, Colors.White, 1.5f, true);
+            if (points.Length > 1)
+                DrawLine(points[^1], points[0], Colors.White, 1.5f);
+        }
         else
         {
-            if (useShape && shape != null)
-            {
-                var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
-                DrawPolyline(points, Colors.White, 1.5f, true);
-                if (points.Length > 1)
-                    DrawLine(points[^1], points[0], Colors.White, 1.5f);
-            }
-            else
-                DrawCircle(pos, radius, Colors.White);
+            DrawCircle(pos, radius, Colors.White);
         }
+        DrawSetTransform(Vector2.Zero,0,Vector2.One);
         DrawPath();
     }
     private void DrawPath()
@@ -135,7 +148,7 @@ public partial class ProjectileModelPreview : Node2D
             var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
             points[i] = new(x,y);
         }
-        DrawPolyline(points, Colors.Yellow, 1.5f, true);
-        DrawCircle(points[0], 3f, Colors.Yellow);
+        DrawPolyline(points, Colors.Yellow, ConfigHelper.Current.PathThickness, true);
+        DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, Colors.Yellow);
     }
 }

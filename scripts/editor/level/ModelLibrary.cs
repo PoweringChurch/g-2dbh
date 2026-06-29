@@ -55,18 +55,15 @@ public partial class ModelLibrary : Control
                 {
                     if (e.SelectedModel == pm)
                         e.OpenModel(new ProjectileModel());
-                    e.RemoveProjectileModel(pm.Id);
+                    e.RemoveProjectileModel(pm.Id, newTemplate);
                 }
                 else if (m is PatternModel ptm)
                 {
                     if (e.SelectedModel == ptm)
                         e.OpenModel(new PatternModel());
-                    e.RemovePatternModel(ptm.Id);
+                    e.RemovePatternModel(ptm.Id, newTemplate);
                 }
-                Console.Instance.Log($"[ModelLibrary] Deleted model {m.Name}");
-                newTemplate.QueueFree();
             };
-
             container.AddChild(newTemplate);
         }
     }

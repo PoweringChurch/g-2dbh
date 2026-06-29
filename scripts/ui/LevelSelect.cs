@@ -39,7 +39,7 @@ public partial class LevelSelect : CanvasLayer
             entry = dir.GetNext();
         }
         dir.ListDirEnd();
-        Console.Instance.Log($"[Level Select] Populated level list");
+        Console.Inst.Log($"[Level Select] Populated level list");
     }
 
     protected virtual void AddLevelButton(string levelName)

@@ -59,7 +59,7 @@ public partial class CustomLevelSelect : LevelSelect
         var levelDirectory = ProjectSettings.GlobalizePath($"{_levelDirectory}{_selectedLevel}");
         if (!DirAccess.DirExistsAbsolute(levelDirectory))
         {
-            Console.Instance.LogErr($"[Editor Level Select] Could not find directory {levelDirectory}");
+            Console.Inst.LogErr($"[Editor Level Select] Could not find directory {levelDirectory}");
             return;
         }
         

@@ -32,6 +32,7 @@ public partial class Editor : CanvasLayer
             _snapDisplay.Text = value ? "Snap : On" : "Snap : Off";
         }
     }
+    public EditorReference SelectedReference => _preview.SelectedReference;
     public float CurrentTime => _timeline.CurrentTime;
     private const string _levelDirectory = "user://data/levels/";
     public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
@@ -52,13 +53,42 @@ public partial class Editor : CanvasLayer
         patternModels[id] = model;
         model.Id = id;
     }
-    public void RemoveProjectileModel(int id)
+    public void RemoveProjectileModel(int id, Control ui)
     {
-        projectileModels[id] = null;
+        var popup = Popups.Instance.Show(Popups.DefaultType.YN, 
+        $"Are you sure you want to delete projectile '{projectileModels[id].Name}' (Id {id})? All projectiles and patterns with the associated id will be removed.");
+        popup.Options[0].Pressed += () =>
+        {
+            projectileModels[id] = null;
+            for (int i = levelData.References.Count - 1; i >= 0; i--)
+            {
+                var r = levelData.References[i];
+                if (r.Type == ModelType.Projectile && r.Id == id)
+                {
+                    levelData.References.RemoveAt(i);
+                }
+                else if (r.Type == ModelType.Pattern && levelData.PatternModels[id].ProjectileId == id)
+                {
+                    levelData.References.RemoveAt(i);
+                }
+            }
+            ui.QueueFree();
+        };
+        _preview.Sync();
     }
-    public void RemovePatternModel(int id)
+    public void RemovePatternModel(int id, Control ui)
     {
-        patternModels[id] = null;
+        var popup = Popups.Instance.Show(Popups.DefaultType.YN, 
+        $"Are you sure you want to delete pattern '{patternModels[id].Name}' (Id {id})? All patterns with the associated id will be removed.");
+        popup.Options[0].Pressed += () =>
+        {
+            patternModels[id] = null;
+            for (int i = levelData.References.Count - 1; i >= 0; i--)
+                if (levelData.References[i].Id == id)
+                    levelData.References.RemoveAt(i);
+            ui.QueueFree();
+        };
+        _preview.Sync();
     }
     public LevelData levelData;
     // paths
@@ -85,6 +115,7 @@ public partial class Editor : CanvasLayer
     private LevelPreview _preview;
     private ProjectileCreator _projCreator;
     private PatternCreator _patternCreator;
+    private Inspector _inspector;
     private Button _placeButton;
     private Button _selectButton;
     private Button _deleteButton;
@@ -100,7 +131,7 @@ public partial class Editor : CanvasLayer
         _preview = GetNode<LevelPreview>(LevelPreviewPath);
         _projCreator = GetNode<ProjectileCreator>(ProjCreatorPath);
         _patternCreator = GetNode<PatternCreator>(PatternCreatorPath);
-
+        _inspector = GetNode<Inspector>(InspectorPath);
         // events
         _levelMeta.AspectRatioChanged += _preview.Fit;
         _levelMeta.DurationChanged += _timeline.UpdateDuration;
@@ -130,6 +161,8 @@ public partial class Editor : CanvasLayer
         _deleteButton.Pressed += () => CurrentMode = Mode.Delete;
         _snapButton.Pressed += () => Snap = !Snap;
     }
+    public void UpdateInspector(EditorReference r) =>
+        _inspector.Update(r);
     public override void _Input(InputEvent @event)
     {
         if (!Open) return;
@@ -186,7 +219,7 @@ public partial class Editor : CanvasLayer
 
         if (!FileAccess.FileExists(levelDataPath))
         {
-            Console.Instance.Log($"[Editor] Level not found: {levelDataPath}");
+            Console.Inst.Log($"[Editor] Level not found: {levelDataPath}");
             return false;
         }
         LevelData data = ReadJson<LevelData>(levelDataPath);
@@ -222,9 +255,9 @@ public partial class Editor : CanvasLayer
         levelData.PatternModels = [.. patternModels];
         levelData.ProjectileModels = [.. projectileModels];
         string levelPath = $"{_levelDirectory}{levelData.LevelId}/";
-        Console.Instance.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
+        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
         WriteJson(levelPath + "leveldata.json", levelData);
-        Console.Instance.Log("[Editor] Saved level successfully");
+        Console.Inst.Log("[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
         _preview.Sync();
@@ -261,7 +294,7 @@ public partial class Editor : CanvasLayer
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file == null)
         {
-            Console.Instance.LogErr($"Failed to open file for writing: {path}");
+            Console.Inst.LogErr($"Failed to open file for writing: {path}");
         }
         var s = JsonSerializer.Serialize(data);
         file.StoreString(s);

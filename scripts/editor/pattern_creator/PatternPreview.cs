@@ -85,7 +85,7 @@ public partial class PatternPreview : Node2D
     {
         if (projModel == null)
             return;
-        EvalContext lctx = new() { N = count }; // live ctx, stores i, n, projectile t
+        EvalContext lctx = new() { N = count > 1 ? count-1 : 1 }; // live ctx, stores i, n, projectile t
         // loop through count and draw a projectile for i in count
         for (int i = 0; i < Count; i++)
         {
@@ -139,7 +139,7 @@ public partial class PatternPreview : Node2D
             var (x, y) = Projectile.CalculatePositionAt((float)fwd, fnx, fny, pctx);
             points[j] = new Vector2(x,y);
         }
-        DrawPolyline(points, color, 1.5f, true);
-        DrawCircle(points[0], 3f, color);
+        DrawPolyline(points, color, ConfigHelper.Current.PathThickness, true);
+        DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, color);
     }
 }

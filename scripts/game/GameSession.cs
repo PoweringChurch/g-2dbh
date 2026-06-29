@@ -128,13 +128,13 @@ public partial class GameSession : Node
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
         if (file == null)
         {
-            Console.Instance.LogErr($"[GameSession] Could not open file: {path}  (error: {FileAccess.GetOpenError()})");
+            Console.Inst.LogErr($"[GameSession] Could not open file: {path}  (error: {FileAccess.GetOpenError()})");
             return default;
         }
         try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
         catch (JsonException ex)
         {
-            Console.Instance.LogErr($"[GameSession] JSON parse error in '{path}': {ex.Message}");
+            Console.Inst.LogErr($"[GameSession] JSON parse error in '{path}': {ex.Message}");
             return default;
         }
     }

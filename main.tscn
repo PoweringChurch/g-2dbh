@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://dt773ymqw2vko" path="res://scripts/editor/preview/LevelPreview.cs" id="10_074og"]
 [ext_resource type="Script" uid="uid://bwj0kla3iaqvo" path="res://scripts/editor/level/ModelLibrary.cs" id="11_ryguw"]
 [ext_resource type="Script" uid="uid://bvfi3mg55g7iw" path="res://scripts/ui/CustomLevelSelect.cs" id="11_w48qg"]
+[ext_resource type="Script" uid="uid://m8dtvn5j5g5l" path="res://scripts/editor/preview/Inspector.cs" id="13_0odxb"]
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
 [ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/ScoreSummary.cs" id="17_cegan"]
@@ -754,10 +755,17 @@ script = ExtResource("8_074og")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Inspector" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=77464520]
+[node name="Inspector" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=77464520 node_paths=PackedStringArray("xinput", "yinput", "tinput", "fwdinput", "idinput", "typeInput")]
 layout_mode = 2
 size_flags_vertical = 0
 title = "Inspector"
+script = ExtResource("13_0odxb")
+xinput = NodePath("Sort/Position/X")
+yinput = NodePath("Sort/Position/Y")
+tinput = NodePath("Sort/Time/T")
+fwdinput = NodePath("Sort/Rotation/Fwd")
+idinput = NodePath("Sort/ModelId/Id")
+typeInput = NodePath("Sort/Type/Type")
 
 [node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector" unique_id=932218770]
 layout_mode = 2
@@ -769,7 +777,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "X"
-horizontal_alignment = 1
+horizontal_alignment = 2
 
 [node name="X" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=499847051]
 layout_mode = 2
@@ -780,7 +788,7 @@ step = 0.01
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Y"
-horizontal_alignment = 1
+horizontal_alignment = 2
 
 [node name="Y" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Position" unique_id=1391266152]
 layout_mode = 2
@@ -796,6 +804,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Forward"
+horizontal_alignment = 2
 
 [node name="Fwd" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Rotation" unique_id=1237532746]
 layout_mode = 2
@@ -811,13 +820,32 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Spawn Time"
+horizontal_alignment = 2
 
-[node name="Time" type="LineEdit" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Time" unique_id=1891335178]
+[node name="T" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Time" unique_id=261981343]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "(seconds)"
-context_menu_enabled = false
-emoji_menu_enabled = false
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="Type" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=1630014231]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Type" unique_id=931392740]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Type"
+horizontal_alignment = 2
+
+[node name="Type" type="OptionButton" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/Type" unique_id=1607110000]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+popup/item_0/text = "Projectile"
+popup/item_0/id = 0
+popup/item_1/text = "Pattern"
+popup/item_1/id = 1
 
 [node name="ModelId" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=945394233]
 layout_mode = 2
@@ -826,21 +854,14 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Model Id"
+horizontal_alignment = 2
 
-[node name="ModelId" type="LineEdit" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/ModelId" unique_id=417324817]
+[node name="Id" type="SpinBox" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort/ModelId" unique_id=404666513]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "..."
-context_menu_enabled = false
-emoji_menu_enabled = false
-
-[node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Middle/Inspector/Sort" unique_id=1003191319]
-custom_minimum_size = Vector2(20, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-label_settings = ExtResource("7_cegan")
-autowrap_mode = 2
-script = ExtResource("8_074og")
+max_value = 127.0
+rounded = true
+allow_greater = true
 
 [node name="Timeline" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=590144886 node_paths=PackedStringArray("Playhead", "PlayheadPositionInput", "TimelineBar", "ErrorDisplay", "PlayPauseButton", "SpeedInput", "LoopToggle")]
 layout_mode = 2
@@ -965,7 +986,7 @@ current_tab = 0
 tab_0/title = "Projectile Editor"
 tab_1/title = "Pattern Editor"
 
-[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "Save")]
+[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "Save")]
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("5_w48qg")
@@ -973,6 +994,7 @@ IdInput = NodePath("Sort/Id/IdInput")
 NameInput = NodePath("Sort/Name/NameInput")
 Preview = NodePath("Sort/Preview/HBoxContainer/Preview/SubViewport/ModelPreview")
 TInput = NodePath("Sort/Preview/T/TInput")
+RenderScaleInput = NodePath("Sort/Preview/RenderScale/ScaleInput")
 TSlider = NodePath("Sort/Preview/T/TSlider")
 Zoom = NodePath("Sort/Preview/HBoxContainer/Zoom")
 TextureInput = NodePath("Sort/Preview/Texture/TInput")
@@ -1065,6 +1087,22 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
 
+[node name="RenderScale" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=1459323867]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/RenderScale" unique_id=1730540826]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Render Scale"
+
+[node name="ScaleInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/RenderScale" unique_id=346781073]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.1
+max_value = 4.0
+step = 0.01
+value = 1.0
+
 [node name="ReadInfo" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=537574864]
 layout_mode = 2
 
@@ -1137,7 +1175,7 @@ text = "Lifetime"
 
 [node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Lifetime" unique_id=1000369693]
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 3
 step = 0.01
 allow_greater = true
 
@@ -1248,6 +1286,7 @@ text = "Id"
 
 [node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Id" unique_id=1366249995]
 layout_mode = 2
+size_flags_horizontal = 3
 max_value = 128.0
 rounded = true
 

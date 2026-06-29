@@ -36,7 +36,7 @@ public partial class ConfigHelper : Node
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file == null)
         {
-            Console.Instance.LogErr($"[Config Helper] Failed to open file for writing: {path}");
+            Console.Inst.LogErr($"[Config Helper] Failed to open file for writing: {path}");
         }
         var s = JsonSerializer.Serialize(data);
         file.StoreString(s);

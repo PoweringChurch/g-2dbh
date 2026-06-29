@@ -43,7 +43,7 @@ public partial class LevelDirector
         for (int i = 0; i < bulletCount; i++)
         {
             ref var b = ref bullets[i];
-            var proj = _level.Projectiles[b.ProjectileId];
+            var proj = _level.Projectiles[b.Id];
             if (elapsed - b.T > proj.Lifetime)
                 Kill(i--);
             else
@@ -67,7 +67,7 @@ public partial class LevelDirector
                     _character.Graze();
                     _hasGrazed[i] = true;
                 }
-                bool hit = proj.Shape == null ?  distSq <= rSumH * rSumH : CollisionUtils.PolygonVsCircle(proj.Shape, b.Pos, _character.Position, PlayerCharacter.HurtRadius);
+                bool hit = proj.Shape == null ?  distSq <= rSumH * rSumH : CollisionUtils.PolygonVsCircle(proj.Shape, b.Pos, _character.Position, PlayerCharacter.HurtRadius, 0);
                 if (hit && _character.Hurt())
                 {
                     {

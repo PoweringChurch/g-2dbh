@@ -27,13 +27,14 @@ public class ProjectileModel : IEditorModel
     [JsonPropertyName("name")] public string Name { get; set; } = "unnamed";
     [JsonPropertyName("fnX")] public string FunctionX { get; set; } = "0";
     [JsonPropertyName("fnY")] public string FunctionY { get; set; } = "0";
-    [JsonPropertyName("renderScale")] public float RenderScale = 1f;
     [JsonPropertyName("radius")] public float Radius { get; set; } = 8;
     [JsonPropertyName("lifetime")] public double Lifetime { get; set; } = 10;
     [JsonPropertyName("useShape")] public bool UseShape { get; set; } = false;
     [JsonPropertyName("shape")] public float[][] Shape { get; set; } = null;
     [JsonPropertyName("persistant")] public bool Persistant { get; set; } = false;
     [JsonPropertyName("texture")] public string Texture { get; set; } = "default";
+    [JsonPropertyName("renderScale")] public float RenderScale {get; set;} = 1f;
+    [JsonPropertyName("lockRotation")] public bool LockRotation {get; set;} = false;
     // editor only
     [JsonIgnore] public Func<EvalContext, double> efnx;
     [JsonIgnore] public Func<EvalContext, double> efny;
@@ -49,6 +50,8 @@ public class ProjectileModel : IEditorModel
         UseShape = other.UseShape;
         Persistant = other.Persistant;
         Texture = other.Texture;
+        RenderScale = other.RenderScale;
+        LockRotation = other.LockRotation;
         if (other.Shape != null)
         {
             Shape = new float[other.Shape.Length][];
@@ -143,6 +146,8 @@ public class Config
 
     [ConfigField("Editor", "Max path length", 1, 2048, 0.5)]
     [JsonPropertyName("MaxPathLength")] public float MaxPathLength { get; set; } = 128;
+    [ConfigField("Editor", "Path thickness (px)", 0.5, 10, 0.05)]
+    [JsonPropertyName("pathThickness")] public float PathThickness { get; set; } = 0.5f;
     // placement
     [ConfigField("Editor", "Angle snap divisions", 4, 16, 1)]
     [JsonPropertyName("angleSnapDivisions")] public float AngleSnapDivision { get; set; } = 8;

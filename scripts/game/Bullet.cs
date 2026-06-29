@@ -2,7 +2,7 @@ using Godot;
 
 public struct Bullet
 {
-    public int ProjectileId;
+    public int Id;
     public Vector2 SpawnPos;
     public Vector2 Pos;
     public double T;

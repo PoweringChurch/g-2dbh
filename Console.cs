@@ -5,12 +5,12 @@ public partial class Console : CanvasLayer
 {
     
     private const string SavePath = "user://data/logs/";
-    public static Console Instance;
+    public static Console Inst;
     [Export] TextEdit _consoleText;
     [Export] Button _save;
     public override void _Ready()
     {
-        Instance = this;
+        Inst = this;
     }
 
     public override void _Input(InputEvent @event)

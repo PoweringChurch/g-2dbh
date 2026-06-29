@@ -3,10 +3,12 @@ using Godot;
 
 public static class CollisionUtils
 {
-    public static bool PolygonVsCircle(Vector2[] localPoints, Vector2 bulletPos, Vector2 circleCenter, float radius)
+    public static bool PolygonVsCircle(Vector2[] localPoints, Vector2 polyPos, Vector2 circleCenter, float radius, float polygonForward)
     {
-        Vector2 localCircleCenter = circleCenter - bulletPos;
-        if (PointInPolygon(localPoints, localCircleCenter))
+        Vector2 localCircleCenter = circleCenter - polyPos;
+        if (polygonForward != 0)
+            localCircleCenter = localCircleCenter.Rotated(-polygonForward);
+        if (PointInPolygon(localPoints, localCircleCenter, polygonForward))
             return true;
         float radiusSq = radius * radius;
         int n = localPoints.Length;
@@ -19,8 +21,10 @@ public static class CollisionUtils
         }
         return false;
     }
-    public static bool PointInPolygon(Vector2[] points, Vector2 p)
+    public static bool PointInPolygon(Vector2[] points, Vector2 p, float polygonForward = 0)
     {
+        if (polygonForward != 0)
+            p = p.Rotated(-polygonForward);
         bool inside = false;
         int n = points.Length;
         for (int i = 0, j = n - 1; i < n; j = i++)

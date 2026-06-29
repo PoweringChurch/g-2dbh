@@ -9,6 +9,7 @@ public partial class ProjectileCreator : Control
     [Export] LineEdit NameInput;
     [Export] ProjectileModelPreview Preview;
     [Export] SpinBox TInput; // float
+    [Export] SpinBox RenderScaleInput;
     [Export] HSlider TSlider;
     [Export] VSlider Zoom;
     [Export] LineEdit TextureInput;
@@ -48,10 +49,17 @@ public partial class ProjectileCreator : Control
         PersistantCheckbutton.Toggled += OnPersistantToggled;
         UseShapeCheckbutton.Toggled += OnUseShapeToggled;
         Radius.ValueChanged += OnRadiusChanged;
+        RenderScaleInput.ValueChanged += OnRenderScaleChanged;
         Save.Pressed += OnSavePressed;
         Zoom.ValueChanged += OnZoomChanged;
 
         ShapeEditor.ShapeUpdated += OnShapeUpdated;
+    }
+
+    private void OnRenderScaleChanged(double value)
+    {
+        Preview.RenderScale = (float)value;
+        model.RenderScale = (float)value;
     }
     private void OnTChanged(double t)
     {
@@ -177,6 +185,7 @@ public partial class ProjectileCreator : Control
         PersistantCheckbutton.ButtonPressed = newModel.Persistant;
         UseShapeCheckbutton.ButtonPressed =newModel.UseShape; // doesnt need its on changed function because setting it like this automatically calls it 
         Preview.T = 0;
+        RenderScaleInput.Value = newModel.RenderScale;
         ToggleCollisionParams(newModel.UseShape);
 
         OnFnXChanged(newModel.FunctionX);

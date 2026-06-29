@@ -24,13 +24,10 @@ public class BulletRenderer
         for (int i = 0; i < bulletCount; i++)
         {
             ref Bullet b = ref bullets[i];
-            //if (!b.Alive) continue;
-            var model = level.Projectiles[b.ProjectileId];
+            var model = level.Projectiles[b.Id];
             groups[model.RenderGroupId].BulletIndices.Add(i);
         }
-    
         const int floatsPerInstance = 8; // 8 transform + 4 color (RGBA)
-
         for (int g = 0; g < groups.Count; g++)
         {
             var group = groups[g];
@@ -46,7 +43,7 @@ public class BulletRenderer
             {
                 int idx = group.BulletIndices[n];
                 ref Bullet b = ref bullets[idx];
-                var model = level.Projectiles[b.ProjectileId];
+                var model = level.Projectiles[b.Id];
                 float scale = model.RenderScale;
                 int o = n * floatsPerInstance;
                 buffer[o + 0] = 0; // shear x

@@ -11,6 +11,7 @@ public class Projectile
     public int RenderGroupId = -1;
     public float RenderScale = 1f;
     public Vector2[] Shape = null;
+    public bool LockRotation = false;
     public static (float x, float y) CalculatePositionAt(float fwd, Expr fnx, Expr fny, EvalContext ctx)
     {
         float fwdTravel = fnx != null ? (float)fnx.Eval(ctx) : 0;
