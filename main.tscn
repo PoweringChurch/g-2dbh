@@ -1,27 +1,27 @@
 [gd_scene format=3 uid="uid://byrpidyii8f8t"]
 
-[ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/HUD.cs" id="2_dg77c"]
+[ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/screens/HUD.cs" id="2_dg77c"]
 [ext_resource type="Theme" uid="uid://dq7qa8sty0ce0" path="res://data/other/themes/default_ui.tres" id="2_ryguw"]
-[ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/MainMenu.cs" id="2_ycdy4"]
+[ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/screens/MainMenu.cs" id="2_ycdy4"]
 [ext_resource type="LabelSettings" uid="uid://dou3cdouhk0b8" path="res://data/other/label_settings/hud_label_settings.tres" id="3_d13ii"]
-[ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/PauseMenu.cs" id="3_ycdy4"]
-[ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/LevelSelect.cs" id="4_vivmo"]
+[ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/screens/PauseMenu.cs" id="3_ycdy4"]
+[ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/screens/LevelSelect.cs" id="4_vivmo"]
 [ext_resource type="Script" uid="uid://d4h74kguhbi00" path="res://scripts/editor/projectile_creator/ProjectileModelPreview.cs" id="5_2cqfq"]
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/level/LevelMetadata.cs" id="5_ycdy4"]
 [ext_resource type="Script" uid="uid://bju7haqyrgrrg" path="res://scripts/editor/projectile_creator/ShapeEditor.cs" id="6_074og"]
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="7_cegan"]
 [ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/author_label_settings.tres" id="7_getpj"]
-[ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/MessageDisplay.cs" id="8_074og"]
+[ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="8_074og"]
 [ext_resource type="Script" uid="uid://7a6jo6fmtk3r" path="res://scripts/editor/preview/Timeline.cs" id="8_yaehf"]
 [ext_resource type="Script" uid="uid://dt773ymqw2vko" path="res://scripts/editor/preview/LevelPreview.cs" id="10_074og"]
 [ext_resource type="Script" uid="uid://bwj0kla3iaqvo" path="res://scripts/editor/level/ModelLibrary.cs" id="11_ryguw"]
-[ext_resource type="Script" uid="uid://bvfi3mg55g7iw" path="res://scripts/ui/CustomLevelSelect.cs" id="11_w48qg"]
+[ext_resource type="Script" uid="uid://bvfi3mg55g7iw" path="res://scripts/ui/screens/CustomLevelSelect.cs" id="11_w48qg"]
 [ext_resource type="Script" uid="uid://m8dtvn5j5g5l" path="res://scripts/editor/preview/Inspector.cs" id="13_0odxb"]
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
-[ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/ScoreSummary.cs" id="17_cegan"]
-[ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/SettingsMenu.cs" id="21_getpj"]
+[ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/screens/ScoreSummary.cs" id="17_cegan"]
+[ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/screens/SettingsMenu.cs" id="21_getpj"]
 [ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
 [ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="23_1u8w0"]
 [ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://Console.cs" id="23_d13ii"]
@@ -193,6 +193,8 @@ layout_mode = 2
 size_flags_horizontal = 10
 text = "0"
 label_settings = ExtResource("3_d13ii")
+
+[node name="GameAudioPlayer" type="AudioStreamPlayer" parent="HUD" unique_id=1121045320]
 
 [node name="MainMenu" type="CanvasLayer" parent="." unique_id=692766472 node_paths=PackedStringArray("_startButton", "_customsButton", "_settingsButton", "_quitButton")]
 script = ExtResource("2_ycdy4")
@@ -618,16 +620,18 @@ stretch_mode = 6
 
 [node name="Preview" type="Node2D" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=624726340]
 
-[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("LevelNameInput", "AuthorInput", "BGImageInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "ErrorDisplay")]
+[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("LevelNameInput", "AuthorInput", "BGImageInput", "MusicInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "ErrorDisplay")]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 0
 title = "Level Data"
 script = ExtResource("5_ycdy4")
 LevelNameInput = NodePath("Sort/LevelName/LevelName")
 AuthorInput = NodePath("Sort/Author/Author")
 BGImageInput = NodePath("Sort/BgImage/BgImage")
+MusicInput = NodePath("Sort/Music/MusicName")
 HealthInput = NodePath("Sort/Health/Health")
-DurationInput = NodePath("Sort/Duration/Duration")
+DurationInput = NodePath("Sort/Duration/Durati")
 AspectRatioInput = NodePath("Sort/AspectRatio/AspectDropdown")
 SaveLevel = NodePath("Sort/Actions/Save")
 OpenLevelFolder = NodePath("Sort/Actions/LevelFolder")
@@ -658,6 +662,21 @@ size_flags_horizontal = 3
 text = "Level name"
 
 [node name="LevelName" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/LevelName" unique_id=988703600]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="Music" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=2101583833]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Music" unique_id=2012501782]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Music"
+
+[node name="MusicName" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Music" unique_id=2140445858]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
@@ -702,12 +721,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Health"
 
-[node name="Health" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Health" unique_id=1467162304]
+[node name="Health" type="SpinBox" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Health" unique_id=473264419]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "(integer)"
-context_menu_enabled = false
-emoji_menu_enabled = false
+min_value = 1.0
+max_value = 99.0
+value = 1.0
+rounded = true
 
 [node name="Duration" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=329847440]
 layout_mode = 2
@@ -717,12 +737,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Duration"
 
-[node name="Duration" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Duration" unique_id=850700558]
+[node name="Durati" type="SpinBox" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Duration" unique_id=1053582512]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "(seconds)"
-context_menu_enabled = false
-emoji_menu_enabled = false
+step = 0.01
+allow_greater = true
 
 [node name="AspectRatio" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort" unique_id=2112971349]
 layout_mode = 2
@@ -758,6 +777,7 @@ size_flags_horizontal = 3
 [node name="Inspector" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=77464520 node_paths=PackedStringArray("xinput", "yinput", "tinput", "fwdinput", "idinput", "typeInput")]
 layout_mode = 2
 size_flags_vertical = 0
+focus_mode = 0
 title = "Inspector"
 script = ExtResource("13_0odxb")
 xinput = NodePath("Sort/Position/X")
@@ -863,8 +883,9 @@ max_value = 127.0
 rounded = true
 allow_greater = true
 
-[node name="Timeline" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=590144886 node_paths=PackedStringArray("Playhead", "PlayheadPositionInput", "TimelineBar", "ErrorDisplay", "PlayPauseButton", "SpeedInput", "LoopToggle")]
+[node name="Timeline" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=590144886 node_paths=PackedStringArray("Playhead", "PlayheadPositionInput", "TimelineBar", "ErrorDisplay", "PlayPauseButton", "SpeedInput", "LoopToggle", "EditorAudioPreview")]
 layout_mode = 2
+focus_mode = 0
 title = "Timeline"
 script = ExtResource("8_yaehf")
 Playhead = NodePath("Sort/Playhead")
@@ -874,6 +895,7 @@ ErrorDisplay = NodePath("Sort/Errors")
 PlayPauseButton = NodePath("Sort/Tools/PlayPause")
 SpeedInput = NodePath("Sort/Tools/SpeedControl/Speed")
 LoopToggle = NodePath("Sort/Tools/LoopToggle/Loop")
+EditorAudioPreview = NodePath("../../../../EditorAudioPreview")
 
 [node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline" unique_id=1165193795]
 layout_mode = 2
@@ -884,6 +906,7 @@ layout_mode = 2
 [node name="PlayPause" type="Button" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools" unique_id=2097833708]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
+focus_mode = 0
 text = "❚❚"
 
 [node name="SpeedControl" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort/Tools" unique_id=222082011]
@@ -977,6 +1000,7 @@ size_flags_vertical = 3
 
 [node name="Right" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=129711909]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Creators" type="TabContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=3987318]
 custom_minimum_size = Vector2(350, 0)
@@ -1086,6 +1110,8 @@ text = "Texture"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="RenderScale" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview" unique_id=1459323867]
 layout_mode = 2
@@ -1150,6 +1176,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "0"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=663279918]
 layout_mode = 2
@@ -1164,6 +1192,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "30*sin(t)"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Lifetime" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=630256805]
 layout_mode = 2
@@ -1225,24 +1255,19 @@ text = "Use Shape"
 [node name="UseShapeCheck" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/UseShape" unique_id=1563563340]
 layout_mode = 2
 
-[node name="ShapeEditor" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=647831941 node_paths=PackedStringArray("TextureDisplay", "TextureTransparency", "PointContainer", "NewPoint")]
-visible = false
+[node name="ShapeEditor" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=647831941 node_paths=PackedStringArray("PointDisplay", "PointContainer", "NewPoint")]
+clip_contents = true
 layout_mode = 2
 script = ExtResource("6_074og")
-TextureDisplay = NodePath("TextureRect")
-TextureTransparency = NodePath("Transparency")
+PointDisplay = NodePath("BackgroundColor")
 PointContainer = NodePath("ScrollContainer/Points")
 NewPoint = NodePath("ScrollContainer/Points/NewPoint")
 
-[node name="Transparency" type="VSlider" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1396601161]
+[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1008216724]
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
-max_value = 1.0
-step = 0.1
-
-[node name="TextureRect" type="TextureRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=827913099]
-custom_minimum_size = Vector2(120, 120)
-layout_mode = 2
-expand_mode = 4
+size_flags_vertical = 3
+color = Color(0.019139709, 0.06515412, 0.074752696, 1)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1002758548]
 layout_mode = 2
@@ -1275,6 +1300,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=336509970]
 layout_mode = 2
@@ -1418,6 +1445,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "50*sin(tau*i/n)"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="FnY" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=1835444005]
 layout_mode = 2
@@ -1432,6 +1461,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "50*cos(tau*i/n)"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="FnT" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=95664483]
 layout_mode = 2
@@ -1446,6 +1477,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "i/n*5"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="FnFwd" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=1307103656]
 layout_mode = 2
@@ -1460,6 +1493,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "0"
 placeholder_text = "-tau*i/n"
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Count" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Placement" unique_id=791907995]
 layout_mode = 2
@@ -1493,6 +1528,8 @@ text = "Name"
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
+context_menu_enabled = false
+emoji_menu_enabled = false
 
 [node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort" unique_id=339645853]
 layout_mode = 2
@@ -1518,6 +1555,8 @@ size_flags_horizontal = 3
 label_settings = ExtResource("7_cegan")
 autowrap_mode = 2
 script = ExtResource("8_074og")
+
+[node name="EditorAudioPreview" type="AudioStreamPlayer" parent="EditorLayer" unique_id=1220983324]
 
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1278547073 node_paths=PackedStringArray("_resumeButton", "_resetButton", "_quitButton")]
 process_mode = 2
@@ -1732,7 +1771,7 @@ offset_right = 43.5
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("2_ryguw")
-text = "danmaku mania pre alpha 2"
+text = "danmaku mania pre alpha 3"
 
 [node name="Console" type="CanvasLayer" parent="." unique_id=1952028464 node_paths=PackedStringArray("_consoleText", "_save")]
 process_mode = 3

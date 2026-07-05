@@ -3,7 +3,13 @@ using Godot;
 
 public partial class GameSession : Node
 {
+    public AudioStreamPlayer GAP {get; private set;}
+    public double Elapsed
+    {
+        get => _director.Elapsed;
+    }
     public NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
+    public NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
     private Node2D _gameRoot;
     private SubViewport _svp;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
@@ -19,6 +25,7 @@ public partial class GameSession : Node
     {
         _ui = GetNode<UIManager>("/root/UIManager");
         _svp = GetNode<SubViewport>(SubViewportPath);
+        GAP = GetNode<AudioStreamPlayer>(GameAudioPlayerPath);
         _playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
         SetProcess(false);
@@ -28,6 +35,8 @@ public partial class GameSession : Node
     {
         SetPhysicsProcess(false);
         SetProcess(false);
+        GAP.Stop();
+        GAP.Stream = null;
         if (IsInstanceValid(_character))
         {
             _character.OnHurt -= OnHurt;
@@ -84,6 +93,9 @@ public partial class GameSession : Node
         _lastStartedLevelId = levelId;
         _renderer = new BulletRenderer(compiled);
         _director.StartLevel(compiled, _character);
+        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume;
+        GAP.Stream = AudioUtils.LoadAudio(levelsDirectory+levelId+"/audio/", levelData.Music);
+        GAP.Play(0);
         SetPhysicsProcess(true);
         SetProcess(true);
         return true;

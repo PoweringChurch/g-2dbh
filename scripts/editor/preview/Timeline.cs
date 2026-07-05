@@ -9,9 +9,10 @@ public partial class Timeline : Control
     [Export] public Button PlayPauseButton;
     [Export] public SpinBox SpeedInput;
     [Export] public CheckButton LoopToggle;
+    [Export] public AudioStreamPlayer EditorAudioPreview;
 
-    private float currentTime = 0;
     public float CurrentTime => currentTime;
+    private float currentTime = 0;
     private bool _playing = false;
     private float _speed = 1f;
     private bool _loop = false;
@@ -67,8 +68,25 @@ public partial class Timeline : Control
     public void TogglePlaying() => SetPlaying(!_playing);
     private void SetPlaying(bool playing)
     {
+        if (EditorAudioPreview.Stream != null)
+        {
+            if (playing)
+            {
+                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume;
+                EditorAudioPreview.Play(currentTime);
+            }
+            else
+            {
+                EditorAudioPreview.Stop();
+            }
+        }
         _playing = playing;
         UpdatePlayPauseLabel();
+    }
+    public void UpdateMusic(AudioStream newMusic)
+    {
+        SetPlaying(false);
+        EditorAudioPreview.Stream = newMusic;
     }
     private void UpdatePlayPauseLabel() =>
         PlayPauseButton.Text = _playing ? "❚❚" : "▶";
@@ -92,6 +110,8 @@ public partial class Timeline : Control
             PlayheadPositionInput.SetValueNoSignal(currentTime);
         else
             Playhead.SetValueNoSignal(currentTime);
+        if (_playing)
+            EditorAudioPreview.Play(currentTime);
         e.SyncPreview();
     }
 
@@ -99,11 +119,14 @@ public partial class Timeline : Control
     {
         _dirty = true;
     }
-    public void Load(List<EditorReference> references)
+    public void Load(LevelData data)
     {
         ClearMarkers();
-        foreach (var r in references)
+        foreach (var r in data.References)
             AddMarker(r);
+        var musicname = data.Music;
+        var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", musicname);
+        EditorAudioPreview.Stream = found;
     }
     public void AddMarker(EditorReference r)
     {

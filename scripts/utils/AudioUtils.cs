@@ -9,20 +9,33 @@ public partial class AudioUtils : Node
     {
         Instance = this;
     }
-    public bool PlayAudio(string audioName, float volume = 1)
+    public AudioStreamPlayer PlayAudio(string audioName, float volume = 1, float time = 0)
     {
         var audio = LoadAudio(soundsDir, audioName);
         if (audio == null)
         {
             audio = ResourceLoader.Load<AudioStream>($"res://data/sounds/{audioName}.wav"); // try default
             if (audio == null)
-                return false;
+                return null;
         }
+        return PlayAudio(audio, volume, time);
+    }
+    public AudioStreamPlayer PlayAudio(AudioStream audio, float volume = 1, float time = 0)
+    {
+        if (audio == null)
+            return null;
         AudioStreamPlayer player = new() { Stream = audio, VolumeLinear = volume};
         AddChild(player);
-        player.Play();
+        if (time <= audio.GetLength())
+        {
+            player.Play(time);
+        }
+        else
+        {
+            player.Play(0);
+        }
         player.Finished += player.QueueFree;
-        return true;
+        return player;
     }
     private static Dictionary<string, AudioStream> _audioCache = [];
     public static AudioStream LoadAudio(string inDir, string audioName)

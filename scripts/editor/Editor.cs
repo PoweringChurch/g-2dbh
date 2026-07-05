@@ -137,7 +137,7 @@ public partial class Editor : CanvasLayer
         _levelMeta.DurationChanged += _timeline.UpdateDuration;
         _levelMeta.SaveLevelRequested += SaveLevel;
         _levelMeta.BgImageChanged += _preview.ChangeBackgroundImage;
-
+        _levelMeta.MusicChanged += _timeline.UpdateMusic;
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
         _projCreator.ModelSaved += _preview.CompileProjectile;
         _projCreator.ModelSaved += _preview.Sync;
@@ -198,6 +198,7 @@ public partial class Editor : CanvasLayer
             DisplayName = "New Level",
             Author = "Unknown",
             BgImage = "none",
+            Music = "none",
             Health = 3,
             AspectRatio = 0,
             Duration = 1f,
@@ -206,10 +207,10 @@ public partial class Editor : CanvasLayer
             PatternModels =  new PatternModel[MaxModelCount],
             References = [],
         };
-
         string levelPath = $"{_levelDirectory}{data.LevelId}/";
         DirAccess.MakeDirRecursiveAbsolute(levelPath);
         DirAccess.MakeDirRecursiveAbsolute(levelPath + "images/");
+        DirAccess.MakeDirRecursiveAbsolute(levelPath + "audio/");
         WriteJson(levelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
@@ -240,7 +241,7 @@ public partial class Editor : CanvasLayer
             var m = data.PatternModels[i];
             patternModels[i] = m;
         }
-        _timeline.Load(data.References);
+        _timeline.Load(data);
         _timeline.UpdateDuration();
         _preview.CompileAll();
         _preview.ChangeBackgroundImage(data.BgImage);

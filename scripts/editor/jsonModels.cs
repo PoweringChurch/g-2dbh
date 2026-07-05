@@ -93,6 +93,7 @@ public class LevelData
     [JsonPropertyName("displayName")] public string DisplayName { get; set; }
     [JsonPropertyName("author")] public string Author { get; set; }
     [JsonPropertyName("bgImage")] public string BgImage { get; set; }
+    [JsonPropertyName("music")] public string Music { get; set; }
     [JsonPropertyName("health")] public int Health { get; set; } = 3;
     [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 1;
     [JsonPropertyName("duration")] public float Duration { get; set; } = 1;
@@ -140,6 +141,9 @@ public class Config
     [ConfigField("Game", "Hurt volume", 0, 1, 0.05f)]
     [JsonPropertyName("hurtVolume")] public float HurtVolume { get; set; } = 0.1f;
     // EDITOR
+    // projectile preview
+    [ConfigField("Editor", "Display projectile collision in projectile creator", 1, 256, 1)]
+    [JsonPropertyName("showCollision")] public bool ShowCollision { get; set; } = true;
     // path
     [ConfigField("Editor", "Path fidelity", 1, 256, 1)]
     [JsonPropertyName("pathFidelity")] public int PathFidelity { get; set; } = 64;

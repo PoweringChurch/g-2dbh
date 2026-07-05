@@ -134,6 +134,21 @@ public partial class ProjectileModelPreview : Node2D
         {
             DrawCircle(pos, radius, Colors.White);
         }
+        // complete this if block, following the pattern of the above code
+        if (ConfigHelper.Current.ShowCollision && textureName != "default")
+        {
+            if (useShape && shape != null)
+            {
+                var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
+                DrawPolyline(points, Colors.Red, 1.5f / renderScale, true);
+                if (points.Length > 1)
+                    DrawLine(points[^1], points[0], Colors.Red, 1.5f / renderScale);
+            }
+            else
+            {
+                DrawCircle(pos, radius / renderScale, new Color(1, 0, 0, 0.4f), false); // semi-transparent red
+            }
+        }
         DrawSetTransform(Vector2.Zero,0,Vector2.One);
         DrawPath();
     }

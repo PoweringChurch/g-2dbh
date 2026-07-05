@@ -70,10 +70,21 @@ public partial class UIManager : Node
         _canPause = true;
     }
     public void ShowScoreSummary() => SetVisible(ScoreSummary);
-    public void TogglePause(bool to)
+    public void TogglePause(bool on)
     {
-        GetTree().Paused = to;
-        _pause.Visible = to;
+        if (!on)
+        {
+            gameSession.GAP.Play((float)gameSession.Elapsed);
+            Console.Inst.Log("ELAPSED : "+(float)gameSession.Elapsed);
+        }
+        else
+        {
+            gameSession.GAP.Stop();
+            Console.Inst.Log("STOPPED");
+        }
+
+        GetTree().Paused = on;
+        _pause.Visible = on;
     }
     public void OnSettings()
     {

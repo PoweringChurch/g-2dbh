@@ -187,7 +187,7 @@ public partial class ProjectileCreator : Control
         Preview.T = 0;
         RenderScaleInput.Value = newModel.RenderScale;
         ToggleCollisionParams(newModel.UseShape);
-
+        OnRenderScaleChanged(newModel.RenderScale);
         OnFnXChanged(newModel.FunctionX);
         OnFnYChanged(newModel.FunctionY);
         OnLifetimeChanged(newModel.Lifetime);
