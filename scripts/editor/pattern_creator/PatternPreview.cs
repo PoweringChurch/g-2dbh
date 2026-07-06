@@ -97,6 +97,7 @@ public partial class PatternPreview : Node2D
             double rawT = ctx.T - genT;
             bool alive = rawT >= 0 && rawT < projModel.Lifetime;
             lctx.T = Math.Clamp(rawT, 0, projModel.Lifetime);
+            lctx.L = projModel.Lifetime;
             var (x, y) = Projectile.CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
             // draw
             var texture = projModel.Texture != "default" ?

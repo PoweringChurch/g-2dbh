@@ -66,7 +66,7 @@ public partial class Timeline : Control
         e.SyncPreview();
     }
     public void TogglePlaying() => SetPlaying(!_playing);
-    private void SetPlaying(bool playing)
+    public void SetPlaying(bool playing)
     {
         if (EditorAudioPreview.Stream != null)
         {

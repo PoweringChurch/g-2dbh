@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Godot;
 
 public static class CollisionUtils
@@ -47,5 +50,14 @@ public static class CollisionUtils
         float t = Math.Clamp((p - a).Dot(ab) / lenSq, 0f, 1f);
         Vector2 closest = a + ab * t;
         return (p - closest).LengthSquared();
+    }
+    public static float[][] Vect2sToFloatArr(IEnumerable<Vector2> vects)
+    {
+        return [.. vects.Select(v => new[] { v.X, v.Y })];
+    }
+    public static List<Vector2> FloatArrToVect2s(float[][] floats)
+    {
+        if (floats == null) return [];
+        return [.. floats.Select(f => new Vector2(f[0], f[1]))];
     }
 }

@@ -126,6 +126,7 @@ public partial class UIManager : Node
             _levelSelect.PopulateList();
         TogglePause(false); 
         gameSession.Abort();
+        GetNode<Editor>("/root/Editor").SetPlaying(false);
     }
     void OnQuit() => GetTree().Quit();
     void OnReset()

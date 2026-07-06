@@ -49,6 +49,7 @@ public partial class LevelDirector
             else
             {
                 _ctx.T = elapsed - b.T;
+                _ctx.L = proj.Lifetime;
                 // move projectile
                 double xTravel = proj.fnx(_ctx);
                 double yTravel = proj.fny(_ctx);
@@ -67,13 +68,13 @@ public partial class LevelDirector
                     _character.Graze();
                     _hasGrazed[i] = true;
                 }
-                bool hit = proj.Shape == null ?  distSq <= rSumH * rSumH : CollisionUtils.PolygonVsCircle(proj.Shape, b.Pos, _character.Position, PlayerCharacter.HurtRadius, 0);
+                bool hit = proj.Shape == null ? 
+                distSq <= rSumH * rSumH 
+                : CollisionUtils.PolygonVsCircle([.. proj.Shape], b.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)b.F);
                 if (hit && _character.Hurt())
                 {
-                    {
-                        if (!proj.Persistant)
+                    if (!proj.Persistant)
                         Kill(i--);
-                    }
                 }
             }
         }

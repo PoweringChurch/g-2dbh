@@ -31,6 +31,7 @@ public class VariableExpr : Expr
         "t" => ctx.T,
         "i" => ctx.I,
         "n" => ctx.N,
+        "l" => ctx.L,
         _ => throw new NotSupportedException($"Unknown variable: {name}")
     };
 }
@@ -99,9 +100,10 @@ public class ConstExpr : Expr
 
 public struct EvalContext
 {
-    public double T;
-    public double I;
-    public double N;
+    public double T; // time passed since start of projectile OR pattern
+    public double I; // index of a projectile in a pattern
+    public double N; // amount of projectiles in a pattern
+    public double L; // lifetime
 }
 // Handler
 public class ExpressionHandler
@@ -225,6 +227,7 @@ public class ExpressionHandler
                     "t" => ctx => ctx.T,
                     "i" => ctx => ctx.I,
                     "n" => ctx => ctx.N,
+                    "l" => ctx => ctx.L,
                     _ => throw new NotSupportedException($"Unknown variable: {v.name}")
                 };
 

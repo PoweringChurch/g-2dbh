@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using Godot;
 
 public partial class ShapeEditor : Control
@@ -5,11 +8,24 @@ public partial class ShapeEditor : Control
     [Export] public Control PointDisplay;
     [Export] public VBoxContainer PointContainer;
     [Export] public Button NewPoint;
+    [Export] public SpinBox XTranslate;
+    [Export] public SpinBox YTranslate;
+    [Export] public SpinBox ScaleTranslate;
+    [Export] public SpinBox ForwardTranslate;
+    [Export] public Button ApplyTranslation;
     public float TextureRenderScale = 1;
     public Editor e;
     private PackedScene pointUi = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/point_ui.tscn");
-    private float[][] points = [];
-    public float[][] Points => points;
+    private List<Vector2> points = [];
+    public List<Vector2> Points
+    {
+        get => points;
+        set
+        {
+            points = value;
+            RefreshPointUIs();
+        }   
+    }
     private float _pointScale = 1;
     private bool _dirty = false;
     [Signal] public delegate void ShapeUpdatedEventHandler();
@@ -18,24 +34,50 @@ public partial class ShapeEditor : Control
         e = GetNode<Editor>("/root/Editor");
         NewPoint.Pressed += OnNewPointPressed;
         PointDisplay.Draw += DrawPoints;
+        ApplyTranslation.Pressed += OnApplyPressed;
+    }
+    private void OnApplyPressed()
+    {
+        float xtranslate = (float)XTranslate.Value;
+        float ytranslate = (float)YTranslate.Value; 
+        float scaletranslate = (float)ScaleTranslate.Value;
+        float fwdTranslate = (float)ForwardTranslate.Value; // Radians
+        float cos = MathF.Cos(fwdTranslate);
+        float sin = MathF.Sin(fwdTranslate);
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector2 originalPoint = points[i];
+            // scale
+            float scaledX = originalPoint.X * scaletranslate;
+            float scaledY = originalPoint.Y * scaletranslate;
+
+            // rotate
+            float rotatedX = scaledX * cos - scaledY * sin;
+            float rotatedY = scaledX * sin + scaledY * cos;
+
+            // translate
+            float finalX = rotatedX + xtranslate;
+            float finalY = rotatedY + ytranslate;
+
+            points[i] = new Vector2(finalX, finalY);
+        }
+        RefreshPointUIs();
+        _dirty = true;
     }
     public override void _Process(double delta)
     {
         if (_dirty)
         {
             PointDisplay.QueueRedraw();
+            EmitSignal(SignalName.ShapeUpdated);
             _dirty = false;
         }
     }
     private void OnNewPointPressed()
     {
-        var newPoints = new float[points.Length + 1][];
-        points.CopyTo(newPoints, 0);
-        newPoints[^1] = [0f, 0f];
-        points = newPoints;
-        AddPointUI(points.Length - 1);
+        points.Add(new());
+        AddPointUI(points.Count - 1);
         UpdateIndices();
-        EmitSignal(SignalName.ShapeUpdated);
         _dirty = true;
     }
     private void AddPointUI(int index)
@@ -53,23 +95,21 @@ public partial class ShapeEditor : Control
         xInput.ValueChanged += (value) =>
         {
             int currentIndex = ui.GetIndex()-1;
-            points[currentIndex][0] = (float)value;
+            points[currentIndex] = new Vector2((float)value, points[currentIndex].Y);
             _dirty = true;
         };
 
         yInput.ValueChanged += (value) =>
         {
             int currentIndex = ui.GetIndex()-1;
-            points[currentIndex][1] = (float)value;
+            points[currentIndex] = new Vector2(points[currentIndex].X, (float)value);
             _dirty = true;
         };
 
         delete.Pressed += () =>
         {
             int currentIndex = ui.GetIndex()-1;
-            var list = new System.Collections.Generic.List<float[]>(points);
-            list.RemoveAt(currentIndex);
-            points = [.. list];
+            points.RemoveAt(currentIndex);
             PointContainer.RemoveChild(ui);
             ui.QueueFree();
             UpdateIndices();
@@ -81,10 +121,16 @@ public partial class ShapeEditor : Control
     private void RefreshPointUIs()
     {
         foreach (var child in PointContainer.GetChildren())
+        {
+            if (child == NewPoint)
+                continue;
             child.QueueFree();
-        for (int i = 0; i < points.Length; i++)
+        }
+            
+        for (int i = 0; i < points.Count; i++)
             AddPointUI(i);
         UpdateIndices();
+        _dirty = true;
     }
     private void UpdateIndices()
     {
@@ -98,22 +144,9 @@ public partial class ShapeEditor : Control
     }
     public void DrawPoints()
     {
-        if (points.Length == 0) return;
-
-        var displayPoints = new System.Collections.Generic.List<Vector2>();
-        var origin = PointDisplay.GlobalPosition - GlobalPosition;
-
-        foreach (var p in points)
-        {
-            displayPoints.Add(origin + new Vector2(p[0], p[1])+new Vector2(75,75));
-        }
-
-        var arr = displayPoints.ToArray();
-        if (arr.Length == 1) return;
-        PointDisplay.DrawPolyline(arr, Colors.Yellow, 1.5f, true);
-        if (arr.Length > 1)
-            PointDisplay.DrawLine(arr[^1], arr[0], Colors.Yellow, 1.5f);
-        foreach (var pt in arr)
+        if (points.Count == 0 || points.Count == 1) return;
+        PointDisplay.DrawPolyline([.. points, points[0]], Colors.Yellow, 1.5f, true);
+        foreach (var pt in points)
             PointDisplay.DrawCircle(pt, 3f, Colors.Green);
     }
 }

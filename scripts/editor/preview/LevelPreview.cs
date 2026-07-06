@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Godot;
 
 public partial class LevelPreview : Control
@@ -85,6 +86,7 @@ public partial class LevelPreview : Control
 				case Editor.Mode.Select: HandleSelectMM(mm); break;
 				case Editor.Mode.Delete: HandleDeleteMM(mm); break;
 			}
+			PreviewRoot.QueueRedraw();
 		}
     }
 	private void HandlePlacePress(InputEventMouseButton mb)
@@ -92,14 +94,15 @@ public partial class LevelPreview : Control
 		if (e.SelectedModel == null)
 			return;
 		var local = ToPreviewLocal(mb.Position);
+		var pos = snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize): local;
 		var newRef = new EditorReference
 		{
 			Id = e.SelectedModel.Id,
 			Type = e.SelectedModel is ProjectileModel ? ModelType.Projectile : ModelType.Pattern,
 			T = e.CurrentTime,
-			SpawnX = local.X,
-			SpawnY = local.Y,
-			Pos = new(local.X, local.Y)
+			SpawnX = pos.X,
+			SpawnY = pos.Y,
+			Pos = pos
 		};
 		lmbDragging = true;
 		SelectedReference = newRef;
@@ -139,13 +142,10 @@ public partial class LevelPreview : Control
 		SelectedReference = GetNearestReference(mb.Position);
 		if (SelectedReference != null) // if we got a reference
 		{
-			GD.Print("r is not null");
 			if (_inGroup) // if the reference is in the selection group
 			{
-				GD.Print("what we selected is in a group");
 				foreach (var sr in _groupSelection)
 				{
-					GD.Print("deleted a refernece");
 					e.DeleteReference(sr);
 				}
 			}
@@ -231,15 +231,16 @@ public partial class LevelPreview : Control
 	private void HandleSelectLMBRelease(InputEventMouseButton mb)
 	{
 		lmbDragging = false;
-		if (SelectedReference != null) // have a selected reference and holding lmb but not holding rmb
+		if (SelectedReference != null && !rmbDragging) // have a selected reference and holding lmb but not holding rmb
 		{
 			var local = ToPreviewLocal(mb.Position);
+			var pos = snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize) : local;
 			var oldAnchorPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
-			SelectedReference.SpawnX = local.X;
-			SelectedReference.SpawnY = local.Y;
+			SelectedReference.SpawnX = pos.X;
+			SelectedReference.SpawnY = pos.Y;
 			if (_inGroup) // and in group
 			{
-				var delta = local - oldAnchorPos;
+				var delta = pos - oldAnchorPos;
 				foreach (var r in _groupSelection)
 				{
 					if (r == SelectedReference) continue; 
@@ -269,7 +270,6 @@ public partial class LevelPreview : Control
 			SelectedReference.F = f;
 			
 			e.SyncPreview();
-			PreviewRoot.QueueRedraw();
 		}
 	}
 	private void HandleSelectMM(InputEventMouseMotion mm)
@@ -277,12 +277,13 @@ public partial class LevelPreview : Control
 		if (SelectedReference != null && lmbDragging && !rmbDragging) // have a selected reference and holding lmb but not holding rmb
 		{
 			var local = ToPreviewLocal(mm.Position);
+			var pos = snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize) : local;
 			var oldAnchorPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
-			SelectedReference.SpawnX = local.X;
-			SelectedReference.SpawnY = local.Y;
+			SelectedReference.SpawnX = pos.X;
+			SelectedReference.SpawnY = pos.Y;
 			if (_inGroup)
 			{
-				var delta = local - oldAnchorPos;
+				var delta = pos - oldAnchorPos;
 				foreach (var r in _groupSelection)
 				{
 					if (r == SelectedReference) continue; 
@@ -331,7 +332,6 @@ public partial class LevelPreview : Control
 		{
 			mousePoint1 = ToPreviewLocal(mm.Position);
 		}
-		PreviewRoot.QueueRedraw();
 	}
 	private void HandleDeleteMM(InputEventMouseMotion mm)
 	{
@@ -343,7 +343,6 @@ public partial class LevelPreview : Control
 				lmbDragging = true;
 				SelectedReference = null;
 		}
-		PreviewRoot.QueueRedraw();
 	}
 	public EditorReference GetNearestReference(Vector2 mpos)
 	{
@@ -430,11 +429,41 @@ public partial class LevelPreview : Control
 	}
 	private void DrawGizmos(EditorReference r)
     {
+		// grid
+		if (snap)
+		{
+			var local = ToPreviewLocal(currentMpos);
+			var cellsize = ConfigHelper.Current.GridSnapCellSize;
+			float centerGridX = Mathf.Round(local.X / cellsize) * cellsize;
+			float centerGridY = Mathf.Round(local.Y / cellsize) * cellsize;
+			
+			int gridRadiusCells = 3;
+			float lineLength = gridRadiusCells * cellsize; 
+			Color gridColor = new(1.0f, 1.0f, 1.0f, 0.1f);
+			float lineWidth = 1.5f;
+			for (int i = -gridRadiusCells; i <= gridRadiusCells; i++)
+			{
+				float currentX = centerGridX + (i * cellsize);
+				
+				Vector2 start = new Vector2(currentX, centerGridY - lineLength - 10);
+				Vector2 end = new Vector2(currentX, centerGridY + lineLength + 10);
+				PreviewRoot.DrawLine(start, end, gridColor, lineWidth);
+			}
+			for (int j = -gridRadiusCells; j <= gridRadiusCells; j++)
+			{
+				float currentY = centerGridY + (j * cellsize);
+				
+				Vector2 start = new Vector2(centerGridX - lineLength - 10, currentY);
+				Vector2 end = new Vector2(centerGridX + lineLength + 10, currentY);
+				PreviewRoot.DrawLine(start, end, gridColor, lineWidth);
+			}
+		}
+		// selection box
 		var c0 = new Vector2(mousePoint0.X, mousePoint1.Y);
 		var c1 = new Vector2(mousePoint1.X, mousePoint0.Y);
 		Vector2[] grabbox = [mousePoint0, c0, mousePoint1, c1, mousePoint0];
 		PreviewRoot.DrawPolyline(grabbox, Colors.DarkRed, 3);
-
+		// nearby references
 		var nearest = GetNearestReferences(currentMpos, 5);
 		foreach (var nr in nearest)
 		{
@@ -443,6 +472,13 @@ public partial class LevelPreview : Control
 		}
 		if (r == null)
 			return;
+		// label for selected
+		var labelPos = r.Pos + new Vector2(15, -15);
+		string infoText = $"{r.Type} ID : {r.Id}";
+		Font defaultFont = GetThemeDefaultFont();
+		int fontSize = 12;
+		PreviewRoot.DrawString(defaultFont, labelPos, infoText, HorizontalAlignment.Left, -1, fontSize, Colors.MediumVioletRed);
+		// path for projectiles
         int steps = ConfigHelper.Current.PathFidelity;
 		if (r.Type == ModelType.Projectile)
 		{
@@ -454,6 +490,7 @@ public partial class LevelPreview : Control
 			for (int i = 0; i < steps; i++)
 			{
 				lctx.T = Math.Min(proj.Lifetime,ConfigHelper.Current.MaxPathLength) / steps * i;
+				lctx.L = proj.Lifetime;
 				var (x, y) = CalculatePosDelta(proj.efnx, proj.efny, lctx, r.F);
 				points[i] = new(r.SpawnX+x,r.SpawnY+y);
 			}
@@ -461,6 +498,7 @@ public partial class LevelPreview : Control
 			PreviewRoot.DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, RenderingUtils.ColorFromString(proj.Name));
 			PreviewRoot.DrawDashedLine(r.Pos, r.Pos+(Vector2.FromAngle((float)r.F+(Mathf.Pi/2))*50), Colors.DarkRed, 4f);
 		}
+		// path for patterns
 		else if (r.Type == ModelType.Pattern)
 		{
 			var patt = e.PatternModels[r.Id];
@@ -538,6 +576,7 @@ public partial class LevelPreview : Control
 				if (proj == null)
 					continue;
 				_ctx.T = e.CurrentTime - r.T;
+				_ctx.L = proj.Lifetime;
 				bool alive = _ctx.T >= 0 && _ctx.T <= proj.Lifetime;
 				if (!alive) continue;
 				var pos = CalculatePosDelta(proj.efnx, proj.efny, _ctx, r.F);
@@ -550,13 +589,13 @@ public partial class LevelPreview : Control
 				if (patt == null)
 					continue;
 				var proj = e.ProjectileModels[patt.ProjectileId];
-				var lctx = new EvalContext() { N = patt.Count > 1 ? patt.Count - 1 : 1 };
+				var lctx = new EvalContext() { N = patt.Count > 1 ? patt.Count - 1 : 1, L = proj.Lifetime };
 				r.Pos = new Vector2(r.SpawnX, r.SpawnY);
 				for (int j = 0; j < patt.Count; j++)
 				{
 					lctx.I = j;
 					double t = patt.efnt(lctx);
-					lctx.T = e.CurrentTime - r.T + t;
+					lctx.T = e.CurrentTime - r.T - t;
 					bool alive = lctx.T >= 0 && lctx.T <= proj.Lifetime;
 					if (!alive) continue;
 					double fwd = patt.efnfwd(lctx);
@@ -590,37 +629,47 @@ public partial class LevelPreview : Control
 				_groupBuffers[g] = new float[required];
 			ref float[] buffer = ref _groupBuffers[g];
 
-			// draw references (this is fine)
+			// draw references
 			for (int n = 0; n < count; n++)
 			{
 				int idx = group.BulletIndices[n];
 				EditorReference r = e.levelData.References[idx];
 				var proj = e.ProjectileModels[r.Id];
 				float scale = proj.RenderScale;
-				int oj = n * floatsPerInstance;
-				buffer[oj + 0] = 0;
-				buffer[oj + 1] = scale;
-				buffer[oj + 2] = 0;
-				buffer[oj + 3] = r.Pos.X;
-				buffer[oj + 4] = scale;
-				buffer[oj + 5] = 0;
-				buffer[oj + 6] = 0;
-				buffer[oj + 7] = r.Pos.Y;
+				int o = n * floatsPerInstance;
+				float drawForward = (float)r.F-Mathf.Pi; // rads
+
+				float cos = Mathf.Cos(drawForward);
+				float sin = Mathf.Sin(drawForward);
+				buffer[o + 0] = -scale * cos; // shear x
+				buffer[o + 1] = -scale * sin;
+				buffer[o + 2] = 0;
+				buffer[o + 3] = r.Pos.X;
+
+				buffer[o + 4] = -scale * sin;
+				buffer[o + 5] = scale * cos; // shear y
+				buffer[o + 6] = 0;
+				buffer[o + 7] = r.Pos.Y;
 			}
 			// draw references in pattern projectiles
 			for (int n = count; n < total; n++)
 			{
-				int idx = group.PatternBulletIndices[n - count]; // fixed index
+				int idx = group.PatternBulletIndices[n - count];
 				EditorReference r = patternReferences[idx];
 				var model = e.ProjectileModels[r.Id];
 				float scale = model.RenderScale;
 				int o = n * floatsPerInstance;
-				buffer[o + 0] = 0;
-				buffer[o + 1] = scale;
+				float drawForward = (float)r.F-Mathf.Pi; // rads
+
+				float cos = Mathf.Cos(drawForward);
+				float sin = Mathf.Sin(drawForward);
+				buffer[o + 0] = -scale * cos; // shear x
+				buffer[o + 1] = -scale * sin;
 				buffer[o + 2] = 0;
 				buffer[o + 3] = r.Pos.X;
-				buffer[o + 4] = scale;
-				buffer[o + 5] = 0;
+				
+				buffer[o + 4] = -scale * sin;
+				buffer[o + 5] = scale * cos; // shear y
 				buffer[o + 6] = 0;
 				buffer[o + 7] = r.Pos.Y;
 			}

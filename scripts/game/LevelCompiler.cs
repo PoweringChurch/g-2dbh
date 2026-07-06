@@ -25,7 +25,9 @@ public class LevelCompiler
             };
             // create collision shape
             if (m.UseShape)
-                newProjectile.Shape = [.. m.Shape.Select(p => new Vector2(p[0], p[1]))];
+            {
+                newProjectile.Shape = CollisionUtils.FloatArrToVect2s(m.Shape);
+            }
             else
                 newProjectile.Radius = m.Radius;
             // set up render group
@@ -40,7 +42,8 @@ public class LevelCompiler
             }
             else if (m.UseShape && m.Shape != null)
             {
-                var mesh = RenderingUtils.BuildPolygonMesh(newProjectile.Shape);
+                Vector2[] shape = [.. m.Shape.Select(p => new Vector2(p[0], p[1]))]; // build a shape mesh
+                var mesh = RenderingUtils.BuildPolygonMesh(shape);
                 renderGroup = CreateRenderGroup(mesh, null, gameRoot);
             }
             else
@@ -120,6 +123,7 @@ public class LevelCompiler
         compiled.Queue = [.. compiled.Queue.OrderBy(b => b.T)];
         // set duration
         compiled.Duration = level.Duration;
+        Console.Inst.Log($"[Level Compiler] Level compiled");
         return compiled;
     }
     public static RenderGroup CreateRenderGroup(Mesh mesh, Texture2D tex, Node2D parent)

@@ -25,6 +25,9 @@
 [ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
 [ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="23_1u8w0"]
 [ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://Console.cs" id="23_d13ii"]
+[ext_resource type="Script" uid="uid://cetphdgtjyr21" path="res://scripts/utils/DebugUtils.cs" id="26_lswn8"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_lswn8"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -93,6 +96,27 @@ grow_vertical = 2
 scale = Vector2(1, 0.99662435)
 expand_mode = 1
 stretch_mode = 6
+
+[node name="Dim" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1413990975]
+z_index = -2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 0, 0.39215687)
+
+[node name="Debug" type="Node2D" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1758916379 node_paths=PackedStringArray("meshinstance")]
+z_index = 10
+position = Vector2(3.805, 120.62)
+script = ExtResource("26_lswn8")
+meshinstance = NodePath("MeshInstance2D")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="HUD/Sort/SubViewportContainer/SubViewport/Debug" unique_id=2136094262]
+position = Vector2(100, 100)
+mesh = SubResource("QuadMesh_lswn8")
 
 [node name="PanelContainer" type="PanelContainer" parent="HUD/Sort" unique_id=651642514]
 custom_minimum_size = Vector2(245, 0)
@@ -226,6 +250,7 @@ grow_vertical = 2
 theme = ExtResource("2_ryguw")
 
 [node name="Start" type="Button" parent="MainMenu/Sort" unique_id=833321538]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 text = "Start"
@@ -233,7 +258,7 @@ text = "Start"
 [node name="Custom" type="Button" parent="MainMenu/Sort" unique_id=1872407800]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Custom Levels"
+text = "Levels"
 
 [node name="Settings" type="Button" parent="MainMenu/Sort" unique_id=1153225555]
 layout_mode = 2
@@ -246,7 +271,6 @@ size_flags_vertical = 3
 text = "Quit"
 
 [node name="LevelSelect" type="CanvasLayer" parent="." unique_id=1492741283 node_paths=PackedStringArray("_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
-visible = false
 script = ExtResource("4_vivmo")
 _levelList = NodePath("Sort/Levels/Sort/List")
 _previewId = NodePath("Sort/LevelPreview/VBoxContainer/LevelName")
@@ -598,6 +622,7 @@ size = Vector2i(303, 361)
 render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
+z_index = -1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -608,6 +633,7 @@ size_flags_vertical = 3
 color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
 [node name="BackgroundImage" type="TextureRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1003447320]
+z_index = -1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -617,6 +643,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 6
+
+[node name="Dim" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=2005796189]
+z_index = -1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+color = Color(0, 0, 0, 0.39215687)
 
 [node name="Preview" type="Node2D" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=624726340]
 
@@ -1000,17 +1038,16 @@ size_flags_vertical = 3
 
 [node name="Right" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=129711909]
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="Creators" type="TabContainer" parent="EditorLayer/Sections/Modules/Right" unique_id=3987318]
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 tab_0/title = "Projectile Editor"
 tab_1/title = "Pattern Editor"
 
-[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "Save")]
+[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "ShapeTranslate", "Save")]
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("5_w48qg")
@@ -1031,7 +1068,8 @@ LifetimeInput = NodePath("Sort/Behavior/Lifetime/TInput")
 PersistantCheckbutton = NodePath("Sort/Behavior/Persistant/CheckButton")
 UseShapeCheckbutton = NodePath("Sort/Collision/UseShape/UseShapeCheck")
 Radius = NodePath("Sort/Collision/Radius/Radius")
-ShapeEditor = NodePath("Sort/Collision/ShapeEditor")
+ShapeEditor = NodePath("Sort/Collision/VBoxContainer/ShapeEditor")
+ShapeTranslate = NodePath("Sort/Collision/VBoxContainer/ShapeTranslate")
 Save = NodePath("Sort/Save")
 metadata/_tab_index = 0
 metadata/_tab_name = "Projectile Editor"
@@ -1255,33 +1293,139 @@ text = "Use Shape"
 [node name="UseShapeCheck" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/UseShape" unique_id=1563563340]
 layout_mode = 2
 
-[node name="ShapeEditor" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=647831941 node_paths=PackedStringArray("PointDisplay", "PointContainer", "NewPoint")]
+[node name="VBoxContainer" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=228964018]
+layout_mode = 2
+
+[node name="ShapeEditor" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer" unique_id=647831941 node_paths=PackedStringArray("PointDisplay", "PointContainer", "NewPoint", "XTranslate", "YTranslate", "ScaleTranslate", "ForwardTranslate", "ApplyTranslation")]
 clip_contents = true
 layout_mode = 2
 script = ExtResource("6_074og")
-PointDisplay = NodePath("BackgroundColor")
+PointDisplay = NodePath("BackgroundColor/Displa")
 PointContainer = NodePath("ScrollContainer/Points")
 NewPoint = NodePath("ScrollContainer/Points/NewPoint")
+XTranslate = NodePath("../ShapeTranslate/Sort/Left/X/SpinBox")
+YTranslate = NodePath("../ShapeTranslate/Sort/Left/Y/SpinBox")
+ScaleTranslate = NodePath("../ShapeTranslate/Sort/Right/S/SpinBox")
+ForwardTranslate = NodePath("../ShapeTranslate/Sort/Right/F/SpinBox")
+ApplyTranslation = NodePath("../ShapeTranslate/Sort/Apply")
 
-[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1008216724]
+[node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeEditor" unique_id=1008216724]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 4
 color = Color(0.019139709, 0.06515412, 0.074752696, 1)
 
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor" unique_id=1002758548]
+[node name="Displa" type="Control" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeEditor/BackgroundColor" unique_id=1319938045]
+anchors_preset = 0
+offset_left = 75.0
+offset_top = 75.0
+offset_right = 75.0
+offset_bottom = 75.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeEditor" unique_id=1002758548]
 layout_mode = 2
+size_flags_horizontal = 3
 horizontal_scroll_mode = 0
 
-[node name="Points" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor/ScrollContainer" unique_id=12223036]
+[node name="Points" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeEditor/ScrollContainer" unique_id=12223036]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NewPoint" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/ShapeEditor/ScrollContainer/Points" unique_id=132318333]
+[node name="NewPoint" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeEditor/ScrollContainer/Points" unique_id=132318333]
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 text = "+"
+
+[node name="ShapeTranslate" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer" unique_id=1974529146]
+layout_mode = 2
+title = "Shape Translate"
+
+[node name="Sort" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate" unique_id=1177489535]
+layout_mode = 2
+
+[node name="Apply" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort" unique_id=433983098]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Apply"
+
+[node name="Left" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort" unique_id=620989480]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="X" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Left" unique_id=736162983]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Left/X" unique_id=1077760219]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "X"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Left/X" unique_id=1606537489]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="Y" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Left" unique_id=519492289]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Left/Y" unique_id=2103787413]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Y"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Left/Y" unique_id=281158922]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="Right" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort" unique_id=2049739985]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="F" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Right" unique_id=836344078]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Right/F" unique_id=567673925]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Fwd"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Right/F" unique_id=71928330]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="S" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Right" unique_id=1035401458]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Right/S" unique_id=776217012]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Scale"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer/ShapeTranslate/Sort/Right/S" unique_id=1511367125]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.01
+value = 1.0
+allow_greater = true
+allow_lesser = true
 
 [node name="Seperator2" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=530103548]
 custom_minimum_size = Vector2(0, 20)

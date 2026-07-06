@@ -214,6 +214,7 @@ public partial class Editor : CanvasLayer
         WriteJson(levelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
+    public void SetPlaying(bool to) => _timeline.SetPlaying(to);
     public bool OpenLevel(string levelId)
     {
         string levelDataPath = $"{_levelDirectory}{levelId}/leveldata.json";
@@ -247,8 +248,8 @@ public partial class Editor : CanvasLayer
         _preview.ChangeBackgroundImage(data.BgImage);
         _preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
         _levelMeta.Load(data);
-        _projCreator.LoadProjectile(new());
-        _patternCreator.LoadPattern(new());
+        _projCreator.LoadProjectile(projectileModels[0]);
+        _patternCreator.LoadPattern(patternModels[0]);
         _modelLibrary.Refresh();
     }
     private void SaveLevel()

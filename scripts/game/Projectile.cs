@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public class Projectile
@@ -10,7 +11,7 @@ public class Projectile
     public bool Persistant = false; 
     public int RenderGroupId = -1;
     public float RenderScale = 1f;
-    public Vector2[] Shape = null;
+    public List<Vector2> Shape = null;
     public bool LockRotation = false;
     public static (float x, float y) CalculatePositionAt(float fwd, Expr fnx, Expr fny, EvalContext ctx)
     {

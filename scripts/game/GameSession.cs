@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using Godot;
 
@@ -8,10 +9,12 @@ public partial class GameSession : Node
     {
         get => _director.Elapsed;
     }
-    public NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
-    public NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
+    public static NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
+    public static NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
+    public static NodePath BackgroundImagePath = SubViewportPath+"/BackgroundImage";
     private Node2D _gameRoot;
     private SubViewport _svp;
+    private TextureRect _backgroundImage;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
     private PlayerCharacter _character;
     private LevelDirector _director = new LevelDirector();
@@ -25,6 +28,7 @@ public partial class GameSession : Node
     {
         _ui = GetNode<UIManager>("/root/UIManager");
         _svp = GetNode<SubViewport>(SubViewportPath);
+        _backgroundImage = GetNode<TextureRect>(BackgroundImagePath);
         GAP = GetNode<AudioStreamPlayer>(GameAudioPlayerPath);
         _playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
@@ -95,6 +99,7 @@ public partial class GameSession : Node
         _director.StartLevel(compiled, _character);
         GAP.VolumeLinear = ConfigHelper.Current.MusicVolume;
         GAP.Stream = AudioUtils.LoadAudio(levelsDirectory+levelId+"/audio/", levelData.Music);
+        _backgroundImage.Texture = RenderingUtils.LoadTexture(levelsDirectory+levelId+"/images/", levelData.BgImage);
         GAP.Play(0);
         SetPhysicsProcess(true);
         SetProcess(true);
@@ -110,8 +115,10 @@ public partial class GameSession : Node
     }
     public void OnHurt()
     {
+        score -= Math.Max((int)(100*health/maxHealth), 0);
         health--;
         _ui.HUD.SetHealth(health);
+        _ui.HUD.SetScore(score);
         if (health <= 0)
             StopLevel();
         AudioUtils.Instance.PlayAudio("hurt", ConfigHelper.Current.HurtVolume);
@@ -119,7 +126,7 @@ public partial class GameSession : Node
     public void OnGraze()
     {
         graze++;
-        score += (int)(graze*100*health/maxHealth);
+        score += (int)(100*health/maxHealth);
         _ui.HUD.SetScore(score);
         _ui.HUD.SetGraze(graze);
         AudioUtils.Instance.PlayAudio("graze", ConfigHelper.Current.GrazeVolume);

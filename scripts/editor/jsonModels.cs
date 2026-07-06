@@ -52,6 +52,7 @@ public class ProjectileModel : IEditorModel
         Texture = other.Texture;
         RenderScale = other.RenderScale;
         LockRotation = other.LockRotation;
+        Id = other.Id;
         if (other.Shape != null)
         {
             Shape = new float[other.Shape.Length][];
@@ -155,4 +156,6 @@ public class Config
     // placement
     [ConfigField("Editor", "Angle snap divisions", 4, 16, 1)]
     [JsonPropertyName("angleSnapDivisions")] public float AngleSnapDivision { get; set; } = 8;
+    [ConfigField("Editor", "Grid cell size", 4, 256, 1)]
+    [JsonPropertyName("gridCellSize")] public float GridSnapCellSize { get; set; } = 8;
 }

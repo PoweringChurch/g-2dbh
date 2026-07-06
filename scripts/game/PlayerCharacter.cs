@@ -3,7 +3,7 @@ using Godot;
 
 public partial class PlayerCharacter : Node2D
 {
-    public const float HurtRadius = 5;
+    public const float HurtRadius = 3;
     public const float GrazeRadius = 10;
     public const float BaseSpeed = 75f;
     public string TextureName = "default";

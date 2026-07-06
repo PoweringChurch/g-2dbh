@@ -25,8 +25,8 @@ public partial class ProjectileModelPreview : Node2D
             _dirty = true;
         }
     }
-    private float[][] shape;
-    public float[][] Shape
+    private List<Vector2> shape;
+    public List<Vector2> Shape
     {
         get => shape;
         set
@@ -42,16 +42,6 @@ public partial class ProjectileModelPreview : Node2D
         set
         {
             radius = value;
-            _dirty = true;
-        }
-    }
-    private float lifetime;
-    public float Lifetime
-    {
-        get => lifetime;
-        set
-        {
-            lifetime = value;
             _dirty = true;
         }
     }
@@ -86,13 +76,22 @@ public partial class ProjectileModelPreview : Node2D
         }
     }
     private bool _dirty = false;
-    private EvalContext ctx = new() {T = 0};
+    private EvalContext ctx = new() {T = 0, L = 1};
     public double T
     {
         get => ctx.T;
         set
         {
             ctx.T = Math.Max(value, 0);
+            _dirty = true;
+        }
+    }
+    public double L
+    {
+        get => ctx.L;
+        set
+        {
+            ctx.L = value;
             _dirty = true;
         }
     }
@@ -159,7 +158,8 @@ public partial class ProjectileModelPreview : Node2D
         var lctx = new EvalContext();
         for (int i = 0; i < steps; i++)
         {
-            lctx.T = Math.Min(lifetime,ConfigHelper.Current.MaxPathLength) / steps * i;
+            lctx.T = Math.Min(ctx.L,ConfigHelper.Current.MaxPathLength) / steps * i;
+            lctx.L = ctx.L;
             var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
             points[i] = new(x,y);
         }
