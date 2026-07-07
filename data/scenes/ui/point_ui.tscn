@@ -9,19 +9,28 @@ layout_mode = 2
 text = "0"
 horizontal_alignment = 1
 
-[node name="X" type="LineEdit" parent="." unique_id=2082154360]
-custom_minimum_size = Vector2(1, 0)
+[node name="X" type="SpinBox" parent="." unique_id=533280165]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "#"
+min_value = -10000.0
+max_value = 10000.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+prefix = "X"
 
-[node name="Y" type="LineEdit" parent="." unique_id=1037016489]
+[node name="Y" type="SpinBox" parent="." unique_id=1773531260]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "#"
+min_value = -10000.0
+max_value = 10000.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+prefix = "Y"
 
 [node name="Delete" type="Button" parent="." unique_id=1064948095]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "-"
+text = "×"

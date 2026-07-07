@@ -59,13 +59,13 @@ public partial class PatternPreview : Node2D
             _dirty = true;
         }
     }
-    private Dictionary<string, double> ctx = new() { ["t"] = 0 };
+    private EvalContext ctx = new() { T = 0 };
     public double T
     {
-        get => ctx["t"];
+        get => ctx.T;
         set
         {
-            ctx["t"] = Math.Max(value, 0);
+            ctx.T = Math.Max(value, 0);
             _dirty = true;
         }
     }
@@ -85,28 +85,28 @@ public partial class PatternPreview : Node2D
     {
         if (projModel == null)
             return;
-        Dictionary<string, double> lctx = new() { ["n"] = count }; // live ctx, stores i, n, projectile t
+        EvalContext lctx = new() { N = count > 1 ? count-1 : 1 }; // live ctx, stores i, n, projectile t
         // loop through count and draw a projectile for i in count
         for (int i = 0; i < Count; i++)
         {
-            lctx["i"] = i;
+            lctx.I = i;
             // generate values
             double genFwd = fnFwd != null ? fnFwd.Eval(lctx) : 0;
             double genT = fnT != null ? fnT.Eval(lctx) : 0;
-            var startPos = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, lctx);
-            double rawT = ctx["t"] - genT;
+            var startxy = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
+            double rawT = ctx.T - genT;
             bool alive = rawT >= 0 && rawT < projModel.Lifetime;
-            lctx["t"] = Math.Clamp(rawT, 0, projModel.Lifetime);
-            var pos = Projectile.CalculatePositionAt(startPos, (float)genFwd, projModelFnX, projModelFnY, lctx);
+            lctx.T = Math.Clamp(rawT, 0, projModel.Lifetime);
+            lctx.L = projModel.Lifetime;
+            var (x, y) = Projectile.CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
             // draw
             var texture = projModel.Texture != "default" ?
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", projModel.Texture)
                 : null;
-            DrawProjectileShape(projModel, texture, pos, (float)genFwd, alive ? Colors.White : deadColor);
-            DrawSetTransform(Vector2.Zero, 0, Vector2.One);
-            DrawPath(startPos, projModelFnX, projModelFnY, lctx, "t", projModel.Lifetime, genFwd, deadColor, 16);
+            DrawProjectileShape(projModel, texture, new Vector2(startxy.x + x, startxy.y+y), (float)genFwd, alive ? Colors.White : deadColor);
         }
-        DrawPath(Vector2.Zero, fnX, fnY, lctx, "i", lctx["n"], 0,  Colors.Green, 32);
+        DrawSetTransform(Vector2.Zero, 0, Vector2.One);
+        DrawPath(fnX, fnY, lctx, 0,  Colors.Green);
     }
     private void DrawProjectileShape(ProjectileModel model,
     Texture2D texture, Vector2 pos,
@@ -128,19 +128,19 @@ public partial class PatternPreview : Node2D
         else
             DrawCircle(Vector2.Zero, model.Radius, color);
     }
-    private void DrawPath(Vector2 pos,
-    Expr fnx, Expr fny,
-    Dictionary<string, double> pctx, string input,
-    double len, double fwd,
-    Color color, int steps = 16)
+    private void DrawPath(Expr fnx, Expr fny,
+    EvalContext pctx, double fwd,
+    Color color)
     {
+        int steps = ConfigHelper.Current.PathFidelity;
         Vector2[] points = new Vector2[steps];
         for (int j = 0; j < steps; j++)
         {
-            pctx[input] = len / steps * j;
-            points[j] = Projectile.CalculatePositionAt(pos, (float)fwd, fnx, fny, pctx);
+            pctx.I = Math.Min(pctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
+            var (x, y) = Projectile.CalculatePositionAt((float)fwd, fnx, fny, pctx);
+            points[j] = new Vector2(x,y);
         }
-        DrawPolyline(points, color, 1.5f, true);
-        DrawCircle(points[0], 3f, color);
+        DrawPolyline(points, color, ConfigHelper.Current.PathThickness, true);
+        DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, color);
     }
 }

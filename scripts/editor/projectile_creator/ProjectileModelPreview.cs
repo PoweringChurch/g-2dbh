@@ -25,8 +25,8 @@ public partial class ProjectileModelPreview : Node2D
             _dirty = true;
         }
     }
-    private float[][] shape;
-    public float[][] Shape
+    private List<Vector2> shape;
+    public List<Vector2> Shape
     {
         get => shape;
         set
@@ -42,16 +42,6 @@ public partial class ProjectileModelPreview : Node2D
         set
         {
             radius = value;
-            _dirty = true;
-        }
-    }
-    private float lifetime;
-    public float Lifetime
-    {
-        get => lifetime;
-        set
-        {
-            lifetime = value;
             _dirty = true;
         }
     }
@@ -75,14 +65,33 @@ public partial class ProjectileModelPreview : Node2D
             _dirty = true;
         }
     }
-    private bool _dirty = false;
-    private Dictionary<string, double> ctx = new() {["t"] = 0};
-    public double T
+    private float renderScale;
+    public float RenderScale
     {
-        get => ctx["t"];
+        get => renderScale;
         set
         {
-            ctx["t"] = Math.Max(value, 0);
+            renderScale = value;
+            _dirty = true;
+        }
+    }
+    private bool _dirty = false;
+    private EvalContext ctx = new() {T = 0, L = 1};
+    public double T
+    {
+        get => ctx.T;
+        set
+        {
+            ctx.T = Math.Max(value, 0);
+            _dirty = true;
+        }
+    }
+    public double L
+    {
+        get => ctx.L;
+        set
+        {
+            ctx.L = value;
             _dirty = true;
         }
     }
@@ -102,37 +111,58 @@ public partial class ProjectileModelPreview : Node2D
     }
     public override void _Draw()
     {
-        pos = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, ctx);
+        var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, ctx);
+        pos = new Vector2(x,y)/renderScale;
         // draw projectile
         var texture = textureName != "default" ? 
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", textureName) 
                 : null;
+        DrawSetTransform(Vector2.Zero,0,renderScale*Vector2.One);
         if (texture != null)
+        {
             DrawTexture(texture, (-texture.GetSize() / 2)+pos);
+        }
+        else if (useShape && shape != null)
+        {
+            var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
+            if (points.Length > 1) 
+            DrawPolyline(points, Colors.White, 1.5f, true);
+        }
         else
+        {
+            DrawCircle(pos, radius, Colors.White);
+        }
+        // complete this if block, following the pattern of the above code
+        if (ConfigHelper.Current.ShowCollision && textureName != "default")
         {
             if (useShape && shape != null)
             {
                 var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
-                DrawPolyline(points, Colors.White, 1.5f, true);
+                DrawPolyline(points, Colors.Red, 1.5f / renderScale, true);
                 if (points.Length > 1)
-                    DrawLine(points[^1], points[0], Colors.White, 1.5f);
+                    DrawLine(points[^1], points[0], Colors.Red, 1.5f / renderScale);
             }
             else
-                DrawCircle(pos, radius, Colors.White);
+            {
+                DrawCircle(pos, radius / renderScale, new Color(1, 0, 0, 0.4f), false); // semi-transparent red
+            }
         }
+        DrawSetTransform(Vector2.Zero,0,Vector2.One);
         DrawPath();
     }
-    private void DrawPath(int steps = 32)
+    private void DrawPath()
     {
+        int steps = ConfigHelper.Current.PathFidelity;
         Vector2[] points = new Vector2[steps];
-        var ctx = new Dictionary<string, double>();
+        var lctx = new EvalContext();
         for (int i = 0; i < steps; i++)
         {
-            ctx["t"] = lifetime / steps * i;
-            points[i] = Projectile.CalculatePositionAt(Vector2.Zero, 0, fnX, fnY, ctx);
+            lctx.T = Math.Min(ctx.L,ConfigHelper.Current.MaxPathLength) / steps * i;
+            lctx.L = ctx.L;
+            var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
+            points[i] = new(x,y);
         }
-        DrawPolyline(points, Colors.Yellow, 1.5f, true);
-        DrawCircle(points[0], 3f, Colors.Yellow);
+        DrawPolyline(points, Colors.Yellow, ConfigHelper.Current.PathThickness, true);
+        DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, Colors.Yellow);
     }
 }

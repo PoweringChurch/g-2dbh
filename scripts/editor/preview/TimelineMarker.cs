@@ -2,20 +2,22 @@ using Godot;
 
 public partial class TimelineMarker : ColorRect
 {
-    public ISpatialReference Reference;
+    public EditorReference Reference;
     private bool _dragging = false;
     private Editor e;
-    public void Init(ISpatialReference reference, float duration, float timelineWidth)
+    public void Init(EditorReference reference, float duration, float timelineWidth)
     {
         e = GetNode<Editor>("/root/Editor");
-        Size = new Vector2(6, 16);
+        Size = new Vector2(4, 16);
         Reference = reference;
         Refresh(duration, timelineWidth);
     }
     public void Refresh(float duration, float timelineWidth)
     {
-        Color = RenderingUtils.ColorFromString(Reference.Id);
-        Position = new Vector2((Reference.T / duration) * timelineWidth - Size.X / 2f, 43);
+        Color = Reference.Type == ModelType.Projectile ? 
+        RenderingUtils.ColorFromString(e.ProjectileModels[Reference.Id].Name) 
+        : RenderingUtils.ColorFromString(e.PatternModels[Reference.Id].Name);
+        Position = new Vector2((float)(Reference.T / duration * timelineWidth - Size.X / 2f), 43);
     }
     public override void _GuiInput(InputEvent @event)
     {
@@ -24,13 +26,11 @@ public partial class TimelineMarker : ColorRect
             if (e.CurrentMode == Editor.Mode.Select)
             {
                 _dragging = mb.Pressed; 
+                e.SelectedReference = Reference;
             }
             else if (e.CurrentMode == Editor.Mode.Delete)
             {
-                if (Reference is ProjectileReference proj)
-                    e.DeleteReference(proj);
-                else
-                    e.DeleteReference((PatternReference)Reference);
+                e.DeleteReference(Reference);
             }
         }
         if (@event is InputEventMouseMotion mm 
@@ -40,6 +40,7 @@ public partial class TimelineMarker : ColorRect
             float newX = Mathf.Clamp(Position.X + mm.Relative.X, 0, GetParent<Control>().Size.X - Size.X);
             Position = new Vector2(newX, Position.Y);
             Reference.T = (newX + Size.X / 2f) / GetParent<Control>().Size.X * e.levelData.Duration;
+            e.SyncPreview();
         }
     }
 }

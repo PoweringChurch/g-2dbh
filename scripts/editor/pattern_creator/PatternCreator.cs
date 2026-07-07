@@ -14,17 +14,18 @@ public partial class PatternCreator : Control
     [Export] LineEdit FnTInput;
     [Export] LineEdit FnFwdInput;
     [Export] SpinBox  CountInput;
-    [Export] LineEdit ProjectileIdInput;
+    [Export] SpinBox ProjectileIdInput;
 
-    [Export] LineEdit IdInput;
+    [Export] SpinBox IdInput;
+    [Export] LineEdit NameInput;
     [Export] Button Save;
     [Export] MessageDisplay ErrorDisplay;
     private Editor e;
     private PatternModel model = null;
     public PatternModel PatternModel => model;
-    public delegate void PatternModelUpdatedEventHandler(PatternModel model, string oldId);
+    public delegate void PatternModelUpdatedEventHandler(PatternModel model);
     public event PatternModelUpdatedEventHandler ModelSaved;
-    private static readonly Dictionary<string, double> testCtx = new() {["i"] = 0, ["n"] = 1};
+    private static readonly EvalContext testCtx = new() {I = 0, N = 1};
     public override void _Ready()
     {
         e = GetNode<Editor>("/root/Editor");
@@ -36,17 +37,16 @@ public partial class PatternCreator : Control
         FnYInput.TextChanged += OnFnYChanged;
         FnTInput.TextChanged += OnFnTChanged;
         FnFwdInput.TextChanged += OnFnFwdChanged;
-        ProjectileIdInput.TextChanged += OnProjectileModelIdChanged;
+        ProjectileIdInput.ValueChanged += OnProjectileModelIdChanged;
         CountInput.ValueChanged += OnCountChanged;
         Save.Pressed += OnSavePressed;
         Zoom.ValueChanged += OnZoomChanged;
     }
-    public void OnModelUpdate(ProjectileModel newmodel, string oldId)
+    public void OnModelUpdate(ProjectileModel newmodel)
     {
-        if (oldId == ProjectileIdInput.Text || newmodel.Id == model.ProjectileId)
+        if (newmodel.Id == model.ProjectileId)
         {
-            ProjectileIdInput.Text = newmodel.Id;
-            model.ProjectileId = newmodel.Id;
+            ProjectileIdInput.Value = newmodel.Id;
             OnProjectileModelIdChanged(newmodel.Id);
         }
     }
@@ -54,23 +54,18 @@ public partial class PatternCreator : Control
     {
         Preview.Scale = Vector2.One*(float)value;
     }
-    public void OnOptionSelected(long index)
+    public void OnProjectileModelIdChanged(double id)
     {
-        var model = e.ProjectileRegistry.Models[(int)index];
-        Preview.ProjModel = model;
-    }
-    public void OnProjectileModelIdChanged(string text)
-    {
-        var projmodel = e.ProjectileRegistry.GetModel(text);
+        var projmodel = e.ProjectileModels[(int)id];
         if (projmodel != null)
         {
             ErrorDisplay.ClearMessage("ProjectileId");
             Preview.ProjModel = projmodel;
-            Preview.ProjModelFnX = ExpressionParser.Parse(projmodel.FunctionX);
-            Preview.ProjModelFnY = ExpressionParser.Parse(projmodel.FunctionY);
-            model.ProjectileId = text;
+            Preview.ProjModelFnX = ExpressionHandler.Parse(projmodel.FunctionX);
+            Preview.ProjModelFnY = ExpressionHandler.Parse(projmodel.FunctionY);
+            model.ProjectileId = (int)id;
         }
-        else ErrorDisplay.SetMessage("ProjectileId", $"[Projectile Model Id] Projectile of id '{text}' does not exist.");
+        else ErrorDisplay.SetMessage("ProjectileId", $"[Projectile Model Id] Projectile of id '{(int)id}' is invalid.");
     }
     private void OnTChanged(double t)
     {
@@ -99,20 +94,11 @@ public partial class PatternCreator : Control
             ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors.");
             return;
         }
-        model.Id = IdInput.Text;
-        if (string.IsNullOrWhiteSpace(model.Id))
-        {
-            ErrorDisplay.SetMessage("Save", "[Save] Model must have an ID.");
-            return;
-        }
+        model.Name = NameInput.Text;
         ErrorDisplay.ClearMessage("Save");
-        var existing = e.PatternRegistry.GetModel(model.Id);
-        if (existing != null)
-            e.PatternRegistry.UpdateModel(model);
-        else
-            e.PatternRegistry.AddModel(model);
-        ErrorDisplay.ClearMessage("Save");
-        ModelSaved?.Invoke(model, null);
+        var clone = new PatternModel(model);
+        e.SavePatternModel(clone, (int)IdInput.Value);
+        ModelSaved?.Invoke(clone);
         LoadPattern(model);
     }
     // input & input validation functions
@@ -120,7 +106,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnX = fn;
             model.FunctionX = text;
@@ -132,7 +118,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnY = fn;
             model.FunctionY = text;
@@ -144,7 +130,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnT = fn;
             model.FunctionT = text;
@@ -156,7 +142,7 @@ public partial class PatternCreator : Control
     {
         try
         {
-            var fn = ExpressionParser.Parse(text);
+            var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             Preview.FnFwd = fn;
             model.FunctionFwd = text;
@@ -176,14 +162,15 @@ public partial class PatternCreator : Control
     public void LoadPattern(PatternModel loadModel)
     {
         model = new PatternModel(loadModel);
-        IdInput.Text = loadModel.Id;
-        FnXInput.Text = loadModel.FunctionX;
-        FnYInput.Text = loadModel.FunctionY;
-        FnTInput.Text = loadModel.FunctionT;
-        FnFwdInput.Text = loadModel.FunctionFwd;
-        ProjectileIdInput.Text = loadModel.ProjectileId;
-        CountInput.Value = loadModel.Count;
-        OnProjectileModelIdChanged(ProjectileIdInput.Text);
-        OnCountChanged(loadModel.Count);
+        IdInput.Value = model.Id;
+        NameInput.Text = model.Name;
+        FnXInput.Text = model.FunctionX;
+        FnYInput.Text = model.FunctionY;
+        FnTInput.Text = model.FunctionT;
+        FnFwdInput.Text = model.FunctionFwd;
+        ProjectileIdInput.Value = model.ProjectileId;
+        CountInput.Value = model.Count;
+        OnProjectileModelIdChanged(ProjectileIdInput.Value);
+        OnCountChanged(model.Count);
     }
 }

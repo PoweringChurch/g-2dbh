@@ -1,96 +1,78 @@
-using Godot;
 using System;
+using Godot;
 
 public partial class Inspector : Control
 {
-    [Export] LineEdit XInput;
-    [Export] LineEdit YInput;
-    [Export] LineEdit ForwardInput;
-    [Export] LineEdit SpawnTimeInput;
-    [Export] LineEdit ModelIdInput;
-    [Export] MessageDisplay ErrorDisplay;
+    [Export] SpinBox xinput;
+    [Export] SpinBox yinput;
+    [Export] SpinBox tinput;
+    [Export] SpinBox fwdinput;
+    [Export] SpinBox idinput;
+    [Export] OptionButton typeInput;
     private Editor e;
-    private ISpatialReference _reference;
-    public ISpatialReference Reference => _reference;
-    public delegate void ReferenceUpdatedEventHandler(ISpatialReference r);
-    public event ReferenceUpdatedEventHandler ReferenceUpdated;
     public override void _Ready()
     {
-        base._Ready();
         e = GetNode<Editor>("/root/Editor");
-        XInput.TextChanged += OnXChanged;
-        YInput.TextChanged += OnYChanged;
-        ForwardInput.TextChanged += OnForwardChanged;
-        SpawnTimeInput.TextChanged += OnSpawnTimeChanged;
-        ModelIdInput.TextChanged += OnIdChanged;
+        xinput.ValueChanged += OnXChanged;
+        yinput.ValueChanged += OnYChanged;
+        tinput.ValueChanged += OnTChanged;
+        fwdinput.ValueChanged += OnFwdChanged;
+        idinput.ValueChanged += OnIdChanged;
+        typeInput.ItemSelected += OnOptionsChange;
     }
-    public void SelectReference(ISpatialReference r)
+    public void Update(EditorReference r)
     {
         if (r == null)
         {
-            _reference = null;
-            XInput.Text = string.Empty;
-            YInput.Text = string.Empty;
-            ForwardInput.Text = string.Empty;
-            SpawnTimeInput.Text = string.Empty;
-            ModelIdInput.Text = string.Empty;
+            xinput.SetValueNoSignal(0);
+            yinput.SetValueNoSignal(0);
+            tinput.SetValueNoSignal(0);
+            fwdinput.SetValueNoSignal(0);
+            idinput.SetValueNoSignal(-1);
+            typeInput.Selected = -1;
             return;
         }
-        _reference = r;
-        XInput.Text = r.X.ToString();
-        YInput.Text = r.Y.ToString();
-        ForwardInput.Text = r.Forward.ToString();
-        SpawnTimeInput.Text = r.T.ToString();
-        ModelIdInput.Text = r.Id.ToString();
+        xinput.SetValueNoSignal(r.SpawnX);
+        yinput.SetValueNoSignal(r.SpawnY);
+        tinput.SetValueNoSignal(r.T);
+        fwdinput.SetValueNoSignal(r.F);
+        idinput.SetValueNoSignal(r.Id);
+        typeInput.Selected = (int)r.Type;
     }
-    private void OnIdChanged(string newText)
+    private void OnXChanged(double value)
     {
-        if (e.ProjectileRegistry.GetModel(newText) != null)
-        {
-            _reference.Id = newText;
-            ReferenceUpdated?.Invoke(e.SelectedReference);
-            ErrorDisplay.ClearMessage("ModelId");
-        }
-        else ErrorDisplay.SetMessage("ModelId", $"[Model Id] Model Id {newText} does not exist.");
+        if (e.SelectedReference == null) return;
+        e.SelectedReference.SpawnX = (float)value;
+        e.SyncPreview();
     }
-    private void OnSpawnTimeChanged(string newText)
+    private void OnYChanged(double value)
     {
-        if (float.TryParse(newText, out float t) && t > 0)
-        {
-            _reference.T = t;
-            ReferenceUpdated?.Invoke(e.SelectedReference);
-            ErrorDisplay.ClearMessage("SpawnTime");
-        }
-        else ErrorDisplay.SetMessage("SpawnTime", $"[Spawn Time] Must be a number and greater than 0.");
+        if (e.SelectedReference == null) return;
+        e.SelectedReference.SpawnY = (float)value;
+        e.SyncPreview();
     }
-    private void OnForwardChanged(string newText)
+    private void OnTChanged(double value)
     {
-        if (float.TryParse(newText, out float r))
-        {
-            _reference.Forward = r;
-            ReferenceUpdated?.Invoke(e.SelectedReference);
-            ErrorDisplay.ClearMessage("Forward");
-        }
-        else ErrorDisplay.SetMessage("Forward", $"[Forward] Must be a number.");
+        if (e.SelectedReference == null) return;
+        e.SelectedReference.T = (float)value;
+        e.SyncPreview();
     }
-    private void OnYChanged(string newText)
+    private void OnFwdChanged(double value)
     {
-        if (float.TryParse(newText, out float y))
-        {
-            _reference.Y = y;
-            ReferenceUpdated?.Invoke(e.SelectedReference);
-            ErrorDisplay.ClearMessage("Y");
-        }
-        else ErrorDisplay.SetMessage("Y", $"[Y] Must be a number.");
+        if (e.SelectedReference == null) return;
+        e.SelectedReference.F = (float)value;
+        e.SyncPreview();
     }
-    private void OnXChanged(string newText)
+    private void OnIdChanged(double value)
     {
-        if (float.TryParse(newText, out float x))
-        {
-            _reference.X = x;
-            ReferenceUpdated?.Invoke(e.SelectedReference);
-            ErrorDisplay.ClearMessage("X");
-        }
-        else ErrorDisplay.SetMessage("X", $"[X] Must be a number.");
+        if (e.SelectedReference == null) return;
+        e.SelectedReference.Id = (int)value;
+        e.SyncPreview();
+    }
+    private void OnOptionsChange(long index)
+    {
+        if (e.SelectedReference == null) return;
+        e.SelectedReference.Type = (ModelType)index;
+        e.SyncPreview();
     }
 }

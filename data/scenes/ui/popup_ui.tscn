@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dgiqwavlvhy8v"]
 
-[ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="1_flrib"]
-[ext_resource type="LabelSettings" uid="uid://by0kggb1t7hi2" path="res://data/other/label_settings/popup_label_settings.tres" id="1_kxppf"]
+[ext_resource type="Theme" uid="uid://dq7qa8sty0ce0" path="res://data/other/themes/default_ui.tres" id="1_txaw3"]
+[ext_resource type="Script" uid="uid://u0h4uuadktm" path="res://scripts/ui/popups/Popup.cs" id="2_flrib"]
 
 [node name="Popup" type="FoldableContainer" unique_id=1354360579]
 anchors_preset = 8
@@ -15,8 +15,8 @@ offset_right = 129.0
 offset_bottom = 74.5
 grow_horizontal = 2
 grow_vertical = 2
-title = "SUPER POPUP"
-script = ExtResource("1_flrib")
+theme = ExtResource("1_txaw3")
+script = ExtResource("2_flrib")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=670194181]
 custom_minimum_size = Vector2(250, 0)
@@ -27,18 +27,21 @@ custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_vertical = 3
 text = "Hey, this is a popup! This information is relevant somehow."
-label_settings = ExtResource("1_kxppf")
+horizontal_alignment = 1
+vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=2032776022]
 layout_mode = 2
 
 [node name="Button" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1083768640]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Yes"
 
 [node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=885054007]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "No"

@@ -1,0 +1,52 @@
+[gd_resource type="Theme" format=3 uid="uid://dq7qa8sty0ce0"]
+
+[ext_resource type="FontFile" uid="uid://b4nciee2hi4u4" path="res://data/other/fonts/MonospaceTypewriter.ttf" id="1_r6ogm"]
+[ext_resource type="StyleBox" uid="uid://cllpgmvkxggtm" path="res://data/other/themes/default_ui_assets/button_disabled.tres" id="1_tttk1"]
+[ext_resource type="StyleBox" uid="uid://d3llg0atpmpq3" path="res://data/other/themes/default_ui_assets/button_focus.tres" id="2_7fgde"]
+[ext_resource type="StyleBox" uid="uid://cr6qxtn505l8t" path="res://data/other/themes/default_ui_assets/button_hover.tres" id="3_vobj8"]
+[ext_resource type="StyleBox" uid="uid://bouyr5wl76ji0" path="res://data/other/themes/default_ui_assets/button_normal.tres" id="4_ph5eq"]
+[ext_resource type="StyleBox" uid="uid://6snw5t6m5yqb" path="res://data/other/themes/default_ui_assets/button_pressed.tres" id="5_it3i4"]
+[ext_resource type="StyleBox" uid="uid://cu12q5k6oxcl" path="res://data/other/themes/default_ui_assets/foldable_panel.tres" id="6_it3i4"]
+[ext_resource type="StyleBox" uid="uid://bwugxq5vbmksj" path="res://data/other/themes/default_ui_assets/foldable_title_panel_collapsed_hover.tres" id="7_3uhdb"]
+[ext_resource type="StyleBox" uid="uid://kaveld54eshn" path="res://data/other/themes/default_ui_assets/foldable_title_panel.tres" id="7_ia41w"]
+[ext_resource type="StyleBox" uid="uid://cmjjgvn23c0f5" path="res://data/other/themes/default_ui_assets/margins.tres" id="8_3g5ew"]
+[ext_resource type="StyleBox" uid="uid://sqjl8be1pn8y" path="res://data/other/themes/default_ui_assets/foldable_title_panel_collapsed.tres" id="8_aa1su"]
+[ext_resource type="StyleBox" uid="uid://b015yvehox35c" path="res://data/other/themes/default_ui_assets/foldable_title_panel_hover.tres" id="9_1vxl8"]
+[ext_resource type="StyleBox" uid="uid://c35oqwjm4qcxp" path="res://data/other/themes/default_ui_assets/lineedit_normal.tres" id="9_3uhdb"]
+[ext_resource type="StyleBox" uid="uid://ba443b6rt1gdl" path="res://data/other/themes/default_ui_assets/panel.tres" id="10_aa1su"]
+[ext_resource type="StyleBox" uid="uid://cw75sy8ugvu7h" path="res://data/other/themes/default_ui_assets/panel_container.tres" id="11_1vxl8"]
+[ext_resource type="StyleBox" uid="uid://22m0arqr8lu6" path="res://data/other/themes/default_ui_assets/tab_disabled.tres" id="15_aa1su"]
+[ext_resource type="StyleBox" uid="uid://dejcog1jryyvs" path="res://data/other/themes/default_ui_assets/tab_panel.tres" id="15_op2gm"]
+[ext_resource type="StyleBox" uid="uid://dyj3y0f23cwag" path="res://data/other/themes/default_ui_assets/tab_hovered.tres" id="16_4gw6t"]
+[ext_resource type="StyleBox" uid="uid://dpop3twtseaal" path="res://data/other/themes/default_ui_assets/tab_selected.tres" id="17_3bwj0"]
+[ext_resource type="StyleBox" uid="uid://vp646jccmy13" path="res://data/other/themes/default_ui_assets/tab_unselected.tres" id="18_op2gm"]
+[ext_resource type="StyleBox" uid="uid://chgkjwjul8l6d" path="res://data/other/themes/default_ui_assets/tabbar_background.tres" id="19_3bwj0"]
+
+[resource]
+default_font = ExtResource("1_r6ogm")
+Button/styles/disabled = ExtResource("1_tttk1")
+Button/styles/focus = ExtResource("2_7fgde")
+Button/styles/hover = ExtResource("3_vobj8")
+Button/styles/normal = ExtResource("4_ph5eq")
+Button/styles/pressed = ExtResource("5_it3i4")
+FoldableContainer/styles/panel = ExtResource("6_it3i4")
+FoldableContainer/styles/title_collapsed_hover_panel = ExtResource("7_3uhdb")
+FoldableContainer/styles/title_collapsed_panel = ExtResource("8_aa1su")
+FoldableContainer/styles/title_hover_panel = ExtResource("9_1vxl8")
+FoldableContainer/styles/title_panel = ExtResource("7_ia41w")
+Label/styles/normal = ExtResource("8_3g5ew")
+LineEdit/styles/normal = ExtResource("9_3uhdb")
+Panel/styles/panel = ExtResource("10_aa1su")
+PanelContainer/styles/panel = ExtResource("11_1vxl8")
+TabContainer/constants/tab_separation = 14
+TabContainer/styles/panel = ExtResource("15_op2gm")
+TabContainer/styles/tab_disabled = ExtResource("15_aa1su")
+TabContainer/styles/tab_hovered = ExtResource("16_4gw6t")
+TabContainer/styles/tab_selected = ExtResource("17_3bwj0")
+TabContainer/styles/tab_unselected = ExtResource("18_op2gm")
+TabContainer/styles/tabbar_background = ExtResource("19_3bwj0")
+Tree/styles/button_hover = ExtResource("3_vobj8")
+Tree/styles/button_pressed = ExtResource("5_it3i4")
+Tree/styles/focus = ExtResource("2_7fgde")
+Tree/styles/hovered = ExtResource("3_vobj8")
+Tree/styles/selected = ExtResource("2_7fgde")

@@ -1,11 +1,10 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class ModelLibrary : Control
 {
-    [Export] VBoxContainer ModelList;
+    [Export] VBoxContainer PatternModelList;
+    [Export] VBoxContainer ProjectileModelList;
     private PackedScene ModelUITemplate = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/model_ui.tscn");
     private Editor e;
 
@@ -17,33 +16,31 @@ public partial class ModelLibrary : Control
         e = GetNode<Editor>("/root/Editor");
     }
 
-    public void OnModelSaved(ProjectileModel _, string __) => Refresh();
-    public void OnModelSaved(PatternModel _, string __) => Refresh();
+    public void OnModelSaved(ProjectileModel _) => Refresh();
+    public void OnModelSaved(PatternModel _) => Refresh();
 
     public void Refresh()
     {
-        var combined = new List<IEditorModel>();
-        combined.AddRange(e.ProjectileRegistry.Models);
-        combined.AddRange(e.PatternRegistry.Models);
-        Load(combined);
+        Load((IEditorModel[])e.PatternModels, PatternModelList);
+        Load((IEditorModel[])e.ProjectileModels, ProjectileModelList);
     }
-
-    public void Load(List<IEditorModel> models)
+    private void Load(IEditorModel[] models, VBoxContainer container)
     {
-        foreach (var child in ModelList.GetChildren())
+        foreach (var child in container.GetChildren())
             child.QueueFree();
-
         foreach (var m in models)
         {
+            if (m == null)
+                continue;
             var newTemplate  = ModelUITemplate.Instantiate<VBoxContainer>();
             var colorDisplay = newTemplate.GetNode<ColorRect>("Id/Color");
             var idField      = newTemplate.GetNode<Label>("Id/Field");
+            var nameField    = newTemplate.GetNode<Label>("Name/Field");
             var selectButton = newTemplate.GetNode<Button>("Interact/Select");
             var deleteButton = newTemplate.GetNode<Button>("Interact/Delete");
-
-            idField.Text = m.Id;
-            colorDisplay.Color = RenderingUtils.ColorFromString(m.Id);
-
+            nameField.Text = m.Name;
+            idField.Text = m.Id.ToString();
+            colorDisplay.Color = RenderingUtils.ColorFromString(m.Name);
             selectButton.Pressed += () =>
             {
                 SelectedModel = m;
@@ -58,20 +55,16 @@ public partial class ModelLibrary : Control
                 {
                     if (e.SelectedModel == pm)
                         e.OpenModel(new ProjectileModel());
-                    e.ProjectileRegistry.RemoveModel(pm.Id);
+                    e.RemoveProjectileModel(pm.Id, newTemplate);
                 }
                 else if (m is PatternModel ptm)
                 {
                     if (e.SelectedModel == ptm)
                         e.OpenModel(new PatternModel());
-                    e.PatternRegistry.RemoveModel(ptm.Id);
+                    e.RemovePatternModel(ptm.Id, newTemplate);
                 }
-
-                GD.Print($"[ModelLibrary] Deleted model {m.Id}");
-                newTemplate.QueueFree();
             };
-
-            ModelList.AddChild(newTemplate);
+            container.AddChild(newTemplate);
         }
     }
 }

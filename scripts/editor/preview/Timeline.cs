@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 public partial class Timeline : Control
 {
@@ -10,13 +9,15 @@ public partial class Timeline : Control
     [Export] public Button PlayPauseButton;
     [Export] public SpinBox SpeedInput;
     [Export] public CheckButton LoopToggle;
+    [Export] public AudioStreamPlayer EditorAudioPreview;
 
-    private float currentTime = 0;
     public float CurrentTime => currentTime;
+    private float currentTime = 0;
     private bool _playing = false;
     private float _speed = 1f;
     private bool _loop = false;
-    private Dictionary<ISpatialReference, TimelineMarker> _markers = new();
+    private bool _dirty = false;
+    private Dictionary<EditorReference, TimelineMarker> _markers = new();
     private Dictionary<string, bool> _visibleModels = new();
     private Editor e;
     public override void _Ready()
@@ -36,6 +37,13 @@ public partial class Timeline : Control
     }
     public override void _Process(double delta)
     {
+        if (_dirty) // the dirty flag is necessary
+        {
+            Playhead.MaxValue = e.levelData.Duration;
+            foreach (var m in _markers)
+                m.Value.Refresh(e.levelData.Duration, Size.X);
+            _dirty = false;
+        }
         if (!_playing)
             return;
 
@@ -54,12 +62,31 @@ public partial class Timeline : Control
         }
         Playhead.SetValueNoSignal(currentTime);
         PlayheadPositionInput.SetValueNoSignal(currentTime);
+
+        e.SyncPreview();
     }
-    private void TogglePlaying() => SetPlaying(!_playing);
-    private void SetPlaying(bool playing)
+    public void TogglePlaying() => SetPlaying(!_playing);
+    public void SetPlaying(bool playing)
     {
+        if (EditorAudioPreview.Stream != null)
+        {
+            if (playing)
+            {
+                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume;
+                EditorAudioPreview.Play(currentTime);
+            }
+            else
+            {
+                EditorAudioPreview.Stop();
+            }
+        }
         _playing = playing;
         UpdatePlayPauseLabel();
+    }
+    public void UpdateMusic(AudioStream newMusic)
+    {
+        SetPlaying(false);
+        EditorAudioPreview.Stream = newMusic;
     }
     private void UpdatePlayPauseLabel() =>
         PlayPauseButton.Text = _playing ? "❚❚" : "▶";
@@ -83,31 +110,32 @@ public partial class Timeline : Control
             PlayheadPositionInput.SetValueNoSignal(currentTime);
         else
             Playhead.SetValueNoSignal(currentTime);
+        if (_playing)
+            EditorAudioPreview.Play(currentTime);
+        e.SyncPreview();
     }
-    public void UpdateDuration(float newDuration)
+
+    public void UpdateDuration()
     {
-        Playhead.MaxValue = newDuration;
-        foreach (var m in _markers)
-            m.Value.Refresh(newDuration, Size.X);
+        _dirty = true;
     }
-    public void Load(List<ProjectileReference> projRefs, List<PatternReference> patternRefs, float duration)
+    public void Load(LevelData data)
     {
         ClearMarkers();
-        Playhead.MaxValue = duration;
-        foreach (var r in projRefs)
+        foreach (var r in data.References)
             AddMarker(r);
-        foreach (var r in patternRefs)
-            AddMarker(r);
-
+        var musicname = data.Music;
+        var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", musicname);
+        EditorAudioPreview.Stream = found;
     }
-    public void AddMarker(ISpatialReference r)
+    public void AddMarker(EditorReference r)
     {
         var marker = new TimelineMarker();
         TimelineBar.AddChild(marker);
         marker.Init(r, e.levelData.Duration, Size.X);
         _markers[r] = marker;
     }
-    public void RemoveMarker(ISpatialReference r)
+    public void RemoveMarker(EditorReference r)
     {
         if (_markers.TryGetValue(r, out var marker))
         {
@@ -121,13 +149,9 @@ public partial class Timeline : Control
             marker.QueueFree();
         _markers.Clear();
     }
-    public void RefreshMarker(ISpatialReference r) =>
-        _markers[r].Refresh(e.levelData.Duration, Size.X);
-    public void SetModelVisible(string modelId, bool visible)
+    public void RefreshMarker(EditorReference r)
     {
-        _visibleModels[modelId] = visible;
-        foreach (var (r, marker) in _markers)
-            if (r.Id == modelId)
-                marker.Visible = visible;
+        if (r == null) return;
+        _markers[r].Refresh(e.levelData.Duration, Size.X);
     }
 }

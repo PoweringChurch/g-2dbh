@@ -22,6 +22,20 @@ size_flags_horizontal = 10
 text = "field"
 horizontal_alignment = 2
 
+[node name="Name" type="HBoxContainer" parent="." unique_id=507269787]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Name" unique_id=2066321918]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="Field" type="Label" parent="Name" unique_id=513809037]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "field"
+horizontal_alignment = 2
+
 [node name="Interact" type="HBoxContainer" parent="." unique_id=238500348]
 layout_mode = 2
 

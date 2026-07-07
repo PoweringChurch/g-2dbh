@@ -1,91 +1,119 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using Godot;
 
 public partial class ShapeEditor : Control
 {
-    [Export] public TextureRect TextureDisplay;
-    [Export] public VSlider TextureTransparency;
+    [Export] public Control PointDisplay;
     [Export] public VBoxContainer PointContainer;
     [Export] public Button NewPoint;
+    [Export] public SpinBox XTranslate;
+    [Export] public SpinBox YTranslate;
+    [Export] public SpinBox ScaleTranslate;
+    [Export] public SpinBox ForwardTranslate;
+    [Export] public Button ApplyTranslation;
+    public float TextureRenderScale = 1;
     public Editor e;
     private PackedScene pointUi = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/point_ui.tscn");
-    private float[][] points = [];
-    public float[][] Points => points;
-    private Texture2D texture;
-    private Vector2 _textureSize = Vector2.One;
-    private const float DisplaySize = 120f;
+    private List<Vector2> points = [];
+    public List<Vector2> Points
+    {
+        get => points;
+        set
+        {
+            points = value;
+            RefreshPointUIs();
+        }   
+    }
+    private float _pointScale = 1;
+    private bool _dirty = false;
     [Signal] public delegate void ShapeUpdatedEventHandler();
     public override void _Ready()
     {
         e = GetNode<Editor>("/root/Editor");
-        TextureTransparency.ValueChanged += OnTransparencyChanged;
         NewPoint.Pressed += OnNewPointPressed;
+        PointDisplay.Draw += DrawPoints;
+        ApplyTranslation.Pressed += OnApplyPressed;
+    }
+    private void OnApplyPressed()
+    {
+        float xtranslate = (float)XTranslate.Value;
+        float ytranslate = (float)YTranslate.Value; 
+        float scaletranslate = (float)ScaleTranslate.Value;
+        float fwdTranslate = (float)ForwardTranslate.Value; // Radians
+        float cos = MathF.Cos(fwdTranslate);
+        float sin = MathF.Sin(fwdTranslate);
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector2 originalPoint = points[i];
+            // scale
+            float scaledX = originalPoint.X * scaletranslate;
+            float scaledY = originalPoint.Y * scaletranslate;
+
+            // rotate
+            float rotatedX = scaledX * cos - scaledY * sin;
+            float rotatedY = scaledX * sin + scaledY * cos;
+
+            // translate
+            float finalX = rotatedX + xtranslate;
+            float finalY = rotatedY + ytranslate;
+
+            points[i] = new Vector2(finalX, finalY);
+        }
+        RefreshPointUIs();
+        _dirty = true;
     }
     public override void _Process(double delta)
     {
-        QueueRedraw();
+        if (_dirty)
+        {
+            PointDisplay.QueueRedraw();
+            EmitSignal(SignalName.ShapeUpdated);
+            _dirty = false;
+        }
     }
-    public void OnTextureUpdate()
-    {
-        texture = RenderingUtils.LoadTexture(e.LevelPath+"images/", ((ProjectileModel)e.SelectedModel).Texture);
-        _textureSize = texture.GetSize();
-        TextureDisplay.Texture = texture;
-        RefreshPointUIs();
-    }
-
-    // converts a model-space point to display-space
-    private Vector2 ToDisplay(float x, float y) =>
-        new Vector2(x, y) / _textureSize * DisplaySize;
-
-    // converts a display-space point back to model-space
-    private Vector2 ToModel(float x, float y) =>
-        new Vector2(x, y) / DisplaySize * _textureSize;
-
     private void OnNewPointPressed()
     {
-        var newPoints = new float[points.Length + 1][];
-        points.CopyTo(newPoints, 0);
-        newPoints[^1] = new float[] { 0f, 0f };
-        points = newPoints;
-        AddPointUI(points.Length - 1);
+        points.Add(new());
+        AddPointUI(points.Count - 1);
         UpdateIndices();
-        EmitSignal(SignalName.ShapeUpdated);
+        _dirty = true;
     }
-
     private void AddPointUI(int index)
     {
         var ui      = pointUi.Instantiate<Control>();
         var label   = ui.GetNode<Label>("Label");
-        var xInput  = ui.GetNode<LineEdit>("X");
-        var yInput  = ui.GetNode<LineEdit>("Y");
+        var xInput  = ui.GetNode<SpinBox>("X");
+        var yInput  = ui.GetNode<SpinBox>("Y");
         var delete  = ui.GetNode<Button>("Delete");
 
         label.Text  = index.ToString();
-        xInput.Text = points[index][0].ToString("F1");
-        yInput.Text = points[index][1].ToString("F1");
+        xInput.Value = points[index][0];
+        yInput.Value = points[index][1];
 
-        xInput.TextSubmitted += (text) =>
+        xInput.ValueChanged += (value) =>
         {
-            if (float.TryParse(text, out float val))
-                points[index][0] = val;
-            else
-                xInput.Text = points[index][0].ToString("F1");
+            int currentIndex = ui.GetIndex()-1;
+            points[currentIndex] = new Vector2((float)value, points[currentIndex].Y);
+            _dirty = true;
         };
 
-        yInput.TextSubmitted += (text) =>
+        yInput.ValueChanged += (value) =>
         {
-            if (float.TryParse(text, out float val))
-                points[index][1] = val;
-            else
-                yInput.Text = points[index][1].ToString("F1");
+            int currentIndex = ui.GetIndex()-1;
+            points[currentIndex] = new Vector2(points[currentIndex].X, (float)value);
+            _dirty = true;
         };
 
         delete.Pressed += () =>
         {
-            var list = new System.Collections.Generic.List<float[]>(points);
-            list.RemoveAt(index);
-            points = list.ToArray();
+            int currentIndex = ui.GetIndex()-1;
+            points.RemoveAt(currentIndex);
+            PointContainer.RemoveChild(ui);
             ui.QueueFree();
             UpdateIndices();
+            _dirty = true;
         };
 
         PointContainer.AddChild(ui);
@@ -93,10 +121,16 @@ public partial class ShapeEditor : Control
     private void RefreshPointUIs()
     {
         foreach (var child in PointContainer.GetChildren())
+        {
+            if (child == NewPoint)
+                continue;
             child.QueueFree();
-        for (int i = 0; i < points.Length; i++)
+        }
+            
+        for (int i = 0; i < points.Count; i++)
             AddPointUI(i);
         UpdateIndices();
+        _dirty = true;
     }
     private void UpdateIndices()
     {
@@ -108,30 +142,11 @@ public partial class ShapeEditor : Control
             i++;
         }
     }
-    private void OnTransparencyChanged(double value)
+    public void DrawPoints()
     {
-        var color = TextureDisplay.Modulate;
-        TextureDisplay.Modulate = new Color(color.R, color.G, color.B, (float)value);
-    }
-    public override void _Draw()
-    {
-        if (points.Length == 0) return;
-
-        var displayPoints = new System.Collections.Generic.List<Vector2>();
-        var origin = TextureDisplay.GlobalPosition - GlobalPosition;
-
-        foreach (var p in points)
-        {
-            var dp = ToDisplay(p[0], p[1]);
-            displayPoints.Add(origin + dp);
-        }
-
-        var arr = displayPoints.ToArray();
-        DrawPolyline(arr, Colors.Yellow, 1.5f, true);
-        if (arr.Length > 1)
-            DrawLine(arr[^1], arr[0], Colors.Yellow, 1.5f);
-
-        foreach (var pt in arr)
-            DrawCircle(pt, 3f, Colors.Green);
+        if (points.Count == 0 || points.Count == 1) return;
+        PointDisplay.DrawPolyline([.. points, points[0]], Colors.Yellow, 1.5f, true);
+        foreach (var pt in points)
+            PointDisplay.DrawCircle(pt, 3f, Colors.Green);
     }
 }
