@@ -273,16 +273,16 @@ public partial class Editor : CanvasLayer
     }
     public void SyncPreview() =>
         _preview.Sync();
-    public void AddReference(EditorReference bullet)
+    public void AddReference(EditorReference reference)
     {
-        _timeline.AddMarker(bullet);
-        levelData.References.Add(bullet);
+        _timeline.AddMarker(reference);
+        levelData.References.Add(reference);
         _preview.Sync();
     }
-    public void DeleteReference(EditorReference bullet)
+    public void DeleteReference(EditorReference reference)
     {
-        _timeline.RemoveMarker(bullet);
-        levelData.References.Remove(bullet);
+        _timeline.RemoveMarker(reference);
+        levelData.References.Remove(reference);
         _preview.Sync();
     }
     // opens a model in its respective creator

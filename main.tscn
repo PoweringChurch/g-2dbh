@@ -230,7 +230,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0.008858773, 0.060547896, 0.044837788, 1)
 
 [node name="Sort" type="VBoxContainer" parent="MainMenu" unique_id=234966351]
 anchors_preset = 8
@@ -1856,6 +1856,7 @@ text = "Quit"
 
 [node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_openDataButton", "_returnButton", "_fieldContainer")]
 process_mode = 2
+visible = false
 script = ExtResource("21_getpj")
 _saveButton = NodePath("Stuff/Sort/Tools/Apply")
 _openDataButton = NodePath("Stuff/Sort/Tools/OpenData")

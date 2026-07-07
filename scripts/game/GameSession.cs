@@ -156,7 +156,7 @@ public partial class GameSession : Node
     public override void _Process(double delta)
     {
         if (!running) return;
-        _renderer.Sync(ref _director.Bullets, _director.BulletCount);
+        _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount);
     }
 
     private static T ReadJson<T>(string path)

@@ -7,9 +7,11 @@ public class RenderGroup
     public Texture2D Texture; // null for shape groups
     public MultiMeshInstance2D Node;
     public MultiMesh MultiMesh;
-    public List<int> BulletIndices = new();
+    public readonly List<int> BakeIndices = new();
 }
-public class EditorRenderGroup : RenderGroup
+public struct DynamicProjectile
 {
-    public List<int> PatternBulletIndices = new();
+    public Vector2 Pos;
+    public float Forward;
+    public float Scale;
 }

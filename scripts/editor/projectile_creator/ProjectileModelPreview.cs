@@ -111,7 +111,7 @@ public partial class ProjectileModelPreview : Node2D
     }
     public override void _Draw()
     {
-        var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, ctx);
+        var (x, y) = CalculatePositionAt(0, fnX, fnY, ctx);
         pos = new Vector2(x,y)/renderScale;
         // draw projectile
         var texture = textureName != "default" ? 
@@ -159,10 +159,23 @@ public partial class ProjectileModelPreview : Node2D
         {
             lctx.T = Math.Min(ctx.L,ConfigHelper.Current.MaxPathLength) / steps * i;
             lctx.L = ctx.L;
-            var (x, y) = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
+            var (x, y) = CalculatePositionAt(0, fnX, fnY, lctx);
             points[i] = new(x,y);
         }
         DrawPolyline(points, Colors.Yellow, ConfigHelper.Current.PathThickness, true);
         DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, Colors.Yellow);
+    }
+    private static (float x, float y) CalculatePositionAt(float fwd, Expr fnx, Expr fny, EvalContext ctx)
+    {
+        float fwdTravel = fnx != null ? (float)fnx.Eval(ctx) : 0;
+        float perpTravel = fny != null ? (float)fny.Eval(ctx) : 0;
+
+        float cos = MathF.Cos(fwd);
+        float sin = MathF.Sin(fwd);
+
+        float x = cos * fwdTravel - sin * perpTravel;
+        float y = sin * fwdTravel + cos * perpTravel;
+
+        return (x, y);
     }
 }

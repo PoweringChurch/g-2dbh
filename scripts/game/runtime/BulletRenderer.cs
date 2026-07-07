@@ -14,23 +14,24 @@ public class BulletRenderer
             groupBuffers[i] = [];
     }
 
-    public void Sync(ref Bullet[] bullets, int bulletCount)
+    public void Sync(ref SpatialReference[] active, int activeCount)
     {
         var groups = level.RenderGroups;
         for (int g = 0; g < groups.Count; g++)
-            groups[g].BulletIndices.Clear();
+            groups[g].BakeIndices.Clear();
 
-        for (int i = 0; i < bulletCount; i++)
+        for (int i = 0; i < activeCount; i++)
         {
-            ref Bullet b = ref bullets[i];
-            var model = level.Projectiles[b.Id];
-            groups[model.RenderGroupId].BulletIndices.Add(i);
+            ref SpatialReference r = ref active[i];
+            if (r.Type != ModelType.Projectile) continue;
+            var model = level.Projectiles[r.Id];
+            groups[model.RenderGroupId].BakeIndices.Add(i);
         }
         const int floatsPerInstance = 8;
         for (int g = 0; g < groups.Count; g++)
         {
             var group = groups[g];
-            int count = group.BulletIndices.Count;
+            int count = group.BakeIndices.Count;
             group.MultiMesh.InstanceCount = count;
             if (count == 0) continue;
             int required = count * floatsPerInstance;
@@ -39,8 +40,8 @@ public class BulletRenderer
             ref float[] buffer = ref groupBuffers[g];
             for (int n = 0; n < count; n++)
             {
-                int idx = group.BulletIndices[n];
-                ref Bullet b = ref bullets[idx];
+                int idx = group.BakeIndices[n];
+                ref SpatialReference b = ref active[idx];
                 var model = level.Projectiles[b.Id];
                 float scale = model.RenderScale;
                 int o = n * floatsPerInstance;
