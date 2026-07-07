@@ -30,7 +30,7 @@ public partial class PlayerCharacter : Node2D
         Vector2 inputDirection = Input.GetVector("left", "right", "up", "down").Normalized();
         bool focused = Input.IsActionPressed("focus");
         framesFocusHeld = Math.Clamp(framesFocusHeld + (focused ? 1 : -1), 0, 10);
-        float speed =  focused ? BaseSpeed*0.5f : BaseSpeed;
+        float speed =  (focused ? BaseSpeed*0.5f : BaseSpeed) * (ConfigHelper.Current.SlowMovement ? 0.5f : 1);
         Position += inputDirection*speed*(float)dt;
         Vector2 newPosition = Position + inputDirection*speed*(float)dt;
         newPosition.X = Mathf.Clamp(newPosition.X, 0, ScreenResolution.X);

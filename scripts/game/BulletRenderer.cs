@@ -17,7 +17,6 @@ public class BulletRenderer
     public void Sync(ref Bullet[] bullets, int bulletCount)
     {
         var groups = level.RenderGroups;
-
         for (int g = 0; g < groups.Count; g++)
             groups[g].BulletIndices.Clear();
 

@@ -176,10 +176,7 @@ public partial class ProjectileCreator : Control
 
     public void LoadProjectile(ProjectileModel newModel)
     {
-        if (newModel != null)
-            model = new ProjectileModel(newModel);
-        else
-            model = new ProjectileModel();
+        model = new ProjectileModel(newModel);
         IdInput.Value = model.Id;
         NameInput.Text = model.Name;
         TextureInput.Text = model.Texture;

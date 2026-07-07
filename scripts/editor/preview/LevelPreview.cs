@@ -26,9 +26,9 @@ public partial class LevelPreview : Control
 		get => selectedReference;
 		set
 		{
-			e.UpdateInspector(value);
 			selectedReference = value;
 			_inGroup = _groupSelection.Find((s)=> s == SelectedReference) != null;
+			e.UpdateInspector();
 		}
 	}
 	private bool _inGroup = false;
@@ -193,7 +193,7 @@ public partial class LevelPreview : Control
 			PreviewRoot.QueueRedraw();
 			return;
 		}
-		if (selectedReference != null) return;
+		if (SelectedReference != null) return;
 		mousePoint1 = ToPreviewLocal(mb.Position);
 		var min = new Vector2(
 			Math.Min(mousePoint0.X, mousePoint1.X),

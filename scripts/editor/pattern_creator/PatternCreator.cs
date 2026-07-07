@@ -162,15 +162,15 @@ public partial class PatternCreator : Control
     public void LoadPattern(PatternModel loadModel)
     {
         model = new PatternModel(loadModel);
-        IdInput.Value = loadModel.Id;
-        NameInput.Text = loadModel.Name;
-        FnXInput.Text = loadModel.FunctionX;
-        FnYInput.Text = loadModel.FunctionY;
-        FnTInput.Text = loadModel.FunctionT;
-        FnFwdInput.Text = loadModel.FunctionFwd;
-        ProjectileIdInput.Value = loadModel.ProjectileId;
-        CountInput.Value = loadModel.Count;
+        IdInput.Value = model.Id;
+        NameInput.Text = model.Name;
+        FnXInput.Text = model.FunctionX;
+        FnYInput.Text = model.FunctionY;
+        FnTInput.Text = model.FunctionT;
+        FnFwdInput.Text = model.FunctionFwd;
+        ProjectileIdInput.Value = model.ProjectileId;
+        CountInput.Value = model.Count;
         OnProjectileModelIdChanged(ProjectileIdInput.Value);
-        OnCountChanged(loadModel.Count);
+        OnCountChanged(model.Count);
     }
 }

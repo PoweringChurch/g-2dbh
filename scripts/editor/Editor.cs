@@ -32,7 +32,14 @@ public partial class Editor : CanvasLayer
             _snapDisplay.Text = value ? "Snap : On" : "Snap : Off";
         }
     }
-    public EditorReference SelectedReference => _preview.SelectedReference;
+    public EditorReference SelectedReference
+    {
+        get => _preview.SelectedReference;
+        set
+        {
+            _preview.SelectedReference = value;
+        }
+    }
     public float CurrentTime => _timeline.CurrentTime;
     private const string _levelDirectory = "user://data/levels/";
     public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
@@ -161,8 +168,10 @@ public partial class Editor : CanvasLayer
         _deleteButton.Pressed += () => CurrentMode = Mode.Delete;
         _snapButton.Pressed += () => Snap = !Snap;
     }
-    public void UpdateInspector(EditorReference r) =>
-        _inspector.Update(r);
+    public void UpdateInspector() =>
+        _inspector.Update(SelectedReference);
+    public void RefreshTimelineMarker(EditorReference r) =>
+        _timeline.RefreshMarker(r);
     public override void _Input(InputEvent @event)
     {
         if (!Open) return;
@@ -251,6 +260,7 @@ public partial class Editor : CanvasLayer
         _projCreator.LoadProjectile(projectileModels[0]);
         _patternCreator.LoadPattern(patternModels[0]);
         _modelLibrary.Refresh();
+        _preview.Sync();
     }
     private void SaveLevel()
     {

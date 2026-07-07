@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/level/LevelMetadata.cs" id="5_ycdy4"]
 [ext_resource type="Script" uid="uid://bju7haqyrgrrg" path="res://scripts/editor/projectile_creator/ShapeEditor.cs" id="6_074og"]
+[ext_resource type="Texture2D" uid="uid://dyx8k3dvsl1aj" path="res://data/images/logo/en-logo.png" id="6_lswn8"]
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="7_cegan"]
 [ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/author_label_settings.tres" id="7_getpj"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="8_074og"]
@@ -24,10 +25,7 @@
 [ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/screens/SettingsMenu.cs" id="21_getpj"]
 [ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
 [ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="23_1u8w0"]
-[ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://Console.cs" id="23_d13ii"]
-[ext_resource type="Script" uid="uid://cetphdgtjyr21" path="res://scripts/utils/DebugUtils.cs" id="26_lswn8"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_lswn8"]
+[ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://scripts/utils/Console.cs" id="23_d13ii"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -107,16 +105,6 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0, 0, 0, 0.39215687)
-
-[node name="Debug" type="Node2D" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1758916379 node_paths=PackedStringArray("meshinstance")]
-z_index = 10
-position = Vector2(3.805, 120.62)
-script = ExtResource("26_lswn8")
-meshinstance = NodePath("MeshInstance2D")
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="HUD/Sort/SubViewportContainer/SubViewport/Debug" unique_id=2136094262]
-position = Vector2(100, 100)
-mesh = SubResource("QuadMesh_lswn8")
 
 [node name="PanelContainer" type="PanelContainer" parent="HUD/Sort" unique_id=651642514]
 custom_minimum_size = Vector2(245, 0)
@@ -218,6 +206,15 @@ size_flags_horizontal = 10
 text = "0"
 label_settings = ExtResource("3_d13ii")
 
+[node name="Logo" type="TextureRect" parent="HUD/Sort/PanelContainer" unique_id=2084242247]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("6_lswn8")
+expand_mode = 3
+stretch_mode = 5
+
 [node name="GameAudioPlayer" type="AudioStreamPlayer" parent="HUD" unique_id=1121045320]
 
 [node name="MainMenu" type="CanvasLayer" parent="." unique_id=692766472 node_paths=PackedStringArray("_startButton", "_customsButton", "_settingsButton", "_quitButton")]
@@ -241,13 +238,20 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -75.0
-offset_top = -75.0
-offset_right = 75.0
-offset_bottom = 75.0
+offset_left = -120.0
+offset_top = -100.0
+offset_right = 120.0
+offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
+
+[node name="Logo" type="TextureRect" parent="MainMenu/Sort" unique_id=1608766793]
+custom_minimum_size = Vector2(0, 125.615)
+layout_mode = 2
+texture = ExtResource("6_lswn8")
+expand_mode = 3
+stretch_mode = 4
 
 [node name="Start" type="Button" parent="MainMenu/Sort" unique_id=833321538]
 visible = false
@@ -271,6 +275,7 @@ size_flags_vertical = 3
 text = "Quit"
 
 [node name="LevelSelect" type="CanvasLayer" parent="." unique_id=1492741283 node_paths=PackedStringArray("_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
+visible = false
 script = ExtResource("4_vivmo")
 _levelList = NodePath("Sort/Levels/Sort/List")
 _previewId = NodePath("Sort/LevelPreview/VBoxContainer/LevelName")
@@ -385,20 +390,21 @@ text = "-"
 layout_mode = 2
 text = "Play"
 
-[node name="CustomLevelSelect" type="CanvasLayer" parent="." unique_id=664724313 node_paths=PackedStringArray("_editButton", "_deleteButton", "_newLevelButton", "_refreshButton", "_author", "_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
+[node name="CustomLevelSelect" type="CanvasLayer" parent="." unique_id=664724313 node_paths=PackedStringArray("_editButton", "_deleteButton", "_newLevelButton", "_refreshButton", "_openLevelsFolder", "_author", "_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
 visible = false
 script = ExtResource("11_w48qg")
 _editButton = NodePath("Sort/LevelPreview/Sort/Edit")
 _deleteButton = NodePath("Sort/LevelPreview/Sort/Delete")
-_newLevelButton = NodePath("Sort/Levels/Sort/Buttons/NewLevel")
-_refreshButton = NodePath("Sort/Levels/Sort/Buttons/Refresh")
+_newLevelButton = NodePath("Sort/Levels/Sort/Top/NewLevel")
+_refreshButton = NodePath("Sort/Levels/Sort/Top/Refresh")
+_openLevelsFolder = NodePath("Sort/Levels/Sort/Bottom/Folder")
 _author = NodePath("Sort/LevelPreview/Sort/Author")
 _levelList = NodePath("Sort/Levels/Sort/List")
 _previewId = NodePath("Sort/LevelPreview/Sort/LevelName")
 _previewRatio = NodePath("Sort/LevelPreview/Sort/AspectRatio/Ratio")
 _previewHealth = NodePath("Sort/LevelPreview/Sort/Health/Count")
 _previewDuration = NodePath("Sort/LevelPreview/Sort/Duration/Dur")
-_returnButton = NodePath("Sort/Levels/Sort/Buttons/Return")
+_returnButton = NodePath("Sort/Levels/Sort/Top/Return")
 _playButton = NodePath("Sort/LevelPreview/Sort/Play")
 
 [node name="Fill" type="ColorRect" parent="CustomLevelSelect" unique_id=1890243431]
@@ -435,24 +441,32 @@ size_flags_horizontal = 0
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
-[node name="Buttons" type="HBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=1747758476]
+[node name="Top" type="HBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=1747758476]
 layout_mode = 2
 
-[node name="Return" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Buttons" unique_id=1330142905]
+[node name="Return" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Top" unique_id=1330142905]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
 text = "Return"
 
-[node name="Refresh" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Buttons" unique_id=1525116494]
+[node name="Refresh" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Top" unique_id=1525116494]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Refresh"
 
-[node name="NewLevel" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Buttons" unique_id=1270255316]
+[node name="NewLevel" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Top" unique_id=1869391244]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "New Level"
+
+[node name="Bottom" type="HBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=632194462]
+layout_mode = 2
+
+[node name="Folder" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Bottom" unique_id=411114962]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Open Levels Folder"
 
 [node name="List" type="VBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=1681721272]
 layout_mode = 2
@@ -537,6 +551,7 @@ layout_mode = 2
 text = "Delete"
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
+visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -619,7 +634,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(303, 361)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 z_index = -1
@@ -1099,7 +1114,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15
@@ -1841,12 +1856,11 @@ text = "Quit"
 
 [node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_openDataButton", "_returnButton", "_fieldContainer")]
 process_mode = 2
-visible = false
 script = ExtResource("21_getpj")
-_saveButton = NodePath("Stuff/Sort/Tools/Save")
+_saveButton = NodePath("Stuff/Sort/Tools/Apply")
 _openDataButton = NodePath("Stuff/Sort/Tools/OpenData")
 _returnButton = NodePath("Stuff/Sort/Tools/Return")
-_fieldContainer = NodePath("Stuff/Sort/Container")
+_fieldContainer = NodePath("Stuff/Sort/ScrollContainer/Container")
 
 [node name="Fill" type="ColorRect" parent="Settings" unique_id=1333139257]
 anchors_preset = 15
@@ -1862,10 +1876,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -450.0
+offset_left = -225.0
 offset_top = -233.5
-offset_right = 450.0
-offset_bottom = 233.5
+offset_right = 225.0
+offset_bottom = 116.5
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
@@ -1873,18 +1887,26 @@ theme = ExtResource("2_ryguw")
 [node name="Sort" type="VBoxContainer" parent="Settings/Stuff" unique_id=734017190]
 layout_mode = 2
 
-[node name="Container" type="VBoxContainer" parent="Settings/Stuff/Sort" unique_id=1874091712]
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings/Stuff/Sort" unique_id=1916817036]
+custom_minimum_size = Vector2(0, 26.905)
 layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Container" type="VBoxContainer" parent="Settings/Stuff/Sort/ScrollContainer" unique_id=1874091712]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Tools" type="HBoxContainer" parent="Settings/Stuff/Sort" unique_id=1685518385]
 layout_mode = 2
 
-[node name="Save" type="Button" parent="Settings/Stuff/Sort/Tools" unique_id=1105254704]
+[node name="Apply" type="Button" parent="Settings/Stuff/Sort/Tools" unique_id=1105254704]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Save"
+text = "Apply
+"
 
 [node name="Return" type="Button" parent="Settings/Stuff/Sort/Tools" unique_id=649342039]
 custom_minimum_size = Vector2(0, 50)
@@ -1915,7 +1937,7 @@ offset_right = 43.5
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("2_ryguw")
-text = "danmaku mania pre alpha 3"
+text = "danmaku mania pre alpha 4"
 
 [node name="Console" type="CanvasLayer" parent="." unique_id=1952028464 node_paths=PackedStringArray("_consoleText", "_save")]
 process_mode = 3

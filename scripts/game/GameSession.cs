@@ -7,7 +7,11 @@ public partial class GameSession : Node
     public AudioStreamPlayer GAP {get; private set;}
     public double Elapsed
     {
-        get => _director.Elapsed;
+        get
+        {
+            if (_director == null) return 0;
+            return _director.Elapsed;
+        }
     }
     public static NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
     public static NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
@@ -17,13 +21,15 @@ public partial class GameSession : Node
     private TextureRect _backgroundImage;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
     private PlayerCharacter _character;
-    private LevelDirector _director = new LevelDirector();
+    private LevelDirector _director;
     private BulletRenderer _renderer;
     private UIManager _ui;
     private PlayingField _playingField;
     private string _lastStartedLevelDirectory, _lastStartedLevelId;
     private int score, health, graze;
     private float maxHealth, duration;
+    private bool running = false;
+    public bool Running => running;
     public override void _Ready()
     {
         _ui = GetNode<UIManager>("/root/UIManager");
@@ -33,7 +39,6 @@ public partial class GameSession : Node
         _playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
         SetProcess(false);
-        _director.LevelFinished += StopLevel;
     }
     public void Abort()
     {
@@ -41,6 +46,10 @@ public partial class GameSession : Node
         SetProcess(false);
         GAP.Stop();
         GAP.Stream = null;
+        if (_director!=null)
+            _director.LevelFinished -= StopLevel;
+        _director = null;
+        _renderer = null;
         if (IsInstanceValid(_character))
         {
             _character.OnHurt -= OnHurt;
@@ -48,6 +57,7 @@ public partial class GameSession : Node
         }
         if (IsInstanceValid(_gameRoot))
             _gameRoot.QueueFree();
+        running = false;
     }
     public bool ResetLevel()
     {
@@ -96,6 +106,8 @@ public partial class GameSession : Node
         _lastStartedLevelDirectory = levelsDirectory;
         _lastStartedLevelId = levelId;
         _renderer = new BulletRenderer(compiled);
+        _director = new LevelDirector();
+        _director.LevelFinished += StopLevel;
         _director.StartLevel(compiled, _character);
         GAP.VolumeLinear = ConfigHelper.Current.MusicVolume;
         GAP.Stream = AudioUtils.LoadAudio(levelsDirectory+levelId+"/audio/", levelData.Music);
@@ -103,6 +115,7 @@ public partial class GameSession : Node
         GAP.Play(0);
         SetPhysicsProcess(true);
         SetProcess(true);
+        running = true;
         return true;
     }
     public void StopLevel()
@@ -133,15 +146,19 @@ public partial class GameSession : Node
     }
     public override void _PhysicsProcess(double dt)
     {
+        if (!running) return;
         _character.Movement(dt);
         _director.Tick(dt);
         _character.VisualFeedback();
         _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
+        
     }
-    public override void _Process(double dt)
+    public override void _Process(double delta)
     {
+        if (!running) return;
         _renderer.Sync(ref _director.Bullets, _director.BulletCount);
     }
+
     private static T ReadJson<T>(string path)
     {
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);

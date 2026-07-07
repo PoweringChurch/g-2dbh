@@ -8,7 +8,7 @@ public partial class TimelineMarker : ColorRect
     public void Init(EditorReference reference, float duration, float timelineWidth)
     {
         e = GetNode<Editor>("/root/Editor");
-        Size = new Vector2(6, 16);
+        Size = new Vector2(4, 16);
         Reference = reference;
         Refresh(duration, timelineWidth);
     }
@@ -26,6 +26,7 @@ public partial class TimelineMarker : ColorRect
             if (e.CurrentMode == Editor.Mode.Select)
             {
                 _dragging = mb.Pressed; 
+                e.SelectedReference = Reference;
             }
             else if (e.CurrentMode == Editor.Mode.Delete)
             {
@@ -39,6 +40,7 @@ public partial class TimelineMarker : ColorRect
             float newX = Mathf.Clamp(Position.X + mm.Relative.X, 0, GetParent<Control>().Size.X - Size.X);
             Position = new Vector2(newX, Position.Y);
             Reference.T = (newX + Size.X / 2f) / GetParent<Control>().Size.X * e.levelData.Duration;
+            e.SyncPreview();
         }
     }
 }

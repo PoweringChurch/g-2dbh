@@ -149,6 +149,9 @@ public partial class Timeline : Control
             marker.QueueFree();
         _markers.Clear();
     }
-    public void RefreshMarker(EditorReference r) =>
+    public void RefreshMarker(EditorReference r)
+    {
+        if (r == null) return;
         _markers[r].Refresh(e.levelData.Duration, Size.X);
+    }
 }

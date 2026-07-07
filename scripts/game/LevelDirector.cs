@@ -63,15 +63,19 @@ public partial class LevelDirector
                 float distSq = (b.Pos - _character.Position).LengthSquared();
                 float rSumH = proj.Radius + PlayerCharacter.HurtRadius;
                 float rSumG = proj.Radius + PlayerCharacter.GrazeRadius;
-                if (!_hasGrazed[i] && distSq <= rSumG * rSumG)
+                bool ghit = proj.Shape == null ?
+                distSq <= rSumG * rSumG 
+                : CollisionUtils.PolygonVsCircle([.. proj.Shape], b.Pos, _character.Position, PlayerCharacter.GrazeRadius, (float)b.F-Mathf.Pi);
+                if (!_hasGrazed[i] && ghit && !ConfigHelper.Current.NoGraze)
                 {
                     _character.Graze();
-                    _hasGrazed[i] = true;
+                    if (!ConfigHelper.Current.NoGrazeTracking)
+                        _hasGrazed[i] = true;
                 }
                 bool hit = proj.Shape == null ? 
                 distSq <= rSumH * rSumH 
-                : CollisionUtils.PolygonVsCircle([.. proj.Shape], b.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)b.F);
-                if (hit && _character.Hurt())
+                : CollisionUtils.PolygonVsCircle([.. proj.Shape], b.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)b.F-Mathf.Pi);
+                if (hit && !ConfigHelper.Current.NoHit && _character.Hurt() )
                 {
                     if (!proj.Persistant)
                         Kill(i--);

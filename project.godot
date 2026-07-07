@@ -13,7 +13,6 @@ config_version=5
 config/name="DanmakuMania"
 run/main_scene="uid://byrpidyii8f8t"
 config/features=PackedStringArray("4.6", "C#", "Mobile")
-config/icon="res://icon.svg"
 
 [autoload]
 

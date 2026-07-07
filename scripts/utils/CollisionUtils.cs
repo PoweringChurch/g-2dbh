@@ -6,11 +6,13 @@ using Godot;
 
 public static class CollisionUtils
 {
-    public static bool PolygonVsCircle(Vector2[] localPoints, Vector2 polyPos, Vector2 circleCenter, float radius, float polygonForward)
+    public static bool PolygonVsCircle(Vector2[] localPoints, Vector2 polyPos, Vector2 circleCenter, float radius, float polygonForward, bool flipPolygon = false)
     {
         Vector2 localCircleCenter = circleCenter - polyPos;
         if (polygonForward != 0)
             localCircleCenter = localCircleCenter.Rotated(-polygonForward);
+        if (flipPolygon)
+            localCircleCenter.X = -localCircleCenter.X;
         if (PointInPolygon(localPoints, localCircleCenter, polygonForward))
             return true;
         float radiusSq = radius * radius;

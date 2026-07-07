@@ -125,9 +125,8 @@ public partial class ProjectileModelPreview : Node2D
         else if (useShape && shape != null)
         {
             var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
+            if (points.Length > 1) 
             DrawPolyline(points, Colors.White, 1.5f, true);
-            if (points.Length > 1)
-                DrawLine(points[^1], points[0], Colors.White, 1.5f);
         }
         else
         {

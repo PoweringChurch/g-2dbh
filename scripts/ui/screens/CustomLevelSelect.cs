@@ -7,6 +7,7 @@ public partial class CustomLevelSelect : LevelSelect
     [Export] protected Button _deleteButton;
     [Export] protected Button _newLevelButton;
     [Export] protected Button _refreshButton;
+    [Export] protected Button _openLevelsFolder;
     [Export] protected Label _author;
     private Editor e;
     public override void _Ready()
@@ -24,6 +25,7 @@ public partial class CustomLevelSelect : LevelSelect
         _deleteButton.Disabled = true;
         _newLevelButton.Pressed += OnNewLevelPressed;
         _refreshButton.Pressed  += PopulateList;
+        _openLevelsFolder.Pressed += OpenLevelsFolder;
     }
     // Play
     protected void OnEditPressed()
@@ -39,6 +41,11 @@ public partial class CustomLevelSelect : LevelSelect
             Show();
             Popups.Instance.Show(Popups.DefaultType.OK, $"Something went wrong opening this level. \n Level Id : {_selectedLevel}");
         }
+    }
+    private void OpenLevelsFolder()
+    {
+        var path = ProjectSettings.GlobalizePath(_levelDirectory);
+		OS.ShellOpen(path);
     }
     protected override void OnLevelSelected(LevelData levelData, Button pressed)
     {

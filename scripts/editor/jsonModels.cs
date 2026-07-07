@@ -23,7 +23,7 @@ public interface IEditorModel
 }
 public class ProjectileModel : IEditorModel
 {
-    [JsonPropertyName("id")] public int Id { get; set; }
+    [JsonPropertyName("id")] public int Id { get; set; } = 0;
     [JsonPropertyName("name")] public string Name { get; set; } = "unnamed";
     [JsonPropertyName("fnX")] public string FunctionX { get; set; } = "0";
     [JsonPropertyName("fnY")] public string FunctionY { get; set; } = "0";
@@ -42,6 +42,7 @@ public class ProjectileModel : IEditorModel
     public ProjectileModel() { }
     public ProjectileModel(ProjectileModel other)
     {
+        other ??= new();
         Name = other.Name;
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
@@ -63,9 +64,9 @@ public class ProjectileModel : IEditorModel
 }
 public class PatternModel : IEditorModel
 {
-    [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("name")] public string Name { get; set; }
-    [JsonPropertyName("projectileId")] public int ProjectileId { get; set; }
+    [JsonPropertyName("id")] public int Id { get; set; } = 0;
+    [JsonPropertyName("name")] public string Name { get; set; } = "unnamed";
+    [JsonPropertyName("projectileId")] public int ProjectileId { get; set; } = 0;
     [JsonPropertyName("fnX")] public string FunctionX { get; set; } = "0";
     [JsonPropertyName("fnY")] public string FunctionY { get; set; } = "0";
     [JsonPropertyName("fnT")] public string FunctionT { get; set; } = "0";
@@ -80,6 +81,8 @@ public class PatternModel : IEditorModel
     public PatternModel() { }
     public PatternModel(PatternModel other)
     {
+        other ??= new();
+        Id = other.Id;
         Name = other.Name;
         ProjectileId = other.ProjectileId;
         FunctionX = other.FunctionX;
@@ -133,7 +136,6 @@ public class Config
     [JsonPropertyName("character")] public string Character { get; set; } = "default";
     [ConfigField("Game", "Character Scale", 0, 1, 0.05f)]
     [JsonPropertyName("characterScale")] public float CharacterScale { get; set; } = 0.3f;
-    // performancecvb 
     // sound
     [ConfigField("Game", "Music volume", 0, 1, 0.05f)]
     [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; } = 1;
@@ -143,7 +145,7 @@ public class Config
     [JsonPropertyName("hurtVolume")] public float HurtVolume { get; set; } = 0.1f;
     // EDITOR
     // projectile preview
-    [ConfigField("Editor", "Display projectile collision in projectile creator", 1, 256, 1)]
+    [ConfigField("Editor", "Display projectile collision in projectile creator")]
     [JsonPropertyName("showCollision")] public bool ShowCollision { get; set; } = true;
     // path
     [ConfigField("Editor", "Path fidelity", 1, 256, 1)]
@@ -158,4 +160,13 @@ public class Config
     [JsonPropertyName("angleSnapDivisions")] public float AngleSnapDivision { get; set; } = 8;
     [ConfigField("Editor", "Grid cell size", 4, 256, 1)]
     [JsonPropertyName("gridCellSize")] public float GridSnapCellSize { get; set; } = 8;
+    // TESTING
+    [ConfigField("Testing & Debugging", "No hit")]
+    [JsonPropertyName("noHit")] public bool NoHit { get; set; } = false;
+    [ConfigField("Testing & Debugging", "No graze")]
+    [JsonPropertyName("noGraze")] public bool NoGraze { get; set; } = false;
+    [ConfigField("Testing & Debugging", "No graze tracking")]
+    [JsonPropertyName("noGrazeTracking")] public bool NoGrazeTracking { get; set; } = false;
+    [ConfigField("Testing & Debugging", "Slow movement")]
+    [JsonPropertyName("slowMovement")] public bool SlowMovement { get; set; } = false;
 }

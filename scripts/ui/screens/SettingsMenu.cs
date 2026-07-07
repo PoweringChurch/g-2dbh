@@ -9,19 +9,20 @@ public partial class SettingsMenu : CanvasLayer
     [Export] public Button _returnButton;
     [Export] public VBoxContainer _fieldContainer; // where generated rows go
 
-    private Config _config;
+    private Config config => ConfigHelper.Current;
     private readonly System.Collections.Generic.List<(PropertyInfo Prop, Control Control)> _bindings = new();
     private UIManager _ui;
     public override void _Ready()
     {
         _ui = GetNode<UIManager>("/root/UIManager");
-        _config = ConfigHelper.Current; // however you're storing the loaded instance
 
         BuildFields();
 
         _saveButton.Pressed += OnSavePressed;
         _returnButton.Pressed += OnReturnPressed;
         _openDataButton.Pressed += OnOpenDataPressed;
+        
+        GetWindow().Mode = config.Fullscreen ? Window.ModeEnum.Fullscreen : Window.ModeEnum.Windowed;
     }
 
     private void BuildFields()
@@ -42,7 +43,7 @@ public partial class SettingsMenu : CanvasLayer
             var row = new HBoxContainer();
             row.AddChild(new Label { Text = attr.Label, CustomMinimumSize = new Vector2(180, 0) });
             Control control = null;
-            object currentValue = prop.GetValue(_config);
+            object currentValue = prop.GetValue(config);
             if (prop.PropertyType == typeof(bool))
             {
                 var check = new CheckBox { ButtonPressed = (bool)currentValue };
@@ -88,10 +89,10 @@ public partial class SettingsMenu : CanvasLayer
             };
 
             if (newValue != null)
-                prop.SetValue(_config, newValue);
+                prop.SetValue(config, newValue);
         }
         // special
-        GetWindow().Mode = _config.Fullscreen ? Window.ModeEnum.Fullscreen : Window.ModeEnum.Windowed;
+        GetWindow().Mode = config.Fullscreen ? Window.ModeEnum.Fullscreen : Window.ModeEnum.Windowed;
         ConfigHelper.Save();
     }
 

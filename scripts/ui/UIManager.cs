@@ -75,12 +75,10 @@ public partial class UIManager : Node
         if (!on)
         {
             gameSession.GAP.Play((float)gameSession.Elapsed);
-            Console.Inst.Log("ELAPSED : "+(float)gameSession.Elapsed);
         }
         else
         {
             gameSession.GAP.Stop();
-            Console.Inst.Log("STOPPED");
         }
 
         GetTree().Paused = on;
