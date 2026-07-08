@@ -32,6 +32,18 @@ public partial class Editor : CanvasLayer
             _snapDisplay.Text = value ? "Snap : On" : "Snap : Off";
         }
     }
+    private float incrementTimeBy = 1;
+    public float IncrementTimeBy
+    {
+        get => incrementTimeBy;
+        set
+        {
+            incrementTimeBy = Math.Clamp(value, 0.125f, 128);
+            _skipInput.SetValueNoSignal(value);
+            Console.Inst.Log($"Increment time by : {IncrementTimeBy}");
+        }
+    }
+    private bool timeControls;
     public EditorReference SelectedReference
     {
         get => _preview.SelectedReference;
@@ -100,22 +112,27 @@ public partial class Editor : CanvasLayer
     public LevelData levelData;
     // paths
     const string Modules = "/root/main/EditorLayer/Sections/Modules";
-    public NodePath TimelinePath = Modules + "/Middle/Timeline";
-    public NodePath ModelLibraryPath = Modules + "/Middle/ModelLibrary";
-    public NodePath LevelMetaPath = Modules + "/Left/LevelMetadata";
-    public NodePath LevelPreviewPath = Modules + "/Left/LevelPreview";
-    public NodePath ProjCreatorPath = Modules + "/Right/Creators/ProjectileCreator";
-    public NodePath PatternCreatorPath = Modules + "/Right/Creators/PatternCreator";
-    public NodePath InspectorPath = Modules + "/Middle/Inspector";
+    const string TimelinePath = Modules + "/Middle/Timeline";
+    const string ModelLibraryPath = Modules + "/Middle/ModelLibrary";
+    const string LevelMetaPath = Modules + "/Left/LevelMetadata";
+    const string LevelPreviewPath = Modules + "/Left/LevelPreview";
+    const string ProjCreatorPath = Modules + "/Right/Creators/ProjectileCreator";
+    const string PatternCreatorPath = Modules + "/Right/Creators/PatternCreator";
+    const string InspectorPath = Modules + "/Middle/Inspector";
 
     const string ToolbarButtons = "/root/main/EditorLayer/Sections/Toolbar/Buttons";
-    public NodePath PlaceButtonPath = ToolbarButtons + "/ModeSelection/Place";
-    public NodePath SelectButtonPath = ToolbarButtons + "/ModeSelection/Select";
-    public NodePath DeleteButtonPath = ToolbarButtons + "/ModeSelection/Delete";
-    public NodePath ModeDisplayPath = ToolbarButtons + "/ModeSelection/ModeDisplay";
-    public NodePath SnapAngleTogglePath = ToolbarButtons + "/ModeSelection/SnapAngle";
-    public NodePath SnapAnglePath = ToolbarButtons + "/ModeSelection/SnapDisplay";
+    // mode
+    const string PlaceButtonPath = ToolbarButtons + "/ModeSelection/Place";
+    const string SelectButtonPath = ToolbarButtons + "/ModeSelection/Select";
+    const string DeleteButtonPath = ToolbarButtons + "/ModeSelection/Delete";
+    const string ModeDisplayPath = ToolbarButtons + "/ModeSelection/ModeDisplay";
+    // snap
+    const string SnapAngleTogglePath = ToolbarButtons + "/SnapDisplay/SnapAngle";
+    const string SnapAnglePath = ToolbarButtons + "/SnapDisplay/SnapDisplay";
+    // time controls
+    const string SkipInputPath = ToolbarButtons + "/TimeControl/SkipInput";
     // references
+    // modules
     private Timeline _timeline;
     private ModelLibrary _modelLibrary;
     private LevelMetadata _levelMeta;
@@ -123,12 +140,17 @@ public partial class Editor : CanvasLayer
     private ProjectileCreator _projCreator;
     private PatternCreator _patternCreator;
     private Inspector _inspector;
+    // toolbar
+    // mode
     private Button _placeButton;
     private Button _selectButton;
     private Button _deleteButton;
     private Label _modeDisplay;
+    // snap
     private Button _snapButton;
     private Label _snapDisplay;
+    // time controls
+    private SpinBox _skipInput;
     public override void _Ready()
     {
         // modules
@@ -156,49 +178,88 @@ public partial class Editor : CanvasLayer
 
         GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
         // toolbar
+        // mode
         _placeButton = GetNode<Button>(PlaceButtonPath);
         _selectButton = GetNode<Button>(SelectButtonPath);
         _deleteButton = GetNode<Button>(DeleteButtonPath);
         _modeDisplay = GetNode<Label>(ModeDisplayPath);
+        // snap
         _snapButton = GetNode<Button>(SnapAngleTogglePath);
         _snapDisplay = GetNode<Label>(SnapAnglePath);
+        // time controls
+        _skipInput = GetNode<SpinBox>(SkipInputPath);
+
         // toolbar events
         _placeButton.Pressed += () => CurrentMode = Mode.Place;
         _selectButton.Pressed += () => CurrentMode = Mode.Select;
         _deleteButton.Pressed += () => CurrentMode = Mode.Delete;
         _snapButton.Pressed += () => Snap = !Snap;
+        
+        _skipInput.ValueChanged += v => IncrementTimeBy = (float)v;
     }
     public void UpdateInspector() =>
         _inspector.Update(SelectedReference);
     public void RefreshTimelineMarker(EditorReference r) =>
         _timeline.RefreshMarker(r);
+    [Signal] public delegate void CopyEventHandler();
+    [Signal] public delegate void PasteEventHandler();
+    [Signal] public delegate void DeleteEventHandler();
+    [Signal] public delegate void CutEventHandler();
+
     public override void _Input(InputEvent @event)
     {
         if (!Open) return;
-        if (@event.IsActionPressed("place_bind"))
+        CurrentMode = @event.IsActionPressed("place_bind") ? Mode.Place :
+                  @event.IsActionPressed("select_bind") ? Mode.Select :
+                  @event.IsActionPressed("delete_bind") ? Mode.Delete : CurrentMode;
+        if (@event.IsActionPressed("save_bind")) SaveLevel();
+        if (@event.IsActionPressed("playback_toggle")) _timeline.TogglePlaying();
+        
+        if (@event.IsActionPressed("skip_forward"))
         {
-            CurrentMode = Mode.Place;
+            Console.Inst.Log($"Skipped time to {CurrentTime + IncrementTimeBy}");
+            _timeline.SetTime(timeControls ? GetNextReferenceTime() : CurrentTime + IncrementTimeBy);
         }
-        else if (@event.IsActionPressed("select_bind"))
+        else if (@event.IsActionPressed("skip_backward"))
         {
-            CurrentMode = Mode.Select;
+            Console.Inst.Log($"Skipped time to {CurrentTime - IncrementTimeBy}");
+            _timeline.SetTime(timeControls ? GetPrevReferenceTime() : CurrentTime - IncrementTimeBy);
         }
-        else if (@event.IsActionPressed("delete_bind"))
+        if (timeControls)
         {
-            CurrentMode = Mode.Delete;
+            if (@event.IsActionPressed("scroll_up")) IncrementTimeBy *= 2;
+            if (@event.IsActionPressed("scroll_down")) IncrementTimeBy /= 2;
         }
-        else if (@event.IsActionPressed("save_bind"))
+        if (@event.IsActionPressed("snap")) Snap = !Snap;
+
+        if      (@event.IsActionPressed("time_control")) timeControls = true;
+        else if (@event.IsActionReleased("time_control")) timeControls = false;
+
+        if (@event.IsActionPressed("cut")) EmitSignal(SignalName.Cut);
+		if (@event.IsActionPressed("copy")) EmitSignal(SignalName.Copy);
+		if (@event.IsActionPressed("paste")) EmitSignal(SignalName.Paste);
+		if (@event.IsActionPressed("delete")) EmitSignal(SignalName.Delete);
+
+    }
+    private float GetNextReferenceTime()
+    {
+        float closestTime = levelData.Duration;
+        for (int i = 0; i < levelData.References.Count; i++)
         {
-            SaveLevel();
+            var r = levelData.References[i];
+            if (r.T > CurrentTime && r.T < closestTime) closestTime = (float)r.T;
         }
-        else if (@event.IsActionPressed("playback_toggle"))
+        return closestTime;
+    }
+    private float GetPrevReferenceTime()
+    {
+        float closestTime = 0;
+        for (int i = 0; i < levelData.References.Count; i++)
         {
-            _timeline.TogglePlaying();
+            var r = levelData.References[i];
+            if (r.T < CurrentTime && r.T > closestTime) closestTime = (float)r.T;
         }
-        else if (@event.IsActionPressed("snap"))
-		{
-			Snap = !Snap;
-		}
+        return closestTime;
     }
     public void NewLevel()
     {
@@ -253,13 +314,13 @@ public partial class Editor : CanvasLayer
         }
         _timeline.Load(data);
         _timeline.UpdateDuration();
-        _preview.CompileAll();
         _preview.ChangeBackgroundImage(data.BgImage);
         _preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
         _levelMeta.Load(data);
         _projCreator.LoadProjectile(projectileModels[0]);
         _patternCreator.LoadPattern(patternModels[0]);
         _modelLibrary.Refresh();
+        _preview.Load(data);
         _preview.Sync();
     }
     private void SaveLevel()
@@ -277,13 +338,11 @@ public partial class Editor : CanvasLayer
     {
         _timeline.AddMarker(reference);
         levelData.References.Add(reference);
-        _preview.Sync();
     }
     public void DeleteReference(EditorReference reference)
     {
         _timeline.RemoveMarker(reference);
         levelData.References.Remove(reference);
-        _preview.Sync();
     }
     // opens a model in its respective creator
     public void OpenModel(IEditorModel model)

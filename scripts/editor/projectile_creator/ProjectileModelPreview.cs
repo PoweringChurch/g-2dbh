@@ -75,6 +75,26 @@ public partial class ProjectileModelPreview : Node2D
             _dirty = true;
         }
     }
+    private float telegraphTime;
+    public float TelegraphTime
+    {
+        get => telegraphTime;
+        set
+        {
+            telegraphTime = value;
+            _dirty = true;
+        }
+    }
+    private bool canCollide;
+    public bool CanCollide
+    {
+        get => canCollide;
+        set
+        {
+            canCollide = value;
+            _dirty = true;
+        }
+    }
     private bool _dirty = false;
     private EvalContext ctx = new() {T = 0, L = 1};
     public double T
@@ -118,33 +138,39 @@ public partial class ProjectileModelPreview : Node2D
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", textureName) 
                 : null;
         DrawSetTransform(Vector2.Zero,0,renderScale*Vector2.One);
+        float alpha = (T <= telegraphTime) 
+            ? (telegraphTime > 0 ? 0.2f + (float)T / telegraphTime * 0.6f : 0.8f)
+            : 1.0f;
         if (texture != null)
         {
-            DrawTexture(texture, (-texture.GetSize() / 2)+pos);
+            DrawTexture(texture, (-texture.GetSize() / 2)+pos, new Color(1,1,1,alpha));
         }
         else if (useShape && shape != null)
         {
             var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
             if (points.Length > 1) 
-            DrawPolyline(points, Colors.White, 1.5f, true);
+            DrawPolyline(points, new Color(1,1,1,alpha), 1.5f, true);
         }
         else
         {
-            DrawCircle(pos, radius, Colors.White);
+            DrawCircle(pos, radius, new Color(1,1,1,alpha));
         }
-        // complete this if block, following the pattern of the above code
-        if (ConfigHelper.Current.ShowCollision && textureName != "default")
+        // draw collision
+        if (ConfigHelper.Current.ShowCollision 
+        && textureName != "default" 
+        && telegraphTime <= T
+        && canCollide)
         {
             if (useShape && shape != null)
             {
                 var points = shape.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
-                DrawPolyline(points, Colors.Red, 1.5f / renderScale, true);
+                DrawPolyline(points, new Color(1, 1, 0, 0.5f), 1.5f / renderScale, true);
                 if (points.Length > 1)
-                    DrawLine(points[^1], points[0], Colors.Red, 1.5f / renderScale);
+                    DrawLine(points[^1], points[0], new Color(1, 1, 0, 0.5f), 1.5f / renderScale);
             }
             else
             {
-                DrawCircle(pos, radius / renderScale, new Color(1, 0, 0, 0.4f), false); // semi-transparent red
+                DrawCircle(pos, radius / renderScale, new Color(1, 1, 0, 0.5f), false); // semi-transparent red
             }
         }
         DrawSetTransform(Vector2.Zero,0,Vector2.One);

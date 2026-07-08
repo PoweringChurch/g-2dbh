@@ -19,7 +19,6 @@ public class LevelCompiler
             // set up render group
             int renderGroupId = compiled.RenderGroups.Count - 1;
             CompileProjectile(m, renderGroupId);
-            Console.Inst.Log($"just added projectile of id {i}");
             compiled.Projectiles[i] = m;
         }
         // compile patterns
@@ -58,7 +57,8 @@ public class LevelCompiler
         {
             Mesh = mesh,
             TransformFormat = MultiMesh.TransformFormatEnum.Transform2D,
-            InstanceCount = 0
+            InstanceCount = 0,
+            UseColors = true
         };
         var node = new MultiMeshInstance2D { Multimesh = multiMesh, Texture = tex };
         parent.AddChild(node);

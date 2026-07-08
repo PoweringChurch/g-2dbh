@@ -40,6 +40,7 @@ public partial class Timeline : Control
         if (_dirty) // the dirty flag is necessary
         {
             Playhead.MaxValue = e.levelData.Duration;
+            PlayheadPositionInput.MaxValue = e.levelData.Duration;
             foreach (var m in _markers)
                 m.Value.Refresh(e.levelData.Duration, Size.X);
             _dirty = false;
@@ -62,7 +63,15 @@ public partial class Timeline : Control
         }
         Playhead.SetValueNoSignal(currentTime);
         PlayheadPositionInput.SetValueNoSignal(currentTime);
-
+        e.SyncPreview();
+    }
+    public void SetTime(float to)
+    {
+        currentTime = to;
+        Playhead.SetValueNoSignal(currentTime);
+        PlayheadPositionInput.SetValueNoSignal(currentTime);
+        if (_playing)
+            EditorAudioPreview.Play(currentTime);
         e.SyncPreview();
     }
     public void TogglePlaying() => SetPlaying(!_playing);

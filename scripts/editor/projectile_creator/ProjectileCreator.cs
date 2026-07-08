@@ -17,15 +17,25 @@ public partial class ProjectileCreator : Control
     [Export] Label YDisplay;
     // Behaviour
     [Export] MessageDisplay ErrorDisplay;
+    [Export] MessageDisplay WarningDisplay;
     [Export] LineEdit FnXInput;
     [Export] LineEdit FnYInput;
     [Export] SpinBox LifetimeInput; // float
+    [Export] SpinBox TelegraphTimeInput;
     [Export] CheckButton PersistantCheckbutton;
     // Collision
+    [Export] CheckButton CanCollideCheckbutton;
     [Export] CheckButton UseShapeCheckbutton;
     [Export] SpinBox Radius; // float
     [Export] ShapeEditor ShapeEditor;
     [Export] Control ShapeTranslate;
+    // Spawn on death
+    [Export] Control SpawnOnDeathUi;
+    [Export] CheckButton SpawnModelOnDeathCheck;
+    [Export] OptionButton DeathModelType;
+    [Export] SpinBox SpawnOnDeathIdInput;
+    [Export] SpinBox MaxDepthInput;
+
     [Export] Button Save;
     private ProjectileModel model = null;
     public ProjectileModel ProjectileModel => model;
@@ -41,22 +51,85 @@ public partial class ProjectileCreator : Control
         e = GetNode<Editor>("/root/Editor");
         UseShapeCheckbutton.Toggled += ToggleCollisionParams;
 
+        // preview
         TInput.ValueChanged += OnTChanged;
         TSlider.ValueChanged += OnTSliderChanged;
         TextureInput.TextChanged += OnTextureChanged;
+        RenderScaleInput.ValueChanged += OnRenderScaleChanged;
+        Zoom.ValueChanged += OnZoomChanged;
+        // behavior
         FnXInput.TextChanged += OnFnXChanged;
         FnYInput.TextChanged += OnFnYChanged;
         LifetimeInput.ValueChanged += OnLifetimeChanged;
         PersistantCheckbutton.Toggled += OnPersistantToggled;
-        UseShapeCheckbutton.Toggled += OnUseShapeToggled;
+        TelegraphTimeInput.ValueChanged += OnTelegraphValueChanged;
+        // collision
         Radius.ValueChanged += OnRadiusChanged;
-        RenderScaleInput.ValueChanged += OnRenderScaleChanged;
-        Save.Pressed += OnSavePressed;
-        Zoom.ValueChanged += OnZoomChanged;
-
+        UseShapeCheckbutton.Toggled += OnUseShapeToggled;
         ShapeEditor.ShapeUpdated += OnShapeUpdated;
+        CanCollideCheckbutton.Toggled += OnCanCollideToggled;
+        // on death model spawn
+        SpawnModelOnDeathCheck.Toggled += OnSpawnModelOnDeathCheck;
+        DeathModelType.ItemSelected += OnDeathModelItemSelected;
+        SpawnOnDeathIdInput.ValueChanged += OnSpawnModelIdChanged;
+        MaxDepthInput.ValueChanged += MaxDepthChanged;
+        Save.Pressed += OnSavePressed;
     }
 
+    private void OnCanCollideToggled(bool toggledOn)
+    {
+        model.CanCollide = toggledOn;
+        Preview.CanCollide = toggledOn;
+    }
+    private void OnTelegraphValueChanged(double value)
+    {
+        model.TelegraphTime = (float)value;
+        Preview.TelegraphTime = (float)value;
+        WarningDisplay.ClearMessage("Telegraph");
+        if (value >= model.Lifetime)
+            WarningDisplay.SetMessage("Telegraph", "[Telegraph time] Telegraph time is greater than lifetime, this projectile cannot collide");
+    }
+    private void MaxDepthChanged(double value)
+    {
+        model.MaxDepth = (int)value;
+        WarningDisplay.ClearMessage("Depth");
+        if (value > 2)
+            WarningDisplay.SetMessage("Depth", "[Depth] High max depth values can cause lag");
+    }
+    private void OnSpawnModelIdChanged(double value)
+    {
+        int id = (int)value;
+        if (model.SpawnOnDeathType == ModelType.Pattern)
+        {
+            var found = e.PatternModels[id];
+            if (found != null)
+            {
+                ErrorDisplay.ClearMessage("SpawnId");
+                model.SpawnOnDeathId = id;
+            }
+            else ErrorDisplay.SetMessage("SpawnId", $"[Spawn on death ID] Pattern of id '{id}' is invalid");
+        }
+        else if (model.SpawnOnDeathType == ModelType.Projectile)
+        {
+            var found = e.ProjectileModels[id];
+            if (found != null)
+            {
+                ErrorDisplay.ClearMessage("SpawnId");
+                model.SpawnOnDeathId = id;
+            }
+            else ErrorDisplay.SetMessage("SpawnId", $"[Spawn on death ID] Projectile of id '{id}' is invalid");
+        }
+        
+    }
+    private void OnDeathModelItemSelected(long index)
+    {
+        model.SpawnOnDeathType = (ModelType)index;
+    }
+    private void OnSpawnModelOnDeathCheck(bool toggledOn)
+    {
+        model.SpawnModelOnDeath = toggledOn;
+        SpawnOnDeathUi.Visible = toggledOn;
+    }
     private void OnRenderScaleChanged(double value)
     {
         Preview.RenderScale = (float)value;
@@ -106,7 +179,7 @@ public partial class ProjectileCreator : Control
         ErrorDisplay.ClearMessage("Save");
         if (ErrorDisplay.MessageCount > 0)
         {
-            ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors.");
+            ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors");
             return;
         }
         ErrorDisplay.ClearMessage("Save");
@@ -159,9 +232,12 @@ public partial class ProjectileCreator : Control
         Preview.L = (float)lifetime;
         TSlider.MaxValue = lifetime;
         TInput.MaxValue = lifetime;
+        OnTelegraphValueChanged(model.TelegraphTime);
     }
-    private void OnPersistantToggled(bool on) =>
+    private void OnPersistantToggled(bool on)
+    {
         model.Persistant = on;
+    }
     private void OnUseShapeToggled(bool on)
     {
         model.UseShape = on;
@@ -173,29 +249,37 @@ public partial class ProjectileCreator : Control
         Preview.Radius = (float)radius;
         model.Radius = (float)radius;
     }
-
     public void LoadProjectile(ProjectileModel newModel)
     {
         model = new ProjectileModel(newModel);
+        // display
         IdInput.Value = model.Id;
         NameInput.Text = model.Name;
         TextureInput.Text = model.Texture;
+        RenderScaleInput.Value = model.RenderScale;
+        Preview.T = 0;
+        OnTextureChanged(model.Texture);
+
+        // behavior
         FnXInput.Text = model.FunctionX;
         FnYInput.Text = model.FunctionY;
         LifetimeInput.Value = model.Lifetime;
-        Radius.Value = model.Radius;
         PersistantCheckbutton.ButtonPressed = model.Persistant;
-        UseShapeCheckbutton.ButtonPressed =model.UseShape; // doesnt need its on changed function because setting it like this automatically calls it 
-        Preview.T = 0;
-        ShapeEditor.Points = CollisionUtils.FloatArrToVect2s(model.Shape);
-        Preview.Shape = CollisionUtils.FloatArrToVect2s(model.Shape);
-        RenderScaleInput.Value = model.RenderScale;
-        ToggleCollisionParams(model.UseShape);
-        OnRenderScaleChanged(model.RenderScale);
+        
         OnFnXChanged(model.FunctionX);
         OnFnYChanged(model.FunctionY);
-        OnLifetimeChanged(model.Lifetime);
-        OnRadiusChanged(model.Radius);
-        OnTextureChanged(model.Texture);
+
+        // collision
+        Radius.Value = model.Radius;
+        UseShapeCheckbutton.ButtonPressed = model.UseShape; // doesnt need its on changed function because setting it like this automatically calls it 
+        ShapeEditor.Points = CollisionUtils.FloatArrToVect2s(model.Shape);
+        Preview.Shape = CollisionUtils.FloatArrToVect2s(model.Shape);
+        ToggleCollisionParams(model.UseShape);
+        
+        // spawn on death
+        SpawnModelOnDeathCheck.ButtonPressed = model.SpawnModelOnDeath;
+        DeathModelType.Selected = (int)model.SpawnOnDeathType;
+        SpawnOnDeathIdInput.Value = model.SpawnOnDeathId;
+        MaxDepthInput.Value = model.MaxDepth;
     }
 }

@@ -18,6 +18,11 @@ public partial class LevelPreview : Control
 		e = GetNode<Editor>("/root/Editor");
 		GetTree().Root.SizeChanged += OnWindowResized;
 		PreviewRoot.Draw += () => DrawGizmos(SelectedReference);
+
+		e.Copy += Copy;
+		e.Paste += Paste;
+		e.Cut += Cut;
+		e.Delete += QuickDelete;
 	}
 	public EditorReference selectedReference;
 	public EditorReference SelectedReference
@@ -30,7 +35,6 @@ public partial class LevelPreview : Control
 			e.UpdateInspector();
 		}
 	}
-	private int selectedIndex;
 	private bool _inGroup = false;
     private bool lmbDragging = false;
     private bool rmbDragging = false;
@@ -39,7 +43,7 @@ public partial class LevelPreview : Control
 	private Vector2 mousePoint0;
 	private Vector2 mousePoint1;
 	private List<EditorReference> groupSelection = new();
-	private List<int> groupSelectionIndices = new();
+	private int nextId = 0;
     public override void _GuiInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton mb)
@@ -51,7 +55,7 @@ public partial class LevelPreview : Control
 				{
 					case Editor.Mode.Place: HandlePlacePress(mb); break;
 					case Editor.Mode.Select: HandleSelectLMBPress(mb); break;
-					case Editor.Mode.Delete: HandleDeletePress(mb); break;
+					case Editor.Mode.Delete: HandleDeleteLMBPress(mb); break;
 				}
             }
 			else if (mb.ButtonIndex == MouseButton.Left && !mb.Pressed)
@@ -60,7 +64,7 @@ public partial class LevelPreview : Control
 				{
 					case Editor.Mode.Place: HandlePlaceRelease(mb); break;
 					case Editor.Mode.Select: HandleSelectLMBRelease(mb); break;
-					case Editor.Mode.Delete: HandleDeleteRelease(); break;
+					case Editor.Mode.Delete: HandleDeleteLMBRelease(); break;
 				}
 			}
 			else if (mb.ButtonIndex == MouseButton.Right && mb.Pressed)
@@ -89,7 +93,78 @@ public partial class LevelPreview : Control
 			}
 			PreviewRoot.QueueRedraw();
 		}
-    }
+	}
+	private bool InSelectedGroup(EditorReference r)
+	{
+		return groupSelection != null && groupSelection.Contains(r);
+	}
+	private List<EditorReference> copied = new();
+	private Vector2 copiedAtPos;
+	private float copiedAtTime;
+	private void Cut()
+	{
+		Copy();
+		QuickDelete();
+	}
+	private void Copy()
+	{
+		copied.Clear();
+		copiedAtPos = ToPreviewLocal(currentMpos);
+		copiedAtTime = e.CurrentTime;
+		// references have a T variable telling when it spawns and a SpawnPos variable telling where to spawn.
+		if (_inGroup)
+		{
+			foreach (var r in groupSelection)
+			{
+				copied.Add(r);
+			}
+		}
+		else if (selectedReference != null)
+		{
+			copied.Add(SelectedReference);
+		}
+	}
+	private void Paste()
+	{
+		if (copied == null || copied.Count == 0) return;
+		Vector2 currentPos = ToPreviewLocal(currentMpos);
+    	Vector2 posOffset = currentPos - copiedAtPos;
+		float timeOffset = e.CurrentTime - copiedAtTime;
+		_inGroup = copied.Count > 1;
+		groupSelection.Clear();
+		foreach (var original in copied)
+		{
+			EditorReference clone = new(original); 
+			clone.T += timeOffset;
+			clone.SpawnX += posOffset.X;
+			clone.SpawnY += posOffset.Y;
+			clone.RootEditorId = nextId++;
+			e.AddReference(clone);
+			UpdateReferenceInEditor(clone, clone.RootEditorId);
+			if (_inGroup)
+			{
+				groupSelection.Add(clone);
+			}
+			else
+			{
+				selectedReference = clone;
+			}
+		}
+		if (groupSelection.Count >= 1)
+			selectedReference = groupSelection[0];
+		PreviewRoot.QueueRedraw();
+		Sync();
+	}
+	private void QuickDelete()
+	{
+		e.DeleteReference(SelectedReference);
+		foreach (var r in groupSelection)
+		{
+			e.DeleteReference(r);
+			UpdateReferenceInEditor(null, r.RootEditorId);
+		}
+		Sync();
+	}
 	private void HandlePlacePress(InputEventMouseButton mb)
 	{
 		if (e.SelectedModel == null)
@@ -103,14 +178,15 @@ public partial class LevelPreview : Control
 			T = e.CurrentTime,
 			SpawnX = pos.X,
 			SpawnY = pos.Y,
-			Pos = pos
+			Pos = pos,
+			RootEditorId = nextId++
 		};
 		lmbDragging = true;
 		SelectedReference = newRef;
 		e.AddReference(newRef);
-		selectedIndex = e.levelData.References.Count - 1;
 		groupSelection.Clear();
-		UpdateReferenceInEditor(SelectedReference, selectedIndex);
+		UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
+		Sync();
 	}
 	private void HandleSelectRMBPress(InputEventMouseButton mb)
 	{
@@ -130,9 +206,8 @@ public partial class LevelPreview : Control
 		{
 			return;
 		}
-		var (r, i) = GetNearestReference(mb.Position);
+		var r = GetNearestReference(mb.Position);
 		SelectedReference = r;
-		selectedIndex = i;
 		if (!_inGroup)
 		{
 			mousePoint0 = Vector2.Zero;
@@ -140,34 +215,36 @@ public partial class LevelPreview : Control
 			groupSelection.Clear();
 		}
 		PreviewRoot.QueueRedraw();
-		UpdateReferenceInEditor(SelectedReference, selectedIndex);
+		int modified = -1;
+		if (SelectedReference != null)
+			modified = selectedReference.RootEditorId;
+		UpdateReferenceInEditor(SelectedReference, modified);
+		Sync();
 	}
-	private void HandleDeletePress(InputEventMouseButton mb)
+	private void HandleDeleteLMBPress(InputEventMouseButton mb)
 	{
-		var (r, i) = GetNearestReference(mb.Position);
-		SelectedReference = r;
-		if (SelectedReference != null) // if we got a reference
+		lmbDragging = true;
+		SelectedReference = null;
+		var r = GetNearestReference(mb.Position);
+		if (r != null) // if we got a reference
 		{
 			if (_inGroup) // if the reference is in the selection group
 			{
 				for (int j = 0; j < groupSelection.Count; j++)
 				{
 					var sr = groupSelection[j];
-					var si = groupSelectionIndices[j];
 					e.DeleteReference(sr);
-					UpdateReferenceInEditor(null, si);
+					UpdateReferenceInEditor(null, sr.RootEditorId);
 				}
 			}
 			else
 			{
-				int idToRemove = selectedIndex;
-				e.DeleteReference(SelectedReference);
-				UpdateReferenceInEditor(null, idToRemove);
+				e.DeleteReference(r);
+				UpdateReferenceInEditor(null, r.RootEditorId);
 			}
+			
 		}
-		lmbDragging = true;
-		SelectedReference = null;
-		selectedIndex = -1;
+		Sync();
 	}
 	private void HandlePlaceRelease(InputEventMouseButton mb)
 	{
@@ -182,7 +259,7 @@ public partial class LevelPreview : Control
 			f = Mathf.Round(f / step) * step;
 		}
 		SelectedReference.F = f;
-		UpdateReferenceInEditor(SelectedReference, selectedIndex);
+		UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
 		lmbDragging = false;
 		SelectedReference = null;
 		Sync();
@@ -191,6 +268,7 @@ public partial class LevelPreview : Control
 	private void HandleSelectRMBRelease(InputEventMouseButton mb)
 	{
 		rmbDragging = false;
+		if (SelectedReference != null) return;
 		if (_inGroup) // if we are grabbing something inside of the group
 		{	
 			var local = ToPreviewLocal(mb.Position);
@@ -202,12 +280,11 @@ public partial class LevelPreview : Control
 				f = Mathf.Round(f / step) * step;
 			}
 			SelectedReference.F = f;
-			UpdateReferenceInEditor(SelectedReference, selectedIndex);
+			UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
 			Sync();
 			PreviewRoot.QueueRedraw();
 			return;
 		}
-		if (SelectedReference != null) return;
 		mousePoint1 = ToPreviewLocal(mb.Position);
 		var min = new Vector2(
 			Math.Min(mousePoint0.X, mousePoint1.X),
@@ -239,9 +316,12 @@ public partial class LevelPreview : Control
 				pos.Y >= min.Y && pos.Y <= max.Y)
 			{
 				groupSelection.Add(r);
-				groupSelectionIndices.Add(i);
 			}
 		}
+		if (groupSelection.Count >= 1)
+			selectedReference = groupSelection[0];
+		PreviewRoot.QueueRedraw();
+		Sync();
 	}
 	private void HandleSelectLMBRelease(InputEventMouseButton mb)
 	{
@@ -263,11 +343,11 @@ public partial class LevelPreview : Control
 					r.SpawnY += delta.Y;
 				}
 			}
-			UpdateReferenceInEditor(SelectedReference, selectedIndex);
+			UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
 			Sync();
 		}
 	}
-	private void HandleDeleteRelease()
+	private void HandleDeleteLMBRelease()
 	{
 		lmbDragging = false;
 	}
@@ -285,7 +365,7 @@ public partial class LevelPreview : Control
 			}
 			SelectedReference.F = f;
 
-			UpdateReferenceInEditor(SelectedReference, selectedIndex);
+			UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
 			Sync();
 		}
 	}
@@ -307,10 +387,10 @@ public partial class LevelPreview : Control
 					if (r == SelectedReference) continue; 
 					r.SpawnX += delta.X;
 					r.SpawnY += delta.Y;
-					UpdateReferenceInEditor(r, groupSelectionIndices[i]);
+					UpdateReferenceInEditor(r, r.RootEditorId);
 				}
 			}
-			UpdateReferenceInEditor(SelectedReference, selectedIndex);
+			UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
 			Sync();
 		}
 		else if (SelectedReference != null && rmbDragging) // have a selected reference and holding rmb
@@ -340,16 +420,16 @@ public partial class LevelPreview : Control
 							rf = Mathf.Round(rf / step) * step;
 						}
 						r.F = rf;
-						UpdateReferenceInEditor(r, groupSelectionIndices[i]);
+						UpdateReferenceInEditor(r, r.RootEditorId);
 					}
 					else // otherwise make the follow whatever is being set
 					{
 						r.F = f;
-						UpdateReferenceInEditor(r, groupSelectionIndices[i]);
+						UpdateReferenceInEditor(r, r.RootEditorId);
 					}
 				}
 			}
-			UpdateReferenceInEditor(SelectedReference, selectedIndex);
+			UpdateReferenceInEditor(SelectedReference, SelectedReference.RootEditorId);
 			Sync();
 		}
 		else if (SelectedReference == null && rmbDragging) // dont have a reference and holding rmb
@@ -361,20 +441,22 @@ public partial class LevelPreview : Control
 	{
 		if (lmbDragging)
 		{
-			var (r,i) = GetNearestReference(mm.Position);
-			if (r != null)
-			e.DeleteReference(r);
-			UpdateReferenceInEditor(null, i);
+			var r = GetNearestReference(mm.Position);
 			lmbDragging = true;
 			SelectedReference = null;
+			if (r != null)
+			{
+				e.DeleteReference(r);
+				UpdateReferenceInEditor(null, r.RootEditorId);
+				Sync();
+			}
 		}
 	}
-	public (EditorReference, int i) GetNearestReference(Vector2 mpos)
+	public EditorReference GetNearestReference(Vector2 mpos)
 	{
 		var local = ToPreviewLocal(mpos);
 		float nearDist = float.MaxValue;
 		EditorReference nearRef = null;
-		int foundAt = -1;
 		for (int i = 0; i < e.levelData.References.Count; i++)
 		{
 			var r = e.levelData.References[i];
@@ -392,7 +474,6 @@ public partial class LevelPreview : Control
 				{
 					nearDist = dist;
 					nearRef = r;
-					foundAt = i;
 				}
 			}
 			else
@@ -409,13 +490,12 @@ public partial class LevelPreview : Control
 				{
 					nearDist = dist;
 					nearRef = r;
-					foundAt = i;
 				}
 			}
 		}
         if (nearRef != null && nearDist < 20)
-            return (nearRef, foundAt);
-        return (null, -1);
+            return nearRef;
+        return null;
 	}
 	public EditorReference[] GetNearestReferences(Vector2 mpos, int count)
 	{
@@ -567,24 +647,25 @@ public partial class LevelPreview : Control
 		BackgroundImage.Texture = bg;
 	}
 	// only call on load
-	public void CompileAll()
+	public void Load(LevelData level)
 	{
+		nextId = 0;
 		Console.Inst.Log("[LevelPreview] Attempting to compile");
 		for (int i = 0; i < Editor.MaxModelCount; i++)
         {
-            var m = e.ProjectileModels[i];
+            var m = level.ProjectileModels[i];
 			CompileProjectile(m);
         }
         for (int i = 0; i < Editor.MaxModelCount; i++)
         {
-            var m = e.PatternModels[i];
+            var m = level.PatternModels[i];
 			CompilePattern(m);
         }
-		for (int i = 0; i < e.levelData.References.Count; i++)
+		for (int i = 0; i < level.References.Count; i++)
 		{
-			var r = e.levelData.References[i];
-			r.RootId = i;
-			UpdateReferenceInEditor(r,i);
+			var r = level.References[i];
+			r.RootEditorId = nextId++;
+			UpdateReferenceInEditor(r,r.RootEditorId);
 		}
 		Sync();
 		Console.Inst.Log("[LevelPreview] Completed compile all");
@@ -611,18 +692,17 @@ public partial class LevelPreview : Control
 			}
 		}
 		// draw references
-		const int floatsPerInstance = 8;
+		const int floatsPerInstance = 12;
 		for (int g = 0; g < _renderGroups.Count; g++)
 		{
 			var group = _renderGroups[g];
 			int count = group.BakeIndices.Count;
-			if (count == 0) continue;
 			group.MultiMesh.InstanceCount = count;
+			if (count == 0) continue;
 			int required = count * floatsPerInstance;
 			if (_groupBuffers[g].Length != required)
 				_groupBuffers[g] = new float[required];
 			ref float[] buffer = ref _groupBuffers[g];
-
 			// draw references
 			for (int n = 0; n < count; n++)
 			{
@@ -632,7 +712,6 @@ public partial class LevelPreview : Control
 				float scale = proj.RenderScale;
 				int o = n * floatsPerInstance;
 				float drawForward = (float)r.F-Mathf.Pi; // rads
-
 				float cos = Mathf.Cos(drawForward);
 				float sin = Mathf.Sin(drawForward);
 				buffer[o + 0] = -scale * cos; // shear x
@@ -644,6 +723,19 @@ public partial class LevelPreview : Control
 				buffer[o + 5] = scale * cos; // shear y
 				buffer[o + 6] = 0;
 				buffer[o + 7] = r.Pos.Y;
+				double t = e.CurrentTime - r.T;
+                float alpha = (t <= proj.TelegraphTime) 
+					? (proj.TelegraphTime > 0 ? 0.2f + (float)t / proj.TelegraphTime * 0.6f : 0.8f) 
+					: 1.0f;
+				if (!InSelectedGroup(r))
+				{
+                	buffer[o + 8] = 1; buffer[o + 9] = 1; buffer[o + 10] = 1; 
+				}
+				else
+				{
+                	buffer[o + 8] = 0.7f; buffer[o + 9] = 0.7f; buffer[o + 10] = 1;
+				}
+				buffer[o + 11] = alpha;
 			}
 			RenderingServer.MultimeshSetBuffer(group.MultiMesh.GetRid(), buffer);
 		}
@@ -662,72 +754,75 @@ public partial class LevelPreview : Control
 	}
 	public void UpdateReferenceInEditor(EditorReference modifiedRef, int modifiedId)
 	{
-		_bakedTimeline.RemoveAll(x => x.RootId == modifiedId);
+		_bakedTimeline.RemoveAll(x => x.RootEditorId == modifiedId);
 		if (modifiedRef == null) return;
 		Queue<EditorReference> processingQueue = new();
 		processingQueue.Enqueue(modifiedRef);
 
 		while (processingQueue.Count > 0)
 		{
-			var current = processingQueue.Dequeue();
-			current.RootId = modifiedId;
-			if (current.Type == ModelType.Projectile)
+			var r = processingQueue.Dequeue();
+			r.RootEditorId = modifiedId;
+			if (r.Type == ModelType.Projectile)
 			{
-				_bakedTimeline.Add(current);
-				var proj = e.ProjectileModels[current.Id];
-				if (proj.SpawnModelOnDeath && current.Depth < proj.MaxDepth)
+				_bakedTimeline.Add(r);
+				var proj = e.ProjectileModels[r.Id];
+				if (proj.SpawnModelOnDeath && r.Depth < proj.MaxDepth)
 				{
+					var lctx = new EvalContext() {T = proj.Lifetime, L = proj.Lifetime};
+					Vector2 spawnpos = new(r.SpawnX, r.SpawnY);
+					Vector2 delta = CalculatePosDelta(proj.fnx, proj.fny, lctx, r.F);
+					Vector2 endPos = spawnpos+delta;
 					var childRef = new EditorReference()
 					{
-						SpawnX = current.Pos.X,
-						SpawnY = current.Pos.Y,
-						F = current.F,
-						T = e.CurrentTime,
+						SpawnX = endPos.X,
+						SpawnY = endPos.Y,
+						Pos = endPos,
+						F = r.F,
+						T = r.T+proj.Lifetime,
 						Type = proj.SpawnOnDeathType,
-						RootId = modifiedId,
+						RootEditorId = modifiedId,
 						Id = proj.SpawnOnDeathId,
-						Depth = current.Depth + 1,
+						Depth = r.Depth + 1,
 					};
 					processingQueue.Enqueue(childRef);
 				}
 			}
-			else if (current.Type == ModelType.Pattern)
+			else if (r.Type == ModelType.Pattern)
 			{
-				UnpackPatternIntoQueue(current, processingQueue);
+				UnpackPatternIntoQueue(r, processingQueue);
 			}
 		}
 	}
-	private void UnpackPatternIntoQueue(EditorReference patternRef, Queue<EditorReference> queue)
+	private void UnpackPatternIntoQueue(EditorReference r, Queue<EditorReference> queue)
 	{
-		var patt = e.PatternModels[patternRef.Id];
+		var patt = e.PatternModels[r.Id];
 		if (patt == null) return;
 		var proj = e.ProjectileModels[patt.ProjectileId];
 		if (proj == null) return;
 
 		var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1, L = proj.Lifetime };
-		Vector2 basePos = new Vector2(patternRef.SpawnX, patternRef.SpawnY);
+		Vector2 basePos = new Vector2(r.SpawnX, r.SpawnY);
 
 		for (int j = 0; j < patt.Count; j++)
 		{
 			lctx.I = j;
 			double spawnDelay = patt.fnt(lctx);
-			double childAbsoluteSpawnTime = patternRef.T + spawnDelay;
-
 			lctx.T = 0;
 			double fwdOffset = patt.fnf(lctx);
-			Vector2 spawnOffset = CalculatePosDelta(patt.fnx, patt.fny, lctx, patternRef.F);
-
+			Vector2 spawnOffset = CalculatePosDelta(patt.fnx, patt.fny, lctx, r.F);
 			Vector2 childAbsoluteSpawnPos = basePos + spawnOffset;
-
 			var subBulletRef = new EditorReference
 			{
 				Id = patt.ProjectileId,
 				Type = ModelType.Projectile,
-				RootId = patternRef.RootId, // yes it is meant to be like this
-				T = childAbsoluteSpawnTime,
+				RootEditorId = r.RootEditorId,
+				T = r.T + spawnDelay,
 				SpawnX = childAbsoluteSpawnPos.X,
 				SpawnY = childAbsoluteSpawnPos.Y,
-				F = patternRef.F + fwdOffset
+				Pos = childAbsoluteSpawnPos,
+				F = r.F + fwdOffset,
+				Depth = r.Depth
 			};
 			queue.Enqueue(subBulletRef);
 		}

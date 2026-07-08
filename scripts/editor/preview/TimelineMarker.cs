@@ -31,6 +31,7 @@ public partial class TimelineMarker : ColorRect
             else if (e.CurrentMode == Editor.Mode.Delete)
             {
                 e.DeleteReference(Reference);
+                e.SyncPreview();
             }
         }
         if (@event is InputEventMouseMotion mm 

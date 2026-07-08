@@ -15,7 +15,17 @@ public class EditorReference
     // editor only
     [JsonIgnore] public Vector2 Pos {get; set;}
     [JsonIgnore] public int Depth {get; set;}
-    [JsonIgnore] public int RootId = -1;
+    [JsonIgnore] public int RootEditorId = -1;
+    public EditorReference() {}
+    public EditorReference(EditorReference other)
+    {
+        SpawnX = other.SpawnX;
+        SpawnY = other.SpawnY;
+        T = other.T;
+        F = other.F;
+        Type = other.Type;
+        Id = other.Id;
+    }
 }
 public interface IEditorModel
 {

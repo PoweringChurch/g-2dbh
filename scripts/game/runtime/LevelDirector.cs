@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using Godot;
 public partial class LevelDirector
 {
+    public const int MaxBulletCount = 1 << 16; // 2^16
     public delegate void LevelFinishedEventHandler();
     public event LevelFinishedEventHandler LevelFinished;
     private PlayerCharacter _character;
@@ -11,11 +10,12 @@ public partial class LevelDirector
     private double elapsed;
     public double Elapsed => elapsed;
     EvalContext _ctx = new();
-    private bool[] _hasGrazed = new bool[65536];
-    private SpatialReference[] activeReferences = new SpatialReference[65536];
+    private bool[] _hasGrazed = new bool[MaxBulletCount];
+    private SpatialReference[] activeReferences = new SpatialReference[MaxBulletCount];
     public ref SpatialReference[] ActiveProjectiles => ref activeReferences;
     private int activeCount = 0;
     public int ActiveCount => activeCount;
+    public int QueuedCount => (level != null) ? level.Queued.Count : 0;
     public void StartLevel(CompiledLevel level, PlayerCharacter c)
     {
         this.level = level;
@@ -29,6 +29,7 @@ public partial class LevelDirector
         elapsed += dt;
         if (elapsed >= level.Duration)
         {
+            activeCount = 0;
             LevelFinished?.Invoke();
             return;
         }
@@ -40,9 +41,19 @@ public partial class LevelDirector
             if (r.T <= elapsed)
             {
                 level.Queued.RemoveAt(i);
-                activeReferences[activeCount++] = r;
-                if (r.Type == ModelType.Projectile)
+                if (r.Type == ModelType.Pattern)
+                {
+                    TickPattern(ref r);
+                    i = level.Queued.Count;
+                }
+                else if (r.Type == ModelType.Projectile)
+                {
+                    if (activeCount == MaxBulletCount)
+                        continue;
+                    activeReferences[activeCount++] = r;
                     _hasGrazed[activeCount-1] = false;
+                }
+                
             }
         }
         // update projectiles
@@ -50,7 +61,6 @@ public partial class LevelDirector
         {
             ref var r = ref activeReferences[i];
             if (r.Type == ModelType.Projectile) TickProjectile(ref r, i);
-            if (r.Type == ModelType.Pattern) TickPattern(ref r, i);
         }
     }
     private void TickProjectile(ref SpatialReference r, int i)
@@ -58,7 +68,9 @@ public partial class LevelDirector
         if (r.Type != ModelType.Projectile) return;
         var proj = level.Projectiles[r.Id];
         if (elapsed - r.T > proj.Lifetime)
+        {
             Kill(i--, proj);
+        }
         else
         {
             _ctx.T = elapsed - r.T;
@@ -73,10 +85,12 @@ public partial class LevelDirector
             var pos = new Vector2(x,y);
             r.Pos = r.SpawnPos+pos;
             // collision w player
+            if (_ctx.T <= proj.TelegraphTime || !proj.CanCollide) // check if in telegraph
+                return;
             float distSq = (r.Pos - _character.Position).LengthSquared();
             float rSumH = proj.Radius + PlayerCharacter.HurtRadius;
             float rSumG = proj.Radius + PlayerCharacter.GrazeRadius;
-            bool ghit = proj.Shape == null ?
+            bool ghit = proj.ShapeVect2s == null ?
             distSq <= rSumG * rSumG 
             : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, (float)r.F-Mathf.Pi);
             if (!_hasGrazed[i] && ghit && !ConfigHelper.Current.NoGraze)
@@ -85,7 +99,7 @@ public partial class LevelDirector
                 if (!ConfigHelper.Current.NoGrazeTracking)
                     _hasGrazed[i] = true;
             }
-            bool hit = proj.Shape == null ? 
+            bool hit = proj.ShapeVect2s == null ? 
             distSq <= rSumH * rSumH 
             : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)r.F-Mathf.Pi);
             if (hit && !ConfigHelper.Current.NoHit && _character.Hurt() )
@@ -95,13 +109,14 @@ public partial class LevelDirector
             }
         }
     }
-    private void TickPattern(ref readonly SpatialReference r, int i)
+    private void TickPattern(ref readonly SpatialReference r)
     {
-        if (r.Type != ModelType.Pattern) return;
         var patt = level.Patterns[r.Id];
         var proj = level.Projectiles[patt.ProjectileId];
-        double localTime = elapsed - r.T;
+
         _ctx.L = proj.Lifetime;
+        _ctx.N = patt.Count;
+
         for (int j = 0; j < patt.Count; j++)
         {
             _ctx.I = j;
@@ -110,36 +125,36 @@ public partial class LevelDirector
             double fwd = patt.fnf(_ctx);
             double xTravel = patt.fnx(_ctx);
             double yTravel = patt.fny(_ctx);
+
             double cos = Math.Cos(r.F);
             double sin = Math.Sin(r.F);
             float x = (float)(cos * xTravel - sin * yTravel);
             float y = (float)(sin * xTravel + cos * yTravel);
             var pos = new Vector2(x, y);
-            // apply them
-            var jr = new SpatialReference()
+            // add new projectile to queue
+            level.Queued.Add(new()
             {
-                SpawnPos = r.Pos + pos,
+                SpawnPos = r.SpawnPos + pos,
+                Pos = r.SpawnPos + pos,
                 T = r.T + t,
                 F = r.F + fwd,
                 Type = ModelType.Projectile,
                 Id = patt.ProjectileId,
-                Depth = 0
-            };
-            level.Queued.Add(jr);
+                Depth = r.Depth
+            });
         }
-        Kill(i);
     }
     private void Kill(int index, ProjectileModel proj = null)
     {
         if (proj != null && proj.SpawnModelOnDeath)
         {
-            int maxDepth = proj.MaxDepth;
             ref readonly var r = ref activeReferences[index];
-            if (r.Depth < maxDepth)
+            if (r.Depth < proj.MaxDepth)
             {
                 var nr = new SpatialReference()
                 {
                     SpawnPos = r.Pos,
+                    Pos = r.Pos,
                     T = elapsed,
                     F = r.F,
                     Type = proj.SpawnOnDeathType,
@@ -150,6 +165,7 @@ public partial class LevelDirector
             }
         }
         activeReferences[index] = activeReferences[activeCount-1];
+        _hasGrazed[index] = _hasGrazed[activeCount-1];
         activeCount--;
     }
 }

@@ -65,7 +65,7 @@ public partial class PatternCreator : Control
             Preview.ProjModelFnY = ExpressionHandler.Parse(projmodel.FunctionY);
             model.ProjectileId = (int)id;
         }
-        else ErrorDisplay.SetMessage("ProjectileId", $"[Projectile Model Id] Projectile of id '{(int)id}' is invalid.");
+        else ErrorDisplay.SetMessage("ProjectileId", $"[Projectile Model Id] Projectile of id '{(int)id}' is invalid");
     }
     private void OnTChanged(double t)
     {
@@ -91,7 +91,7 @@ public partial class PatternCreator : Control
         ErrorDisplay.ClearMessage("Save");
         if (ErrorDisplay.MessageCount > 0)
         {
-            ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors.");
+            ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors");
             return;
         }
         model.Name = NameInput.Text;

@@ -22,10 +22,12 @@
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
 [ext_resource type="Script" uid="uid://drnic00tudxb0" path="res://scripts/ui/screens/ScoreSummary.cs" id="17_cegan"]
+[ext_resource type="LabelSettings" uid="uid://bhs0kyhkfxhkv" path="res://data/other/label_settings/warning_label_setting.tres" id="20_a6jrf"]
 [ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/screens/SettingsMenu.cs" id="21_getpj"]
 [ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
 [ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="23_1u8w0"]
 [ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://scripts/utils/Console.cs" id="23_d13ii"]
+[ext_resource type="Script" uid="uid://cfibamy3fls3g" path="res://scripts/utils/Overlay.cs" id="28_xuqvo"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -551,7 +553,6 @@ layout_mode = 2
 text = "Delete"
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
-visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -576,6 +577,21 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 0
 
+[node name="SnapDisplay" type="HBoxContainer" parent="EditorLayer/Sections/Toolbar/Buttons" unique_id=93828390]
+layout_mode = 2
+
+[node name="SnapAngle" type="Button" parent="EditorLayer/Sections/Toolbar/Buttons/SnapDisplay" unique_id=1991394899]
+layout_mode = 2
+text = "Snap Angle (Shift)"
+
+[node name="SnapDisplay" type="Label" parent="EditorLayer/Sections/Toolbar/Buttons/SnapDisplay" unique_id=1614060566]
+layout_mode = 2
+text = "Snap : On"
+
+[node name="Space" type="Control" parent="EditorLayer/Sections/Toolbar/Buttons" unique_id=156164032]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+
 [node name="ModeSelection" type="HBoxContainer" parent="EditorLayer/Sections/Toolbar/Buttons" unique_id=120968075]
 layout_mode = 2
 
@@ -595,13 +611,26 @@ text = "Delete (3)"
 layout_mode = 2
 text = "Mode : Select"
 
-[node name="SnapAngle" type="Button" parent="EditorLayer/Sections/Toolbar/Buttons/ModeSelection" unique_id=1991394899]
+[node name="Space2" type="Control" parent="EditorLayer/Sections/Toolbar/Buttons" unique_id=268879138]
+custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-text = "Snap Angle (Shift)"
 
-[node name="SnapDisplay" type="Label" parent="EditorLayer/Sections/Toolbar/Buttons/ModeSelection" unique_id=1614060566]
+[node name="TimeControl" type="HBoxContainer" parent="EditorLayer/Sections/Toolbar/Buttons" unique_id=1001119737]
 layout_mode = 2
-text = "Snap : On"
+
+[node name="TimeLabel" type="Label" parent="EditorLayer/Sections/Toolbar/Buttons/TimeControl" unique_id=1066893983]
+layout_mode = 2
+text = "Time increment"
+
+[node name="SkipInput" type="SpinBox" parent="EditorLayer/Sections/Toolbar/Buttons/TimeControl" unique_id=108080847]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+min_value = 0.125
+max_value = 128.0
+step = 0.005
+value = 1.0
+allow_greater = true
+select_all_on_focus = true
 
 [node name="Modules" type="HBoxContainer" parent="EditorLayer/Sections" unique_id=1944798638]
 layout_mode = 2
@@ -634,7 +663,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(303, 361)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 z_index = -1
@@ -1004,8 +1033,10 @@ layout_mode = 2
 [node name="Playhead" type="HSlider" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort" unique_id=662247104]
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
 max_value = 1.0
 step = 0.01
+scrollable = false
 
 [node name="TimelineBar" type="Panel" parent="EditorLayer/Sections/Modules/Middle/Timeline/Sort" unique_id=1984643441]
 custom_minimum_size = Vector2(0, 60)
@@ -1062,8 +1093,9 @@ current_tab = 0
 tab_0/title = "Projectile Editor"
 tab_1/title = "Pattern Editor"
 
-[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "FnXInput", "FnYInput", "LifetimeInput", "PersistantCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "ShapeTranslate", "Save")]
+[node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "WarningDisplay", "FnXInput", "FnYInput", "LifetimeInput", "TelegraphTimeInput", "PersistantCheckbutton", "CanCollideCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "ShapeTranslate", "SpawnOnDeathUi", "SpawnModelOnDeathCheck", "DeathModelType", "SpawnOnDeathIdInput", "MaxDepthInput", "Save")]
 layout_mode = 2
+scroll_vertical = 230
 horizontal_scroll_mode = 0
 script = ExtResource("5_w48qg")
 IdInput = NodePath("Sort/Id/IdInput")
@@ -1077,14 +1109,22 @@ TextureInput = NodePath("Sort/Preview/Texture/TInput")
 XDisplay = NodePath("Sort/Preview/ReadInfo/XField")
 YDisplay = NodePath("Sort/Preview/ReadInfo/YField")
 ErrorDisplay = NodePath("Sort/Errors")
+WarningDisplay = NodePath("Sort/Warnings")
 FnXInput = NodePath("Sort/Behavior/FnX/FnXInput")
 FnYInput = NodePath("Sort/Behavior/FnY/FnYInput")
 LifetimeInput = NodePath("Sort/Behavior/Lifetime/TInput")
-PersistantCheckbutton = NodePath("Sort/Behavior/Persistant/CheckButton")
+TelegraphTimeInput = NodePath("Sort/Behavior/TelegraphTime/TInput")
+PersistantCheckbutton = NodePath("Sort/Collision/Persistant/CheckButton")
+CanCollideCheckbutton = NodePath("Sort/Collision/CanCollide/CheckButton")
 UseShapeCheckbutton = NodePath("Sort/Collision/UseShape/UseShapeCheck")
 Radius = NodePath("Sort/Collision/Radius/Radius")
 ShapeEditor = NodePath("Sort/Collision/VBoxContainer/ShapeEditor")
 ShapeTranslate = NodePath("Sort/Collision/VBoxContainer/ShapeTranslate")
+SpawnOnDeathUi = NodePath("Sort/OnDeathParams")
+SpawnModelOnDeathCheck = NodePath("Sort/SpawnOnDeathCheck/Toggle")
+DeathModelType = NodePath("Sort/OnDeathParams/Sort/Type/Type")
+SpawnOnDeathIdInput = NodePath("Sort/OnDeathParams/Sort/Id/IdInput")
+MaxDepthInput = NodePath("Sort/OnDeathParams/Sort/MaxDepth/Depth")
 Save = NodePath("Sort/Save")
 metadata/_tab_index = 0
 metadata/_tab_name = "Projectile Editor"
@@ -1114,7 +1154,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15
@@ -1262,22 +1302,111 @@ size_flags_horizontal = 3
 step = 0.01
 allow_greater = true
 
-[node name="Persistant" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=2020770499]
+[node name="TelegraphTime" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior" unique_id=1877833011]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Persistant" unique_id=1246886216]
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/TelegraphTime" unique_id=135267275]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Persistant"
+text = "Telegraph Time"
 
-[node name="CheckButton" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/Persistant" unique_id=1890542924]
+[node name="TInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Behavior/TelegraphTime" unique_id=1882030586]
 layout_mode = 2
+size_flags_horizontal = 3
+step = 0.01
+allow_greater = true
+
+[node name="SpawnOnDeathCheck" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=902082906]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/SpawnOnDeathCheck" unique_id=1345022658]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Spawn object on death"
+
+[node name="Toggle" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/SpawnOnDeathCheck" unique_id=532498051]
+layout_mode = 2
+
+[node name="OnDeathParams" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1424459851]
+visible = false
+layout_mode = 2
+title = "On Death Behavior"
+
+[node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams" unique_id=1862040762]
+layout_mode = 2
+
+[node name="Type" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort" unique_id=1316008528]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort/Type" unique_id=976297567]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Type"
+
+[node name="Type" type="OptionButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort/Type" unique_id=1903761047]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+popup/item_0/text = "Projectile"
+popup/item_0/id = 0
+popup/item_1/text = "Pattern"
+popup/item_1/id = 1
+
+[node name="Id" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort" unique_id=282243963]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort/Id" unique_id=1283971717]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Model Id"
+
+[node name="IdInput" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort/Id" unique_id=1644797278]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 128.0
+rounded = true
+
+[node name="MaxDepth" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort" unique_id=2100266912]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort/MaxDepth" unique_id=407847492]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Max depth"
+
+[node name="Depth" type="SpinBox" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/OnDeathParams/Sort/MaxDepth" unique_id=243989299]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 128.0
+rounded = true
 
 [node name="Seperator1" type="Panel" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=584102311]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="Collision" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1903081312]
+layout_mode = 2
+
+[node name="Persistant" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=306080699]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/Persistant" unique_id=1016715319]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Persistant"
+
+[node name="CheckButton" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/Persistant" unique_id=1129882929]
+layout_mode = 2
+
+[node name="CanCollide" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=968555538]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/CanCollide" unique_id=1300800367]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Can Collide"
+
+[node name="CheckButton" type="CheckButton" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/CanCollide" unique_id=283096501]
 layout_mode = 2
 
 [node name="Radius" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision" unique_id=1860882032]
@@ -1478,6 +1607,7 @@ rounded = true
 
 [node name="Save" type="Button" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=538124694]
 layout_mode = 2
+focus_mode = 0
 text = "Save"
 
 [node name="Errors" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=1903436747]
@@ -1485,6 +1615,14 @@ custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 label_settings = ExtResource("7_cegan")
+autowrap_mode = 2
+script = ExtResource("8_074og")
+
+[node name="Warnings" type="Label" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort" unique_id=811833738]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+label_settings = ExtResource("20_a6jrf")
 autowrap_mode = 2
 script = ExtResource("8_074og")
 
@@ -1959,10 +2097,10 @@ offset_right = 450.0
 offset_bottom = 233.5
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2_ryguw")
 
 [node name="Sort" type="VBoxContainer" parent="Console/Stuff" unique_id=622197934]
 layout_mode = 2
+theme = ExtResource("2_ryguw")
 
 [node name="Label" type="Label" parent="Console/Stuff/Sort" unique_id=870566543]
 layout_mode = 2
@@ -1983,3 +2121,106 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Save"
+
+[node name="Overlay" type="CanvasLayer" parent="." unique_id=189625564 node_paths=PackedStringArray("FPS", "FrameTime", "ActiveProjectiles", "Queued", "Time")]
+visible = false
+script = ExtResource("28_xuqvo")
+FPS = NodePath("PanelContainer/Root/FPS/Field")
+FrameTime = NodePath("PanelContainer/Root/FrameTime/Field")
+ActiveProjectiles = NodePath("PanelContainer/Root/ActiveProjectiles/Field")
+Queued = NodePath("PanelContainer/Root/Queued/Field")
+Time = NodePath("PanelContainer/Root/Time/Field")
+
+[node name="PanelContainer" type="PanelContainer" parent="Overlay" unique_id=1128331307]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -48.0
+offset_right = 208.0
+offset_bottom = 48.0
+grow_vertical = 2
+
+[node name="Root" type="VBoxContainer" parent="Overlay/PanelContainer" unique_id=886725857]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme = ExtResource("2_ryguw")
+
+[node name="Title" type="Label" parent="Overlay/PanelContainer/Root" unique_id=986875996]
+layout_mode = 2
+text = "Debug overlay (F2)"
+horizontal_alignment = 1
+
+[node name="FPS" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1996847487]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/FPS" unique_id=1346156997]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FPS"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/FPS" unique_id=1408358965]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="FrameTime" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1170715853]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/FrameTime" unique_id=538769684]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Frame time (ms)"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/FrameTime" unique_id=1638217291]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="ActiveProjectiles" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=676050915]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/ActiveProjectiles" unique_id=556277203]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Active projectiles"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/ActiveProjectiles" unique_id=1218765725]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="Queued" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1215887677]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Queued" unique_id=1532017583]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Queued"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Queued" unique_id=1887797541]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="Time" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1947415931]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Time" unique_id=425465645]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Elapsed"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Time" unique_id=2019124542]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2

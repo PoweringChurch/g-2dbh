@@ -148,15 +148,15 @@ public partial class GameSession : Node
     {
         if (!running) return;
         _character.Movement(dt);
+        _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
         _director.Tick(dt);
         _character.VisualFeedback();
-        _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
-        
     }
-    public override void _Process(double delta)
+    public override void _Process(double dt)
     {
+        Overlay.Inst.SyncInfo(-1, _director.QueuedCount, _director.ActiveCount);
         if (!running) return;
-        _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount);
+        _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount, _director.Elapsed);
     }
 
     private static T ReadJson<T>(string path)
