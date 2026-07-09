@@ -11,6 +11,14 @@ using System.Collections.Generic;
 
 // ── AST nodes ────────────────────────────────────────────────────────────────
 
+public struct EvalContext
+{
+    public double T; // time passed since start of projectile OR pattern
+    public double I; // index of a projectile in a pattern
+    public double N; // amount of projectiles in a pattern
+    public double L; // lifetime
+}
+
 public abstract class Expr
 {
     public abstract double Eval(EvalContext context);
@@ -21,7 +29,6 @@ public class NumberExpr : Expr
     public NumberExpr(double v) => this.v = v;
     public override double Eval(EvalContext context) => v;
 }
-
 public class VariableExpr : Expr
 {
     public string name;
@@ -34,6 +41,22 @@ public class VariableExpr : Expr
         "l" => ctx.L,
         _ => throw new NotSupportedException($"Unknown variable: {name}")
     };
+}
+public class CustomVariableExpr : Expr
+{
+    public readonly static Dictionary<string, Expr> Definitions = [];
+    public string name;
+    public CustomVariableExpr(string n) { name = n; }
+    public override double Eval(EvalContext context) 
+    {
+        if (Definitions.TryGetValue(name, out Expr v))
+        {
+            if (v is CustomVariableExpr cv && cv.name == name)
+                throw new NotSupportedException($"Variable '{name}' cannot reference itself.");
+            return v.Eval(context);
+        }
+        else throw new NotSupportedException($"Unknown variable: {name}");
+    }
 }
 /// <summary>
 /// i.e. Negative
@@ -61,7 +84,6 @@ public class BinaryExpr : Expr
         _   => throw new Exception($"Unknown op '{op}'")
     };
 }
-
 public class FuncExpr : Expr
 {
     public readonly string name;
@@ -80,8 +102,14 @@ public class FuncExpr : Expr
             "log2" => Math.Log2(a), "log10"=> Math.Log10(a),
             "ceil" => Math.Ceiling(a), "floor"=> Math.Floor(a),
             "sign" => Math.Sign(a), "tanh" => Math.Tanh(a),
+            "hash" => Hash(a),
             _ => throw new Exception($"Unknown function '{name}'")
         };
+    }
+    private double Hash(double x)
+    {
+        double large_wave = Math.Sin(x * 12.9898) * 43758.5453;
+        return large_wave - Math.Floor(large_wave);
     }
 }
 
@@ -91,39 +119,25 @@ public class ConstExpr : Expr
     public ConstExpr(string name) => v = name.ToLowerInvariant() switch
     {
         "pi"  => Math.PI,
-        "e"   => Math.E,
         "tau" => Math.Tau,
+        "phi" => 1.61803399,
+        "deg2rad" => 0.017453292,
+        "rad2deg" => 57.29578,
         _ => throw new Exception($"Unknown constant '{name}'")
     };
     public override double Eval(EvalContext context) => v;
 }
-
-public struct EvalContext
-{
-    public double T; // time passed since start of projectile OR pattern
-    public double I; // index of a projectile in a pattern
-    public double N; // amount of projectiles in a pattern
-    public double L; // lifetime
-}
 // Handler
-public class ExpressionHandler
+public class ExpressionHandler(List<Token> tokens)
 {
-    public readonly List<Token> tokens;
+    public readonly List<Token> tokens = tokens;
     int _pos;
 
     Token Peek => tokens[_pos];
     Token Consume() => tokens[_pos++];
     bool Match(TokenType t) { if (Peek.Type == t) { _pos++; return true; } return false; }
     private static Dictionary<string, Expr> _parsedCache = new();
-    public ExpressionHandler(List<Token> tokens) => this.tokens = tokens;
-    /// <summary>
-    /// Parse expecting t to be the sole variable
-    /// </summary>
-    /// <param name="expression"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    /// 
+
     public static Expr Parse(string expression)
     {
         if (_parsedCache.TryGetValue(expression, out var cached))
@@ -192,10 +206,11 @@ public class ExpressionHandler
                 return new FuncExpr(name, arg);
             }
             // named constant?
-            if (name is "pi" or "e" or "tau" or "PI" or "E" or "TAU")
+            if (name is "pi" or "tau" or "phi" or "deg2rad" or "rad2deg")
                 return new ConstExpr(name);
-
-             return new VariableExpr(name);
+            if (name is "t" or "i" or "n" or "l")
+                return new VariableExpr(name);
+            return new CustomVariableExpr(name);
         }
         throw new Exception($"Unexpected token '{Peek.Raw}' ({Peek.Type})");
     }
@@ -230,7 +245,15 @@ public class ExpressionHandler
                     "l" => ctx => ctx.L,
                     _ => throw new NotSupportedException($"Unknown variable: {v.name}")
                 };
-
+            case CustomVariableExpr c:
+            {
+                if (!CustomVariableExpr.Definitions.TryGetValue(c.name, out Expr v))
+                    throw new NotSupportedException($"Unknown variable: {c.name}");
+                if (v is CustomVariableExpr cv && cv.name == c.name)
+                    throw new NotSupportedException($"Variable '{c.name}' cannot reference itself.");
+                var valFn = Compile(v);
+                return ctx => valFn(ctx);
+            }
             case BinaryExpr b:
             {
                 var leftFn = Compile(b.l);

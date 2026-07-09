@@ -16,7 +16,7 @@ public partial class GameSession : Node
     public static NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
     public static NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
     public static NodePath BackgroundImagePath = SubViewportPath+"/BackgroundImage";
-    private Node2D _gameRoot;
+    public Node2D GameRoot {get; private set;}
     private SubViewport _svp;
     private TextureRect _backgroundImage;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
@@ -55,16 +55,16 @@ public partial class GameSession : Node
             _character.OnHurt -= OnHurt;
             _character.OnGraze -= OnGraze;
         }
-        if (IsInstanceValid(_gameRoot))
-            _gameRoot.QueueFree();
+        if (IsInstanceValid(GameRoot))
+            GameRoot.QueueFree();
         running = false;
     }
     public bool ResetLevel()
     {
         SetPhysicsProcess(false);
         SetProcess(false);
-        if (IsInstanceValid(_gameRoot))
-            _gameRoot.QueueFree();
+        if (IsInstanceValid(GameRoot))
+            GameRoot.QueueFree();
         return StartLevel(_lastStartedLevelDirectory, _lastStartedLevelId);
     }
     public bool StartLevel(string levelsDirectory, string levelId)
@@ -72,20 +72,20 @@ public partial class GameSession : Node
         // get level data
         var levelData = ReadJson<LevelData>(levelsDirectory+levelId+"/leveldata.json");
         if (levelData == null) return false;
-        _gameRoot = new Node2D { Name = "GameRoot" };
-        _svp.AddChild(_gameRoot);
+        GameRoot = new Node2D { Name = "GameRoot" };
+        _svp.AddChild(GameRoot);
         // compile
-        var compiled = LevelCompiler.CompileLevel(levelData, _gameRoot);
+        var compiled = LevelCompiler.CompileLevel(levelData, GameRoot);
         if (compiled == null) return false;
         // setup character
         _character = charScene.Instantiate<PlayerCharacter>();
-        _gameRoot.AddChild(_character);
+        GameRoot.AddChild(_character);
         var resolution = PlayingField.Resolutions[levelData.AspectRatio];
         _character.ScreenResolution = resolution;
         _character.Position = new Vector2(
             resolution.X / 2, 
             resolution.Y * 0.9f);
-        _playingField.SetRatio(levelData.AspectRatio, _gameRoot);
+        _playingField.SetRatio(levelData.AspectRatio, GameRoot);
 
         health = levelData.Health;
         score = 0;
@@ -105,11 +105,11 @@ public partial class GameSession : Node
         // start
         _lastStartedLevelDirectory = levelsDirectory;
         _lastStartedLevelId = levelId;
-        _renderer = new BulletRenderer(compiled);
+        _renderer = new BulletRenderer(compiled, this);
         _director = new LevelDirector();
         _director.LevelFinished += StopLevel;
         _director.StartLevel(compiled, _character);
-        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume;
+        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
         GAP.Stream = AudioUtils.LoadAudio(levelsDirectory+levelId+"/audio/", levelData.Music);
         _backgroundImage.Texture = RenderingUtils.LoadTexture(levelsDirectory+levelId+"/images/", levelData.BgImage);
         GAP.Play(0);
@@ -142,21 +142,21 @@ public partial class GameSession : Node
         score += (int)(100*health/maxHealth);
         _ui.HUD.SetScore(score);
         _ui.HUD.SetGraze(graze);
-        AudioUtils.Instance.PlayAudio("graze", ConfigHelper.Current.GrazeVolume);
+        AudioUtils.Instance.PlayAudio("graze", ConfigHelper.Current.GrazeVolume*0.5f);
     }
     public override void _PhysicsProcess(double dt)
     {
         if (!running) return;
         _character.Movement(dt);
+        _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
         _director.Tick(dt);
         _character.VisualFeedback();
-        _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
-        
     }
-    public override void _Process(double delta)
+    public override void _Process(double dt)
     {
+        Overlay.Inst.SyncInfo(-1, _director.QueuedCount, _director.ActiveCount);
         if (!running) return;
-        _renderer.Sync(ref _director.Bullets, _director.BulletCount);
+        _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount, _director.Elapsed);
     }
 
     private static T ReadJson<T>(string path)

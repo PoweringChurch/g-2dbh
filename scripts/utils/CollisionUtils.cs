@@ -6,14 +6,41 @@ using Godot;
 
 public static class CollisionUtils
 {
-    public static bool PolygonVsCircle(Vector2[] localPoints, Vector2 polyPos, Vector2 circleCenter, float radius, float polygonForward, bool flipPolygon = false)
+    public static Vector2[] TranslatePolygon(Vector2[] localPoints, Vector2 position, float polygonForward, bool flipPolygonAlongX = false, bool flipPolygonAlongY = false)
+    {
+        if (localPoints == null) return null;
+
+        int count = localPoints.Length;
+        Vector2[] translatedPoints = new Vector2[count];
+
+        float cos = Mathf.Cos(polygonForward);
+        float sin = Mathf.Sin(polygonForward);
+
+        float flipModifierX = flipPolygonAlongX ? -1f : 1f;
+        float flipModifierY = flipPolygonAlongY ? -1f : 1f;
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 point = localPoints[i];
+
+            float x = point.X * flipModifierX;
+            float y = point.Y * flipModifierY;
+
+            translatedPoints[i] = new Vector2(
+                (x * cos - y * sin) + position.X,
+                (x * sin + y * cos) + position.Y
+            );
+        }
+        return translatedPoints;
+    }
+    public static bool PolygonVsCircle(Vector2[] localPoints, Vector2 polyPos, Vector2 circleCenter, float radius, float polygonForward, bool flip = false)
     {
         Vector2 localCircleCenter = circleCenter - polyPos;
         if (polygonForward != 0)
             localCircleCenter = localCircleCenter.Rotated(-polygonForward);
-        if (flipPolygon)
-            localCircleCenter.X = -localCircleCenter.X;
-        if (PointInPolygon(localPoints, localCircleCenter, polygonForward))
+        if (flip == true)
+            localCircleCenter = -localCircleCenter;
+        if (PointInPolygon(localPoints, localCircleCenter))
             return true;
         float radiusSq = radius * radius;
         int n = localPoints.Length;

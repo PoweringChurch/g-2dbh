@@ -5,19 +5,19 @@ public partial class TimelineMarker : ColorRect
     public EditorReference Reference;
     private bool _dragging = false;
     private Editor e;
-    public void Init(EditorReference reference, float duration, float timelineWidth)
+    public void Init(EditorReference reference, float duration, Vector2 timelineSize)
     {
         e = GetNode<Editor>("/root/Editor");
-        Size = new Vector2(4, 16);
+        Size = new Vector2(4, timelineSize.Y/2);
         Reference = reference;
-        Refresh(duration, timelineWidth);
+        Refresh(duration, timelineSize);
     }
-    public void Refresh(float duration, float timelineWidth)
+    public void Refresh(float duration, Vector2 timelineSize)
     {
         Color = Reference.Type == ModelType.Projectile ? 
         RenderingUtils.ColorFromString(e.ProjectileModels[Reference.Id].Name) 
         : RenderingUtils.ColorFromString(e.PatternModels[Reference.Id].Name);
-        Position = new Vector2((float)(Reference.T / duration * timelineWidth - Size.X / 2f), 43);
+        Position = new Vector2((float)(Reference.T / duration * timelineSize.X - Size.X / 2f), timelineSize.Y/2);
     }
     public override void _GuiInput(InputEvent @event)
     {
@@ -31,6 +31,7 @@ public partial class TimelineMarker : ColorRect
             else if (e.CurrentMode == Editor.Mode.Delete)
             {
                 e.DeleteReference(Reference);
+                e.SyncPreview();
             }
         }
         if (@event is InputEventMouseMotion mm 

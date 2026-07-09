@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://co1vtkdhkdbc1"]
+
+[ext_resource type="Script" uid="uid://bivqbcsgono0f" path="res://scripts/editor/custom_variables/DefinitionUi.cs" id="1_fe6sa"]
+[ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="2_hek1d"]
+[ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="3_4p6ix"]
+
+[node name="DefinitionUi" type="VBoxContainer" unique_id=834432282 node_paths=PackedStringArray("VarName", "Definition", "Remove", "ErrorDisplay")]
+script = ExtResource("1_fe6sa")
+VarName = NodePath("Stack/Define/Name")
+Definition = NodePath("Stack/Define/Definition")
+Remove = NodePath("Stack/Remove")
+ErrorDisplay = NodePath("Stack/Define/ErrorDisplay")
+
+[node name="Stack" type="VBoxContainer" parent="." unique_id=1843599009]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Define" type="HBoxContainer" parent="Stack" unique_id=689583924]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Spacer" type="Control" parent="Stack/Define" unique_id=297388417]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
+
+[node name="Name" type="LineEdit" parent="Stack/Define" unique_id=913081432]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+focus_mode = 1
+placeholder_text = "<name>"
+expand_to_text_length = true
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="Equals" type="Label" parent="Stack/Define" unique_id=1033043801]
+layout_mode = 2
+size_flags_vertical = 0
+text = "="
+
+[node name="Definition" type="LineEdit" parent="Stack/Define" unique_id=978050704]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+focus_mode = 1
+placeholder_text = "<define>"
+expand_to_text_length = true
+context_menu_enabled = false
+emoji_menu_enabled = false
+
+[node name="ErrorDisplay" type="Label" parent="Stack/Define" unique_id=1294958405]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+label_settings = ExtResource("2_hek1d")
+autowrap_mode = 3
+script = ExtResource("3_4p6ix")
+
+[node name="Remove" type="Button" parent="Stack" unique_id=173361387]
+layout_mode = 2
+text = "Remove"

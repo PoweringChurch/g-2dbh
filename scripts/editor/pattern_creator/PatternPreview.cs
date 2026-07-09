@@ -93,12 +93,12 @@ public partial class PatternPreview : Node2D
             // generate values
             double genFwd = fnFwd != null ? fnFwd.Eval(lctx) : 0;
             double genT = fnT != null ? fnT.Eval(lctx) : 0;
-            var startxy = Projectile.CalculatePositionAt(0, fnX, fnY, lctx);
+            var startxy = CalculatePositionAt(0, fnX, fnY, lctx);
             double rawT = ctx.T - genT;
             bool alive = rawT >= 0 && rawT < projModel.Lifetime;
             lctx.T = Math.Clamp(rawT, 0, projModel.Lifetime);
             lctx.L = projModel.Lifetime;
-            var (x, y) = Projectile.CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
+            var (x, y) = CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
             // draw
             var texture = projModel.Texture != "default" ?
                 RenderingUtils.LoadTexture(e.LevelPath + "images/", projModel.Texture)
@@ -137,10 +137,23 @@ public partial class PatternPreview : Node2D
         for (int j = 0; j < steps; j++)
         {
             pctx.I = Math.Min(pctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
-            var (x, y) = Projectile.CalculatePositionAt((float)fwd, fnx, fny, pctx);
+            var (x, y) = CalculatePositionAt((float)fwd, fnx, fny, pctx);
             points[j] = new Vector2(x,y);
         }
         DrawPolyline(points, color, ConfigHelper.Current.PathThickness, true);
         DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, color);
+    }
+    private static (float x, float y) CalculatePositionAt(float fwd, Expr fnx, Expr fny, EvalContext ctx)
+    {
+        float fwdTravel = fnx != null ? (float)fnx.Eval(ctx) : 0;
+        float perpTravel = fny != null ? (float)fny.Eval(ctx) : 0;
+
+        float cos = MathF.Cos(fwd);
+        float sin = MathF.Sin(fwd);
+
+        float x = cos * fwdTravel - sin * perpTravel;
+        float y = sin * fwdTravel + cos * perpTravel;
+
+        return (x, y);
     }
 }

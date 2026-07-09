@@ -5,17 +5,15 @@ public partial class PlayingField : Node
 {
 	public static readonly Vector2I[] Resolutions =
 	[
-		new(506  , 900 ),   // 9:16
-		new(900 , 900 ),   // 1:1
-		new(1350 , 900 ),   // 3:2
+		new(506	, 900),   // 9:16
+		new(900	, 900),   // 1:1
+		new(1350, 900),   // 3:2
 	];
 	public NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
 	private SubViewport _svp;
 	public Node2D _gameRoot = null;
 	private float _resScale = 1;
 	private int _currentRatio = 0;
-	public Vector2I CurrentResolution => Resolutions[_currentRatio];
-
 	public override void _Ready()
 	{
 		_svp = GetNode<SubViewport>(SubViewportPath);

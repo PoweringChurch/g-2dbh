@@ -69,7 +69,6 @@ public partial class CustomLevelSelect : LevelSelect
             Console.Inst.LogErr($"[Editor Level Select] Could not find directory {levelDirectory}");
             return;
         }
-        
         var popup = Popups.Instance.Show(Popups.DefaultType.YN, "Are you sure you want to delete this level?");
         popup.CloseOnPress = true;
         popup.Options[0].Pressed += () => 
