@@ -49,6 +49,8 @@ public class ProjectileModel : IEditorModel
 
     [JsonPropertyName("persistant")] 
     public bool Persistant { get; set; } = false;
+    [JsonPropertyName("facePlayer")] 
+    public bool FacePlayer { get; set; }
 
     // ==========================================
     // Custom Collision Shape
@@ -85,6 +87,8 @@ public class ProjectileModel : IEditorModel
     // ==========================================
     // Constructors
     // ==========================================
+
+
     public ProjectileModel() { }
 
     public ProjectileModel(ProjectileModel other)
@@ -98,7 +102,7 @@ public class ProjectileModel : IEditorModel
         // Math & Movement
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
-
+        FacePlayer = other.FacePlayer;
         // Visuals
         Texture = other.Texture;
         RenderScale = other.RenderScale;
@@ -116,7 +120,6 @@ public class ProjectileModel : IEditorModel
         SpawnOnDeathId = other.SpawnOnDeathId;
         MaxDepth = other.MaxDepth;
 
-        // Deep copy the custom shape matrix
         UseShape = other.UseShape;
         if (other.Shape != null)
         {
@@ -130,7 +133,6 @@ public class ProjectileModel : IEditorModel
             }
         }
 
-        // Copy Runtime Cache (Optional, but usually preferred for deep copies)
         fnx = other.fnx;
         fny = other.fny;
         RenderGroupId = other.RenderGroupId;

@@ -1,11 +1,14 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class ModelLibrary : Control
 {
     [Export] VBoxContainer PatternModelList;
     [Export] VBoxContainer ProjectileModelList;
-    private PackedScene ModelUITemplate = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/model_ui.tscn");
+    [Export] Button ProjectileNextFree;
+    [Export] Button PatternNextFree;
+    [Export] PackedScene ModelUITemplate;
     private Editor e;
 
     public IEditorModel SelectedModel { get; private set; }
@@ -14,8 +17,31 @@ public partial class ModelLibrary : Control
     {
         base._Ready();
         e = GetNode<Editor>("/root/Editor");
+        ProjectileNextFree.Pressed += OnProjNextFree;
+        PatternNextFree.Pressed += OnPattNextFree;
     }
-
+    private void OnPattNextFree()
+    {
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+        {
+            if (e.PatternModels[i] == null)
+            {
+                e.OpenModel(new PatternModel() {Id = i});
+                return;
+            }
+        }
+    }
+    private void OnProjNextFree()
+    {
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+        {
+            if (e.ProjectileModels[i] == null)
+            {
+                e.OpenModel(new ProjectileModel() {Id = i});
+                return;
+            }
+        }
+    }
     public void OnModelSaved(ProjectileModel _) => Refresh();
     public void OnModelSaved(PatternModel _) => Refresh();
 
@@ -27,7 +53,8 @@ public partial class ModelLibrary : Control
     private void Load(IEditorModel[] models, VBoxContainer container)
     {
         foreach (var child in container.GetChildren())
-            child.QueueFree();
+            if (child != PatternNextFree && child != ProjectileNextFree)
+                child.QueueFree();
         foreach (var m in models)
         {
             if (m == null)

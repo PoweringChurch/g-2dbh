@@ -15,7 +15,7 @@ public partial class PatternCreator : Control
     [Export] LineEdit FnFwdInput;
     [Export] SpinBox  CountInput;
     [Export] SpinBox ProjectileIdInput;
-
+    [Export] CheckButton FacePlayer;
     [Export] SpinBox IdInput;
     [Export] LineEdit NameInput;
     [Export] Button Save;
@@ -41,13 +41,17 @@ public partial class PatternCreator : Control
         CountInput.ValueChanged += OnCountChanged;
         Save.Pressed += OnSavePressed;
         Zoom.ValueChanged += OnZoomChanged;
+        FacePlayer.Toggled += OnFacePlayerToggled;
+    }
+    private void OnFacePlayerToggled(bool toggledOn)
+    {
+        model.FacePlayer = toggledOn;
     }
     public void OnModelUpdate(ProjectileModel newmodel)
     {
         if (newmodel.Id == model.ProjectileId)
         {
             ProjectileIdInput.Value = newmodel.Id;
-            OnProjectileModelIdChanged(newmodel.Id);
         }
     }
     public void OnZoomChanged(double value)
@@ -170,6 +174,7 @@ public partial class PatternCreator : Control
         FnFwdInput.Text = model.FunctionFwd;
         ProjectileIdInput.Value = model.ProjectileId;
         CountInput.Value = model.Count;
+        FacePlayer.ButtonPressed = model.FacePlayer;
         OnProjectileModelIdChanged(ProjectileIdInput.Value);
         OnCountChanged(model.Count);
     }

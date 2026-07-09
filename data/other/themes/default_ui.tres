@@ -27,6 +27,7 @@
 
 [resource]
 default_font = ExtResource("1_r6ogm")
+default_font_size = 18
 Button/styles/disabled = ExtResource("1_grki5")
 Button/styles/focus = ExtResource("2_63wp8")
 Button/styles/hover = ExtResource("3_0hayp")

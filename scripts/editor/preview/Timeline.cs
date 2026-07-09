@@ -42,7 +42,7 @@ public partial class Timeline : Control
             Playhead.MaxValue = e.levelData.Duration;
             PlayheadPositionInput.MaxValue = e.levelData.Duration;
             foreach (var m in _markers)
-                m.Value.Refresh(e.levelData.Duration, Size.X);
+                m.Value.Refresh(e.levelData.Duration, new Vector2(1920, 40));
             _dirty = false;
         }
         if (!_playing)
@@ -81,7 +81,7 @@ public partial class Timeline : Control
         {
             if (playing)
             {
-                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume;
+                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
                 EditorAudioPreview.Play(currentTime);
             }
             else
@@ -141,7 +141,7 @@ public partial class Timeline : Control
     {
         var marker = new TimelineMarker();
         TimelineBar.AddChild(marker);
-        marker.Init(r, e.levelData.Duration, Size.X);
+        marker.Init(r, e.levelData.Duration, new Vector2(1920, 40));
         _markers[r] = marker;
     }
     public void RemoveMarker(EditorReference r)
@@ -161,6 +161,6 @@ public partial class Timeline : Control
     public void RefreshMarker(EditorReference r)
     {
         if (r == null) return;
-        _markers[r].Refresh(e.levelData.Duration, Size.X);
+        _markers[r].Refresh(e.levelData.Duration, new Vector2(1920, 40));
     }
 }

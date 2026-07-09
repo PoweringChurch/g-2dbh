@@ -34,15 +34,16 @@ public interface IEditorModel
 }
 public class LevelData
 {
-    [JsonPropertyName("displayName")] public string DisplayName { get; set; }
-    [JsonPropertyName("author")] public string Author { get; set; }
-    [JsonPropertyName("bgImage")] public string BgImage { get; set; }
-    [JsonPropertyName("music")] public string Music { get; set; }
+    [JsonPropertyName("displayName")] public string DisplayName { get; set; } = "New Level";
+    [JsonPropertyName("author")] public string Author { get; set; } = "Unknown";
+    [JsonPropertyName("bgImage")] public string BgImage { get; set; } = "none";
+    [JsonPropertyName("music")] public string Music { get; set; } = "none";
     [JsonPropertyName("health")] public int Health { get; set; } = 3;
-    [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 1;
-    [JsonPropertyName("duration")] public float Duration { get; set; } = 1;
-    [JsonPropertyName("projectileModels")] public ProjectileModel[] ProjectileModels { get; set; } = null;
-    [JsonPropertyName("bullets")] public List<EditorReference> References { get; set; } = null;
-    [JsonPropertyName("patternModels")] public PatternModel[] PatternModels { get; set; } = null;
-    [JsonPropertyName("id")] public string LevelId { get; set; }
+    [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 0;
+    [JsonPropertyName("duration")] public float Duration { get; set; } = 10;
+    [JsonPropertyName("projectileModels")] public ProjectileModel[] ProjectileModels { get; set; } = new ProjectileModel[Editor.MaxModelCount];
+    [JsonPropertyName("patternModels")] public PatternModel[] PatternModels { get; set; } = new PatternModel[Editor.MaxModelCount];
+    [JsonPropertyName("bullets")] public List<EditorReference> References { get; set; } = [];
+    [JsonPropertyName("variables")] public Dictionary<string, string> CustomVariables { get; set; } = [];
+    [JsonPropertyName("id")] public string LevelId { get; set; } = Guid.NewGuid().ToString();
 }

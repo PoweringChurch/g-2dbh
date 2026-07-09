@@ -11,6 +11,7 @@ public class PatternModel : IEditorModel
     [JsonPropertyName("fnT")] public string FunctionT { get; set; } = "0";
     [JsonPropertyName("fnFwd")] public string FunctionFwd { get; set; } = "0";
     [JsonPropertyName("count")] public int Count { get; set; } = 1;
+    [JsonPropertyName("facePlayer")] public bool FacePlayer { get; set; } = false;
     // game only
     [JsonIgnore] public Func<EvalContext, double> fnx;
     [JsonIgnore] public Func<EvalContext, double> fny;
@@ -30,5 +31,6 @@ public class PatternModel : IEditorModel
         FunctionT = other.FunctionT;
         FunctionFwd = other.FunctionFwd;
         Count = other.Count;
+        FacePlayer = other.FacePlayer;
     }
 }

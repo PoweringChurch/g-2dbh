@@ -78,17 +78,18 @@ public partial class Editor : CanvasLayer
         $"Are you sure you want to delete projectile '{projectileModels[id].Name}' (Id {id})? All projectiles and patterns with the associated id will be removed.");
         popup.Options[0].Pressed += () =>
         {
+            _preview.UpdateModel(projectileModels[id], true);
             projectileModels[id] = null;
             for (int i = levelData.References.Count - 1; i >= 0; i--)
             {
                 var r = levelData.References[i];
                 if (r.Type == ModelType.Projectile && r.Id == id)
                 {
-                    levelData.References.RemoveAt(i);
+                    DeleteReference(r);
                 }
-                else if (r.Type == ModelType.Pattern && levelData.PatternModels[id].ProjectileId == id)
+                else if (r.Type == ModelType.Pattern && patternModels[id].ProjectileId == id)
                 {
-                    levelData.References.RemoveAt(i);
+                    DeleteReference(r);
                 }
             }
             ui.QueueFree();
@@ -101,24 +102,26 @@ public partial class Editor : CanvasLayer
         $"Are you sure you want to delete pattern '{patternModels[id].Name}' (Id {id})? All patterns with the associated id will be removed.");
         popup.Options[0].Pressed += () =>
         {
+            _preview.UpdateModel(patternModels[id], true);
             patternModels[id] = null;
             for (int i = levelData.References.Count - 1; i >= 0; i--)
                 if (levelData.References[i].Id == id)
-                    levelData.References.RemoveAt(i);
+                    DeleteReference(levelData.References[i]);
             ui.QueueFree();
+            _preview.Sync();
         };
-        _preview.Sync();
     }
     public LevelData levelData;
     // paths
     const string Modules = "/root/main/EditorLayer/Sections/Modules";
-    const string TimelinePath = Modules + "/Middle/Timeline";
+    const string TimelinePath = "/root/main/EditorLayer/Sections/Timeline";
     const string ModelLibraryPath = Modules + "/Middle/ModelLibrary";
     const string LevelMetaPath = Modules + "/Left/LevelMetadata";
     const string LevelPreviewPath = Modules + "/Left/LevelPreview";
     const string ProjCreatorPath = Modules + "/Right/Creators/ProjectileCreator";
     const string PatternCreatorPath = Modules + "/Right/Creators/PatternCreator";
     const string InspectorPath = Modules + "/Middle/Inspector";
+    const string CustomVariablesPath = Modules + "/Middle/Expressions/Custom";
 
     const string ToolbarButtons = "/root/main/EditorLayer/Sections/Toolbar/Buttons";
     // mode
@@ -140,6 +143,7 @@ public partial class Editor : CanvasLayer
     private ProjectileCreator _projCreator;
     private PatternCreator _patternCreator;
     private Inspector _inspector;
+    private CustomVariables _customVars;
     // toolbar
     // mode
     private Button _placeButton;
@@ -161,6 +165,7 @@ public partial class Editor : CanvasLayer
         _projCreator = GetNode<ProjectileCreator>(ProjCreatorPath);
         _patternCreator = GetNode<PatternCreator>(PatternCreatorPath);
         _inspector = GetNode<Inspector>(InspectorPath);
+        _customVars = GetNode<CustomVariables>(CustomVariablesPath);
         // events
         _levelMeta.AspectRatioChanged += _preview.Fit;
         _levelMeta.DurationChanged += _timeline.UpdateDuration;
@@ -168,13 +173,13 @@ public partial class Editor : CanvasLayer
         _levelMeta.BgImageChanged += _preview.ChangeBackgroundImage;
         _levelMeta.MusicChanged += _timeline.UpdateMusic;
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
-        _projCreator.ModelSaved += _preview.CompileProjectile;
-        _projCreator.ModelSaved += _preview.Sync;
         _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
+        _projCreator.ModelSaved += _preview.CompileProjectile;
+        _projCreator.ModelSaved += (model) => _preview.UpdateModel(model, false);
 
         _patternCreator.ModelSaved += _modelLibrary.OnModelSaved;
         _patternCreator.ModelSaved += _preview.CompilePattern;
-        _patternCreator.ModelSaved += _preview.Sync;
+        _patternCreator.ModelSaved += (model) => _preview.UpdateModel(model, false);
 
         GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
         // toolbar
@@ -263,20 +268,7 @@ public partial class Editor : CanvasLayer
     }
     public void NewLevel()
     {
-        LevelData data = new()
-        {
-            DisplayName = "New Level",
-            Author = "Unknown",
-            BgImage = "none",
-            Music = "none",
-            Health = 3,
-            AspectRatio = 0,
-            Duration = 1f,
-            LevelId = Guid.NewGuid().ToString(),
-            ProjectileModels = new ProjectileModel[MaxModelCount],
-            PatternModels =  new PatternModel[MaxModelCount],
-            References = [],
-        };
+        LevelData data = new();
         string levelPath = $"{_levelDirectory}{data.LevelId}/";
         DirAccess.MakeDirRecursiveAbsolute(levelPath);
         DirAccess.MakeDirRecursiveAbsolute(levelPath + "images/");
@@ -312,6 +304,7 @@ public partial class Editor : CanvasLayer
             var m = data.PatternModels[i];
             patternModels[i] = m;
         }
+        _customVars.Load(data);
         _timeline.Load(data);
         _timeline.UpdateDuration();
         _preview.ChangeBackgroundImage(data.BgImage);

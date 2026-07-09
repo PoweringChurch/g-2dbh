@@ -7,11 +7,6 @@ public class RenderGroup
     public Texture2D Texture; // null for shape groups
     public MultiMeshInstance2D Node;
     public MultiMesh MultiMesh;
+    public Vector2 Bounds;
     public readonly List<int> BakeIndices = new();
-}
-public struct DynamicProjectile
-{
-    public Vector2 Pos;
-    public float Forward;
-    public float Scale;
 }

@@ -23,6 +23,7 @@ public partial class ProjectileCreator : Control
     [Export] SpinBox LifetimeInput; // float
     [Export] SpinBox TelegraphTimeInput;
     [Export] CheckButton PersistantCheckbutton;
+    [Export] CheckButton FacePlayerCheckbutton;
     // Collision
     [Export] CheckButton CanCollideCheckbutton;
     [Export] CheckButton UseShapeCheckbutton;
@@ -63,6 +64,7 @@ public partial class ProjectileCreator : Control
         LifetimeInput.ValueChanged += OnLifetimeChanged;
         PersistantCheckbutton.Toggled += OnPersistantToggled;
         TelegraphTimeInput.ValueChanged += OnTelegraphValueChanged;
+        FacePlayerCheckbutton.Toggled += OnFacePlayerToggled;
         // collision
         Radius.ValueChanged += OnRadiusChanged;
         UseShapeCheckbutton.Toggled += OnUseShapeToggled;
@@ -74,6 +76,11 @@ public partial class ProjectileCreator : Control
         SpawnOnDeathIdInput.ValueChanged += OnSpawnModelIdChanged;
         MaxDepthInput.ValueChanged += MaxDepthChanged;
         Save.Pressed += OnSavePressed;
+    }
+
+    private void OnFacePlayerToggled(bool toggledOn)
+    {
+        model.FacePlayer = toggledOn;
     }
 
     private void OnCanCollideToggled(bool toggledOn)
@@ -259,13 +266,12 @@ public partial class ProjectileCreator : Control
         RenderScaleInput.Value = model.RenderScale;
         Preview.T = 0;
         OnTextureChanged(model.Texture);
-
         // behavior
         FnXInput.Text = model.FunctionX;
         FnYInput.Text = model.FunctionY;
         LifetimeInput.Value = model.Lifetime;
         PersistantCheckbutton.ButtonPressed = model.Persistant;
-        
+        FacePlayerCheckbutton.ButtonPressed = model.FacePlayer;
         OnFnXChanged(model.FunctionX);
         OnFnYChanged(model.FunctionY);
 
@@ -274,6 +280,7 @@ public partial class ProjectileCreator : Control
         UseShapeCheckbutton.ButtonPressed = model.UseShape; // doesnt need its on changed function because setting it like this automatically calls it 
         ShapeEditor.Points = CollisionUtils.FloatArrToVect2s(model.Shape);
         Preview.Shape = CollisionUtils.FloatArrToVect2s(model.Shape);
+        CanCollideCheckbutton.ButtonPressed = model.CanCollide;
         ToggleCollisionParams(model.UseShape);
         
         // spawn on death
@@ -281,5 +288,7 @@ public partial class ProjectileCreator : Control
         DeathModelType.Selected = (int)model.SpawnOnDeathType;
         SpawnOnDeathIdInput.Value = model.SpawnOnDeathId;
         MaxDepthInput.Value = model.MaxDepth;
+
+        OnRenderScaleChanged(model.RenderScale); // this is just to set the preview to be dirty
     }
 }

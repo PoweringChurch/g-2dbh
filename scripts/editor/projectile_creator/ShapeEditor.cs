@@ -15,7 +15,7 @@ public partial class ShapeEditor : Control
     [Export] public Button ApplyTranslation;
     public float TextureRenderScale = 1;
     public Editor e;
-    private PackedScene pointUi = ResourceLoader.Load<PackedScene>("res://data/scenes/ui/point_ui.tscn");
+    [Export] PackedScene pointUi;
     private List<Vector2> points = [];
     public List<Vector2> Points
     {

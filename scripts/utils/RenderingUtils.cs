@@ -44,8 +44,8 @@ public static class RenderingUtils
         _colorCache[input] = color;
         return color;
     }
-    public static ArrayMesh BuildCircleMesh(float radius, int segments = 20)
-    {
+    public static ArrayMesh BuildCircleMesh(float radius, bool outline = false, int segments = 20)
+    {   
         var verts = new Vector3[segments + 2];
         verts[0] = Vector3.Zero;
         for (int i = 0; i <= segments; i++)
@@ -53,45 +53,76 @@ public static class RenderingUtils
             float angle = i * Mathf.Tau / segments;
             verts[i + 1] = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
         }
-
-        var indices = new int[segments * 3];
-        for (int i = 0; i < segments; i++)
+        int[] indices;
+        if (outline)
         {
-            indices[i * 3 + 0] = 0;
-            indices[i * 3 + 1] = i + 1;
-            indices[i * 3 + 2] = (i + 1) % segments + 1;
+            indices = new int[segments * 2];
+            for (int i = 0; i < segments; i++)
+            {
+                indices[i * 2 + 0] = i + 1;
+                indices[i * 2 + 1] = i + 2; // Connects to the next vertex
+            }
         }
-
+        else
+        {
+            indices = new int[segments * 3];
+            for (int i = 0; i < segments; i++)
+            {
+                indices[i * 3 + 0] = 0;
+                indices[i * 3 + 1] = i + 1;
+                indices[i * 3 + 2] = i + 2; 
+            }
+        }
         var arrays = new Godot.Collections.Array();
         arrays.Resize((int)Mesh.ArrayType.Max);
         arrays[(int)Mesh.ArrayType.Vertex] = verts;
         arrays[(int)Mesh.ArrayType.Index] = indices;
 
         var mesh = new ArrayMesh();
-        mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
+        Mesh.PrimitiveType primitiveType = outline ? Mesh.PrimitiveType.Lines : Mesh.PrimitiveType.Triangles;
+        mesh.AddSurfaceFromArrays(primitiveType, arrays);
         return mesh;
     }
-
-    public static ArrayMesh BuildPolygonMesh(Vector2[] points)
+    public static ArrayMesh BuildPolygonMesh(Vector2[] points, bool outline = false)
     {
-        int[] indices = Geometry2D.TriangulatePolygon(points);
-        if (indices == null || indices.Length == 0)
+        if (points == null || points.Length < 3) 
         {
-            Console.Inst.LogErr("[LevelCompiler] Polygon failed to triangulate (self-intersecting or degenerate shape) — skipping render mesh.");
+            Console.Inst.LogErr("[LevelCompiler] Polygon has insufficient points, skipping render mesh");
             return null;
         }
-
         var verts = new Vector3[points.Length];
         for (int i = 0; i < points.Length; i++)
-            verts[i] = new Vector3(points[i].X, points[i].Y, 0);
+            verts[i] = new Vector3(points[i].X, -points[i].Y, 0);
 
+        int[] indices;
+        Mesh.PrimitiveType primitiveType;
+        if (outline)
+        {
+            primitiveType = Mesh.PrimitiveType.Lines;
+            indices = new int[points.Length * 2];
+            for (int i = 0; i < points.Length; i++)
+            {
+                indices[i * 2 + 0] = i;
+                indices[i * 2 + 1] = (i + 1) % points.Length;
+            }
+        }
+        else
+        {
+            primitiveType = Mesh.PrimitiveType.Triangles;
+            indices = Geometry2D.TriangulatePolygon(points);
+            if (indices == null || indices.Length == 0)
+            {
+                Console.Inst.LogErr("[LevelCompiler] Polygon failed to triangulate (self-intersecting or degenerate shape), skipping render mesh");
+                return null;
+            }
+        }
         var arrays = new Godot.Collections.Array();
         arrays.Resize((int)Mesh.ArrayType.Max);
         arrays[(int)Mesh.ArrayType.Vertex] = verts;
         arrays[(int)Mesh.ArrayType.Index] = indices;
 
         var mesh = new ArrayMesh();
-        mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
+        mesh.AddSurfaceFromArrays(primitiveType, arrays);
         return mesh;
     }
 }

@@ -98,6 +98,9 @@ public partial class LevelPreview : Control
 	{
 		return groupSelection != null && groupSelection.Contains(r);
 	}
+	public Vector2 ToPreviewLocal(Vector2 screenPos) =>
+		screenPos / resScale;
+		
 	private List<EditorReference> copied = new();
 	private Vector2 copiedAtPos;
 	private float copiedAtTime;
@@ -206,7 +209,7 @@ public partial class LevelPreview : Control
 		{
 			return;
 		}
-		var r = GetNearestReference(mb.Position);
+		var r = GetNearestReference(ToPreviewLocal(mb.Position));
 		SelectedReference = r;
 		if (!_inGroup)
 		{
@@ -225,7 +228,7 @@ public partial class LevelPreview : Control
 	{
 		lmbDragging = true;
 		SelectedReference = null;
-		var r = GetNearestReference(mb.Position);
+		var r = GetNearestReference(ToPreviewLocal(mb.Position));
 		if (r != null) // if we got a reference
 		{
 			if (_inGroup) // if the reference is in the selection group
@@ -441,7 +444,7 @@ public partial class LevelPreview : Control
 	{
 		if (lmbDragging)
 		{
-			var r = GetNearestReference(mm.Position);
+			var r = GetNearestReference(ToPreviewLocal(mm.Position));
 			lmbDragging = true;
 			SelectedReference = null;
 			if (r != null)
@@ -452,9 +455,8 @@ public partial class LevelPreview : Control
 			}
 		}
 	}
-	public EditorReference GetNearestReference(Vector2 mpos)
+	public EditorReference GetNearestReference(Vector2 local)
 	{
-		var local = ToPreviewLocal(mpos);
 		float nearDist = float.MaxValue;
 		EditorReference nearRef = null;
 		for (int i = 0; i < e.levelData.References.Count; i++)
@@ -497,10 +499,9 @@ public partial class LevelPreview : Control
             return nearRef;
         return null;
 	}
-	public EditorReference[] GetNearestReferences(Vector2 mpos, int count)
+	public EditorReference[] GetNearestReferences(Vector2 local, int count)
 	{
 		if (e.levelData == null) return [];
-		var local = ToPreviewLocal(mpos);
 		var validRefs = new List<(EditorReference r, float d)>();
 		foreach (var r in e.levelData.References)
 		{
@@ -572,7 +573,7 @@ public partial class LevelPreview : Control
 		Vector2[] grabbox = [mousePoint0, c0, mousePoint1, c1, mousePoint0];
 		PreviewRoot.DrawPolyline(grabbox, Colors.DarkRed, 3);
 		// nearby references
-		var nearest = GetNearestReferences(currentMpos, 5);
+		var nearest = GetNearestReferences(ToPreviewLocal(currentMpos), 5);
 		foreach (var nr in nearest)
 		{
 			var name = nr.Type == ModelType.Pattern ? e.PatternModels[nr.Id].Name : e.ProjectileModels[nr.Id].Name;
@@ -634,8 +635,6 @@ public partial class LevelPreview : Control
 		PreviewRoot.Scale = Vector2.One * resScale;
 	}
 	private void OnWindowResized() => Fit(PlayingField.Resolutions[e.levelData.AspectRatio]);
-	public Vector2 ToPreviewLocal(Vector2 screenPos) =>
-		(screenPos - GlobalPosition) / resScale;
 	public void ChangeBackgroundImage(string to)
 	{
 		if (to == "none")
@@ -670,8 +669,6 @@ public partial class LevelPreview : Control
 		Sync();
 		Console.Inst.Log("[LevelPreview] Completed compile all");
 	}
-	public void Sync(IEditorModel _) =>
-		Sync();
 	List<EditorReference> _bakedTimeline = new();
 	private EvalContext _ctx = new();
 	public void Sync()
@@ -682,10 +679,15 @@ public partial class LevelPreview : Control
 			_renderGroups[g].BakeIndices.Clear();
 		}
 		// tick references
-		for (int i = 0; i < _bakedTimeline.Count; i++)
+		for (int i = _bakedTimeline.Count - 1; i >= 0; i--)
 		{
 			var r = _bakedTimeline[i];
-			if (ProcessProjReference(r)) 
+			if (r == null) 
+			{
+				_bakedTimeline.RemoveAt(i);
+				continue;
+			}
+			if (ProcessProjReference(r) && !CullRef(r)) 
 			{
 				var proj = e.ProjectileModels[r.Id];
 				_renderGroups[proj.RenderGroupId].BakeIndices.Add(i);
@@ -724,7 +726,7 @@ public partial class LevelPreview : Control
 				buffer[o + 6] = 0;
 				buffer[o + 7] = r.Pos.Y;
 				double t = e.CurrentTime - r.T;
-                float alpha = (t <= proj.TelegraphTime) 
+                float alpha = (t < proj.TelegraphTime)
 					? (proj.TelegraphTime > 0 ? 0.2f + (float)t / proj.TelegraphTime * 0.6f : 0.8f) 
 					: 1.0f;
 				if (!InSelectedGroup(r))
@@ -844,7 +846,6 @@ public partial class LevelPreview : Control
 		if (model == null)
 			return;
 		LevelCompiler.CompilePattern(model);
-		var proj = e.ProjectileModels[model.ProjectileId];
 		var lctx = new EvalContext { N = model.Count };
 		double maxSpawnT = 0;
 		for (int j = 0; j < model.Count; j++)
@@ -854,8 +855,24 @@ public partial class LevelPreview : Control
 			if (t > maxSpawnT)
 				maxSpawnT = t;
 		}
-		model.lifetime = (float)(maxSpawnT + proj.Lifetime);
+		var proj = e.ProjectileModels[model.ProjectileId];
+		model.lifetime = (float)(maxSpawnT + (proj != null ? proj.Lifetime : 0));
 		PreviewRoot.QueueRedraw();
+	}
+	public void UpdateModel(IEditorModel model, bool delete = false)
+	{
+		for (int i = 0; i < e.levelData.References.Count; i++)
+		{
+			var r = e.levelData.References[i];
+			if (r.Id == model.Id)
+			{
+				if (delete)
+					UpdateReferenceInEditor(null,r.RootEditorId);
+				else
+					UpdateReferenceInEditor(r,r.RootEditorId);
+			}
+		}
+		Sync();
 	}
 	private static Vector2 CalculatePosDelta(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, EvalContext ctx, double f = 0)
 	{
@@ -868,4 +885,16 @@ public partial class LevelPreview : Control
 		var pos = new Vector2(x, y);
 		return pos;
 	}
+	private bool CullRef(EditorReference r)
+    {
+        var proj = e.ProjectileModels[r.Id];
+        if (proj.Persistant) return false;
+        var resolution = PlayingField.Resolutions[e.levelData.AspectRatio];
+        var bounds = _renderGroups[proj.RenderGroupId].Bounds;
+        bool isOutOfBounds = r.Pos.X < -bounds.X 
+        || r.Pos.X > resolution.X + bounds.X 
+        || r.Pos.Y < -bounds.Y 
+        || r.Pos.Y > resolution.Y + bounds.Y;
+        return isOutOfBounds;
+    }
 }

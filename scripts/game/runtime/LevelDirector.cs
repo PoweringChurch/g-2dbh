@@ -48,6 +48,8 @@ public partial class LevelDirector
                 }
                 else if (r.Type == ModelType.Projectile)
                 {
+                    if (level.Projectiles[r.Id].FacePlayer)
+                        r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)-Mathf.Pi/2;
                     if (activeCount == MaxBulletCount)
                         continue;
                     activeReferences[activeCount++] = r;
@@ -92,7 +94,7 @@ public partial class LevelDirector
             float rSumG = proj.Radius + PlayerCharacter.GrazeRadius;
             bool ghit = proj.ShapeVect2s == null ?
             distSq <= rSumG * rSumG 
-            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, (float)r.F-Mathf.Pi);
+            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, (float)r.F-Mathf.Pi, true);
             if (!_hasGrazed[i] && ghit && !ConfigHelper.Current.NoGraze)
             {
                 _character.Graze();
@@ -101,7 +103,7 @@ public partial class LevelDirector
             }
             bool hit = proj.ShapeVect2s == null ? 
             distSq <= rSumH * rSumH 
-            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)r.F-Mathf.Pi);
+            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)r.F-Mathf.Pi, true);
             if (hit && !ConfigHelper.Current.NoHit && _character.Hurt() )
             {
                 if (!proj.Persistant)
@@ -109,14 +111,14 @@ public partial class LevelDirector
             }
         }
     }
-    private void TickPattern(ref readonly SpatialReference r)
+    private void TickPattern(ref SpatialReference r)
     {
         var patt = level.Patterns[r.Id];
         var proj = level.Projectiles[patt.ProjectileId];
-
         _ctx.L = proj.Lifetime;
-        _ctx.N = patt.Count;
-
+        _ctx.N = patt.Count > 1 ? patt.Count - 1 : 1;
+        if (patt.FacePlayer)
+            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)-Mathf.Pi/2;
         for (int j = 0; j < patt.Count; j++)
         {
             _ctx.I = j;
