@@ -44,6 +44,6 @@ public class LevelData
     [JsonPropertyName("patternModels")] public PatternModel[] PatternModels { get; set; } = new PatternModel[Editor.MaxModelCount];
     [JsonPropertyName("bullets")] public List<EditorReference> References { get; set; } = [];
     [JsonPropertyName("variables")] public Dictionary<string, string> CustomVariables { get; set; } = [];
-    [JsonPropertyName("id")] public string LevelId { get; set; } = Guid.NewGuid().ToString();
     [JsonPropertyName("backgroundLayers")] public List<BackgroundLayer> BackgroundLayers {get; set;} = [];
+    [JsonPropertyName("levelPath")] public string LevelPath { get; set; }
 }

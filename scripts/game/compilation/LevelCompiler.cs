@@ -25,7 +25,7 @@ public class LevelCompiler
             instance.Sprite = sprite;
             instance.Layer = layer;
             compiled.BackgroundInstances.Add(instance);
-            instance.ApplyLayerParams($"user://data/levels/{level.LevelId}/images/");
+            instance.ApplyLayerParams($"{level.LevelPath}images/");
             backgroundroot.AddChild(instance);
         }
         // compile projectiles
@@ -35,7 +35,7 @@ public class LevelCompiler
             var m = level.ProjectileModels[i];
             if (m == null)
                 continue;
-            compiled.RenderGroups.Add(RenderGroupFromProjectile(m, $"user://data/levels/{level.LevelId}/images/", gameRoot));
+            compiled.RenderGroups.Add(RenderGroupFromProjectile(m, $"{level.LevelPath}images/", gameRoot));
             // set up render group
             int renderGroupId = compiled.RenderGroups.Count - 1;
             CompileProjectile(m, renderGroupId);

@@ -99,8 +99,11 @@ public partial class Timeline : Control
     }
     private void UpdatePlayPauseLabel() =>
         PlayPauseButton.Text = _playing ? "❚❚" : "▶";
-    private void OnSpeedChanged(double value) =>
+    private void OnSpeedChanged(double value)
+    {
         _speed = (float)value;
+        EditorAudioPreview.PitchScale = (float)value;
+    }
     private void OnLoopToggled(bool toggled) =>
         _loop = toggled;
     private void OnTimeChange(double time)

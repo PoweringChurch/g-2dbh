@@ -5,20 +5,27 @@
 [ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/screens/MainMenu.cs" id="2_ycdy4"]
 [ext_resource type="LabelSettings" uid="uid://dou3cdouhk0b8" path="res://data/other/label_settings/hud_label_settings.tres" id="3_d13ii"]
 [ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/screens/PauseMenu.cs" id="3_ycdy4"]
-[ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/screens/LevelSelect.cs" id="4_vivmo"]
+[ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/screens/level_select/LevelSelect.cs" id="4_vivmo"]
 [ext_resource type="Script" uid="uid://d4h74kguhbi00" path="res://scripts/editor/projectile_creator/ProjectileModelPreview.cs" id="5_2cqfq"]
+[ext_resource type="Texture2D" uid="uid://bi5soxhucmn8d" path="res://data/other/themes/default_ui_assets/svgs/faster.svg" id="5_d2t1y"]
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/level/LevelMetadata.cs" id="5_ycdy4"]
 [ext_resource type="Script" uid="uid://bju7haqyrgrrg" path="res://scripts/editor/projectile_creator/ShapeEditor.cs" id="6_074og"]
+[ext_resource type="Texture2D" uid="uid://c5ob3aejpfpa1" path="res://data/other/themes/default_ui_assets/svgs/slower.svg" id="6_gngh3"]
 [ext_resource type="Texture2D" uid="uid://dyx8k3dvsl1aj" path="res://data/images/title/logo/en-logo.png" id="6_lswn8"]
-[ext_resource type="Texture2D" uid="uid://d0pqw0neo6is8" path="res://data/images/title/scroller.png" id="7_0rl1p"]
+[ext_resource type="Texture2D" uid="uid://c7xbm7jwg7fuf" path="res://data/other/themes/default_ui_assets/svgs/hearty.svg" id="7_0n3wm"]
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="7_cegan"]
-[ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/author_label_settings.tres" id="7_getpj"]
+[ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/subheading_label_settings.tres" id="7_getpj"]
+[ext_resource type="LabelSettings" uid="uid://dglwhk6udnntv" path="res://data/other/label_settings/credits_label_settings.tres" id="7_ok6jj"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="8_074og"]
+[ext_resource type="Texture2D" uid="uid://b65sksyh06b17" path="res://data/other/themes/default_ui_assets/svgs/perfect.svg" id="8_qnost"]
 [ext_resource type="Script" uid="uid://7a6jo6fmtk3r" path="res://scripts/editor/preview/Timeline.cs" id="8_yaehf"]
+[ext_resource type="PackedScene" uid="uid://tenwm3wojuji" path="res://data/scenes/ui/level_button.tscn" id="9_b1qrp"]
+[ext_resource type="Texture2D" uid="uid://cuxbi5ummugjk" path="res://data/other/themes/default_ui_assets/svgs/paranoid.svg" id="9_wnkbs"]
 [ext_resource type="Script" uid="uid://dt773ymqw2vko" path="res://scripts/editor/preview/LevelPreview.cs" id="10_074og"]
 [ext_resource type="Script" uid="uid://bwj0kla3iaqvo" path="res://scripts/editor/level/ModelLibrary.cs" id="11_ryguw"]
-[ext_resource type="Script" uid="uid://bvfi3mg55g7iw" path="res://scripts/ui/screens/CustomLevelSelect.cs" id="11_w48qg"]
+[ext_resource type="Script" uid="uid://bvfi3mg55g7iw" path="res://scripts/ui/screens/level_select/CustomLevelSelect.cs" id="11_w48qg"]
+[ext_resource type="Script" uid="uid://cyjxaw52qbrhg" path="res://scripts/ui/screens/level_select/Modifiers.cs" id="12_come4"]
 [ext_resource type="Script" uid="uid://m8dtvn5j5g5l" path="res://scripts/editor/preview/Inspector.cs" id="13_0odxb"]
 [ext_resource type="Script" uid="uid://bowrgg1yvjg0j" path="res://scripts/editor/pattern_creator/PatternCreator.cs" id="15_getpj"]
 [ext_resource type="Script" uid="uid://bd0knxqqsp522" path="res://scripts/editor/pattern_creator/PatternPreview.cs" id="16_ryguw"]
@@ -35,6 +42,17 @@
 [ext_resource type="Script" uid="uid://dc2w0ihohtdkh" path="res://scripts/editor/level/BackgroundEditor.cs" id="28_0rl1p"]
 [ext_resource type="Script" uid="uid://cfibamy3fls3g" path="res://scripts/utils/Overlay.cs" id="28_xuqvo"]
 [ext_resource type="PackedScene" uid="uid://bqnjj1cp37xxx" path="res://data/scenes/ui/background_layer_ui.tscn" id="29_ok6jj"]
+[ext_resource type="Script" uid="uid://6mamhfg45b20" path="res://scripts/ui/screens/level_select/LevelDisplay.cs" id="35_ok6jj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h8e4i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4lmeg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0cp0l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d2t1y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gngh3"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -44,8 +62,7 @@ script = ExtResource("22_ryguw")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Audio" unique_id=370560247]
 volume_db = 17.851
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Duration", "_Completion")]
-visible = false
+[node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("_scoreLabel", "_grazeLabel", "_LevelName", "_HP", "_Duration", "_Completion", "faster", "slower", "hearty", "perfect", "paranoid")]
 script = ExtResource("2_dg77c")
 _scoreLabel = NodePath("Sort/PanelContainer/Sort/Score/Score")
 _grazeLabel = NodePath("Sort/PanelContainer/Sort/Graze/Graze")
@@ -53,6 +70,11 @@ _LevelName = NodePath("Sort/PanelContainer/Sort/LevelName")
 _HP = NodePath("Sort/PanelContainer/Sort/HP/HP")
 _Duration = NodePath("Sort/PanelContainer/Sort/Duration/Dur")
 _Completion = NodePath("Sort/PanelContainer/Sort/Completion/Completion")
+faster = NodePath("Sort/PanelContainer/Sort/Mods/faster")
+slower = NodePath("Sort/PanelContainer/Sort/Mods/slower")
+hearty = NodePath("Sort/PanelContainer/Sort/Mods/hearty")
+perfect = NodePath("Sort/PanelContainer/Sort/Mods/perfect")
+paranoid = NodePath("Sort/PanelContainer/Sort/Mods/paranoid")
 
 [node name="Fill" type="ColorRect" parent="HUD" unique_id=1069094631]
 anchors_preset = 15
@@ -82,7 +104,7 @@ layout_mode = 2
 [node name="SubViewport" type="SubViewport" parent="HUD/Sort/SubViewportContainer" unique_id=1965502961]
 handle_input_locally = false
 size = Vector2i(531, 900)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1148617783]
 z_index = -2
@@ -215,6 +237,49 @@ size_flags_horizontal = 10
 text = "0"
 label_settings = ExtResource("3_d13ii")
 
+[node name="Mods" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=995325435]
+layout_mode = 2
+
+[node name="faster" type="TextureRect" parent="HUD/Sort/PanelContainer/Sort/Mods" unique_id=301211496]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("5_d2t1y")
+expand_mode = 1
+
+[node name="slower" type="TextureRect" parent="HUD/Sort/PanelContainer/Sort/Mods" unique_id=1805662750]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("6_gngh3")
+expand_mode = 1
+
+[node name="hearty" type="TextureRect" parent="HUD/Sort/PanelContainer/Sort/Mods" unique_id=1861078455]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("7_0n3wm")
+expand_mode = 1
+
+[node name="perfect" type="TextureRect" parent="HUD/Sort/PanelContainer/Sort/Mods" unique_id=594408676]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("8_qnost")
+expand_mode = 1
+
+[node name="paranoid" type="TextureRect" parent="HUD/Sort/PanelContainer/Sort/Mods" unique_id=1390114127]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("9_wnkbs")
+expand_mode = 1
+
 [node name="Logo" type="TextureRect" parent="HUD/Sort/PanelContainer" unique_id=2084242247]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
@@ -241,18 +306,66 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
-[node name="Parallax2D" type="Parallax2D" parent="MainMenu" unique_id=1213098737]
-repeat_size = Vector2(7665, 0)
+[node name="Credits" type="Parallax2D" parent="MainMenu" unique_id=1928863896]
+scroll_offset = Vector2(0, 1040)
+repeat_size = Vector2(1920, 0)
 autoscroll = Vector2(90, 0)
 repeat_times = 2
 follow_viewport = false
 
-[node name="Sprite2D" type="Sprite2D" parent="MainMenu/Parallax2D" unique_id=623737605]
-position = Vector2(457, 534)
-scale = Vector2(1, 3.2)
-skew = 0.19547687
-texture = ExtResource("7_0rl1p")
-region_rect = Rect2(52.535, 49.235, 43.33, 43.005)
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMenu/Credits" unique_id=1147390464]
+offset_right = 1920.0
+offset_bottom = 40.0
+theme = ExtResource("2_ryguw")
+theme_override_constants/separation = 24
+
+[node name="game" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=1249987506]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "game : @poweringgg"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="music" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=545109758]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "music :@makaai"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="game2" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=494865881]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "game : @poweringgg"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="music2" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=199320069]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "music :@makaai"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="game3" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=2132254347]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "game : @poweringgg"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="music3" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=816262865]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "music :@makaai"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="game4" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=715655406]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "game : @poweringgg"
+label_settings = ExtResource("7_ok6jj")
+
+[node name="music4" type="Label" parent="MainMenu/Credits/HBoxContainer" unique_id=1974545150]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "music :@makaai"
+label_settings = ExtResource("7_ok6jj")
 
 [node name="Sort" type="VBoxContainer" parent="MainMenu" unique_id=234966351]
 anchors_preset = 8
@@ -300,18 +413,15 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "Quit"
 
-[node name="LevelSelect" type="CanvasLayer" parent="." unique_id=1492741283 node_paths=PackedStringArray("_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
+[node name="LevelSelect" type="CanvasLayer" parent="." unique_id=1185578512 node_paths=PackedStringArray("_levelList", "_returnButton", "_levelDisplay")]
 visible = false
 script = ExtResource("4_vivmo")
-_levelList = NodePath("Sort/Levels/Sort/List")
-_previewId = NodePath("Sort/LevelPreview/VBoxContainer/LevelName")
-_previewRatio = NodePath("Sort/LevelPreview/VBoxContainer/AspectRatio/Ratio")
-_previewHealth = NodePath("Sort/LevelPreview/VBoxContainer/Health/Count")
-_previewDuration = NodePath("Sort/LevelPreview/VBoxContainer/Duration/Dur")
-_returnButton = NodePath("Sort/Levels/Sort/Return")
-_playButton = NodePath("Sort/LevelPreview/VBoxContainer/Play")
+_levelList = NodePath("MarginContainer/Sort/Scroll/List")
+_returnButton = NodePath("MarginContainer/Sort/Return")
+_levelDisplay = NodePath("MarginContainer/Sort/LevelDisplay")
+levelButton = ExtResource("9_b1qrp")
 
-[node name="Fill" type="ColorRect" parent="LevelSelect" unique_id=1201615672]
+[node name="ColorRect" type="ColorRect" parent="LevelSelect" unique_id=1702523583]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -319,273 +429,508 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.011764706, 0.043137256, 0.050980393, 1)
 
-[node name="FillTexture" type="TextureRect" parent="LevelSelect" unique_id=44323622]
+[node name="MarginContainer" type="MarginContainer" parent="LevelSelect" unique_id=641113183]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
 
-[node name="Sort" type="HBoxContainer" parent="LevelSelect" unique_id=501791858]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="Sort" type="VBoxContainer" parent="LevelSelect/MarginContainer" unique_id=1949331250]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 0
 theme = ExtResource("2_ryguw")
 
-[node name="Levels" type="PanelContainer" parent="LevelSelect/Sort" unique_id=1911249937]
-custom_minimum_size = Vector2(250, 0)
+[node name="Return" type="Button" parent="LevelSelect/MarginContainer/Sort" unique_id=1601495887]
 layout_mode = 2
 size_flags_horizontal = 0
+text = "< Return "
 
-[node name="Sort" type="VBoxContainer" parent="LevelSelect/Sort/Levels" unique_id=1400017545]
+[node name="Scroll" type="ScrollContainer" parent="LevelSelect/MarginContainer/Sort" unique_id=727502305]
+custom_minimum_size = Vector2(0, 360)
 layout_mode = 2
+horizontal_scroll_mode = 0
 
-[node name="Return" type="Button" parent="LevelSelect/Sort/Levels/Sort" unique_id=94277200]
+[node name="List" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/Scroll" unique_id=1829642402]
 layout_mode = 2
-size_flags_vertical = 0
-focus_mode = 0
-text = "Return"
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="List" type="VBoxContainer" parent="LevelSelect/Sort/Levels/Sort" unique_id=1315248910]
+[node name="LevelDisplay" type="PanelContainer" parent="LevelSelect/MarginContainer/Sort" unique_id=934497672 node_paths=PackedStringArray("LevelName", "Author", "HP", "Duration", "AspectRatio", "Play", "Edit", "Delete", "Mods")]
 layout_mode = 2
-
-[node name="LevelPreview" type="PanelContainer" parent="LevelSelect/Sort" unique_id=1111099756]
-custom_minimum_size = Vector2(220, 100)
-layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 4
+script = ExtResource("35_ok6jj")
+HideEditAndDelete = true
+LevelName = NodePath("Sort/LevelName")
+Author = NodePath("Sort/Author")
+HP = NodePath("Sort/Info/Count")
+Duration = NodePath("Sort/Info/Dur")
+AspectRatio = NodePath("Sort/Info/Ratio")
+Play = NodePath("Sort/Play")
+Edit = NodePath("Sort/Actions/Edit")
+Delete = NodePath("Sort/Actions/Delete")
+Mods = NodePath("../Modifiers")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="LevelSelect/Sort/LevelPreview" unique_id=1079758642]
+[node name="Sort" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/LevelDisplay" unique_id=400908374]
 layout_mode = 2
 
-[node name="LevelName" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer" unique_id=2055726980]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "myLevel"
-horizontal_alignment = 1
-
-[node name="Duration" type="HBoxContainer" parent="LevelSelect/Sort/LevelPreview/VBoxContainer" unique_id=689674488]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer/Duration" unique_id=1132508868]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Duration"
-horizontal_alignment = 1
-
-[node name="Dur" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer/Duration" unique_id=2002007979]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "00.00"
-
-[node name="AspectRatio" type="HBoxContainer" parent="LevelSelect/Sort/LevelPreview/VBoxContainer" unique_id=434385126]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer/AspectRatio" unique_id=695391578]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Ratio"
-horizontal_alignment = 1
-
-[node name="Ratio" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer/AspectRatio" unique_id=511942519]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "X:X"
-
-[node name="Health" type="HBoxContainer" parent="LevelSelect/Sort/LevelPreview/VBoxContainer" unique_id=615817858]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer/Health" unique_id=850325523]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Health"
-horizontal_alignment = 1
-
-[node name="Count" type="Label" parent="LevelSelect/Sort/LevelPreview/VBoxContainer/Health" unique_id=947945394]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "-"
-
-[node name="Play" type="Button" parent="LevelSelect/Sort/LevelPreview/VBoxContainer" unique_id=1683147898]
-layout_mode = 2
-focus_mode = 0
-text = "Play"
-
-[node name="CustomLevelSelect" type="CanvasLayer" parent="." unique_id=664724313 node_paths=PackedStringArray("_editButton", "_deleteButton", "_newLevelButton", "_refreshButton", "_openLevelsFolder", "_author", "_levelList", "_previewId", "_previewRatio", "_previewHealth", "_previewDuration", "_returnButton", "_playButton")]
-visible = false
-script = ExtResource("11_w48qg")
-_editButton = NodePath("Sort/LevelPreview/Sort/Edit")
-_deleteButton = NodePath("Sort/LevelPreview/Sort/Delete")
-_newLevelButton = NodePath("Sort/Levels/Sort/Top/NewLevel")
-_refreshButton = NodePath("Sort/Levels/Sort/Top/Refresh")
-_openLevelsFolder = NodePath("Sort/Levels/Sort/Bottom/Folder")
-_author = NodePath("Sort/LevelPreview/Sort/Author")
-_levelList = NodePath("Sort/Levels/Sort/List")
-_previewId = NodePath("Sort/LevelPreview/Sort/LevelName")
-_previewRatio = NodePath("Sort/LevelPreview/Sort/AspectRatio/Ratio")
-_previewHealth = NodePath("Sort/LevelPreview/Sort/Health/Count")
-_previewDuration = NodePath("Sort/LevelPreview/Sort/Duration/Dur")
-_returnButton = NodePath("Sort/Levels/Sort/Top/Return")
-_playButton = NodePath("Sort/LevelPreview/Sort/Play")
-
-[node name="Fill" type="ColorRect" parent="CustomLevelSelect" unique_id=1890243431]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.011764706, 0.043137256, 0.050980393, 1)
-
-[node name="FillTexture" type="TextureRect" parent="CustomLevelSelect" unique_id=229412542]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Sort" type="HBoxContainer" parent="CustomLevelSelect" unique_id=1860503944]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = ExtResource("2_ryguw")
-
-[node name="Levels" type="PanelContainer" parent="CustomLevelSelect/Sort" unique_id=1558096198]
-custom_minimum_size = Vector2(250, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-
-[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/Sort/Levels" unique_id=19993913]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Top" type="HBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=1747758476]
-layout_mode = 2
-
-[node name="Return" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Top" unique_id=1330142905]
+[node name="LevelName" type="Label" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=1873555839]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-focus_mode = 0
-text = "Return"
+text = "awesome level"
 
-[node name="Refresh" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Top" unique_id=1525116494]
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-text = "Refresh"
-
-[node name="NewLevel" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Top" unique_id=1869391244]
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-text = "New Level"
-
-[node name="Bottom" type="HBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=632194462]
-layout_mode = 2
-
-[node name="Folder" type="Button" parent="CustomLevelSelect/Sort/Levels/Sort/Bottom" unique_id=411114962]
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-text = "Open Levels Folder"
-
-[node name="List" type="VBoxContainer" parent="CustomLevelSelect/Sort/Levels/Sort" unique_id=1681721272]
-layout_mode = 2
-
-[node name="LevelPreview" type="PanelContainer" parent="CustomLevelSelect/Sort" unique_id=598667516]
-custom_minimum_size = Vector2(220, 160)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
-[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/Sort/LevelPreview" unique_id=686331458]
-layout_mode = 2
-
-[node name="LevelName" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=1763577350]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "myLevel"
-horizontal_alignment = 1
-
-[node name="Author" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=2099407255]
+[node name="Author" type="Label" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=508952949]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "author"
 label_settings = ExtResource("7_getpj")
-horizontal_alignment = 1
 
-[node name="Duration" type="HBoxContainer" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=625849443]
+[node name="Info" type="HBoxContainer" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=845481146]
 layout_mode = 2
-size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort/Duration" unique_id=1945130003]
+[node name="Count" type="Label" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Info" unique_id=754839182]
 layout_mode = 2
-size_flags_horizontal = 2
-text = "Duration"
-horizontal_alignment = 1
+size_flags_horizontal = 11
+text = "3 hp"
 
-[node name="Dur" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort/Duration" unique_id=1509864148]
+[node name="Dur" type="Label" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Info" unique_id=2005506841]
 layout_mode = 2
-size_flags_horizontal = 10
-text = "00.00"
+size_flags_horizontal = 11
+text = "00:00"
 
-[node name="AspectRatio" type="HBoxContainer" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=518822402]
+[node name="Ratio" type="Label" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Info" unique_id=455786555]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 11
+text = "1:1"
 
-[node name="Label" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort/AspectRatio" unique_id=2089423324]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Ratio"
-horizontal_alignment = 1
-
-[node name="Ratio" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort/AspectRatio" unique_id=92301290]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "X:X"
-
-[node name="Health" type="HBoxContainer" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=650946282]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort/Health" unique_id=1385931854]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "Health"
-horizontal_alignment = 1
-
-[node name="Count" type="Label" parent="CustomLevelSelect/Sort/LevelPreview/Sort/Health" unique_id=834000771]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "-"
-
-[node name="Play" type="Button" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=1109397313]
+[node name="Play" type="Button" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=1889640132]
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 22
 text = "Play"
 
-[node name="Edit" type="Button" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=1151730779]
+[node name="Actions" type="HBoxContainer" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=138766492]
 layout_mode = 2
+
+[node name="Edit" type="Button" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Actions" unique_id=1903579509]
+layout_mode = 2
+size_flags_horizontal = 3
 focus_mode = 0
 text = "Edit"
 
-[node name="Delete" type="Button" parent="CustomLevelSelect/Sort/LevelPreview/Sort" unique_id=497162724]
+[node name="Delete" type="Button" parent="LevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Actions" unique_id=1525357100]
 layout_mode = 2
+size_flags_horizontal = 3
 focus_mode = 0
 text = "Delete"
 
+[node name="Modifiers" type="PanelContainer" parent="LevelSelect/MarginContainer/Sort" unique_id=16960925 node_paths=PackedStringArray("faster", "slower", "healthy", "perfectionist")]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("12_come4")
+faster = NodePath("VBoxContainer/Faster/CheckBox")
+slower = NodePath("VBoxContainer/Slower/CheckBox")
+healthy = NodePath("VBoxContainer/Healthy/CheckBox")
+perfectionist = NodePath("VBoxContainer/Perfectionist/CheckBox")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers" unique_id=1479728091]
+layout_mode = 2
+
+[node name="Faster" type="HBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=489758378]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster" unique_id=812989578]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster/Sort" unique_id=1565473875]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "faster"
+
+[node name="Subheading" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster/Sort" unique_id=1935439749]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "everything gets faster, except you"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster" unique_id=726485640]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Slower" type="HBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=1000178511]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower" unique_id=586055158]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower/Sort" unique_id=1050306531]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "slower"
+
+[node name="Subheading" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower/Sort" unique_id=561381488]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "everything gets slower, except you"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower" unique_id=239136134]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Healthy" type="HBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=684906220]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy" unique_id=1765569882]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy/Sort" unique_id=789034276]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "healthy"
+
+[node name="Subheading" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy/Sort" unique_id=845760207]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "more health"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy" unique_id=2022675121]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Perfectionist" type="HBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=304862203]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist" unique_id=906516865]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=584056383]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "perfectionist"
+
+[node name="Subheading" type="Label" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=1854417372]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "no hits allowed"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="LevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist" unique_id=1629870128]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="CustomLevelSelect" type="CanvasLayer" parent="." unique_id=2141416188 node_paths=PackedStringArray("_newLevelButton", "_refreshButton", "_openLevelsFolder", "_levelList", "_returnButton", "_levelDisplay")]
+visible = false
+script = ExtResource("11_w48qg")
+_newLevelButton = NodePath("MarginContainer/Sort/Actions/NewLevel")
+_refreshButton = NodePath("MarginContainer/Sort/Actions/Refresh")
+_openLevelsFolder = NodePath("MarginContainer/Sort/Actions/Folder")
+_levelList = NodePath("MarginContainer/Sort/Scroll/List")
+_returnButton = NodePath("MarginContainer/Sort/Return")
+_levelDisplay = NodePath("MarginContainer/Sort/LevelDisplay")
+levelButton = ExtResource("9_b1qrp")
+
+[node name="ColorRect" type="ColorRect" parent="CustomLevelSelect" unique_id=1832983616]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="CustomLevelSelect" unique_id=1219747210]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer" unique_id=498602688]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("2_ryguw")
+
+[node name="Return" type="Button" parent="CustomLevelSelect/MarginContainer/Sort" unique_id=1039013595]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "< Return "
+
+[node name="Actions" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort" unique_id=1986776434]
+layout_mode = 2
+
+[node name="Refresh" type="Button" parent="CustomLevelSelect/MarginContainer/Sort/Actions" unique_id=787388801]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Refresh"
+
+[node name="NewLevel" type="Button" parent="CustomLevelSelect/MarginContainer/Sort/Actions" unique_id=1140322280]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "New Level"
+
+[node name="Folder" type="Button" parent="CustomLevelSelect/MarginContainer/Sort/Actions" unique_id=1443142155]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Open Folder"
+
+[node name="Scroll" type="ScrollContainer" parent="CustomLevelSelect/MarginContainer/Sort" unique_id=740203121]
+custom_minimum_size = Vector2(0, 360)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Scroll" unique_id=2037280038]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LevelDisplay" type="PanelContainer" parent="CustomLevelSelect/MarginContainer/Sort" unique_id=598667516 node_paths=PackedStringArray("LevelName", "Author", "HP", "Duration", "AspectRatio", "Play", "Edit", "Delete", "Mods")]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("35_ok6jj")
+LevelName = NodePath("Sort/LevelName")
+Author = NodePath("Sort/Author")
+HP = NodePath("Sort/Info/Count")
+Duration = NodePath("Sort/Info/Dur")
+AspectRatio = NodePath("Sort/Info/Ratio")
+Play = NodePath("Sort/Play")
+Edit = NodePath("Sort/Actions/Edit")
+Delete = NodePath("Sort/Actions/Delete")
+Mods = NodePath("../Modifiers")
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay" unique_id=686331458]
+layout_mode = 2
+
+[node name="LevelName" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=1763577350]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "awesome level"
+
+[node name="Author" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=2099407255]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "author"
+label_settings = ExtResource("7_getpj")
+
+[node name="Info" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=518822402]
+layout_mode = 2
+
+[node name="Count" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Info" unique_id=834000771]
+layout_mode = 2
+size_flags_horizontal = 11
+text = "3 hp"
+
+[node name="Dur" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Info" unique_id=1509864148]
+layout_mode = 2
+size_flags_horizontal = 11
+text = "00:00"
+
+[node name="Ratio" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Info" unique_id=92301290]
+layout_mode = 2
+size_flags_horizontal = 11
+text = "1:1"
+
+[node name="Play" type="Button" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=1109397313]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 22
+text = "Play"
+
+[node name="Actions" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort" unique_id=361445744]
+layout_mode = 2
+
+[node name="Edit" type="Button" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Actions" unique_id=1151730779]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Edit"
+
+[node name="Delete" type="Button" parent="CustomLevelSelect/MarginContainer/Sort/LevelDisplay/Sort/Actions" unique_id=497162724]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Delete"
+
+[node name="Modifiers" type="PanelContainer" parent="CustomLevelSelect/MarginContainer/Sort" unique_id=1218351561 node_paths=PackedStringArray("faster", "slower", "healthy", "perfectionist", "paranoid")]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("12_come4")
+faster = NodePath("VBoxContainer/Faster/CheckBox")
+slower = NodePath("VBoxContainer/Slower/CheckBox")
+healthy = NodePath("VBoxContainer/Healthy/CheckBox")
+perfectionist = NodePath("VBoxContainer/Perfectionist/CheckBox")
+paranoid = NodePath("VBoxContainer/Paranoid/CheckBox")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers" unique_id=1754964196]
+layout_mode = 2
+
+[node name="Faster" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=1113315298]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster" unique_id=1237890990]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster/Sort" unique_id=141099003]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "faster"
+
+[node name="Subheading" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster/Sort" unique_id=1208937216]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "everything gets faster, except you"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Faster" unique_id=385692345]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Slower" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=1266044808]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower" unique_id=219039206]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower/Sort" unique_id=1306555997]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "slower"
+
+[node name="Subheading" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower/Sort" unique_id=1177340994]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "everything gets slower, except you"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Slower" unique_id=1942705254]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Healthy" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=543208690]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy" unique_id=1769813714]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy/Sort" unique_id=1665886063]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "healthy"
+
+[node name="Subheading" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy/Sort" unique_id=308351241]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "more health"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Healthy" unique_id=1185995943]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Perfectionist" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=553492268]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist" unique_id=206617084]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=857442746]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "perfectionist"
+
+[node name="Subheading" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=1809065997]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "no hits allowed"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Perfectionist" unique_id=320747026]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
+[node name="Paranoid" type="HBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer" unique_id=1325183795]
+layout_mode = 2
+
+[node name="Sort" type="VBoxContainer" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Paranoid" unique_id=1776052711]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Paranoid/Sort" unique_id=1289039686]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "paranoid"
+
+[node name="Subheading" type="Label" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Paranoid/Sort" unique_id=1203648078]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "grazes count as hits"
+label_settings = ExtResource("7_getpj")
+
+[node name="CheckBox" type="CheckBox" parent="CustomLevelSelect/MarginContainer/Sort/Modifiers/VBoxContainer/Paranoid" unique_id=2049305121]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/normal = SubResource("StyleBoxEmpty_h8e4i")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_4lmeg")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_0cp0l")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_d2t1y")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_gngh3")
+
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
+visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -716,7 +1061,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(540, 540)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 z_index = -1
@@ -2120,7 +2465,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview" unique_id=449177170]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=1734361611]
 anchors_preset = 15

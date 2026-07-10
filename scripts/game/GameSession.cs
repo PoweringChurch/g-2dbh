@@ -23,8 +23,9 @@ public partial class GameSession : Node
     private LevelDirector _director;
     private BulletRenderer _renderer;
     private UIManager _ui;
+    private LevelData _lastLevelData;
     private PlayingField _playingField;
-    private string _lastStartedLevelDirectory, _lastStartedLevelId;
+    private StartParams _lastStartParams;
     private int score, health, graze;
     private float maxHealth, duration;
     private bool running = false;
@@ -63,12 +64,11 @@ public partial class GameSession : Node
         SetProcess(false);
         if (IsInstanceValid(GameRoot))
             GameRoot.QueueFree();
-        return StartLevel(_lastStartedLevelDirectory, _lastStartedLevelId);
+        return StartLevel(_lastLevelData, _lastStartParams);
     }
-    public bool StartLevel(string levelsDirectory, string levelId)
+    public bool StartLevel(LevelData levelData, StartParams startParams)
     {
         // get level data
-        var levelData = ReadJson<LevelData>(levelsDirectory+levelId+"/leveldata.json");
         if (levelData == null) return false;
         GameRoot = new Node2D { Name = "GameRoot" };
         _svp.AddChild(GameRoot);
@@ -85,31 +85,42 @@ public partial class GameSession : Node
             resolution.Y * 0.9f);
         _playingField.SetRatio(levelData.AspectRatio, GameRoot);
 
-        health = levelData.Health;
         score = 0;
         graze = 0;
         duration = levelData.Duration;
         maxHealth = levelData.Health;
+        health = levelData.Health;
+        if (startParams.Healthy) health = Math.Max(3, health*2);
+        else if (startParams.Perfectionist) health = 1;
+        
         // setup ui
-        _ui.HUD.SetHealth(health); // works
+        _ui.HUD.SetHealth(health);
         _ui.HUD.SetGraze(0);
         _ui.HUD.SetScore(0);
-        _ui.HUD.SetLevelName(levelData.DisplayName); // called but dont work?
+        _ui.HUD.SetLevelName(levelData.DisplayName);
         _ui.HUD.SetDuration(levelData.Duration);
+        _ui.HUD.SetMods(startParams);
         _character.OnHurt += OnHurt;
         _character.OnGraze += OnGraze;
-
         _ui.ShowHUD();
         // start
-        _lastStartedLevelDirectory = levelsDirectory;
-        _lastStartedLevelId = levelId;
+        _lastLevelData = levelData;
+        _lastStartParams = startParams;
         _renderer = new BulletRenderer(compiled, this);
+
+        float multiplier = 1f;
+        if (startParams.Slower) multiplier = 2/3f;
+        else if (startParams.Faster) multiplier = 3/2f;
+
+        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
+        GAP.Stream = AudioUtils.LoadAudio(levelData.LevelPath+"/audio/", levelData.Music);
+        GAP.PitchScale = multiplier;
+        GAP.Play(0);
+        
         _director = new LevelDirector();
         _director.LevelFinished += StopLevel;
-        _director.StartLevel(compiled, _character);
-        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
-        GAP.Stream = AudioUtils.LoadAudio(levelsDirectory+levelId+"/audio/", levelData.Music);
-        GAP.Play(0);
+        _director.StartLevel(compiled, _character, multiplier);
+        
         SetPhysicsProcess(true);
         SetProcess(true);
         running = true;
@@ -125,8 +136,9 @@ public partial class GameSession : Node
     }
     public void OnHurt()
     {
-        score -= Math.Max((int)(100*health/maxHealth), 0);
+
         health--;
+        if (!_lastStartParams.Paranoid) score -= Math.Max((int)(100*(health+1)/maxHealth), 0);
         _ui.HUD.SetHealth(health);
         _ui.HUD.SetScore(score);
         if (health <= 0)
@@ -136,6 +148,8 @@ public partial class GameSession : Node
     public void OnGraze()
     {
         graze++;
+        if (_lastStartParams.Paranoid && _character.Hurt() && !ConfigHelper.Current.NoHit)
+            return;
         score += (int)(100*health/maxHealth);
         _ui.HUD.SetScore(score);
         _ui.HUD.SetGraze(graze);

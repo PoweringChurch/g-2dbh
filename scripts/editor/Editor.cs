@@ -54,7 +54,7 @@ public partial class Editor : CanvasLayer
     }
     public float CurrentTime => _timeline.CurrentTime;
     private const string _levelDirectory = "user://data/levels/";
-    public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
+    public string LevelPath => $"{(levelData != null ? levelData.LevelPath : "")}/";
     public IEditorModel SelectedModel => _modelLibrary.SelectedModel;
     private ProjectileModel[] projectileModels = new ProjectileModel[MaxModelCount];
     private PatternModel[] patternModels = new PatternModel[MaxModelCount];
@@ -272,25 +272,16 @@ public partial class Editor : CanvasLayer
     public void NewLevel()
     {
         LevelData data = new();
-        string levelPath = $"{_levelDirectory}{data.LevelId}/";
-        DirAccess.MakeDirRecursiveAbsolute(levelPath);
-        DirAccess.MakeDirRecursiveAbsolute(levelPath + "images/");
-        DirAccess.MakeDirRecursiveAbsolute(levelPath + "audio/");
-        WriteJson(levelPath + "leveldata.json", data);
+        data.LevelPath = $"user://data/levels/{Guid.NewGuid()}/";
+        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath);
+        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "images/");
+        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "audio/");
+        WriteJson(data.LevelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
     public void SetPlaying(bool to) => _timeline.SetPlaying(to);
-    public bool OpenLevel(string levelId)
+    public bool OpenLevel(LevelData data)
     {
-        string levelDataPath = $"{_levelDirectory}{levelId}/leveldata.json";
-
-        if (!FileAccess.FileExists(levelDataPath))
-        {
-            Console.Inst.Log($"[Editor] Level not found: {levelDataPath}");
-            return false;
-        }
-        LevelData data = ReadJson<LevelData>(levelDataPath);
-        data.LevelId = levelId;
         ApplyLevelData(data);
         return true;
     }
@@ -331,9 +322,8 @@ public partial class Editor : CanvasLayer
     {
         levelData.PatternModels = [.. patternModels];
         levelData.ProjectileModels = [.. projectileModels];
-        string levelPath = $"{_levelDirectory}{levelData.LevelId}/";
-        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
-        WriteJson(levelPath + "leveldata.json", levelData);
+        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelPath})...");
+        WriteJson(levelData.LevelPath + "leveldata.json", levelData);
         Console.Inst.Log("[Editor] Saved level successfully");
     }
     public void SyncPreview() =>

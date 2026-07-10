@@ -10,6 +10,12 @@ public partial class HUD : CanvasLayer
     [Export] Label _Duration;
     [Export] Label _Completion;
 
+    [Export] TextureRect faster;
+    [Export] TextureRect slower;
+    [Export] TextureRect hearty;
+    [Export] TextureRect perfect;
+    [Export] TextureRect paranoid;
+
     public void SetScore(int score) 
     {
         _scoreLabel.Text = score.ToString().PadLeft(6, '0');
@@ -25,6 +31,14 @@ public partial class HUD : CanvasLayer
     {
         TimeSpan ts = TimeSpan.FromSeconds(duration);
         _Duration.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
+    }
+    public void SetMods(StartParams startParams)
+    {
+        faster.Visible = startParams.Faster;
+        slower.Visible = startParams.Slower;
+        hearty.Visible = startParams.Healthy;
+        perfect.Visible = startParams.Perfectionist;
+        paranoid.Visible = startParams.Paranoid;
     }
     public void ResetStats()
     {

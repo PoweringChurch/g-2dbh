@@ -43,8 +43,8 @@ public partial class UIManager : Node
         ScoreSummary.ResetRequested += OnReset;
         ScoreSummary.QuitRequested  += OnPauseQuit;
 
-        _mainMenu.StartRequested += OnStart;
-        _mainMenu.CustomsRequested += OnCustoms;
+        _mainMenu.StartRequested += ShowStart;
+        _mainMenu.CustomsRequested += ShowCustoms;
         _mainMenu.QuitRequested += OnQuit;
         _mainMenu.SettingsRequested += OnSettings;
         ShowMainMenu();
@@ -100,13 +100,13 @@ public partial class UIManager : Node
         _canPause = false; // assume that whatever were switching to cant pause
     }
     void OnResume() => TogglePause(false);
-    void OnStart()
+    public void ShowStart()
     {
         _levelSelect.PopulateList();
         SetVisible(_levelSelect);
         inCustoms = false;
     }
-    void OnCustoms() 
+    public void ShowCustoms() 
     {
         _customLevelSelect.PopulateList();
         SetVisible(_customLevelSelect);
