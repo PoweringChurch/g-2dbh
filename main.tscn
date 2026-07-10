@@ -10,7 +10,8 @@
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/level/LevelMetadata.cs" id="5_ycdy4"]
 [ext_resource type="Script" uid="uid://bju7haqyrgrrg" path="res://scripts/editor/projectile_creator/ShapeEditor.cs" id="6_074og"]
-[ext_resource type="Texture2D" uid="uid://dyx8k3dvsl1aj" path="res://data/images/logo/en-logo.png" id="6_lswn8"]
+[ext_resource type="Texture2D" uid="uid://dyx8k3dvsl1aj" path="res://data/images/title/logo/en-logo.png" id="6_lswn8"]
+[ext_resource type="Texture2D" uid="uid://d0pqw0neo6is8" path="res://data/images/title/scroller.png" id="7_0rl1p"]
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="7_cegan"]
 [ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/author_label_settings.tres" id="7_getpj"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="8_074og"]
@@ -31,11 +32,9 @@
 [ext_resource type="Script" uid="uid://btx10vhpu4n68" path="res://scripts/utils/AudioUtils.cs" id="22_ryguw"]
 [ext_resource type="Script" uid="uid://bxxee83vumrs6" path="res://scripts/ui/popups/Popups.cs" id="23_1u8w0"]
 [ext_resource type="Script" uid="uid://cwsyeq4goolke" path="res://scripts/utils/Console.cs" id="23_d13ii"]
-[ext_resource type="Script" uid="uid://b8ij73px4w0" path="res://scripts/ui/stuff/DraggableContainer.cs" id="23_kq58d"]
-[ext_resource type="LabelSettings" uid="uid://dsw8058phmgwh" path="res://data/other/label_settings/header_label_settings.tres" id="24_seu75"]
+[ext_resource type="Script" uid="uid://dc2w0ihohtdkh" path="res://scripts/editor/level/BackgroundEditor.cs" id="28_0rl1p"]
 [ext_resource type="Script" uid="uid://cfibamy3fls3g" path="res://scripts/utils/Overlay.cs" id="28_xuqvo"]
-
-[sub_resource type="DPITexture" id="DPITexture_htxhm"]
+[ext_resource type="PackedScene" uid="uid://bqnjj1cp37xxx" path="res://data/scenes/ui/background_layer_ui.tscn" id="29_ok6jj"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -240,7 +239,20 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.008858773, 0.060547896, 0.044837788, 1)
+color = Color(0.011764706, 0.043137256, 0.050980393, 1)
+
+[node name="Parallax2D" type="Parallax2D" parent="MainMenu" unique_id=1213098737]
+repeat_size = Vector2(7665, 0)
+autoscroll = Vector2(90, 0)
+repeat_times = 2
+follow_viewport = false
+
+[node name="Sprite2D" type="Sprite2D" parent="MainMenu/Parallax2D" unique_id=623737605]
+position = Vector2(457, 534)
+scale = Vector2(1, 3.2)
+skew = 0.19547687
+texture = ExtResource("7_0rl1p")
+region_rect = Rect2(52.535, 49.235, 43.33, 43.005)
 
 [node name="Sort" type="VBoxContainer" parent="MainMenu" unique_id=234966351]
 anchors_preset = 8
@@ -685,14 +697,13 @@ size_flags_vertical = 3
 [node name="Left" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=1996319426]
 layout_mode = 2
 
-[node name="LevelPreview" type="PanelContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1344970830 node_paths=PackedStringArray("PreviewRoot", "BackgroundImage", "PreviewVP")]
+[node name="LevelPreview" type="PanelContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1344970830 node_paths=PackedStringArray("PreviewRoot", "PreviewVP")]
 custom_minimum_size = Vector2(315, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("10_074og")
 PreviewRoot = NodePath("Sort/Container/SubViewport/Preview")
-BackgroundImage = NodePath("Sort/Container/SubViewport/BackgroundImage")
 PreviewVP = NodePath("Sort/Container/SubViewport")
 
 [node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelPreview" unique_id=1988492208]
@@ -730,36 +741,38 @@ size_flags_vertical = 3
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Dim" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=2005796189]
-z_index = -1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="Background" type="Control" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=895327627]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-mouse_filter = 1
-color = Color(0, 0, 0, 0.39215687)
+scale = Vector2(0.6, 0.6)
 
 [node name="Preview" type="Node2D" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=624726340]
 
-[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("LevelNameInput", "AuthorInput", "BGImageInput", "MusicInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "ErrorDisplay")]
+[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("BackgroundHolder", "LevelNameInput", "AuthorInput", "MusicInput", "HealthInput", "DurationInput", "AspectRatioInput", "SaveLevel", "OpenLevelFolder", "OpenBgEditor", "ErrorDisplay", "BackgroundEditor")]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
+mouse_behavior_recursive = 2
 title = "Level Data"
 script = ExtResource("5_ycdy4")
+BackgroundHolder = NodePath("../LevelPreview/Sort/Container/SubViewport/Background")
 LevelNameInput = NodePath("Sort/Top/Left/LevelName/LevelName")
 AuthorInput = NodePath("Sort/Top/Left/Author/Author")
-BGImageInput = NodePath("Sort/Top/Right/BgImage/BgImage")
 MusicInput = NodePath("Sort/Top/Left/Music/MusicName")
 HealthInput = NodePath("Sort/Top/Right/Health/Health")
 DurationInput = NodePath("Sort/Top/Right/Duration/Durati")
 AspectRatioInput = NodePath("Sort/Top/Left/AspectRatio/AspectDropdown")
 SaveLevel = NodePath("Sort/Actions/Save")
 OpenLevelFolder = NodePath("Sort/Actions/LevelFolder")
+OpenBgEditor = NodePath("Sort/Top/Right/BgImage/Button")
 ErrorDisplay = NodePath("Sort/Errors")
+BackgroundEditor = NodePath("../../../../BackgroundEditor")
 
 [node name="Sort" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata" unique_id=950968568]
 layout_mode = 2
@@ -851,13 +864,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Background"
 
-[node name="BgImage" type="LineEdit" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Right/BgImage" unique_id=783987087]
+[node name="Button" type="Button" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Right/BgImage" unique_id=1386898912]
 layout_mode = 2
 size_flags_horizontal = 3
-focus_mode = 1
-placeholder_text = "..."
-context_menu_enabled = false
-emoji_menu_enabled = false
+text = "Edit"
 
 [node name="Health" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Right" unique_id=148922302]
 layout_mode = 2
@@ -904,12 +914,14 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
+theme_override_font_sizes/font_size = 22
 text = "Save"
 
 [node name="LevelFolder" type="Button" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Actions" unique_id=1259712084]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
+theme_override_font_sizes/font_size = 22
 text = "Open folder"
 
 [node name="Middle" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=1463171683]
@@ -1053,6 +1065,7 @@ size_flags_vertical = 3
 [node name="Button" type="Button" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary/Projectiles/List" unique_id=949954076]
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 22
 text = "Next Free"
 
 [node name="Patterns" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/ModelLibrary" unique_id=1905273804]
@@ -1075,13 +1088,38 @@ text = "Next Free"
 [node name="Expressions" type="TabContainer" parent="EditorLayer/Sections/Modules/Middle" unique_id=848879966]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 3
-tab_0/icon = SubResource("DPITexture_htxhm")
+current_tab = 0
+tab_0/title = "Custom Variables"
+tab_1/title = "Predefined Variables"
+
+[node name="Custom" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions" unique_id=2143877547 node_paths=PackedStringArray("NewDefinition", "List")]
+layout_mode = 2
+script = ExtResource("18_4k2k6")
+NewDefinition = NodePath("New")
+List = NodePath("ScrollContainer/List")
+DefinitionUi = ExtResource("19_4k2k6")
+metadata/_tab_index = 0
+metadata/_tab_name = "Custom Variables"
+
+[node name="New" type="Button" parent="EditorLayer/Sections/Modules/Middle/Expressions/Custom" unique_id=316533653]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "New definition"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Custom" unique_id=424044854]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="List" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Custom/ScrollContainer" unique_id=1480153733]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="Variables" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions" unique_id=269522499]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 0
+metadata/_tab_index = 1
+metadata/_tab_name = "Predefined Variables"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Variables" unique_id=634404865]
 layout_mode = 2
@@ -1186,7 +1224,7 @@ autowrap_mode = 3
 [node name="Constants" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions" unique_id=1767138350]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 1
+metadata/_tab_index = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Constants" unique_id=581433956]
 layout_mode = 2
@@ -1359,7 +1397,7 @@ autowrap_mode = 3
 [node name="Functions" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions" unique_id=45392076]
 visible = false
 layout_mode = 2
-metadata/_tab_index = 2
+metadata/_tab_index = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Functions" unique_id=1153521469]
 layout_mode = 2
@@ -1465,27 +1503,6 @@ text = "floor(x)"
 layout_mode = 2
 text = "tanh(x)"
 
-[node name="Custom" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions" unique_id=2143877547 node_paths=PackedStringArray("NewDefinition", "List")]
-layout_mode = 2
-script = ExtResource("18_4k2k6")
-NewDefinition = NodePath("New")
-List = NodePath("ScrollContainer/List")
-DefinitionUi = ExtResource("19_4k2k6")
-metadata/_tab_index = 3
-
-[node name="New" type="Button" parent="EditorLayer/Sections/Modules/Middle/Expressions/Custom" unique_id=316533653]
-layout_mode = 2
-text = "New definition"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Custom" unique_id=424044854]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="List" type="VBoxContainer" parent="EditorLayer/Sections/Modules/Middle/Expressions/Custom/ScrollContainer" unique_id=1480153733]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
 [node name="Right" type="VBoxContainer" parent="EditorLayer/Sections/Modules" unique_id=129711909]
 layout_mode = 2
 
@@ -1493,11 +1510,12 @@ layout_mode = 2
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 tab_0/title = "Projectile Editor"
 tab_1/title = "Pattern Editor"
 
 [node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "WarningDisplay", "FnXInput", "FnYInput", "LifetimeInput", "TelegraphTimeInput", "PersistantCheckbutton", "FacePlayerCheckbutton", "CanCollideCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "ShapeTranslate", "SpawnOnDeathUi", "SpawnModelOnDeathCheck", "DeathModelType", "SpawnOnDeathIdInput", "MaxDepthInput", "Save")]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("5_w48qg")
@@ -1558,7 +1576,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15
@@ -1674,7 +1692,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 1
 text = "0"
-placeholder_text = "0"
+placeholder_text = "50*sin(t)"
 context_menu_enabled = false
 emoji_menu_enabled = false
 
@@ -1691,7 +1709,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 1
 text = "0"
-placeholder_text = "30*sin(t)"
+placeholder_text = "(t/l)*500"
 context_menu_enabled = false
 emoji_menu_enabled = false
 
@@ -1906,6 +1924,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 focus_mode = 0
+theme_override_font_sizes/font_size = 22
 text = "+"
 
 [node name="ShapeTranslate" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Sort/Collision/VBoxContainer" unique_id=1974529146]
@@ -2055,7 +2074,6 @@ autowrap_mode = 2
 script = ExtResource("8_074og")
 
 [node name="PatternCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=2050226747 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "FacePlayer", "IdInput", "NameInput", "Save", "ErrorDisplay")]
-visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("15_getpj")
@@ -2102,7 +2120,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview" unique_id=449177170]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=1734361611]
 anchors_preset = 15
@@ -2368,63 +2386,67 @@ select_all_on_focus = true
 
 [node name="EditorAudioPreview" type="AudioStreamPlayer" parent="EditorLayer" unique_id=1220983324]
 
-[node name="DraggableContainer" type="FoldableContainer" parent="EditorLayer" unique_id=705087532]
+[node name="BackgroundEditor" type="PanelContainer" parent="EditorLayer" unique_id=808029005 node_paths=PackedStringArray("BackgroundHolder", "Organize", "NewLayer", "Close", "List")]
 visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -234.0
-offset_top = -123.5
-offset_right = 234.0
-offset_bottom = 123.5
-grow_horizontal = 2
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -267.0
+grow_horizontal = 0
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
-title = "Tips and stuff"
-script = ExtResource("23_kq58d")
-metadata/_custom_type_script = "uid://b8ij73px4w0"
+script = ExtResource("28_0rl1p")
+BackgroundHolder = NodePath("../Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport/Background")
+bglayerui = ExtResource("29_ok6jj")
+Organize = NodePath("Sort/Top/Organize")
+NewLayer = NodePath("Sort/New")
+Close = NodePath("Sort/Top/Close")
+List = NodePath("Sort/Scroll/List")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="EditorLayer/DraggableContainer" unique_id=333053196]
+[node name="Sort" type="VBoxContainer" parent="EditorLayer/BackgroundEditor" unique_id=1683402461]
 layout_mode = 2
-scroll_vertical = 141
 
-[node name="List" type="VBoxContainer" parent="EditorLayer/DraggableContainer/ScrollContainer" unique_id=864527494]
+[node name="Label" type="Label" parent="EditorLayer/BackgroundEditor/Sort" unique_id=1105487845]
+layout_mode = 2
+text = "Background Editor"
+
+[node name="Top" type="HBoxContainer" parent="EditorLayer/BackgroundEditor/Sort" unique_id=441682303]
+layout_mode = 2
+
+[node name="Close" type="Button" parent="EditorLayer/BackgroundEditor/Sort/Top" unique_id=1430661965]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Close menu"
+
+[node name="Organize" type="Button" parent="EditorLayer/BackgroundEditor/Sort/Top" unique_id=865935694]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Organize"
+
+[node name="New" type="Button" parent="EditorLayer/BackgroundEditor/Sort" unique_id=1406780953]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "New Layer
+"
+
+[node name="Scroll" type="ScrollContainer" parent="EditorLayer/BackgroundEditor/Sort" unique_id=321592238]
+layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 14
+horizontal_scroll_mode = 0
 
-[node name="TipsHeader" type="Label" parent="EditorLayer/DraggableContainer/ScrollContainer/List" unique_id=1772711482]
+[node name="List" type="VBoxContainer" parent="EditorLayer/BackgroundEditor/Sort/Scroll" unique_id=185489262]
 layout_mode = 2
-text = "Useful Expressions"
-label_settings = ExtResource("24_seu75")
-horizontal_alignment = 1
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
 
-[node name="iovern" type="Label" parent="EditorLayer/DraggableContainer/ScrollContainer/List" unique_id=2052857374]
-custom_minimum_size = Vector2(100, 0)
+[node name="BackgroundLayerUi" parent="EditorLayer/BackgroundEditor/Sort/Scroll/List" unique_id=1809618226 node_paths=PackedStringArray("scale") instance=ExtResource("29_ok6jj")]
 layout_mode = 2
-text = "(i / n) can be useful in expressing pattern progress. This expression can be used to create circular bursts or waves."
-autowrap_mode = 3
-
-[node name="toverl" type="Label" parent="EditorLayer/DraggableContainer/ScrollContainer/List" unique_id=1469231104]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "(t / l) can be useful in expressing lifetime progress. This expression can be used to create different types of easing."
-autowrap_mode = 3
-
-[node name="ThinkingHeader" type="Label" parent="EditorLayer/DraggableContainer/ScrollContainer/List" unique_id=319929717]
-layout_mode = 2
-text = "Thinking"
-label_settings = ExtResource("24_seu75")
-horizontal_alignment = 1
-
-[node name="thinking" type="Label" parent="EditorLayer/DraggableContainer/ScrollContainer/List" unique_id=1934986043]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-text = "Whenever you want something to change from the start to the end of pattern or lifetime, think in terms of 0 to 1 and use division."
-autowrap_mode = 3
+scale = NodePath("Config/Scale/Repea")
 
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1278547073 node_paths=PackedStringArray("_resumeButton", "_resetButton", "_quitButton")]
 process_mode = 2
@@ -2833,4 +2855,4 @@ offset_right = 122.0
 offset_bottom = 23.0
 grow_horizontal = 2
 theme = ExtResource("2_ryguw")
-text = "danmaku mania pre alpha 4"
+text = "danmaku mania pre alpha 5"

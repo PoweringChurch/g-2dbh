@@ -149,8 +149,8 @@ public partial class ProjectileModelPreview : Node2D
         {
             List<Vector2> closed = [.. shape, shape[0]];
             var points = closed.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
-            if (points.Length > 1) 
-            DrawColoredPolygon(points, new Color(1,1,1,alpha));
+            if (points.Length > 2) 
+                DrawColoredPolygon(points, new Color(1,1,1,alpha));
         }
         else
         {

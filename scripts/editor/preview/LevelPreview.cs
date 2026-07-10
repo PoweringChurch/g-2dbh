@@ -6,11 +6,13 @@ using Godot;
 
 public partial class LevelPreview : Control
 {
+	public const float PreviewScale = 0.6f;
 	[Export] Node2D PreviewRoot;
-	[Export] TextureRect BackgroundImage;
 	[Export] SubViewport PreviewVP;
 	private Editor e;
 	private float resScale = 1;
+	private List<BackgroundLayerInstance> bgInstances = new();
+	public List<BackgroundLayerInstance> BGInstances => bgInstances;
 	private List<RenderGroup> _renderGroups = new();
 	private float[][] _groupBuffers = new float[Editor.MaxModelCount][];
 	public override void _Ready()
@@ -390,6 +392,8 @@ public partial class LevelPreview : Control
 					if (r == SelectedReference) continue; 
 					r.SpawnX += delta.X;
 					r.SpawnY += delta.Y;
+					if (r.Type == ModelType.Pattern)
+						r.Pos = new(r.SpawnX, r.SpawnY);
 					UpdateReferenceInEditor(r, r.RootEditorId);
 				}
 			}
@@ -630,21 +634,11 @@ public partial class LevelPreview : Control
 	public void Fit(Vector2I res)
 	{
 		var win = GetTree().Root.GetVisibleRect().Size;
-		resScale = Mathf.Min(win.X / res.X, win.Y / res.Y) * 0.6f;
+		resScale = Mathf.Min(win.X / res.X, win.Y / res.Y) * PreviewScale;
 		PreviewVP.Size = (Vector2I)((Vector2)res * resScale);
 		PreviewRoot.Scale = Vector2.One * resScale;
 	}
 	private void OnWindowResized() => Fit(PlayingField.Resolutions[e.levelData.AspectRatio]);
-	public void ChangeBackgroundImage(string to)
-	{
-		if (to == "none")
-		{
-			BackgroundImage.Texture = null;
-			return;
-		}
-		var bg = RenderingUtils.LoadTexture(e.LevelPath+"images/",to);
-		BackgroundImage.Texture = bg;
-	}
 	// only call on load
 	public void Load(LevelData level)
 	{
@@ -666,13 +660,18 @@ public partial class LevelPreview : Control
 			r.RootEditorId = nextId++;
 			UpdateReferenceInEditor(r,r.RootEditorId);
 		}
-		Sync();
 		Console.Inst.Log("[LevelPreview] Completed compile all");
 	}
 	List<EditorReference> _bakedTimeline = new();
 	private EvalContext _ctx = new();
 	public void Sync()
 	{
+		// tick backgrounds
+		_ctx.T = e.CurrentTime;
+		for (int i = 0; i < e.levelData.BackgroundLayers.Count; i++)
+		{
+			bgInstances[i].Tick(_ctx);
+		}
 		// clear indices
 		for (int g = 0; g < _renderGroups.Count; g++)
 		{

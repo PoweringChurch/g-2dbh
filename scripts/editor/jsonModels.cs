@@ -36,7 +36,6 @@ public class LevelData
 {
     [JsonPropertyName("displayName")] public string DisplayName { get; set; } = "New Level";
     [JsonPropertyName("author")] public string Author { get; set; } = "Unknown";
-    [JsonPropertyName("bgImage")] public string BgImage { get; set; } = "none";
     [JsonPropertyName("music")] public string Music { get; set; } = "none";
     [JsonPropertyName("health")] public int Health { get; set; } = 3;
     [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 0;
@@ -46,4 +45,5 @@ public class LevelData
     [JsonPropertyName("bullets")] public List<EditorReference> References { get; set; } = [];
     [JsonPropertyName("variables")] public Dictionary<string, string> CustomVariables { get; set; } = [];
     [JsonPropertyName("id")] public string LevelId { get; set; } = Guid.NewGuid().ToString();
+    [JsonPropertyName("backgroundLayers")] public List<BackgroundLayer> BackgroundLayers {get; set;} = [];
 }

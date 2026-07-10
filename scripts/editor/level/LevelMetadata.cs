@@ -3,23 +3,23 @@ using System;
 
 public partial class LevelMetadata : Control
 {
+    [Export] Control BackgroundHolder;
 	[Export] LineEdit LevelNameInput;
 	[Export] LineEdit AuthorInput;
-	[Export] LineEdit BGImageInput;
 	[Export] LineEdit MusicInput;
 	[Export] SpinBox HealthInput;
 	[Export] SpinBox DurationInput;
 	[Export] OptionButton AspectRatioInput;
 	[Export] Button SaveLevel;
 	[Export] Button OpenLevelFolder;
+	[Export] Button OpenBgEditor;
 	[Export] MessageDisplay ErrorDisplay;
 	[Signal] public delegate void AspectRatioChangedEventHandler(Vector2I aspectRatio);
 	[Signal] public delegate void DurationChangedEventHandler();
-	[Signal] public delegate void BgImageChangedEventHandler(string to);
 	[Signal] public delegate void MusicChangedEventHandler(AudioStream to);
 	[Signal] public delegate void SaveLevelRequestedEventHandler();
 	Editor e;
-
+	[Export] BackgroundEditor BackgroundEditor;
 	public override void _Ready()
 	{
 		base._Ready();
@@ -31,7 +31,7 @@ public partial class LevelMetadata : Control
 		AspectRatioInput.ItemSelected += OnAspectSelect;
 		OpenLevelFolder.Pressed += OnLevelFolderOpen;
 		SaveLevel.Pressed += OnSavePressed;
-		BGImageInput.TextChanged += OnBgImageChanged;
+		OpenBgEditor.Pressed += OnBgEditPressed;
 		e = GetNode<Editor>("/root/Editor");
 	}
 
@@ -52,21 +52,9 @@ public partial class LevelMetadata : Control
 		else ErrorDisplay.SetMessage("Music", $"[Music] Could not find audio of name {newSong} in audio folder.");
 	}
 
-    private void OnBgImageChanged(string text)
+    private void OnBgEditPressed()
 	{
-		Texture2D found = RenderingUtils.LoadTexture(e.LevelPath + "images/", text);
-		if (found != null && text == "none")
-		{
-			ErrorDisplay.SetMessage("Background", $"[BG Image] 'none' is a reserved name, please rename this image file.");
-			return;
-		}
-		if (found != null || text == "none")
-		{
-			e.levelData.BgImage = text;
-			EmitSignal(SignalName.BgImageChanged, text);
-			ErrorDisplay.ClearMessage("Background");
-		}
-		else ErrorDisplay.SetMessage("Background", $"[BG Image] Could not find image of name {text} in images folder.");
+		BackgroundEditor.Visible = true;
 	}
 	private void OnSavePressed()
 	{
@@ -105,12 +93,16 @@ public partial class LevelMetadata : Control
 		e.levelData.DisplayName = text;
 	public void Load(LevelData data)
 	{
+		foreach (var child in BackgroundHolder.GetChildren())
+			child.QueueFree();
 		AuthorInput.Text = data.Author;
 		AspectRatioInput.Selected = data.AspectRatio;
 		HealthInput.Value = data.Health;
 		DurationInput.Value = data.Duration;
-		BGImageInput.Text = data.BgImage;
 		MusicInput.Text = data.Music;
 		LevelNameInput.Text = data.DisplayName;
+		BackgroundHolder.Position = (Vector2)PlayingField.Resolutions[data.AspectRatio]/2*LevelPreview.PreviewScale;
+
+		BackgroundEditor.Load(data);
 	}
 }

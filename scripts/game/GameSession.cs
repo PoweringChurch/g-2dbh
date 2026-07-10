@@ -18,7 +18,6 @@ public partial class GameSession : Node
     public static NodePath BackgroundImagePath = SubViewportPath+"/BackgroundImage";
     public Node2D GameRoot {get; private set;}
     private SubViewport _svp;
-    private TextureRect _backgroundImage;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
     private PlayerCharacter _character;
     private LevelDirector _director;
@@ -34,7 +33,6 @@ public partial class GameSession : Node
     {
         _ui = GetNode<UIManager>("/root/UIManager");
         _svp = GetNode<SubViewport>(SubViewportPath);
-        _backgroundImage = GetNode<TextureRect>(BackgroundImagePath);
         GAP = GetNode<AudioStreamPlayer>(GameAudioPlayerPath);
         _playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
@@ -111,7 +109,6 @@ public partial class GameSession : Node
         _director.StartLevel(compiled, _character);
         GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
         GAP.Stream = AudioUtils.LoadAudio(levelsDirectory+levelId+"/audio/", levelData.Music);
-        _backgroundImage.Texture = RenderingUtils.LoadTexture(levelsDirectory+levelId+"/images/", levelData.BgImage);
         GAP.Play(0);
         SetPhysicsProcess(true);
         SetProcess(true);

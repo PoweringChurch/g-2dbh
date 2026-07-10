@@ -60,13 +60,14 @@ public partial class Editor : CanvasLayer
     private PatternModel[] patternModels = new PatternModel[MaxModelCount];
     public IReadOnlyList<ProjectileModel> ProjectileModels => projectileModels;
     public IReadOnlyList<PatternModel> PatternModels => patternModels;
-    // Save the input model at the specified id. This function will set the models id to match what was provided.
+    public List<BackgroundLayerInstance> BGInstances => _preview.BGInstances;
+    // Save the input model at the specified id. This function will set the models id to match what was provided
     public void SaveProjectileModel(ProjectileModel model, int id)
     {
         projectileModels[id] = model;
         model.Id = id;
     }
-    // Save the input model at the specified id. This function will set the models id to match what was provided.
+    // Save the input model at the specified id. This function will set the models id to match what was provided
     public void SavePatternModel(PatternModel model, int id)
     {
         patternModels[id] = model;
@@ -170,7 +171,6 @@ public partial class Editor : CanvasLayer
         _levelMeta.AspectRatioChanged += _preview.Fit;
         _levelMeta.DurationChanged += _timeline.UpdateDuration;
         _levelMeta.SaveLevelRequested += SaveLevel;
-        _levelMeta.BgImageChanged += _preview.ChangeBackgroundImage;
         _levelMeta.MusicChanged += _timeline.UpdateMusic;
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
         _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
@@ -214,6 +214,9 @@ public partial class Editor : CanvasLayer
     public override void _Input(InputEvent @event)
     {
         if (!Open) return;
+        var focused = GetViewport().GuiGetFocusOwner();
+        if (focused is LineEdit or TextEdit)
+            return;
         CurrentMode = @event.IsActionPressed("place_bind") ? Mode.Place :
                   @event.IsActionPressed("select_bind") ? Mode.Select :
                   @event.IsActionPressed("delete_bind") ? Mode.Delete : CurrentMode;
@@ -293,6 +296,7 @@ public partial class Editor : CanvasLayer
     }
     private void ApplyLevelData(LevelData data)
     {
+        RepairLevelData(data);
         levelData = data;
         for (int i = 0; i < MaxModelCount; i++)
         {
@@ -307,7 +311,6 @@ public partial class Editor : CanvasLayer
         _customVars.Load(data);
         _timeline.Load(data);
         _timeline.UpdateDuration();
-        _preview.ChangeBackgroundImage(data.BgImage);
         _preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
         _levelMeta.Load(data);
         _projCreator.LoadProjectile(projectileModels[0]);
@@ -315,6 +318,14 @@ public partial class Editor : CanvasLayer
         _modelLibrary.Refresh();
         _preview.Load(data);
         _preview.Sync();
+    }
+    private void RepairLevelData(LevelData data)
+    {
+        data.BackgroundLayers ??= [];
+        data.ProjectileModels ??= [];  
+        data.PatternModels ??= [];  
+        data.References ??= [];  
+        data.CustomVariables ??= [];  
     }
     private void SaveLevel()
     {
@@ -336,6 +347,7 @@ public partial class Editor : CanvasLayer
     {
         _timeline.RemoveMarker(reference);
         levelData.References.Remove(reference);
+        _preview.UpdateReferenceInEditor(null, reference.RootEditorId);
     }
     // opens a model in its respective creator
     public void OpenModel(IEditorModel model)

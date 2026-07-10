@@ -8,6 +8,26 @@ public class LevelCompiler
     public static CompiledLevel CompileLevel(LevelData level, Node2D gameRoot)
     {
         CompiledLevel compiled = new();
+        // set custom variables
+        CustomVariableExpr.Definitions.Clear();
+        foreach (var kvp in level.CustomVariables)
+            CustomVariableExpr.Definitions[kvp.Key] = ExpressionHandler.Parse(kvp.Value);
+        // compile background
+        var backgroundroot = new Node2D();
+        backgroundroot.Position = PlayingField.Resolutions[level.AspectRatio]/2;
+        gameRoot.AddChild(backgroundroot);
+        for (int i = 0; i < level.BackgroundLayers.Count; i++)
+        {
+            var layer = level.BackgroundLayers[i];
+            var instance = new BackgroundLayerInstance();
+            var sprite = new Sprite2D();
+            instance.AddChild(sprite);
+            instance.Sprite = sprite;
+            instance.Layer = layer;
+            compiled.BackgroundInstances.Add(instance);
+            instance.ApplyLayerParams($"user://data/levels/{level.LevelId}/images/");
+            backgroundroot.AddChild(instance);
+        }
         // compile projectiles
         for (int i = 0; i < level.ProjectileModels.Length; i++)
         {

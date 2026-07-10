@@ -34,6 +34,11 @@ public partial class LevelDirector
             return;
         }
         _ctx.T = elapsed;
+        // tick background
+        for (int i = 0; i < level.BackgroundInstances.Count; i++)
+        {
+            level.BackgroundInstances[i].Tick(_ctx);
+        }
         // spawn references
         for (int i = level.Queued.Count - 1; i >= 0; i--)
         {
