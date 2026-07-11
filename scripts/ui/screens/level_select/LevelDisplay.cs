@@ -112,10 +112,9 @@ public partial class LevelDisplay : Control
     {
         ui.ShowEditor();
         bool success = e.OpenLevel(toPlay);
-        Editor.Open = success;
         if (!success)
         {
-            ui.ShowCustoms();
+            ui.ShowLevelSelect();
             Popups.Instance.Show(Popups.DefaultType.OK, "Something went wrong opening this level");
         }
     } 

@@ -11,19 +11,26 @@ public static class RenderingUtils
     private static readonly Dictionary<string, Texture2D> _textureCache = new();
     public static Texture2D LoadTexture(string inDir, string textureName)
     {
-        if (_textureCache.TryGetValue(inDir+textureName, out var cached))
+        string key = inDir + textureName;
+        if (_textureCache.TryGetValue(key, out var cached))
             return cached;
         foreach (string ext in new[] { "" }.Concat(ValidExtensions.Image))
         {
             string path = $"{inDir}{textureName}{ext}";
-            if (!FileAccess.FileExists(path))
+            Texture2D texture = null;
+            if (ResourceLoader.Exists(path))
+            {
+                texture = ResourceLoader.Load<Texture2D>(path);
+            }
+            else if (FileAccess.FileExists(path))
+            {
+                var image = new Image();
+                if (image.Load(path) == Error.Ok)
+                    texture = ImageTexture.CreateFromImage(image);
+            }
+            if (texture == null)
                 continue;
-            var image = new Image();
-            Error err = image.Load(path);
-            if (err != Error.Ok)
-                continue;
-            var texture = ImageTexture.CreateFromImage(image);
-            _textureCache[inDir+textureName] = texture;
+            _textureCache[key] = texture;
             return texture;
         }
         return null;

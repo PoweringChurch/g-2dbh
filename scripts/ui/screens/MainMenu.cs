@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 public partial class MainMenu : CanvasLayer
 {
@@ -17,7 +18,6 @@ public partial class MainMenu : CanvasLayer
         _settingsButton.Pressed  += OnSettingsPressed;
         _quitButton.Pressed   += OnQuitPressed;
     }
-
     void OnStartPressed() => EmitSignal(SignalName.StartRequested);
     void OnCustomsPressed() => EmitSignal(SignalName.CustomsRequested);
     void OnSettingsPressed() => EmitSignal(SignalName.SettingsRequested);

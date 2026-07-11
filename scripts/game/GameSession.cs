@@ -1,10 +1,10 @@
 using System;
 using System.Text.Json;
 using Godot;
-
 public partial class GameSession : Node
 {
-    public AudioStreamPlayer GAP {get; private set;}
+    public const float StartDelay = 2;
+    public GameAudioPlayer GAP {get; private set;}
     public double Elapsed
     {
         get
@@ -34,7 +34,7 @@ public partial class GameSession : Node
     {
         _ui = GetNode<UIManager>("/root/UIManager");
         _svp = GetNode<SubViewport>(SubViewportPath);
-        GAP = GetNode<AudioStreamPlayer>(GameAudioPlayerPath);
+        GAP = GetNode<GameAudioPlayer>(GameAudioPlayerPath);
         _playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
         SetProcess(false);
@@ -56,7 +56,9 @@ public partial class GameSession : Node
         }
         if (IsInstanceValid(GameRoot))
             GameRoot.QueueFree();
+        Input.MouseMode = Input.MouseModeEnum.Visible;
         running = false;
+        PlaylistHandler.Instance.FadeIn();
     }
     public bool ResetLevel()
     {
@@ -112,15 +114,17 @@ public partial class GameSession : Node
         if (startParams.Slower) multiplier = 2/3f;
         else if (startParams.Faster) multiplier = 3/2f;
 
-        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
+        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
         GAP.Stream = AudioUtils.LoadAudio(levelData.LevelPath+"/audio/", levelData.Music);
         GAP.PitchScale = multiplier;
-        GAP.Play(0);
+        PlaylistHandler.Instance.FadeOut();
         
         _director = new LevelDirector();
         _director.LevelFinished += StopLevel;
-        _director.StartLevel(compiled, _character, multiplier);
-        
+
+        Input.MouseMode = Input.MouseModeEnum.ConfinedHidden;
+        _director.StartLevel(compiled, _character, multiplier, StartDelay*multiplier);
+        GAP.PlayAfterDelay(StartDelay*multiplier);
         SetPhysicsProcess(true);
         SetProcess(true);
         running = true;

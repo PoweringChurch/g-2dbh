@@ -17,12 +17,12 @@ public partial class LevelDirector
     private int activeCount = 0;
     public int ActiveCount => activeCount;
     public int QueuedCount => (level != null) ? level.Queued.Count : 0;
-    public void StartLevel(CompiledLevel level, PlayerCharacter c, float mult)
+    public void StartLevel(CompiledLevel level, PlayerCharacter c, float mult, float startDelay = 0)
     {
         this.level = level;
         activeCount = 0;
-        elapsed = 0;
-        _ctx.T = 0;
+        elapsed = -startDelay;
+        _ctx.T = elapsed;
         _character = c;
         speedMultiplier = mult;
     }

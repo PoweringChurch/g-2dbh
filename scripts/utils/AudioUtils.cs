@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 public partial class AudioUtils : Node
 {
+    public const float MusicVolumeMultiplier = 0.3f;
     public static AudioUtils Instance { get; private set; }
     const string soundsDir = "user://data/sounds/";
     public override void _Ready()

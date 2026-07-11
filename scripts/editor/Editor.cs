@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 public partial class Editor : CanvasLayer
 {
-    public static bool Open = false;
     public const int MaxModelCount = 128;
     public enum Mode { Place, Select, Delete }
     private Mode currentMode = Mode.Select;
@@ -40,7 +39,6 @@ public partial class Editor : CanvasLayer
         {
             incrementTimeBy = Math.Clamp(value, 0.125f, 128);
             _skipInput.SetValueNoSignal(value);
-            Console.Inst.Log($"Increment time by : {IncrementTimeBy}");
         }
     }
     private bool timeControls;
@@ -156,8 +154,10 @@ public partial class Editor : CanvasLayer
     private Label _snapDisplay;
     // time controls
     private SpinBox _skipInput;
+    GameSession gs;
     public override void _Ready()
     {
+        gs = GetNode<GameSession>("/root/GameSession");
         // modules
         _timeline = GetNode<Timeline>(TimelinePath);
         _modelLibrary = GetNode<ModelLibrary>(ModelLibraryPath);
@@ -210,10 +210,9 @@ public partial class Editor : CanvasLayer
     [Signal] public delegate void PasteEventHandler();
     [Signal] public delegate void DeleteEventHandler();
     [Signal] public delegate void CutEventHandler();
-
     public override void _Input(InputEvent @event)
     {
-        if (!Open) return;
+        if (gs.Running) return;
         var focused = GetViewport().GuiGetFocusOwner();
         if (focused is LineEdit or TextEdit)
             return;
@@ -225,12 +224,10 @@ public partial class Editor : CanvasLayer
         
         if (@event.IsActionPressed("skip_forward"))
         {
-            Console.Inst.Log($"Skipped time to {CurrentTime + IncrementTimeBy}");
             _timeline.SetTime(timeControls ? GetNextReferenceTime() : CurrentTime + IncrementTimeBy);
         }
         else if (@event.IsActionPressed("skip_backward"))
         {
-            Console.Inst.Log($"Skipped time to {CurrentTime - IncrementTimeBy}");
             _timeline.SetTime(timeControls ? GetPrevReferenceTime() : CurrentTime - IncrementTimeBy);
         }
         if (timeControls)
@@ -287,6 +284,7 @@ public partial class Editor : CanvasLayer
     }
     private void ApplyLevelData(LevelData data)
     {
+        PlaylistHandler.Instance.FadeOut();
         RepairLevelData(data);
         levelData = data;
         for (int i = 0; i < MaxModelCount; i++)

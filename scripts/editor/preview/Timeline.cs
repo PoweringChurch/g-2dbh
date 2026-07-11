@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 public partial class Timeline : Control
 {
@@ -11,7 +12,14 @@ public partial class Timeline : Control
     [Export] public CheckButton LoopToggle;
     [Export] public AudioStreamPlayer EditorAudioPreview;
 
-    public float CurrentTime => currentTime;
+    public float CurrentTime
+    {
+        get => currentTime;
+        set
+        {
+            currentTime = Math.Clamp(value, 0, e.levelData.Duration);
+        }
+    }
     private float currentTime = 0;
     private bool _playing = false;
     private float _speed = 1f;
@@ -65,14 +73,15 @@ public partial class Timeline : Control
         PlayheadPositionInput.SetValueNoSignal(currentTime);
         e.SyncPreview();
     }
-    public void SetTime(float to)
+    public void SetTime(float to, bool sync = true)
     {
         currentTime = to;
         Playhead.SetValueNoSignal(currentTime);
         PlayheadPositionInput.SetValueNoSignal(currentTime);
         if (_playing)
             EditorAudioPreview.Play(currentTime);
-        e.SyncPreview();
+        if (sync)
+            e.SyncPreview();
     }
     public void TogglePlaying() => SetPlaying(!_playing);
     public void SetPlaying(bool playing)
@@ -81,7 +90,7 @@ public partial class Timeline : Control
         {
             if (playing)
             {
-                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume*0.5f;
+                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
                 EditorAudioPreview.Play(currentTime);
             }
             else
@@ -139,6 +148,7 @@ public partial class Timeline : Control
         var musicname = data.Music;
         var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", musicname);
         EditorAudioPreview.Stream = found;
+        SetTime(0, false);
     }
     public void AddMarker(EditorReference r)
     {

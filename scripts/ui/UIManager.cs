@@ -7,7 +7,6 @@ public partial class UIManager : Node
     [Export] NodePath PauseMenuPath = "/root/main/PauseMenu";
     [Export] NodePath MainMenuPath = "/root/main/MainMenu";
     [Export] NodePath LevelSelectPath = "/root/main/LevelSelect";
-    [Export] NodePath CustomLevelSelectPath = "/root/main/CustomLevelSelect";
     [Export] NodePath EditorLayerPath = "/root/main/EditorLayer";
     [Export] NodePath ScoreSummaryPath = "/root/main/ScoreSummary";
     [Export] NodePath SettingsPath = "/root/main/Settings";
@@ -19,11 +18,8 @@ public partial class UIManager : Node
     MainMenu _mainMenu;
     LevelSelect _levelSelect;
     CanvasLayer _editorLayer;
-    CustomLevelSelect _customLevelSelect;
     GameSession gameSession;
     private bool _canPause = false;
-    private bool inCustoms;
-    public bool InCustoms => inCustoms;
     public override void _Ready()
     {
         HUD = GetNode<HUD>(HUDPath);
@@ -32,7 +28,6 @@ public partial class UIManager : Node
         _pause = GetNode<PauseMenu>(PauseMenuPath);
         _mainMenu = GetNode<MainMenu>(MainMenuPath);
         _levelSelect = GetNode<LevelSelect>(LevelSelectPath);
-        _customLevelSelect = GetNode<CustomLevelSelect>(CustomLevelSelectPath);
         _editorLayer = GetNode<CanvasLayer>(EditorLayerPath);
         gameSession = GetNode<GameSession>("/root/GameSession");
 
@@ -44,7 +39,7 @@ public partial class UIManager : Node
         ScoreSummary.QuitRequested  += OnPauseQuit;
 
         _mainMenu.StartRequested += ShowStart;
-        _mainMenu.CustomsRequested += ShowCustoms;
+        _mainMenu.CustomsRequested += ShowLevelSelect;
         _mainMenu.QuitRequested += OnQuit;
         _mainMenu.SettingsRequested += OnSettings;
         ShowMainMenu();
@@ -72,15 +67,22 @@ public partial class UIManager : Node
     public void ShowScoreSummary() => SetVisible(ScoreSummary);
     public void TogglePause(bool on)
     {
-        if (!on)
+        if (!on) // when unpausing
         {
-            gameSession.GAP.Play((float)gameSession.Elapsed);
+            if (gameSession.Running)
+            {
+                Input.MouseMode = Input.MouseModeEnum.ConfinedHidden;
+                gameSession.GAP.Play((float)gameSession.Elapsed);
+            }
         }
         else
         {
-            gameSession.GAP.Stop();
+            if (gameSession.Running)
+            {
+                Input.MouseMode = Input.MouseModeEnum.Visible;
+                gameSession.GAP.Stop();
+            }
         }
-
         GetTree().Paused = on;
         _pause.Visible = on;
     }
@@ -95,35 +97,23 @@ public partial class UIManager : Node
     }
     void SetVisible(CanvasLayer show)
     {
-        foreach (var layer in new CanvasLayer[] { HUD, _settings, _pause, _mainMenu, _levelSelect, _customLevelSelect, _editorLayer, ScoreSummary })
+        foreach (var layer in new CanvasLayer[] { HUD, _settings, _pause, _mainMenu, _levelSelect, _editorLayer, ScoreSummary })
             layer.Visible = layer == show;
         _canPause = false; // assume that whatever were switching to cant pause
     }
     void OnResume() => TogglePause(false);
     public void ShowStart()
+    {}
+    public void ShowLevelSelect() 
     {
         _levelSelect.PopulateList();
         SetVisible(_levelSelect);
-        inCustoms = false;
-    }
-    public void ShowCustoms() 
-    {
-        _customLevelSelect.PopulateList();
-        SetVisible(_customLevelSelect);
-        inCustoms = true;
     }
     void OnPauseQuit() 
     { 
-        SetVisible(inCustoms ? _customLevelSelect : _levelSelect); 
-        if (inCustoms)
-        {
-            _customLevelSelect.PopulateList();
-            Editor.Open = false;
-        }
-        else
-            _levelSelect.PopulateList();
-        TogglePause(false); 
+        ShowLevelSelect();
         gameSession.Abort();
+        TogglePause(false); 
         GetNode<Editor>("/root/Editor").SetPlaying(false);
     }
     void OnQuit() => GetTree().Quit();
