@@ -45,5 +45,6 @@ public class LevelData
     [JsonPropertyName("bullets")] public List<EditorReference> References { get; set; } = [];
     [JsonPropertyName("variables")] public Dictionary<string, string> CustomVariables { get; set; } = [];
     [JsonPropertyName("backgroundLayers")] public List<BackgroundLayer> BackgroundLayers {get; set;} = [];
+    [JsonPropertyName("character")] public int Character { get; set; } = 0;
     [JsonPropertyName("levelPath")] public string LevelPath { get; set; }
 }

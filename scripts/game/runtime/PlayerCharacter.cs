@@ -6,24 +6,19 @@ public partial class PlayerCharacter : Node2D
     public const float HurtRadius = 3;
     public const float GrazeRadius = 10;
     public const float BaseSpeed = 75f;
-    public string TextureName = "default";
+    [Export] Sprite2D CharacterDisplay;
+    [Export] Sprite2D hurtboxDisplay;
+    [Export] Sprite2D grazeDisplay;
     public Vector2I ScreenResolution;
     int iframes = 0;
     int framesFocusHeld = 0; // for fading hurtbox display
     int grazeFrames = 0; // for showing graze
-    Sprite2D hurtboxDisplay;
-    Sprite2D grazeDisplay;
-    Sprite2D characterDisplay;
+
     [Signal] public delegate void OnHurtEventHandler();
     [Signal] public delegate void OnGrazeEventHandler();
-    public override void _Ready()
+    public void ApplyTextureOfName(string name)
     {
-        hurtboxDisplay = GetNode<Sprite2D>("HurtboxDisplay");
-        grazeDisplay = GetNode<Sprite2D>("GrazeDisplay");
-        characterDisplay = GetNode<Sprite2D>("CharacterDisplay");
-        characterDisplay.Scale = Vector2.One*ConfigHelper.Current.CharacterScale;
-        characterDisplay.Texture = RenderingUtils.LoadTexture("user://data/characters/", ConfigHelper.Current.Character);
-        characterDisplay.Texture ??= ResourceLoader.Load<Texture2D>("res://data/characters/default.png");
+        CharacterDisplay.Texture = RenderingUtils.LoadTexture("res://data/characters/"+name);
     }
     public void Movement(double dt)
     {
@@ -40,11 +35,11 @@ public partial class PlayerCharacter : Node2D
     public void VisualFeedback()
     {
         hurtboxDisplay.Modulate = new Color(1,1,1,framesFocusHeld/10f);
-        characterDisplay.Modulate = new Color (1,1,1,1-(framesFocusHeld/20f));
+        CharacterDisplay.Modulate = new Color (1,1,1,1-(framesFocusHeld/20f));
         grazeDisplay.Modulate = new Color (1,1,1,grazeFrames--/20f);
         if (iframes-- > 0) {
             float a = (iframes / 4 % 2 == 0) ? 0.5f : 0.75f;
-            characterDisplay.Modulate = new Color(1, 1, 1, a);
+            CharacterDisplay.Modulate = new Color(1, 1, 1, a);
         }
     }
     public bool Hurt()

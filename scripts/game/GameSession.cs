@@ -4,6 +4,7 @@ using Godot;
 public partial class GameSession : Node
 {
     public const float StartDelay = 2;
+    public const float FadeOutTime = 2;
     public GameAudioPlayer GAP {get; private set;}
     public double Elapsed
     {
@@ -13,6 +14,10 @@ public partial class GameSession : Node
             return _director.Elapsed;
         }
     }
+    private static string[] Characters =
+    {
+        "default.png", "chinese.png"
+    };
     public static NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
     public static NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
     public static NodePath BackgroundImagePath = SubViewportPath+"/BackgroundImage";
@@ -79,6 +84,7 @@ public partial class GameSession : Node
         if (compiled == null) return false;
         // setup character
         _character = charScene.Instantiate<PlayerCharacter>();
+        _character.ApplyTextureOfName(Characters[levelData.Character]);
         GameRoot.AddChild(_character);
         var resolution = PlayingField.Resolutions[levelData.AspectRatio];
         _character.ScreenResolution = resolution;
@@ -136,7 +142,7 @@ public partial class GameSession : Node
         _ui.ScoreSummary.SetHP(health);
         _ui.ScoreSummary.SetScore(score);
         _ui.ScoreSummary.SetGraze(graze);
-        _ui.ShowScoreSummary();
+        _ui.ScoreSummary.Visible = true;
     }
     public void OnHurt()
     {
@@ -172,21 +178,12 @@ public partial class GameSession : Node
         Overlay.Inst.SyncInfo(-1, _director.QueuedCount, _director.ActiveCount);
         if (!running) return;
         _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount, _director.Elapsed);
-    }
-
-    private static T ReadJson<T>(string path)
-    {
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-        if (file == null)
+        // fade out in last two seconds
+        if (Elapsed >= duration - FadeOutTime)
         {
-            Console.Inst.LogErr($"[GameSession] Could not open file: {path}  (error: {FileAccess.GetOpenError()})");
-            return default;
-        }
-        try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
-        catch (JsonException ex)
-        {
-            Console.Inst.LogErr($"[GameSession] JSON parse error in '{path}': {ex.Message}");
-            return default;
+            var basevol = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
+            float t = (float)Math.Max(0, duration - Elapsed) / FadeOutTime;
+            GAP.VolumeLinear = basevol * t;
         }
     }
 }

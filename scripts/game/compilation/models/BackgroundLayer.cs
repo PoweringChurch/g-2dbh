@@ -4,7 +4,7 @@ using Godot;
 public class BackgroundLayer
 {
     [JsonPropertyName("name")] public string Name {get; set;} = "unnamed layer";
-    [JsonPropertyName("imageName")] public string ImageName {get; set;} = "";
+    [JsonPropertyName("imageName")] public string Image {get; set;} = "";
     [JsonPropertyName("repeatCount")] public int RepeatCount {get; set;} = 2;
     [JsonPropertyName("scrollFnX")] public string ScrollFunctionX {get; set;} = "0";
     [JsonPropertyName("scrollFnY")] public string ScrollFunctionY {get; set;} = "0";

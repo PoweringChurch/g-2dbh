@@ -70,7 +70,7 @@ public class BulletRenderer
                 float alpha = (t < proj.TelegraphTime) 
 					? (proj.TelegraphTime > 0 ? 0.4f + (float)t / proj.TelegraphTime * 0.4f : 0.8f) 
 					: 1.0f;
-                float drawForward = (float)r.F-Mathf.Pi; // rads
+                float drawForward = !proj.LockRotation ? (float)r.F-Mathf.Pi : -Mathf.Pi; // rads
 
 				float cos = Mathf.Cos(drawForward);
 				float sin = Mathf.Sin(drawForward);

@@ -4,6 +4,7 @@ using System.Linq;
 public partial class AudioUtils : Node
 {
     public const float MusicVolumeMultiplier = 0.3f;
+    private static readonly string[] first = [""];
     public static AudioUtils Instance { get; private set; }
     const string soundsDir = "user://data/sounds/";
     public override void _Ready()
@@ -45,39 +46,35 @@ public partial class AudioUtils : Node
         if (_audioCache.TryGetValue(cacheKey, out var cached))
             return cached;
 
-        foreach (string ext in new[] { "" }.Concat(ValidExtensions.Audio))
+        foreach (string ext in first.Concat(ValidExtensions.Audio))
         {
             string path = $"{inDir}{audioName}{ext}";
-            if (!FileAccess.FileExists(path))
-                continue;
-
             AudioStream stream = null;
             string lowercaseExt = ext.ToLower();
-
-            if (lowercaseExt == ".wav")
+            if (ResourceLoader.Exists(path))
             {
-                var wavStream = new AudioStreamWav();
-                // Godot needs raw bytes for WAV loading
-                byte[] bytes = FileAccess.GetFileAsBytes(path);
-                wavStream.Data = bytes;
-                
-                // Note: You may need to manually set format properties if your WAVs vary:
-                // wavStream.Format = AudioStreamWav.FormatEnum.Format16Bits;
-                // wavStream.MixRate = 44100;
-                // wavStream.Stereo = true;
-
-                stream = wavStream;
+                stream = ResourceLoader.Load<AudioStream>(path);
             }
-            else if (lowercaseExt == ".mp3")
+            else if (FileAccess.FileExists(path))
             {
-                var mp3Stream = new AudioStreamMP3();
-                byte[] bytes = FileAccess.GetFileAsBytes(path);
-                mp3Stream.Data = bytes;
-                stream = mp3Stream;
-            }
-            else if (lowercaseExt == ".ogg")
-            {
-                stream = AudioStreamOggVorbis.LoadFromFile(path);
+                if (lowercaseExt == ".wav")
+                {
+                    var wavStream = new AudioStreamWav();
+                    byte[] bytes = FileAccess.GetFileAsBytes(path);
+                    wavStream.Data = bytes;
+                    stream = wavStream;
+                }
+                else if (lowercaseExt == ".mp3")
+                {
+                    var mp3Stream = new AudioStreamMP3();
+                    byte[] bytes = FileAccess.GetFileAsBytes(path);
+                    mp3Stream.Data = bytes;
+                    stream = mp3Stream;
+                }
+                else if (lowercaseExt == ".ogg")
+                {
+                    stream = AudioStreamOggVorbis.LoadFromFile(path);
+                }
             }
             if (stream != null)
             {

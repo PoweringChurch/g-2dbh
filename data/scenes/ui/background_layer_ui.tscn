@@ -66,6 +66,7 @@ text = "Order"
 [node name="SpinBox2" type="SpinBox" parent="Config/Order" unique_id=965074133]
 layout_mode = 2
 size_flags_horizontal = 6
+min_value = -128.0
 max_value = 128.0
 rounded = true
 

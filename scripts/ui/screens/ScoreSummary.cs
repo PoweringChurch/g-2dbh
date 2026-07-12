@@ -9,12 +9,12 @@ public partial class ScoreSummary : CanvasLayer
     [Export] public Button ResetButton;
     [Export] public Button QuitButton;
 
-    [Signal] public delegate void ResetRequestedEventHandler();
-    [Signal] public delegate void QuitRequestedEventHandler();
+    public event Action RequestReset;
+    public event Action RequestReturn;
     public override void _Ready()
     {
-        ResetButton.Pressed += OnResetPressed;
-        QuitButton.Pressed += OnQuitPressed;
+        ResetButton.Pressed += RequestReset.Invoke;
+        QuitButton.Pressed += RequestReturn.Invoke;
     }
     public void SetScore(int score) =>
         Score.Text = score.ToString();
@@ -22,8 +22,4 @@ public partial class ScoreSummary : CanvasLayer
         Graze.Text = graze.ToString();
     public void SetHP(int hp) =>
         HP.Text = hp.ToString();
-    public void OnResetPressed() =>
-        EmitSignal(SignalName.ResetRequested);
-    public void OnQuitPressed() =>
-        EmitSignal(SignalName.QuitRequested);
 }

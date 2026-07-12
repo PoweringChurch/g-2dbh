@@ -101,7 +101,7 @@ public partial class PatternPreview : Node2D
             var (x, y) = CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
             // draw
             var texture = projModel.Texture != "default" ?
-                RenderingUtils.LoadTexture(e.LevelPath + "images/", projModel.Texture)
+                RenderingUtils.LoadTexture(projModel.Texture) 
                 : null;
             DrawProjectileShape(projModel, texture, new Vector2(startxy.x + x, startxy.y+y), (float)genFwd, alive ? Colors.White : deadColor);
         }

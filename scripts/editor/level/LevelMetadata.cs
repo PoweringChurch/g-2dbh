@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class LevelMetadata : Control
 {
@@ -8,8 +9,9 @@ public partial class LevelMetadata : Control
 	[Export] LineEdit AuthorInput;
 	[Export] LineEdit MusicInput;
 	[Export] SpinBox HealthInput;
-	[Export] SpinBox DurationInput;
+	[Export] SpinBox DurationInput; 
 	[Export] OptionButton AspectRatioInput;
+	[Export] OptionButton CharacterSelect;
 	[Export] Button SaveLevel;
 	[Export] Button OpenLevelFolder;
 	[Export] Button OpenBgEditor;
@@ -32,9 +34,14 @@ public partial class LevelMetadata : Control
 		OpenLevelFolder.Pressed += OnLevelFolderOpen;
 		SaveLevel.Pressed += OnSavePressed;
 		OpenBgEditor.Pressed += OnBgEditPressed;
+		CharacterSelect.ItemSelected += OnCharacterSelected;
 		e = GetNode<Editor>("/root/Editor");
 	}
 
+    private void OnCharacterSelected(long index)
+	{
+		e.levelData.Character = (int)index;
+	}
     private void OnMusicTextChanged(string newSong)
 	{
 		var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", newSong);
@@ -97,6 +104,7 @@ public partial class LevelMetadata : Control
 			child.QueueFree();
 		AuthorInput.Text = data.Author;
 		AspectRatioInput.Selected = data.AspectRatio;
+		CharacterSelect.Selected = data.Character;
 		HealthInput.Value = data.Health;
 		DurationInput.Value = data.Duration;
 		MusicInput.Text = data.Music;

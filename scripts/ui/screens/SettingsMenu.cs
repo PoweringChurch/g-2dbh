@@ -8,7 +8,7 @@ public partial class SettingsMenu : CanvasLayer
     [Export] public Button _openDataButton;
     [Export] public Button _returnButton;
     [Export] public VBoxContainer _fieldContainer; // where generated rows go
-
+    public event Action RequestReturn;
     private Config config => ConfigHelper.Current;
     private readonly System.Collections.Generic.List<(PropertyInfo Prop, Control Control)> _bindings = new();
     private UIManager _ui;
@@ -19,9 +19,8 @@ public partial class SettingsMenu : CanvasLayer
         BuildFields();
 
         _saveButton.Pressed += OnSavePressed;
-        _returnButton.Pressed += OnReturnPressed;
         _openDataButton.Pressed += OnOpenDataPressed;
-        
+        _returnButton.Pressed += RequestReturn.Invoke;
         GetWindow().Mode = config.Fullscreen ? Window.ModeEnum.Fullscreen : Window.ModeEnum.Windowed;
     }
 
@@ -100,9 +99,5 @@ public partial class SettingsMenu : CanvasLayer
     {
 		var path = ProjectSettings.GlobalizePath("user://data"); ;
 		OS.ShellOpen(path);
-    }
-    private void OnReturnPressed()
-    {
-        _ui.ToggleSettings(false);
     }
 }

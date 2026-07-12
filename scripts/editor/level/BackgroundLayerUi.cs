@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Godot;
 
 public partial class BackgroundLayerUi : Control
@@ -37,7 +38,7 @@ public partial class BackgroundLayerUi : Control
     {
         EditorLayerInstance.Layer = layer;
         layerName.Text = layer.Name;
-        imageName.Text = layer.ImageName;
+        imageName.Text = Path.GetFileName(layer.Image);
         scrollFnX.Text = layer.ScrollFunctionX;
         scrollFnY.Text = layer.ScrollFunctionY;
         transparencyFn.Text = layer.TransparencyFn;
@@ -59,7 +60,7 @@ public partial class BackgroundLayerUi : Control
             var fn = ExpressionHandler.Parse(newText);
             fn.Eval(testCtx);
             EditorLayerInstance.Layer.TransparencyFn = newText;
-            EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+            EditorLayerInstance.ApplyLayerParams();
             ErrorDisplay.ClearMessage("FnT");
         }
         catch (Exception e) { ErrorDisplay.SetMessage("FnT", "[Transparency] " + e.Message); }
@@ -71,7 +72,7 @@ public partial class BackgroundLayerUi : Control
             var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             EditorLayerInstance.Layer.ScrollFunctionX = text;
-            EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+            EditorLayerInstance.ApplyLayerParams();
             ErrorDisplay.ClearMessage("FnX");
         }
         catch (Exception e) { ErrorDisplay.SetMessage("FnX", "[Scroll X] " + e.Message); }
@@ -83,36 +84,36 @@ public partial class BackgroundLayerUi : Control
             var fn = ExpressionHandler.Parse(text);
             fn.Eval(testCtx);
             EditorLayerInstance.Layer.ScrollFunctionY = text;
-            EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+            EditorLayerInstance.ApplyLayerParams();
             ErrorDisplay.ClearMessage("FnY");
         }
         catch (Exception e) { ErrorDisplay.SetMessage("FnY", "[Scroll Y] " + e.Message); }
     }
     private void OnImageChanged(string text)
     {
-        var tex = RenderingUtils.LoadTexture(e.LevelPath+"/images/", text);
+        var tex = RenderingUtils.LoadTexture($"{e.LevelPath}images/{text}");
         if (tex == null)
         {
-            ErrorDisplay.SetMessage("Texture", $"[Image] Image of name {text} could not be found");
+            ErrorDisplay.SetMessage("Texture", $"[Image] Image of name '{text}' could not be found");
             return;
         }
         ErrorDisplay.ClearMessage("Texture");
-        EditorLayerInstance.Layer.ImageName = text;
-        EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+        EditorLayerInstance.Layer.Image = $"{e.LevelPath}images/{text}";
+        EditorLayerInstance.ApplyLayerParams();
     }
     private void OnOrderChanged(double to)
     {
         EditorLayerInstance.Layer.Order = (int)to;
-        EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+        EditorLayerInstance.ApplyLayerParams();
     }
     private void OnRepeatChanged(double to)
     {
         EditorLayerInstance.Layer.RepeatCount = (int)to;
-        EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+        EditorLayerInstance.ApplyLayerParams();
     }
     private void OnScaleChanged(double to)
     {
         EditorLayerInstance.Layer.Scale = (float)to;
-        EditorLayerInstance.ApplyLayerParams(e.LevelPath+"/images/");
+        EditorLayerInstance.ApplyLayerParams();
     }
 }

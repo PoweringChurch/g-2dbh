@@ -8,15 +8,15 @@ public static class ValidExtensions
 }
 public static class RenderingUtils
 {
+    private static readonly string[] first = [""];
     private static readonly Dictionary<string, Texture2D> _textureCache = new();
-    public static Texture2D LoadTexture(string inDir, string textureName)
+    public static Texture2D LoadTexture(string textureName)
     {
-        string key = inDir + textureName;
-        if (_textureCache.TryGetValue(key, out var cached))
+        if (_textureCache.TryGetValue(textureName, out var cached))
             return cached;
-        foreach (string ext in new[] { "" }.Concat(ValidExtensions.Image))
+        foreach (string ext in first.Concat(ValidExtensions.Image))
         {
-            string path = $"{inDir}{textureName}{ext}";
+            string path = $"{textureName}{ext}";
             Texture2D texture = null;
             if (ResourceLoader.Exists(path))
             {
@@ -30,7 +30,7 @@ public static class RenderingUtils
             }
             if (texture == null)
                 continue;
-            _textureCache[key] = texture;
+            _textureCache[textureName] = texture;
             return texture;
         }
         return null;

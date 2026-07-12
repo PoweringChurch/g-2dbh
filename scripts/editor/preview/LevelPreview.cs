@@ -643,6 +643,7 @@ public partial class LevelPreview : Control
 	public void Load(LevelData level)
 	{
 		nextId = 0;
+		_bakedTimeline.Clear();
 		Console.Inst.Log("[LevelPreview] Attempting to compile");
 		for (int i = 0; i < Editor.MaxModelCount; i++)
         {
@@ -723,10 +724,10 @@ public partial class LevelPreview : Control
 				int idx = group.BakeIndices[n];
 				EditorReference r = _bakedTimeline[idx];
 				int o = n * floatsPerInstance;
-				float drawForward = (float)r.F-Mathf.Pi; // rads
+				var proj = e.ProjectileModels[r.Id];
+				float drawForward = (r.Type == ModelType.Projectile && !proj.LockRotation) ? (float)r.F-Mathf.Pi : -Mathf.Pi; // rads
 				float cos = Mathf.Cos(drawForward);
 				float sin = Mathf.Sin(drawForward);
-				var proj = e.ProjectileModels[r.Id];
 				float scale = (r.Type == ModelType.Projectile) ? proj.RenderScale : 1;
 				buffer[o + 0] = -scale * cos;
 				buffer[o + 1] = -scale * sin;
@@ -852,7 +853,7 @@ public partial class LevelPreview : Control
 		if (model == null)
 			return;
         // create render group
-		_renderGroups.Add(LevelCompiler.RenderGroupFromProjectile(model, $"{e.levelData.LevelPath}images/",  PreviewRoot));
+		_renderGroups.Add(LevelCompiler.RenderGroupFromProjectile(model,  PreviewRoot));
         int renderGroupId = _renderGroups.Count - 1;
 		_groupBuffers[renderGroupId] = [];
         // compile and redraw

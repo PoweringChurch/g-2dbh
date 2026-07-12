@@ -42,7 +42,7 @@ public partial class BackgroundEditor : Control
         var sprite = new Sprite2D();
         var instance = new BackgroundLayerInstance { Layer = layer, Sprite = sprite };
         instance.AddChild(sprite);
-        instance.ApplyLayerParams(e.LevelPath+"/images/");
+        instance.ApplyLayerParams();
         BackgroundHolder.AddChild(instance);
         e.BGInstances.Add(instance);
         // set up layer ui

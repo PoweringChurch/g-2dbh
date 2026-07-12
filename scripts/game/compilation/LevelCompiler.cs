@@ -25,7 +25,7 @@ public class LevelCompiler
             instance.Sprite = sprite;
             instance.Layer = layer;
             compiled.BackgroundInstances.Add(instance);
-            instance.ApplyLayerParams($"{level.LevelPath}images/");
+            instance.ApplyLayerParams();
             backgroundroot.AddChild(instance);
         }
         // compile projectiles
@@ -35,7 +35,7 @@ public class LevelCompiler
             var m = level.ProjectileModels[i];
             if (m == null)
                 continue;
-            compiled.RenderGroups.Add(RenderGroupFromProjectile(m, $"{level.LevelPath}images/", gameRoot));
+            compiled.RenderGroups.Add(RenderGroupFromProjectile(m, gameRoot));
             // set up render group
             int renderGroupId = compiled.RenderGroups.Count - 1;
             CompileProjectile(m, renderGroupId);
@@ -91,10 +91,13 @@ public class LevelCompiler
 		model.fnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
 		model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionFwd));
     }
-    public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, string levelPath, Node2D root)
+    public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, Node2D root)
     {
         RenderGroup renderGroup;
-        Texture2D tex = RenderingUtils.LoadTexture(levelPath, model.Texture);
+        var tex = model.Texture != "default" ?
+                RenderingUtils.LoadTexture(model.Texture) 
+                : null;
+        
         if (tex != null) // if theres a texture
 		{
 			var mesh = new QuadMesh { Size = tex.GetSize() }; // build a texture mesh

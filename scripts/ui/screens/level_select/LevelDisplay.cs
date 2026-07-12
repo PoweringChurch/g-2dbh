@@ -17,7 +17,7 @@ public partial class LevelDisplay : Control
     private GameSession gs;
     private Editor e;
     private UIManager ui;
-    [Signal] public delegate void RepopulateEventHandler();
+    public event Action RequestRepopulate;
     public override void _Ready()
     {
         gs = GetNode<GameSession>("/root/GameSession");
@@ -82,7 +82,7 @@ public partial class LevelDisplay : Control
             }
             DirAccess.RemoveAbsolute(levelDirectory);
             ShowLevel(null);
-            EmitSignal(SignalName.Repopulate);
+            RequestRepopulate.Invoke();
         };
     }
     private static void DeleteDirectoryRecursive(string path)
@@ -114,7 +114,7 @@ public partial class LevelDisplay : Control
         bool success = e.OpenLevel(toPlay);
         if (!success)
         {
-            ui.ShowLevelSelect();
+            RequestRepopulate.Invoke();
             Popups.Instance.Show(Popups.DefaultType.OK, "Something went wrong opening this level");
         }
     } 

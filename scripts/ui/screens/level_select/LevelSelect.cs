@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Text.Json;
 
 public partial class LevelSelect : CanvasLayer
@@ -12,16 +13,17 @@ public partial class LevelSelect : CanvasLayer
     [Export] protected Button _openLevelsFolder;
     private Editor e;
 
+    public event Action RequestReturn;
     private const string levelDirectory = "user://data/levels/";
     public override void _Ready()
     {
         e = GetNode<Editor>("/root/Editor");
-        _returnButton.Pressed += OnReturnPressed;
-        _levelDisplay.Repopulate += PopulateList;
+        _levelDisplay.RequestRepopulate += PopulateList;
         _refreshButton.Pressed  += PopulateList;
         _openLevelsFolder.Pressed += OpenLevelsFolder;
         _newLevelButton.Pressed += OnNewLevelPressed;
 
+        _returnButton.Pressed += RequestReturn.Invoke;
     }
     // List
     public void PopulateList()
@@ -68,15 +70,7 @@ public partial class LevelSelect : CanvasLayer
         ui.ShowEditor();
         e.NewLevel();
         PopulateList();
-    }
-    protected void OnReturnPressed()
-    {
-        var ui = GetNode<UIManager>("/root/UIManager");
-        ui.ShowMainMenu();
-        PopulateList();
-        _levelDisplay.ShowLevel(null);
-    }
-    protected static T ReadJson<T>(string path)
+    }    protected static T ReadJson<T>(string path)
     {
         if (!FileAccess.FileExists(path)) return default;
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);

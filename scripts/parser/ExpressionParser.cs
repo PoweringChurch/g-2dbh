@@ -15,8 +15,13 @@ public static class Functions
 {
     public static double Hash(double x)
     {
-        double large_wave = Math.Sin(x * 12.9898) * 43758.5453;
-        return large_wave - Math.Floor(large_wave);
+        ulong h = unchecked((ulong)BitConverter.DoubleToInt64Bits(x));
+        h ^= h >> 33;
+        h *= 0xff51afd7ed558ccdUL;
+        h ^= h >> 33;
+        h *= 0xc4ceb9fe1a85ec53UL;
+        h ^= h >> 33;
+        return (h >> 11) * (1.0 / (1UL << 53));
     }
 }
 public struct EvalContext
