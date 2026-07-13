@@ -125,7 +125,8 @@ public partial class UIManager : Node
             GetTree().Quit();
             return;
         }
-        gs.Abort();
+        if (gs.Running)
+            gs.Abort();
         TogglePause(false);
         ScoreSummary.Visible = false;
         uiPath.RemoveAt(uiPath.Count-1);

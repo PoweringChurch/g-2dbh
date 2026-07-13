@@ -36,22 +36,20 @@ public partial class PlaylistHandler : Node
         if (player.Playing)
         {
             position += (float)delta;
-            float musicVolume = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
-            if (__lastvol != ConfigHelper.Current.MusicVolume)
+            if (__lastvol != AudioUtils.MusicVolume)
             {
-                __lastvol = ConfigHelper.Current.MusicVolume;
-                player.VolumeLinear = musicVolume;
+                __lastvol = AudioUtils.MusicVolume;
+                player.VolumeLinear = AudioUtils.MusicVolume;
             }
         }
     }
     public void FadeIn(float duration = 1.0f)
     {
         player.Play(position);
-        float musicVolume = ConfigHelper.Current.MusicVolume * AudioUtils.MusicVolumeMultiplier;
         _fadeTween?.Kill();
         _fadeTween = CreateTween();
         _fadeTween.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
-        _fadeTween.TweenProperty(player, "volume_linear", musicVolume, duration)
+        _fadeTween.TweenProperty(player, "volume_linear", AudioUtils.MusicVolume, duration)
             .From(player.VolumeLinear);
     }
     public void FadeOut(float duration = 1.0f)
@@ -66,7 +64,7 @@ public partial class PlaylistHandler : Node
     private void PlayCurrent()
     {
         player.Stream = tracklist[currentSong];
-        player.VolumeLinear = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
+        player.VolumeLinear = AudioUtils.MusicVolume;
         position = 0;
         player.Play();
     }

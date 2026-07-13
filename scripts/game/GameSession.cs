@@ -120,8 +120,8 @@ public partial class GameSession : Node
         if (startParams.Slower) multiplier = 2/3f;
         else if (startParams.Faster) multiplier = 3/2f;
 
-        GAP.VolumeLinear = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
-        GAP.Stream = AudioUtils.LoadAudio(levelData.LevelPath+"/audio/", levelData.Music);
+        GAP.VolumeLinear = AudioUtils.MusicVolume;
+        GAP.Stream = AudioUtils.LoadAudio($"{levelData.LevelPath}/audio/{levelData.Music}");
         GAP.PitchScale = multiplier;
         PlaylistHandler.Instance.FadeOut();
         
@@ -144,16 +144,17 @@ public partial class GameSession : Node
         _ui.ScoreSummary.SetGraze(graze);
         _ui.ScoreSummary.Visible = true;
     }
+    private AudioStream grazeSfx = AudioUtils.LoadAudio("res://data/sounds/graze.wav");
+    private AudioStream hurtSfx = AudioUtils.LoadAudio("res://data/sounds/hurt.wav");
     public void OnHurt()
     {
-
         health--;
         if (!_lastStartParams.Paranoid) score -= Math.Max((int)(100*(health+1)/maxHealth), 0);
         _ui.HUD.SetHealth(health);
         _ui.HUD.SetScore(score);
         if (health <= 0)
             StopLevel();
-        AudioUtils.Instance.PlayAudio("hurt", ConfigHelper.Current.HurtVolume);
+        AudioUtils.Instance.PlayAudio(hurtSfx, AudioUtils.SFXVolume);
     }
     public void OnGraze()
     {
@@ -163,7 +164,7 @@ public partial class GameSession : Node
         score += (int)(100*health/maxHealth);
         _ui.HUD.SetScore(score);
         _ui.HUD.SetGraze(graze);
-        AudioUtils.Instance.PlayAudio("graze", ConfigHelper.Current.GrazeVolume*0.5f);
+        AudioUtils.Instance.PlayAudio(grazeSfx, AudioUtils.SFXVolume);
     }
     public override void _PhysicsProcess(double dt)
     {
@@ -181,9 +182,8 @@ public partial class GameSession : Node
         // fade out in last two seconds
         if (Elapsed >= duration - FadeOutTime)
         {
-            var basevol = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
             float t = (float)Math.Max(0, duration - Elapsed) / FadeOutTime;
-            GAP.VolumeLinear = basevol * t;
+            GAP.VolumeLinear = AudioUtils.MusicVolume * t;
         }
     }
 }

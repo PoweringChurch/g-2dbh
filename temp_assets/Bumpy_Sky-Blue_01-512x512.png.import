@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csnx5s7ukbgcv"
-path="res://.godot/imported/winter-storm.png-31d380a50474e43f1c624c8c1c8b2773.ctex"
+uid="uid://bbti07k21pcjx"
+path="res://.godot/imported/Bumpy_Sky-Blue_01-512x512.png-5db26ba2fab283806fefe0b1603b5fe0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/winter-storm.png"
-dest_files=["res://.godot/imported/winter-storm.png-31d380a50474e43f1c624c8c1c8b2773.ctex"]
+source_file="res://temp_assets/Bumpy_Sky-Blue_01-512x512.png"
+dest_files=["res://.godot/imported/Bumpy_Sky-Blue_01-512x512.png-5db26ba2fab283806fefe0b1603b5fe0.ctex"]
 
 [params]
 

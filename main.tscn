@@ -50,7 +50,11 @@
 [ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/characters/default.png" id="48_0cbny"]
 [ext_resource type="Script" uid="uid://d1lp26bmvrse4" path="res://scripts/ui/screens/campaign/Campaign.cs" id="48_hrvbo"]
 [ext_resource type="Script" uid="uid://kwdca7icqqm" path="res://scripts/ui/screens/campaign/StoryInfo.cs" id="49_hrvbo"]
+[ext_resource type="Texture2D" uid="uid://bbti07k21pcjx" path="res://temp_assets/Bumpy_Sky-Blue_01-512x512.png" id="50_6iyjs"]
 [ext_resource type="Script" uid="uid://bpktldml628xb" path="res://scripts/ui/screens/campaign/StoryLevelButton.cs" id="50_uypp3"]
+[ext_resource type="Texture2D" uid="uid://dnvu8jf4cy5m7" path="res://temp_assets/Effect_6.png" id="51_4w656"]
+[ext_resource type="Texture2D" uid="uid://bismr438prupb" path="res://temp_assets/Bumpy_Sky-Blue_02-512x512.png" id="52_e71vb"]
+[ext_resource type="Script" uid="uid://db423rhi1soph" path="res://scripts/ui/screens/campaign/CampaignCharacterDisplay.cs" id="56_e71vb"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -682,6 +686,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
+visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -812,7 +817,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(540, 540)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 z_index = -129
@@ -2280,7 +2285,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Space/Sort/Preview/HBoxContainer/Preview" unique_id=449177170]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/PatternCreator/Space/Sort/Preview/HBoxContainer/Preview/SubViewport" unique_id=1734361611]
 anchors_preset = 15
@@ -3010,14 +3015,13 @@ text = "-"
 horizontal_alignment = 2
 
 [node name="Campaign" type="CanvasLayer" parent="." unique_id=1289206583 node_paths=PackedStringArray("StoryInfos", "Return", "levelDisplay", "PreviousWorld", "WorldNameLabel", "NextWorld")]
-visible = false
 script = ExtResource("48_hrvbo")
-StoryInfos = [NodePath("Root/WinterWorld")]
-Return = NodePath("Root/Sort/Return")
-levelDisplay = NodePath("Root/Sort/LevelDisplay")
-PreviousWorld = NodePath("Root/Sort/Selection/StorySelect/Prev")
-WorldNameLabel = NodePath("Root/Sort/Selection/StorySelect/Name")
-NextWorld = NodePath("Root/Sort/Selection/StorySelect/Next")
+StoryInfos = [NodePath("Root/IceStory"), NodePath("Root/WIPWORLD")]
+Return = NodePath("Root/LevelDisplay/Return")
+levelDisplay = NodePath("Root/LevelDisplay/LevelDisplay")
+PreviousWorld = NodePath("Root/LevelDisplay/Selection/StorySelect/Prev")
+WorldNameLabel = NodePath("Root/LevelDisplay/Selection/StorySelect/Name")
+NextWorld = NodePath("Root/LevelDisplay/Selection/StorySelect/Next")
 
 [node name="Root" type="Control" parent="Campaign" unique_id=876566747]
 layout_mode = 3
@@ -3028,7 +3032,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
 
-[node name="WinterWorld" type="Control" parent="Campaign/Root" unique_id=1399509487 node_paths=PackedStringArray("LevelButtons", "CharacterDisplay")]
+[node name="ColorRect" type="ColorRect" parent="Campaign/Root" unique_id=1887931083]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.024156345, 0.0108395275, 0.07660579, 1)
+
+[node name="IceStory" type="Control" parent="Campaign/Root" unique_id=1399509487 node_paths=PackedStringArray("LevelButtons", "CharacterDisplay")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -3037,42 +3050,166 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("49_hrvbo")
-LevelButtons = [NodePath("snowstorm")]
-WorldName = "Winter Land"
+LevelButtons = [NodePath("levels/snowstorm"), NodePath("levels/wip0"), NodePath("levels/wip1")]
+WorldName = "Cold Story"
 CharacterDisplay = NodePath("CharacterDisplay")
 
-[node name="ColorRect" type="ColorRect" parent="Campaign/Root/WinterWorld" unique_id=268899557]
+[node name="background" type="Control" parent="Campaign/Root/IceStory" unique_id=394594936]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.050296642, 0.040088415, 0.18989295, 1)
 
-[node name="snowstorm" type="Button" parent="Campaign/Root/WinterWorld" unique_id=1396048888]
+[node name="Clouds" type="TextureRect" parent="Campaign/Root/IceStory/background" unique_id=1980607482]
+modulate = Color(0.052215457, 0.24022076, 0.32258955, 1)
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("50_6iyjs")
+expand_mode = 1
+
+[node name="CharacterDisplay" type="TextureRect" parent="Campaign/Root/IceStory" unique_id=1163547505]
+layout_mode = 0
+offset_left = 614.0
+offset_top = 188.0
+offset_right = 654.0
+offset_bottom = 228.0
+texture = ExtResource("48_0cbny")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("56_e71vb")
+
+[node name="foreground" type="Control" parent="Campaign/Root/IceStory" unique_id=1224590952]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+mouse_behavior_recursive = 1
+
+[node name="CloudsSlide" type="Parallax2D" parent="Campaign/Root/IceStory/foreground" unique_id=1381076052]
+repeat_size = Vector2(1938, 0)
+autoscroll = Vector2(60, 0)
+repeat_times = 3
+
+[node name="Sky" type="Sprite2D" parent="Campaign/Root/IceStory/foreground/CloudsSlide" unique_id=1661186034]
+modulate = Color(0.66, 0.66, 0.66, 0.21176471)
+scale = Vector2(3.785156, 2.1367188)
+texture = ExtResource("52_e71vb")
+centered = false
+
+[node name="FrozenScreen" type="TextureRect" parent="Campaign/Root/IceStory/foreground" unique_id=305676452]
+modulate = Color(1, 1, 1, 0.19607843)
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("51_4w656")
+
+[node name="levels" type="Control" parent="Campaign/Root/IceStory" unique_id=1689649747]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="snowstorm" type="Button" parent="Campaign/Root/IceStory/levels" unique_id=1396048888]
 layout_mode = 0
 offset_left = 563.0
 offset_top = 246.0
-offset_right = 669.0
+offset_right = 713.0
 offset_bottom = 286.0
 text = "Snow Storm"
 script = ExtResource("50_uypp3")
 LevelPath = "res://data/levels/world0/snowstorm/leveldata.json"
-CharacterPosition = Vector2(0, -50)
+CharacterPosition = Vector2(75, -50)
 PositionAsOffset = true
 
-[node name="CharacterDisplay" type="TextureRect" parent="Campaign/Root/WinterWorld" unique_id=1163547505]
+[node name="wip0" type="Button" parent="Campaign/Root/IceStory/levels" unique_id=1732803264]
 layout_mode = 0
-offset_left = 607.0
-offset_top = 178.0
-offset_right = 647.0
-offset_bottom = 218.0
+offset_left = 740.0
+offset_top = 437.0
+offset_right = 890.0
+offset_bottom = 477.0
+text = "W.I.P"
+script = ExtResource("50_uypp3")
+LevelPath = "res://data/levels/wip-placeholder/leveldata.json"
+CharacterPosition = Vector2(75, -50)
+PositionAsOffset = true
+
+[node name="wip1" type="Button" parent="Campaign/Root/IceStory/levels" unique_id=709529741]
+layout_mode = 0
+offset_left = 1124.0
+offset_top = 368.0
+offset_right = 1274.0
+offset_bottom = 408.0
+text = "W.I.P"
+script = ExtResource("50_uypp3")
+LevelPath = "res://data/levels/wip-placeholder/leveldata.json"
+CharacterPosition = Vector2(75, -50)
+PositionAsOffset = true
+
+[node name="WIPWORLD" type="Control" parent="Campaign/Root" unique_id=632320803 node_paths=PackedStringArray("LevelButtons", "CharacterDisplay")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+script = ExtResource("49_hrvbo")
+LevelButtons = [NodePath("levels/wip0")]
+WorldName = "W.I.P"
+CharacterDisplay = NodePath("CharacterDisplay")
+
+[node name="background" type="Control" parent="Campaign/Root/WIPWORLD" unique_id=1262441776]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Campaign/Root/WIPWORLD/background" unique_id=504608680]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.98232144, 0.664293, 0.48940134, 1)
+
+[node name="CharacterDisplay" type="TextureRect" parent="Campaign/Root/WIPWORLD" unique_id=1849728366]
+layout_mode = 0
+offset_left = 614.0
+offset_top = 188.0
+offset_right = 654.0
+offset_bottom = 228.0
 texture = ExtResource("48_0cbny")
 expand_mode = 1
 stretch_mode = 4
+script = ExtResource("56_e71vb")
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root" unique_id=134511262]
+[node name="levels" type="Control" parent="Campaign/Root/WIPWORLD" unique_id=1656645176]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="wip0" type="Button" parent="Campaign/Root/WIPWORLD/levels" unique_id=489300705]
+layout_mode = 0
+offset_left = 900.0
+offset_top = 133.0
+offset_right = 1050.0
+offset_bottom = 173.0
+text = "W.I.P"
+script = ExtResource("50_uypp3")
+LevelPath = "res://data/levels/wip-placeholder/leveldata.json"
+CharacterPosition = Vector2(75, -40)
+PositionAsOffset = true
+
+[node name="LevelDisplay" type="VBoxContainer" parent="Campaign/Root" unique_id=134511262]
 custom_minimum_size = Vector2(250, 0)
 layout_mode = 0
 offset_left = 10.0
@@ -3082,38 +3219,38 @@ offset_bottom = 221.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="Return" type="Button" parent="Campaign/Root/Sort" unique_id=577263536]
+[node name="Return" type="Button" parent="Campaign/Root/LevelDisplay" unique_id=577263536]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "< Return "
 
-[node name="WorldSelectLabel" type="Label" parent="Campaign/Root/Sort" unique_id=447745426]
+[node name="WorldSelectLabel" type="Label" parent="Campaign/Root/LevelDisplay" unique_id=447745426]
 layout_mode = 2
 text = "Story Selection"
 horizontal_alignment = 1
 
-[node name="Selection" type="PanelContainer" parent="Campaign/Root/Sort" unique_id=1325666238]
+[node name="Selection" type="PanelContainer" parent="Campaign/Root/LevelDisplay" unique_id=1325666238]
 layout_mode = 2
 
-[node name="StorySelect" type="HBoxContainer" parent="Campaign/Root/Sort/Selection" unique_id=790312327]
+[node name="StorySelect" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/Selection" unique_id=790312327]
 layout_mode = 2
 
-[node name="Prev" type="Button" parent="Campaign/Root/Sort/Selection/StorySelect" unique_id=1549858525]
+[node name="Prev" type="Button" parent="Campaign/Root/LevelDisplay/Selection/StorySelect" unique_id=1549858525]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "<"
 
-[node name="Name" type="Label" parent="Campaign/Root/Sort/Selection/StorySelect" unique_id=352465013]
+[node name="Name" type="Label" parent="Campaign/Root/LevelDisplay/Selection/StorySelect" unique_id=352465013]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Winter Wonderland"
 
-[node name="Next" type="Button" parent="Campaign/Root/Sort/Selection/StorySelect" unique_id=430130908]
+[node name="Next" type="Button" parent="Campaign/Root/LevelDisplay/Selection/StorySelect" unique_id=430130908]
 layout_mode = 2
 size_flags_horizontal = 10
 text = ">"
 
-[node name="LevelDisplay" type="PanelContainer" parent="Campaign/Root/Sort" unique_id=1133549621 node_paths=PackedStringArray("LevelName", "Author", "HP", "Duration", "AspectRatio", "Play", "Edit", "Delete", "Mods")]
+[node name="LevelDisplay" type="PanelContainer" parent="Campaign/Root/LevelDisplay" unique_id=1133549621 node_paths=PackedStringArray("LevelName", "Author", "HP", "Duration", "AspectRatio", "Play", "Edit", "Delete", "Mods")]
 layout_mode = 2
 size_flags_vertical = 4
 script = ExtResource("35_ok6jj")
@@ -3128,61 +3265,61 @@ Edit = NodePath("Sort/Actions/Edit")
 Delete = NodePath("Sort/Actions/Delete")
 Mods = NodePath("../../../../LevelSelect/MarginContainer/Sort/Modifiers")
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root/Sort/LevelDisplay" unique_id=1814382739]
+[node name="Sort" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/LevelDisplay" unique_id=1814382739]
 layout_mode = 2
 
-[node name="LevelName" type="Label" parent="Campaign/Root/Sort/LevelDisplay/Sort" unique_id=905584785]
+[node name="LevelName" type="Label" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort" unique_id=905584785]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "awesome level"
 
-[node name="Author" type="Label" parent="Campaign/Root/Sort/LevelDisplay/Sort" unique_id=113052332]
+[node name="Author" type="Label" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort" unique_id=113052332]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "author"
 label_settings = ExtResource("7_getpj")
 
-[node name="Info" type="HBoxContainer" parent="Campaign/Root/Sort/LevelDisplay/Sort" unique_id=1182807893]
+[node name="Info" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort" unique_id=1182807893]
 layout_mode = 2
 
-[node name="Count" type="Label" parent="Campaign/Root/Sort/LevelDisplay/Sort/Info" unique_id=180007672]
+[node name="Count" type="Label" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort/Info" unique_id=180007672]
 layout_mode = 2
-size_flags_horizontal = 11
+size_flags_horizontal = 3
 text = "3 hp"
 
-[node name="Dur" type="Label" parent="Campaign/Root/Sort/LevelDisplay/Sort/Info" unique_id=79642430]
+[node name="Dur" type="Label" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort/Info" unique_id=79642430]
 layout_mode = 2
-size_flags_horizontal = 11
+size_flags_horizontal = 3
 text = "00:00"
 
-[node name="Ratio" type="Label" parent="Campaign/Root/Sort/LevelDisplay/Sort/Info" unique_id=1570766799]
+[node name="Ratio" type="Label" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort/Info" unique_id=1570766799]
 layout_mode = 2
-size_flags_horizontal = 11
+size_flags_horizontal = 3
 text = "1:1"
 
-[node name="Play" type="Button" parent="Campaign/Root/Sort/LevelDisplay/Sort" unique_id=1581039580]
+[node name="Play" type="Button" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort" unique_id=1581039580]
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 22
 text = "Play"
 
-[node name="Actions" type="HBoxContainer" parent="Campaign/Root/Sort/LevelDisplay/Sort" unique_id=773042985]
+[node name="Actions" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort" unique_id=773042985]
 visible = false
 layout_mode = 2
 
-[node name="Edit" type="Button" parent="Campaign/Root/Sort/LevelDisplay/Sort/Actions" unique_id=561829382]
+[node name="Edit" type="Button" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort/Actions" unique_id=561829382]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 text = "Edit"
 
-[node name="Delete" type="Button" parent="Campaign/Root/Sort/LevelDisplay/Sort/Actions" unique_id=353806291]
+[node name="Delete" type="Button" parent="Campaign/Root/LevelDisplay/LevelDisplay/Sort/Actions" unique_id=353806291]
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 text = "Delete"
 
-[node name="Modifiers" type="PanelContainer" parent="Campaign/Root/Sort" unique_id=1870854716 node_paths=PackedStringArray("faster", "slower", "healthy", "perfectionist", "paranoid")]
+[node name="Modifiers" type="PanelContainer" parent="Campaign/Root/LevelDisplay" unique_id=1870854716 node_paths=PackedStringArray("faster", "slower", "healthy", "perfectionist", "paranoid")]
 visible = false
 layout_mode = 2
 size_flags_vertical = 4
@@ -3193,119 +3330,119 @@ healthy = NodePath("VBoxContainer/Healthy/CheckBox")
 perfectionist = NodePath("VBoxContainer/Perfectionist/CheckBox")
 paranoid = NodePath("VBoxContainer/Paranoid/CheckBox")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Campaign/Root/Sort/Modifiers" unique_id=316571632]
+[node name="VBoxContainer" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers" unique_id=316571632]
 layout_mode = 2
 
-[node name="Faster" type="HBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer" unique_id=1326920975]
+[node name="Faster" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer" unique_id=1326920975]
 layout_mode = 2
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Faster" unique_id=1678893909]
+[node name="Sort" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Faster" unique_id=1678893909]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Faster/Sort" unique_id=1127187304]
+[node name="Name" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Faster/Sort" unique_id=1127187304]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "faster"
 
-[node name="Subheading" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Faster/Sort" unique_id=537268913]
+[node name="Subheading" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Faster/Sort" unique_id=537268913]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "everything gets faster, except you"
 label_settings = ExtResource("7_getpj")
 
-[node name="CheckBox" type="CheckBox" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Faster" unique_id=524736132]
+[node name="CheckBox" type="CheckBox" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Faster" unique_id=524736132]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
 
-[node name="Slower" type="HBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer" unique_id=1726684801]
+[node name="Slower" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer" unique_id=1726684801]
 layout_mode = 2
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Slower" unique_id=908359058]
+[node name="Sort" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Slower" unique_id=908359058]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Slower/Sort" unique_id=995456420]
+[node name="Name" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Slower/Sort" unique_id=995456420]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "slower"
 
-[node name="Subheading" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Slower/Sort" unique_id=1766126942]
+[node name="Subheading" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Slower/Sort" unique_id=1766126942]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "everything gets slower, except you"
 label_settings = ExtResource("7_getpj")
 
-[node name="CheckBox" type="CheckBox" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Slower" unique_id=1883755422]
+[node name="CheckBox" type="CheckBox" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Slower" unique_id=1883755422]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
 
-[node name="Healthy" type="HBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer" unique_id=1237699919]
+[node name="Healthy" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer" unique_id=1237699919]
 layout_mode = 2
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Healthy" unique_id=66387967]
+[node name="Sort" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Healthy" unique_id=66387967]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Healthy/Sort" unique_id=167361629]
+[node name="Name" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Healthy/Sort" unique_id=167361629]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "healthy"
 
-[node name="Subheading" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Healthy/Sort" unique_id=1753190486]
+[node name="Subheading" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Healthy/Sort" unique_id=1753190486]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "more health"
 label_settings = ExtResource("7_getpj")
 
-[node name="CheckBox" type="CheckBox" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Healthy" unique_id=602868864]
+[node name="CheckBox" type="CheckBox" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Healthy" unique_id=602868864]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
 
-[node name="Perfectionist" type="HBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer" unique_id=102417287]
+[node name="Perfectionist" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer" unique_id=102417287]
 layout_mode = 2
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Perfectionist" unique_id=402781112]
+[node name="Sort" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Perfectionist" unique_id=402781112]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=1828949030]
+[node name="Name" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=1828949030]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "perfectionist"
 
-[node name="Subheading" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=2143403836]
+[node name="Subheading" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Perfectionist/Sort" unique_id=2143403836]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "no hits allowed"
 label_settings = ExtResource("7_getpj")
 
-[node name="CheckBox" type="CheckBox" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Perfectionist" unique_id=1756560071]
+[node name="CheckBox" type="CheckBox" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Perfectionist" unique_id=1756560071]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
 
-[node name="Paranoid" type="HBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer" unique_id=213468030]
+[node name="Paranoid" type="HBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer" unique_id=213468030]
 layout_mode = 2
 
-[node name="Sort" type="VBoxContainer" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Paranoid" unique_id=1126317529]
+[node name="Sort" type="VBoxContainer" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Paranoid" unique_id=1126317529]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Paranoid/Sort" unique_id=1265052381]
+[node name="Name" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Paranoid/Sort" unique_id=1265052381]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "paranoid"
 
-[node name="Subheading" type="Label" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Paranoid/Sort" unique_id=7344491]
+[node name="Subheading" type="Label" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Paranoid/Sort" unique_id=7344491]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "grazes count as hits"
 label_settings = ExtResource("7_getpj")
 
-[node name="CheckBox" type="CheckBox" parent="Campaign/Root/Sort/Modifiers/VBoxContainer/Paranoid" unique_id=1754441999]
+[node name="CheckBox" type="CheckBox" parent="Campaign/Root/LevelDisplay/Modifiers/VBoxContainer/Paranoid" unique_id=1754441999]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10

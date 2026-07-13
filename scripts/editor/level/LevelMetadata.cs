@@ -44,7 +44,7 @@ public partial class LevelMetadata : Control
 	}
     private void OnMusicTextChanged(string newSong)
 	{
-		var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", newSong);
+		var found = AudioUtils.LoadAudio($"{e.LevelPath}/audio/{newSong}");
 		if (found != null && newSong == "none")
 		{
 			ErrorDisplay.SetMessage("Music", $"[Music] 'none' is a reserved name, please rename this audio file.");

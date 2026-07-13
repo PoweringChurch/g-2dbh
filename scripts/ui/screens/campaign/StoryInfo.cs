@@ -7,8 +7,7 @@ public partial class StoryInfo : Control
 {
     [Export] public StoryLevelButton[] LevelButtons; // in order
     [Export] public string WorldName;
-    [Export] public Control CharacterDisplay;
-    [Export] public Vector2 DisplayOffset;
+    [Export] public CampaignCharacterDisplay CharacterDisplay;
     private LevelData[] datas;
     public event Action<LevelData> LevelSelected;
     public override void _Ready()
@@ -18,11 +17,20 @@ public partial class StoryInfo : Control
         {
             var btn = LevelButtons[i];
             datas[i] = ReadJson<LevelData>(btn.LevelPath);
-            LevelData currentData = datas[i];
-            btn.Pressed += () => LevelSelected?.Invoke(currentData);
-            CharacterDisplay.Position = (!btn.PositionAsOffset) ? btn.CharacterPosition : btn.Position+btn.CharacterPosition;
+            int cache = i;
+            btn.Pressed += () => ClickButton(cache);
         }
     }
+    public void ClickButton(int idx)
+    {
+        var btn = LevelButtons[idx];
+        var currentData = datas[idx];
+        LevelSelected?.Invoke(currentData); 
+        var pos = btn.PositionAsOffset ? btn.Position+btn.CharacterPosition
+                : btn.CharacterPosition;
+        CharacterDisplay.MoveTo(pos);
+    }
+    public LevelData GetLeveldata(int idx) => datas[idx];
     private static T ReadJson<T>(string path)
     {
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);

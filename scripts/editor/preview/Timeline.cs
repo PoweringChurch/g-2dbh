@@ -90,7 +90,7 @@ public partial class Timeline : Control
         {
             if (playing)
             {
-                EditorAudioPreview.VolumeLinear = ConfigHelper.Current.MusicVolume*AudioUtils.MusicVolumeMultiplier;
+                EditorAudioPreview.VolumeLinear = AudioUtils.MusicVolume;
                 EditorAudioPreview.Play(currentTime);
             }
             else
@@ -146,7 +146,7 @@ public partial class Timeline : Control
         foreach (var r in data.References)
             AddMarker(r);
         var musicname = data.Music;
-        var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", musicname);
+        var found = AudioUtils.LoadAudio($"{e.LevelPath}/audio/{musicname}");
         EditorAudioPreview.Stream = found;
         SetTime(0, false);
     }

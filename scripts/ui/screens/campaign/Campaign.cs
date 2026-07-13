@@ -13,10 +13,12 @@ public partial class Campaign : CanvasLayer
     private int currentStory = 0;
     public override void _Ready()
     {
-        foreach (var story in StoryInfos)
+        for (int i = 0; i < StoryInfos.Length; i++)
         {
+            var story = StoryInfos[i];
             if (story != null)
             {
+                story.ClickButton(0);
                 story.LevelSelected += OnLevelSelected;
             }
         }
@@ -25,16 +27,15 @@ public partial class Campaign : CanvasLayer
             if (currentStory > 0)
                 currentStory--;
             ShowStoryInfo(currentStory);
-            levelDisplay.ShowLevel(null);
         };
         NextWorld.Pressed += () =>
         {
             if (currentStory < StoryInfos.Length-1)
                 currentStory++;
             ShowStoryInfo(currentStory);
-            levelDisplay.ShowLevel(null);
         };
         Return.Pressed += RequestReturn.Invoke;
+        ShowStoryInfo(0);
     }
     private void ShowStoryInfo(int id)
     {
@@ -43,6 +44,7 @@ public partial class Campaign : CanvasLayer
         var info = StoryInfos[id];
         info.Visible = true;
         WorldNameLabel.Text = info.WorldName;
+        info.ClickButton(0);
     }
     private void OnLevelSelected(LevelData data)
     {
