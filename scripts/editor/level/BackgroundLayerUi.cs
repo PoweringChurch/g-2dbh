@@ -6,6 +6,7 @@ public partial class BackgroundLayerUi : Control
 {
     private static readonly EvalContext testCtx = new() {T = 1};
     [Export] LineEdit layerName;
+    [Export] CheckButton useCustomTexture;
     [Export] LineEdit imageName;
     [Export] SpinBox repeatCount;
     [Export] SpinBox order;
@@ -39,12 +40,14 @@ public partial class BackgroundLayerUi : Control
         EditorLayerInstance.Layer = layer;
         layerName.Text = layer.Name;
         imageName.Text = Path.GetFileName(layer.Image);
+        useCustomTexture.ButtonPressed = !layer.Image.StartsWith("res://");
         scrollFnX.Text = layer.ScrollFunctionX;
         scrollFnY.Text = layer.ScrollFunctionY;
         transparencyFn.Text = layer.TransparencyFn;
         repeatCount.Value = layer.RepeatCount;
         order.Value = layer.Order;
         scale.Value = layer.Scale;
+        useCustomTexture.Toggled += (t) => OnImageChanged(imageName.Text);
     }
     private void OnRemovePressed()
     {
@@ -91,14 +94,15 @@ public partial class BackgroundLayerUi : Control
     }
     private void OnImageChanged(string text)
     {
-        var tex = RenderingUtils.LoadTexture($"{e.LevelPath}images/{text}");
+        var path = useCustomTexture.ButtonPressed ? $"{e.LevelPath}images/{text}" : $"res://data/default-assets/images/{text}";
+        var tex = RenderingUtils.LoadTexture(path);
         if (tex == null)
         {
             ErrorDisplay.SetMessage("Texture", $"[Image] Image of name '{text}' could not be found");
             return;
         }
         ErrorDisplay.ClearMessage("Texture");
-        EditorLayerInstance.Layer.Image = $"{e.LevelPath}images/{text}";
+        EditorLayerInstance.Layer.Image = path;
         EditorLayerInstance.ApplyLayerParams();
     }
     private void OnOrderChanged(double to)

@@ -686,7 +686,6 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 
 [node name="EditorLayer" type="CanvasLayer" parent="." unique_id=1802501679]
-visible = false
 
 [node name="Fill" type="ColorRect" parent="EditorLayer" unique_id=1855270682]
 anchors_preset = 15
@@ -817,7 +816,7 @@ size_flags_horizontal = 4
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container" unique_id=1942392425]
 handle_input_locally = false
 size = Vector2i(540, 540)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Left/LevelPreview/Sort/Container/SubViewport" unique_id=1701605494]
 z_index = -129
@@ -855,7 +854,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 
-[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("BackgroundHolder", "LevelNameInput", "AuthorInput", "MusicInput", "HealthInput", "DurationInput", "AspectRatioInput", "CharacterSelect", "SaveLevel", "OpenLevelFolder", "OpenBgEditor", "ErrorDisplay", "BackgroundEditor")]
+[node name="LevelMetadata" type="FoldableContainer" parent="EditorLayer/Sections/Modules/Left" unique_id=1220126277 node_paths=PackedStringArray("BackgroundHolder", "LevelNameInput", "AuthorInput", "MusicInput", "UseCustomAssets", "HealthInput", "DurationInput", "AspectRatioInput", "CharacterSelect", "SaveLevel", "OpenLevelFolder", "OpenBgEditor", "ErrorDisplay", "BackgroundEditor")]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
@@ -866,6 +865,7 @@ BackgroundHolder = NodePath("../LevelPreview/Sort/Container/SubViewport/Backgrou
 LevelNameInput = NodePath("Sort/Top/Left/LevelName/LevelName")
 AuthorInput = NodePath("Sort/Top/Left/Author/Author")
 MusicInput = NodePath("Sort/Top/Left/Music/MusicName")
+UseCustomAssets = NodePath("Sort/Top/Left/CustomMusic/CheckButton")
 HealthInput = NodePath("Sort/Top/Right/Health/Health")
 DurationInput = NodePath("Sort/Top/Right/Duration/Durati")
 AspectRatioInput = NodePath("Sort/Top/Left/AspectRatio/AspectDropdown")
@@ -901,6 +901,17 @@ focus_mode = 1
 placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
+
+[node name="CustomMusic" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Left" unique_id=1851484050]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Left/CustomMusic" unique_id=44572897]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Custom music"
+
+[node name="CheckButton" type="CheckButton" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Left/CustomMusic" unique_id=201362850]
+layout_mode = 2
 
 [node name="Music" type="HBoxContainer" parent="EditorLayer/Sections/Modules/Left/LevelMetadata/Sort/Top/Left" unique_id=2101583833]
 layout_mode = 2
@@ -1630,12 +1641,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 0
 tab_0/title = "Projectile Editor"
 tab_1/title = "Pattern Editor"
 
 [node name="ProjectileCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=1699904652 node_paths=PackedStringArray("IdInput", "NameInput", "Preview", "TInput", "RenderScaleInput", "TSlider", "Zoom", "UseCustomTextureInput", "LockRotationCheck", "TextureInput", "XDisplay", "YDisplay", "ErrorDisplay", "WarningDisplay", "FnXInput", "FnYInput", "LifetimeInput", "TelegraphTimeInput", "PersistantCheckbutton", "FacePlayerCheckbutton", "CanCollideCheckbutton", "UseShapeCheckbutton", "Radius", "ShapeEditor", "ShapeTranslate", "SpawnOnDeathUi", "SpawnModelOnDeathCheck", "DeathModelType", "SpawnOnDeathIdInput", "MaxDepthInput", "Save")]
-visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("5_w48qg")
@@ -1706,7 +1716,7 @@ size_flags_vertical = 6
 [node name="SubViewport" type="SubViewport" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Space/Sort/Preview/PreviewMod/Preview" unique_id=1778793856]
 handle_input_locally = false
 size = Vector2i(256, 256)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="EditorLayer/Sections/Modules/Right/Creators/ProjectileCreator/Space/Sort/Preview/PreviewMod/Preview/SubViewport" unique_id=872621113]
 anchors_preset = 15
@@ -2231,6 +2241,7 @@ custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="PatternCreator" type="ScrollContainer" parent="EditorLayer/Sections/Modules/Right/Creators" unique_id=2050226747 node_paths=PackedStringArray("Preview", "TInput", "TSlider", "Zoom", "FnXInput", "FnYInput", "FnTInput", "FnFwdInput", "CountInput", "ProjectileIdInput", "FacePlayer", "IdInput", "NameInput", "Save", "ErrorDisplay")]
+visible = false
 layout_mode = 2
 horizontal_scroll_mode = 0
 script = ExtResource("15_getpj")
@@ -3015,6 +3026,7 @@ text = "-"
 horizontal_alignment = 2
 
 [node name="Campaign" type="CanvasLayer" parent="." unique_id=1289206583 node_paths=PackedStringArray("StoryInfos", "Return", "levelDisplay", "PreviousWorld", "WorldNameLabel", "NextWorld")]
+visible = false
 script = ExtResource("48_hrvbo")
 StoryInfos = [NodePath("Root/IceStory"), NodePath("Root/WIPWORLD")]
 Return = NodePath("Root/LevelDisplay/Return")
@@ -3093,7 +3105,7 @@ mouse_behavior_recursive = 1
 
 [node name="CloudsSlide" type="Parallax2D" parent="Campaign/Root/IceStory/foreground" unique_id=1381076052]
 repeat_size = Vector2(1938, 0)
-autoscroll = Vector2(60, 0)
+autoscroll = Vector2(120, 0)
 repeat_times = 3
 
 [node name="Sky" type="Sprite2D" parent="Campaign/Root/IceStory/foreground/CloudsSlide" unique_id=1661186034]
@@ -3108,6 +3120,21 @@ layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = ExtResource("51_4w656")
+
+[node name="WIPLABEL" type="Label" parent="Campaign/Root/IceStory/foreground" unique_id=351613942]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.0
+offset_top = -11.5
+offset_right = 21.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "WIP"
 
 [node name="levels" type="Control" parent="Campaign/Root/IceStory" unique_id=1689649747]
 anchors_preset = 0
@@ -3132,7 +3159,7 @@ offset_left = 740.0
 offset_top = 437.0
 offset_right = 890.0
 offset_bottom = 477.0
-text = "W.I.P"
+text = "WIP"
 script = ExtResource("50_uypp3")
 LevelPath = "res://data/levels/wip-placeholder/leveldata.json"
 CharacterPosition = Vector2(75, -50)
@@ -3144,7 +3171,7 @@ offset_left = 1124.0
 offset_top = 368.0
 offset_right = 1274.0
 offset_bottom = 408.0
-text = "W.I.P"
+text = "WIP"
 script = ExtResource("50_uypp3")
 LevelPath = "res://data/levels/wip-placeholder/leveldata.json"
 CharacterPosition = Vector2(75, -50)
@@ -3179,7 +3206,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.98232144, 0.664293, 0.48940134, 1)
+color = Color(0.24765348, 0.11985176, 0.115039386, 1)
+
+[node name="WIPLABEL" type="Label" parent="Campaign/Root/WIPWORLD/background" unique_id=2085968972]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.0
+offset_top = -11.5
+offset_right = 21.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "WIP"
 
 [node name="CharacterDisplay" type="TextureRect" parent="Campaign/Root/WIPWORLD" unique_id=1849728366]
 layout_mode = 0

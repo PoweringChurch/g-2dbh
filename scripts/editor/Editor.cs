@@ -51,8 +51,7 @@ public partial class Editor : CanvasLayer
         }
     }
     public float CurrentTime => _timeline.CurrentTime;
-    private const string _levelDirectory = "user://data/levels/";
-    public string LevelPath => $"{(levelData != null ? levelData.LevelPath : "")}/";
+    public string LevelPath => $"{(levelData != null ? levelData.LevelPath : "")}";
     public IEditorModel SelectedModel => _modelLibrary.SelectedModel;
     private ProjectileModel[] projectileModels = new ProjectileModel[MaxModelCount];
     private PatternModel[] patternModels = new PatternModel[MaxModelCount];

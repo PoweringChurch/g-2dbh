@@ -58,6 +58,7 @@ public partial class ProjectileCreator : Control
         // preview
         TInput.ValueChanged += OnTChanged;
         TSlider.ValueChanged += OnTSliderChanged;
+        UseCustomTextureInput.Toggled += (t) => OnTextureChanged(TextureInput.Text);
         TextureInput.TextChanged += OnTextureChanged;
         RenderScaleInput.ValueChanged += OnRenderScaleChanged;
         Zoom.ValueChanged += OnZoomChanged;

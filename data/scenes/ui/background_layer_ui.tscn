@@ -4,12 +4,13 @@
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="2_wr6bj"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="3_gxv10"]
 
-[node name="BackgroundLayerUi" type="VBoxContainer" unique_id=1809618226 node_paths=PackedStringArray("layerName", "imageName", "repeatCount", "order", "scale", "scrollFnX", "scrollFnY", "transparencyFn", "ErrorDisplay", "remove")]
+[node name="BackgroundLayerUi" type="VBoxContainer" unique_id=1809618226 node_paths=PackedStringArray("layerName", "useCustomTexture", "imageName", "repeatCount", "order", "scale", "scrollFnX", "scrollFnY", "transparencyFn", "ErrorDisplay", "remove")]
 scale = Object(SpinBox,"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":2,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"clip_contents":false,"custom_minimum_size":Vector2(0, 0),"layout_direction":0,"layout_mode":2,"size_flags_horizontal":6,"size_flags_vertical":1,"size_flags_stretch_ratio":1.0,"localize_numeral_system":true,"tooltip_text":"","tooltip_auto_translate_mode":0,"focus_neighbor_left":NodePath(""),"focus_neighbor_top":NodePath(""),"focus_neighbor_right":NodePath(""),"focus_neighbor_bottom":NodePath(""),"focus_next":NodePath(""),"focus_previous":NodePath(""),"focus_mode":0,"focus_behavior_recursive":0,"mouse_filter":0,"mouse_behavior_recursive":0,"mouse_force_pass_scroll_events":true,"mouse_default_cursor_shape":0,"shortcut_context":null,"accessibility_name":"","accessibility_description":"","accessibility_live":0,"accessibility_controls_nodes":Array[NodePath]([]),"accessibility_described_by_nodes":Array[NodePath]([]),"accessibility_labeled_by_nodes":Array[NodePath]([]),"accessibility_flow_to_nodes":Array[NodePath]([]),"theme":null,"theme_type_variation":&"","min_value":0.25,"max_value":2.0,"step":0.01,"page":0.0,"value":1.0,"rounded":false,"allow_greater":false,"allow_lesser":false,"alignment":0,"editable":true,"update_on_text_changed":false,"prefix":"","suffix":"","custom_arrow_step":0.0,"custom_arrow_round":false,"select_all_on_focus":false,"script":null)
 
 size_flags_horizontal = 3
 script = ExtResource("1_lih84")
 layerName = NodePath("LayerName")
+useCustomTexture = NodePath("UseCustomTexture/CheckButton")
 imageName = NodePath("Image/LineEdit")
 repeatCount = NodePath("Config/Repeat/Repea")
 order = NodePath("Config/Order/SpinBox2")
@@ -18,7 +19,7 @@ scrollFnX = NodePath("Bottom/Stack/Fnx/LineEdit")
 scrollFnY = NodePath("Bottom/Stack/Fny/LineEdit")
 transparencyFn = NodePath("Bottom/Stack/FnT/LineEdit")
 ErrorDisplay = NodePath("ErrorDisplay")
-remove = NodePath("Image/Remove")
+remove = NodePath("Remove")
 
 [node name="LayerName" type="LineEdit" parent="." unique_id=2129122583]
 layout_mode = 2
@@ -30,6 +31,24 @@ max_length = 30
 expand_to_text_length = true
 context_menu_enabled = false
 emoji_menu_enabled = false
+
+[node name="Remove" type="Button" parent="." unique_id=688627498]
+custom_minimum_size = Vector2(31, 31)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Remove Layer"
+
+[node name="UseCustomTexture" type="HBoxContainer" parent="." unique_id=1652406785]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UseCustomTexture" unique_id=1320116256]
+layout_mode = 2
+text = "Use custom image"
+
+[node name="CheckButton" type="CheckButton" parent="UseCustomTexture" unique_id=990699161]
+layout_mode = 2
+size_flags_horizontal = 10
 
 [node name="Image" type="HBoxContainer" parent="." unique_id=17135433]
 layout_mode = 2
@@ -44,12 +63,6 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "..."
-
-[node name="Remove" type="Button" parent="Image" unique_id=688627498]
-custom_minimum_size = Vector2(31, 31)
-layout_mode = 2
-size_flags_vertical = 0
-text = "X"
 
 [node name="Config" type="HBoxContainer" parent="." unique_id=1998307985]
 layout_mode = 2
