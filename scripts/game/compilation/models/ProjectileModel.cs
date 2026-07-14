@@ -22,6 +22,8 @@ public class ProjectileModel : IEditorModel
 
     [JsonPropertyName("fnY")] 
     public string FunctionY { get; set; } = "0";
+    [JsonPropertyName("fnF")] 
+    public string FunctionF { get; set; } = "0";
 
     // ==========================================
     // Visuals & Rendering
@@ -82,6 +84,7 @@ public class ProjectileModel : IEditorModel
     // ==========================================
     [JsonIgnore] public Func<EvalContext, double> fnx { get; set; }
     [JsonIgnore] public Func<EvalContext, double> fny { get; set; }
+    [JsonIgnore] public Func<EvalContext, double> fnf { get; set; }
     [JsonIgnore] public int RenderGroupId { get; set; }
     [JsonIgnore] public List<Vector2> ShapeVect2s { get; set; }
 
@@ -103,7 +106,7 @@ public class ProjectileModel : IEditorModel
         // Math & Movement
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
-        FacePlayer = other.FacePlayer;
+        FunctionF = other.FunctionF;
 
         // Visuals
         Texture = other.Texture;
@@ -137,6 +140,7 @@ public class ProjectileModel : IEditorModel
 
         fnx = other.fnx;
         fny = other.fny;
+        fnf = other.fnf;
         RenderGroupId = other.RenderGroupId;
         if (other.ShapeVect2s != null)
         {

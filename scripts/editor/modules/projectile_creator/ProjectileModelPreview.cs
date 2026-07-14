@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 public partial class ProjectileModelPreview : Node2D
 {
-    public Editor e;
     private string texture;
     public string Texture
     {
@@ -117,10 +116,6 @@ public partial class ProjectileModelPreview : Node2D
     }
     private Vector2 pos = Vector2.Zero;
     public Vector2 PreviewPosition => pos;
-    public override void _Ready()
-    {
-        e = GetNode<Editor>("/root/Editor");
-    }
     public override void _Process(double delta)
     {
         if (_dirty)

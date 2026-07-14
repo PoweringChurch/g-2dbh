@@ -11,11 +11,9 @@ public partial class SettingsMenu : CanvasLayer
     public event Action RequestReturn;
     private Config config => ConfigHelper.Current;
     private readonly System.Collections.Generic.List<(PropertyInfo Prop, Control Control)> _bindings = new();
-    private UIManager _ui;
+    private UIManager ui => UIManager.Instance;
     public override void _Ready()
     {
-        _ui = GetNode<UIManager>("/root/UIManager");
-
         BuildFields();
 
         _saveButton.Pressed += OnSavePressed;

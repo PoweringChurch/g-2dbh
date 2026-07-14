@@ -9,14 +9,13 @@ public partial class ModelLibrary : Control
     [Export] Button ProjectileNextFree;
     [Export] Button PatternNextFree;
     [Export] PackedScene ModelUITemplate;
-    private Editor e;
+    private Editor e => Editor.Instance;
 
     public IEditorModel SelectedModel { get; private set; }
 
     public override void _Ready()
     {
         base._Ready();
-        e = GetNode<Editor>("/root/Editor");
         ProjectileNextFree.Pressed += OnProjNextFree;
         PatternNextFree.Pressed += OnPattNextFree;
     }
@@ -42,9 +41,6 @@ public partial class ModelLibrary : Control
             }
         }
     }
-    public void OnModelSaved(ProjectileModel _) => Refresh();
-    public void OnModelSaved(PatternModel _) => Refresh();
-
     public void Refresh()
     {
         Load((IEditorModel[])e.PatternModels, PatternModelList);
@@ -82,7 +78,7 @@ public partial class ModelLibrary : Control
                 {
                     if (e.SelectedModel == pm)
                         e.OpenModel(new ProjectileModel());
-                    e.RemoveProjectileModel(pm.Id, newTemplate);
+                    //e.RemoveProjectileModel(pm.Id, newTemplate);
                 }
                 else if (m is PatternModel ptm)
                 {

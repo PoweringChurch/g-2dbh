@@ -69,9 +69,7 @@ public partial class PatternPreview : Node2D
             _dirty = true;
         }
     }
-    private Editor e;
-    public override void _Ready() =>
-        e = GetNode<Editor>("/root/Editor");
+    private Editor e => Editor.Instance;
     private bool _dirty = true;
     public override void _Process(double delta)
     {
@@ -85,7 +83,7 @@ public partial class PatternPreview : Node2D
     {
         if (projModel == null)
             return;
-        EvalContext lctx = new() { N = count > 1 ? count-1 : 1 }; // live ctx, stores i, n, projectile t
+        EvalContext lctx = new() { N = count > 1 ? count - 1 : 1 }; // live ctx, stores i, n, projectile t
         // loop through count and draw a projectile for i in count
         for (int i = 0; i < Count; i++)
         {
@@ -101,12 +99,12 @@ public partial class PatternPreview : Node2D
             var (x, y) = CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
             // draw
             var texture = projModel.Texture != "default" ?
-                RenderingUtils.LoadTexture(projModel.Texture) 
+                RenderingUtils.LoadTexture(projModel.Texture)
                 : null;
-            DrawProjectileShape(projModel, texture, new Vector2(startxy.x + x, startxy.y+y), (float)genFwd, alive ? Colors.White : deadColor);
+            DrawProjectileShape(projModel, texture, new Vector2(startxy.x + x, startxy.y + y), (float)genFwd, alive ? Colors.White : deadColor);
         }
         DrawSetTransform(Vector2.Zero, 0, Vector2.One);
-        DrawPath(fnX, fnY, lctx, 0,  Colors.Green);
+        DrawPath(fnX, fnY, lctx, 0, Colors.Green);
     }
     private void DrawProjectileShape(ProjectileModel model,
     Texture2D texture, Vector2 pos,
@@ -138,10 +136,10 @@ public partial class PatternPreview : Node2D
         {
             pctx.I = Math.Min(pctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
             var (x, y) = CalculatePositionAt((float)fwd, fnx, fny, pctx);
-            points[j] = new Vector2(x,y);
+            points[j] = new Vector2(x, y);
         }
         DrawPolyline(points, color, ConfigHelper.Current.PathThickness, true);
-        DrawCircle(points[0], ConfigHelper.Current.PathThickness*1.5f, color);
+        DrawCircle(points[0], ConfigHelper.Current.PathThickness * 1.5f, color);
     }
     private static (float x, float y) CalculatePositionAt(float fwd, Expr fnx, Expr fny, EvalContext ctx)
     {

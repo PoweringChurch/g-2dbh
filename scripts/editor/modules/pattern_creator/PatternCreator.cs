@@ -13,25 +13,23 @@ public partial class PatternCreator : Control
     [Export] LineEdit FnYInput;
     [Export] LineEdit FnTInput;
     [Export] LineEdit FnFwdInput;
-    [Export] SpinBox  CountInput;
+    [Export] SpinBox CountInput;
     [Export] SpinBox ProjectileIdInput;
     [Export] CheckButton FacePlayer;
     [Export] SpinBox IdInput;
     [Export] LineEdit NameInput;
     [Export] Button Save;
     [Export] MessageDisplay ErrorDisplay;
-    private Editor e;
+    private Editor e => Editor.Instance;
     private PatternModel model = null;
     public PatternModel PatternModel => model;
     public delegate void PatternModelUpdatedEventHandler(PatternModel model);
     public event PatternModelUpdatedEventHandler ModelSaved;
-    private static readonly EvalContext testCtx = new() {I = 0, N = 1};
+    private static readonly EvalContext testCtx = new() { I = 0, N = 1 };
     public override void _Ready()
     {
-        e = GetNode<Editor>("/root/Editor");
-
-        TInput.ValueChanged          += OnTChanged;
-        TSlider.ValueChanged         += OnTSliderChanged;
+        TInput.ValueChanged += OnTChanged;
+        TSlider.ValueChanged += OnTSliderChanged;
 
         FnXInput.TextChanged += OnFnXChanged; // the rest follow this pattern basically
         FnYInput.TextChanged += OnFnYChanged;
@@ -47,7 +45,7 @@ public partial class PatternCreator : Control
     {
         model.FacePlayer = toggledOn;
     }
-    public void OnModelUpdate(ProjectileModel newmodel)
+    public void ProjectileModelUpdated(ProjectileModel newmodel)
     {
         if (newmodel.Id == model.ProjectileId)
         {
@@ -56,7 +54,7 @@ public partial class PatternCreator : Control
     }
     public void OnZoomChanged(double value)
     {
-        Preview.Scale = Vector2.One*(float)value;
+        Preview.Scale = Vector2.One * (float)value;
     }
     public void OnProjectileModelIdChanged(double id)
     {
@@ -77,7 +75,7 @@ public partial class PatternCreator : Control
         UpdateTime(false);
         Preview.T = time;
     }
-    private void OnTSliderChanged(double value) 
+    private void OnTSliderChanged(double value)
     {
         time = (float)value;
         UpdateTime(true);
@@ -154,7 +152,7 @@ public partial class PatternCreator : Control
         }
         catch (Exception e) { ErrorDisplay.SetMessage("FnFwd", "[Function Forward] " + e.Message); }
     }
-    private void OnCountChanged(double to) 
+    private void OnCountChanged(double to)
     {
         Preview.Count = (int)to;
         model.Count = (int)to;

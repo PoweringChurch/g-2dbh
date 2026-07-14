@@ -10,10 +10,9 @@ public partial class BackgroundEditor : Control
     [Export] Button NewLayer;
     [Export] Button Close;
     [Export] VBoxContainer List;
-    private Editor e;
+    private Editor e => Editor.Instance;
     public override void _Ready()
     {
-        e = GetNode<Editor>("/root/Editor");
         NewLayer.Pressed += () => {var layer = new BackgroundLayer(); e.levelData.BackgroundLayers.Add(layer); CreateNewLayerUi(layer); };
         Organize.Pressed += OrganizeUi;
         Close.Pressed += () => Visible = false;

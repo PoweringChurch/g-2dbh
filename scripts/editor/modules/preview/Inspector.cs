@@ -9,10 +9,9 @@ public partial class Inspector : Control
     [Export] SpinBox fwdinput;
     [Export] SpinBox idinput;
     [Export] OptionButton typeInput;
-    private Editor e;
+    private Editor e => Editor.Instance;
     public override void _Ready()
     {
-        e = GetNode<Editor>("/root/Editor");
         xinput.ValueChanged += OnXChanged;
         yinput.ValueChanged += OnYChanged;
         tinput.ValueChanged += OnTChanged;

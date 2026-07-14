@@ -6,14 +6,13 @@ public class BulletRenderer
 {
     private readonly CompiledLevel level;
     private readonly float[][] groupBuffers;
-    private readonly GameSession __gs;
+    private GameSession __gs => GameSession.Instance;
     private int __activeCount;
     private double __elapsed;
     private int __culled = 0;
     private SpatialReference[] __active;
-    public BulletRenderer(CompiledLevel level, GameSession gs)
+    public BulletRenderer(CompiledLevel level)
     {
-        __gs = gs;
         this.level = level;
         groupBuffers = new float[level.RenderGroups.Count][];
         for (int i = 0; i < groupBuffers.Length; i++)

@@ -9,7 +9,7 @@ public partial class LevelPreview : Control
 	public const float PreviewScale = 0.6f;
 	[Export] Node2D PreviewRoot;
 	[Export] SubViewport PreviewVP;
-	private Editor e;
+    private Editor e => Editor.Instance;
 	private float resScale = 1;
 	private List<BackgroundLayerInstance> bgInstances = new();
 	public List<BackgroundLayerInstance> BGInstances => bgInstances;
@@ -17,7 +17,6 @@ public partial class LevelPreview : Control
 	private float[][] _groupBuffers = new float[Editor.MaxModelCount][];
 	public override void _Ready()
 	{
-		e = GetNode<Editor>("/root/Editor");
 		GetTree().Root.SizeChanged += OnWindowResized;
 		PreviewRoot.Draw += () => DrawGizmos(SelectedReference);
 
@@ -40,7 +39,6 @@ public partial class LevelPreview : Control
 	private bool _inGroup = false;
     private bool lmbDragging = false;
     private bool rmbDragging = false;
-	private bool snap => e.Snap;
 	private Vector2 currentMpos = Vector2.Zero;
 	private Vector2 mousePoint0;
 	private Vector2 mousePoint1;
@@ -55,32 +53,32 @@ public partial class LevelPreview : Control
 				if (e.levelData.References == null) return;
                 switch (e.CurrentMode)
 				{
-					case Editor.Mode.Place: HandlePlacePress(mb); break;
-					case Editor.Mode.Select: HandleSelectLMBPress(mb); break;
-					case Editor.Mode.Delete: HandleDeleteLMBPress(mb); break;
+					case Toolbar.Mode.Place: HandlePlacePress(mb); break;
+					case Toolbar.Mode.Select: HandleSelectLMBPress(mb); break;
+					case Toolbar.Mode.Delete: HandleDeleteLMBPress(mb); break;
 				}
             }
 			else if (mb.ButtonIndex == MouseButton.Left && !mb.Pressed)
 			{
 				switch (e.CurrentMode)
 				{
-					case Editor.Mode.Place: HandlePlaceRelease(mb); break;
-					case Editor.Mode.Select: HandleSelectLMBRelease(mb); break;
-					case Editor.Mode.Delete: HandleDeleteLMBRelease(); break;
+					case Toolbar.Mode.Place: HandlePlaceRelease(mb); break;
+					case Toolbar.Mode.Select: HandleSelectLMBRelease(mb); break;
+					case Toolbar.Mode.Delete: HandleDeleteLMBRelease(); break;
 				}
 			}
 			else if (mb.ButtonIndex == MouseButton.Right && mb.Pressed)
 			{
 				switch (e.CurrentMode)
 				{
-					case Editor.Mode.Select: HandleSelectRMBPress(mb); break;
+					case Toolbar.Mode.Select: HandleSelectRMBPress(mb); break;
 				}
 			}
 			else if (mb.ButtonIndex == MouseButton.Right && !mb.Pressed)
 			{
 				switch (e.CurrentMode)
 				{
-					case Editor.Mode.Select: HandleSelectRMBRelease(mb); break;
+					case Toolbar.Mode.Select: HandleSelectRMBRelease(mb); break;
 				}
 			}
         }
@@ -89,9 +87,9 @@ public partial class LevelPreview : Control
 			currentMpos = mm.Position;
 			switch (e.CurrentMode)
 			{
-				case Editor.Mode.Place: HandlePlaceMM(mm); break;
-				case Editor.Mode.Select: HandleSelectMM(mm); break;
-				case Editor.Mode.Delete: HandleDeleteMM(mm); break;
+				case Toolbar.Mode.Place: HandlePlaceMM(mm); break;
+				case Toolbar.Mode.Select: HandleSelectMM(mm); break;
+				case Toolbar.Mode.Delete: HandleDeleteMM(mm); break;
 			}
 			PreviewRoot.QueueRedraw();
 		}
@@ -175,7 +173,7 @@ public partial class LevelPreview : Control
 		if (e.SelectedModel == null)
 			return;
 		var local = ToPreviewLocal(mb.Position);
-		var pos = snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize): local;
+		var pos = e.Snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize): local;
 		var newRef = new EditorReference
 		{
 			Id = e.SelectedModel.Id,
@@ -258,7 +256,7 @@ public partial class LevelPreview : Control
 		var local = ToPreviewLocal(mb.Position);
 		var rPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
 		float f = (rPos - local).Angle()+(Mathf.Pi/2);
-		if (snap)
+		if (e.Snap)
 		{
 			float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
 			f = Mathf.Round(f / step) * step;
@@ -279,7 +277,7 @@ public partial class LevelPreview : Control
 			var local = ToPreviewLocal(mb.Position);
 			var rPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
 			float f = (rPos - local).Angle()+(Mathf.Pi/2);
-			if (snap)
+			if (e.Snap)
 			{
 				float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
 				f = Mathf.Round(f / step) * step;
@@ -334,7 +332,7 @@ public partial class LevelPreview : Control
 		if (SelectedReference != null && !rmbDragging) // have a selected reference and holding lmb but not holding rmb
 		{
 			var local = ToPreviewLocal(mb.Position);
-			var pos = snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize) : local;
+			var pos = e.Snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize) : local;
 			var oldAnchorPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
 			SelectedReference.SpawnX = pos.X;
 			SelectedReference.SpawnY = pos.Y;
@@ -363,7 +361,7 @@ public partial class LevelPreview : Control
 			var local = ToPreviewLocal(mm.Position);
 			var rPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
 			float f = (rPos - local).Angle()+(Mathf.Pi/2);
-			if (snap)
+			if (e.Snap)
 			{
 				float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
 				f = Mathf.Round(f / step) * step;
@@ -379,7 +377,7 @@ public partial class LevelPreview : Control
 		if (SelectedReference != null && lmbDragging && !rmbDragging) // have a selected reference and holding lmb but not holding rmb
 		{
 			var local = ToPreviewLocal(mm.Position);
-			var pos = snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize) : local;
+			var pos = e.Snap ? local.Snapped(ConfigHelper.Current.GridSnapCellSize) : local;
 			var oldAnchorPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
 			SelectedReference.SpawnX = pos.X;
 			SelectedReference.SpawnY = pos.Y;
@@ -405,7 +403,7 @@ public partial class LevelPreview : Control
 			var local = ToPreviewLocal(mm.Position);
 			var selectedPos = new Vector2(SelectedReference.SpawnX, SelectedReference.SpawnY);
 			float f = (selectedPos - local).Angle()+(Mathf.Pi/2);
-			if (snap)
+			if (e.Snap)
 			{
 				float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
 				f = Mathf.Round(f / step) * step;
@@ -421,7 +419,7 @@ public partial class LevelPreview : Control
 					{
 						var rPos = new Vector2(r.SpawnX, r.SpawnY);
 						float rf = (rPos - local).Angle()+(Mathf.Pi/2);
-						if (snap)
+						if (e.Snap)
 						{
 							float step = Mathf.Pi / ConfigHelper.Current.AngleSnapDivision;
 							rf = Mathf.Round(rf / step) * step;
@@ -543,7 +541,7 @@ public partial class LevelPreview : Control
 	private void DrawGizmos(EditorReference r)
     {
 		// grid
-		if (snap)
+		if (e.Snap)
 		{
 			var local = ToPreviewLocal(currentMpos);
 			var cellsize = ConfigHelper.Current.GridSnapCellSize;
@@ -604,7 +602,7 @@ public partial class LevelPreview : Control
 			{
 				lctx.T = Math.Min(proj.Lifetime,ConfigHelper.Current.MaxPathLength) / steps * i;
 				lctx.L = proj.Lifetime;
-				var (x, y) = CalculatePosDelta(proj.fnx, proj.fny, lctx, r.F);
+				var (x, y) = CalculatePosDelta(proj.fnx, proj.fny, proj.fnf, lctx);
 				points[i] = new(r.SpawnX+x,r.SpawnY+y);
 			}
 			PreviewRoot.DrawPolyline(points, RenderingUtils.ColorFromString(proj.Name), ConfigHelper.Current.PathThickness, true);
@@ -622,7 +620,7 @@ public partial class LevelPreview : Control
 			for (int i = 0; i < steps; i++)
 			{
 				lctx.I = lctx.N / steps * i;
-				var (x, y) = CalculatePosDelta(patt.fnx, patt.fny, lctx, r.F);
+				var (x, y) = CalculatePosDelta(patt.fnx, patt.fny, null, _ctx, r.F);
 				points[i] = new(r.SpawnX+x,r.SpawnY+y);
 				PreviewRoot.DrawCircle(points[i], ConfigHelper.Current.PathThickness*1.5f, RenderingUtils.ColorFromString(e.ProjectileModels[patt.ProjectileId].Name));
 			}
@@ -769,7 +767,7 @@ public partial class LevelPreview : Control
 		_ctx.L = proj.Lifetime;
 		bool alive = _ctx.T >= 0 && _ctx.T <= proj.Lifetime;
 		if (!alive) return false;
-		var pos = CalculatePosDelta(proj.fnx, proj.fny, _ctx, r.F);
+		var pos = CalculatePosDelta(proj.fnx, proj.fny, proj.fnf, _ctx);
 		r.Pos = new Vector2(r.SpawnX, r.SpawnY) + pos;
 		return true;
 	}
@@ -792,7 +790,7 @@ public partial class LevelPreview : Control
 				{
 					var lctx = new EvalContext() {T = proj.Lifetime, L = proj.Lifetime};
 					Vector2 spawnpos = new(r.SpawnX, r.SpawnY);
-					Vector2 delta = CalculatePosDelta(proj.fnx, proj.fny, lctx, r.F);
+					Vector2 delta = CalculatePosDelta(proj.fnx, proj.fny, proj.fnf, lctx);
 					Vector2 endPos = spawnpos+delta;
 					var childRef = new EditorReference()
 					{
@@ -831,7 +829,7 @@ public partial class LevelPreview : Control
 			double spawnDelay = patt.fnt(lctx);
 			lctx.T = 0;
 			double fwdOffset = patt.fnf(lctx);
-			Vector2 spawnOffset = CalculatePosDelta(patt.fnx, patt.fny, lctx, r.F);
+			Vector2 spawnOffset = CalculatePosDelta(patt.fnx, patt.fny, null, lctx, r.F);
 			Vector2 childAbsoluteSpawnPos = basePos + spawnOffset;
 			var subBulletRef = new EditorReference
 			{
@@ -901,12 +899,17 @@ public partial class LevelPreview : Control
 		}
 		Sync();
 	}
-	private static Vector2 CalculatePosDelta(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, EvalContext ctx, double f = 0)
+	private static Vector2 CalculatePosDelta(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, Func<EvalContext, double> efnf, EvalContext ctx, double f = 0)
 	{
 		double xTravel = efnx(ctx);
 		double yTravel = efny(ctx);
-		double cos = Math.Cos(f);
-		double sin = Math.Sin(f);
+		double fTravel;
+		if (efnf == null)
+			fTravel = f;
+		else
+			fTravel = efnf(ctx);
+		double cos = Math.Cos(fTravel);
+		double sin = Math.Sin(fTravel);
 		float x = (float)(cos * xTravel - sin * yTravel);
 		float y = (float)(sin * xTravel + cos * yTravel);
 		var pos = new Vector2(x, y);

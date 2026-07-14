@@ -14,15 +14,12 @@ public partial class LevelDisplay : Control
     [Export] Button Delete;
     [Export] Modifiers Mods;
     private LevelData toPlay;
-    private GameSession gs;
-    private Editor e;
-    private UIManager ui;
+    private GameSession gs => GameSession.Instance;
+    private Editor e => Editor.Instance;
+    private UIManager ui => UIManager.Instance;
     public event Action RequestRepopulate;
     public override void _Ready()
     {
-        gs = GetNode<GameSession>("/root/GameSession");
-        ui = GetNode<UIManager>("/root/UIManager");
-        e = GetNode<Editor>("/root/Editor");
         if (HideEditAndDelete)
         {
             Edit.Visible = false;

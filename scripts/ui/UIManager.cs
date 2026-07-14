@@ -5,39 +5,22 @@ using System.Linq;
 
 public partial class UIManager : Node
 {
-    [Export] NodePath HUDPath = "/root/main/HUD";
-    [Export] NodePath PauseMenuPath = "/root/main/PauseMenu";
-    [Export] NodePath MainMenuPath = "/root/main/MainMenu";
-    [Export] NodePath LevelSelectPath = "/root/main/LevelSelect";
-    [Export] NodePath EditorLayerPath = "/root/main/EditorLayer";
-    [Export] NodePath ScoreSummaryPath = "/root/main/ScoreSummary";
-    [Export] NodePath SettingsPath = "/root/main/Settings";
-    [Export] NodePath CampaignPath = "/root/main/Campaign";
-    public HUD HUD { get; private set; }
-    public ScoreSummary ScoreSummary { get; private set;}
-    SettingsMenu _settings;
-    PauseMenu _pause;
-    MainMenu _mainMenu;
-    LevelSelect _levelSelect;
-    CanvasLayer _editorLayer;
-    Campaign _campaign;
-    GameSession gs;
-    Editor e;
+    public static UIManager Instance;
+    [Export] public HUD HUD { get; private set; }
+    [Export] public ScoreSummary ScoreSummary { get; private set;}
+    [Export] SettingsMenu _settings;
+    [Export] PauseMenu _pause;
+    [Export] MainMenu _mainMenu;
+    [Export] LevelSelect _levelSelect;
+    [Export] Campaign _campaign;
+    GameSession gs => GameSession.Instance;
+    Editor e => Editor.Instance;
     private bool _canPause = false;
     private List<CanvasLayer> uiPath = new();
+    public override void _EnterTree() =>
+        Instance = this;
     public override void _Ready()
     {
-        gs = GetNode<GameSession>("/root/GameSession");
-        e = GetNode<Editor>("/root/Editor");
-        HUD = GetNode<HUD>(HUDPath);
-        ScoreSummary = GetNode<ScoreSummary>(ScoreSummaryPath);
-        _settings = GetNode<SettingsMenu>(SettingsPath);
-        _pause = GetNode<PauseMenu>(PauseMenuPath);
-        _mainMenu = GetNode<MainMenu>(MainMenuPath);
-        _levelSelect = GetNode<LevelSelect>(LevelSelectPath);
-        _editorLayer = GetNode<CanvasLayer>(EditorLayerPath);
-        _campaign = GetNode<Campaign>(CampaignPath);
-
         _pause.RequestResume += () => TogglePause(false);
         _pause.RequestReset += Reset;
         _pause.RequestReturn += Return;
@@ -65,7 +48,7 @@ public partial class UIManager : Node
                 Return();
         }
     }
-    public void ShowEditor() => Open(_editorLayer);
+    public void ShowEditor() => Open(e);
     public void ShowHUD() => Open(HUD);
     private void TogglePause(bool on)
     {
@@ -90,14 +73,16 @@ public partial class UIManager : Node
     }
     void Open(CanvasLayer show, bool addToPath = true)
     {
-        foreach (var layer in new CanvasLayer[] { HUD, _settings, _pause, _mainMenu, _levelSelect, _editorLayer, ScoreSummary, _campaign })
+        foreach (var layer in new CanvasLayer[] { HUD, _settings, _pause, _mainMenu, _levelSelect, e, ScoreSummary, _campaign })
+        {
             layer.Visible = layer == show;
+        }
         _canPause = false;
         if (show == HUD)
         {
             _pause.ToggleReset(true);
             _canPause = true;
-        } else if (show == _editorLayer)
+        } else if (show == e)
         {
             _pause.ToggleReset(false);
             _canPause = true;
@@ -110,7 +95,7 @@ public partial class UIManager : Node
     }
     void Return()
     {
-        if (uiPath[^1] == _editorLayer)
+        if (uiPath[^1] == e)
         {
             e.SetPlaying(false);
         }

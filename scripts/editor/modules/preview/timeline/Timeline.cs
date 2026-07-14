@@ -27,11 +27,9 @@ public partial class Timeline : Control
     private bool _dirty = false;
     private Dictionary<EditorReference, TimelineMarker> _markers = new();
     private Dictionary<string, bool> _visibleModels = new();
-    private Editor e;
+    private Editor e => Editor.Instance;
     public override void _Ready()
     {
-        base._Ready();
-        e = GetNode<Editor>("/root/Editor");
         PlayheadPositionInput.ValueChanged += OnTimeChange;
         Playhead.ValueChanged +=  OnTimeValueChanged;
 
@@ -42,6 +40,19 @@ public partial class Timeline : Control
         _speed = (float)SpeedInput.Value;
         _loop = LoopToggle.ButtonPressed;
         UpdatePlayPauseLabel();
+    }
+    public override void _Input(InputEvent @event)
+    {
+        if (Editor.CannotUseBinds()) return;
+        if (@event.IsActionPressed("playback_toggle")) TogglePlaying();
+        if (@event.IsActionPressed("skip_forward"))
+        {
+            SetTime(e.TimeControls ? GetNextReferenceTime() : CurrentTime + e.IncrementTimeBy);
+        }
+        else if (@event.IsActionPressed("skip_backward"))
+        {
+            SetTime(e.TimeControls ? GetPrevReferenceTime() : CurrentTime - e.IncrementTimeBy);
+        }
     }
     public override void _Process(double delta)
     {
@@ -72,6 +83,26 @@ public partial class Timeline : Control
         Playhead.SetValueNoSignal(currentTime);
         PlayheadPositionInput.SetValueNoSignal(currentTime);
         e.SyncPreview();
+    }
+    private float GetNextReferenceTime()
+    {
+        float closestTime = e.levelData.Duration;
+        for (int i = 0; i < e.levelData.References.Count; i++)
+        {
+            var r = e.levelData.References[i];
+            if (r.T > CurrentTime && r.T < closestTime) closestTime = (float)r.T;
+        }
+        return closestTime;
+    }
+    private float GetPrevReferenceTime()
+    {
+        float closestTime = 0;
+        for (int i = 0; i < e.levelData.References.Count; i++)
+        {
+            var r = e.levelData.References[i];
+            if (r.T < CurrentTime && r.T > closestTime) closestTime = (float)r.T;
+        }
+        return closestTime;
     }
     public void SetTime(float to, bool sync = true)
     {

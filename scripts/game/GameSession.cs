@@ -3,6 +3,7 @@ using System.Text.Json;
 using Godot;
 public partial class GameSession : Node
 {
+    public static GameSession Instance;
     public const float StartDelay = 2;
     public const float FadeOutTime = 2;
     public GameAudioPlayer GAP {get; private set;}
@@ -27,7 +28,7 @@ public partial class GameSession : Node
     private PlayerCharacter _character;
     private LevelDirector _director;
     private BulletRenderer _renderer;
-    private UIManager _ui;
+    private UIManager ui => UIManager.Instance;
     private LevelData _lastLevelData;
     private PlayingField _playingField;
     private StartParams _lastStartParams;
@@ -35,9 +36,10 @@ public partial class GameSession : Node
     private float maxHealth, duration;
     private bool running = false;
     public bool Running => running;
+    public override void _EnterTree() =>
+        Instance = this;
     public override void _Ready()
     {
-        _ui = GetNode<UIManager>("/root/UIManager");
         _svp = GetNode<SubViewport>(SubViewportPath);
         GAP = GetNode<GameAudioPlayer>(GameAudioPlayerPath);
         _playingField = GetNode<PlayingField>("/root/PlayingField");
@@ -102,19 +104,19 @@ public partial class GameSession : Node
         else if (startParams.Perfectionist) health = 1;
         
         // setup ui
-        _ui.HUD.SetHealth(health);
-        _ui.HUD.SetGraze(0);
-        _ui.HUD.SetScore(0);
-        _ui.HUD.SetLevelName(levelData.DisplayName);
-        _ui.HUD.SetDuration(levelData.Duration);
-        _ui.HUD.SetMods(startParams);
+        ui.HUD.SetHealth(health);
+        ui.HUD.SetGraze(0);
+        ui.HUD.SetScore(0);
+        ui.HUD.SetLevelName(levelData.DisplayName);
+        ui.HUD.SetDuration(levelData.Duration);
+        ui.HUD.SetMods(startParams);
         _character.OnHurt += OnHurt;
         _character.OnGraze += OnGraze;
-        _ui.ShowHUD();
+        ui.ShowHUD();
         // start
         _lastLevelData = levelData;
         _lastStartParams = startParams;
-        _renderer = new BulletRenderer(compiled, this);
+        _renderer = new BulletRenderer(compiled);
 
         float multiplier = 1f;
         if (startParams.Slower) multiplier = 2/3f;
@@ -139,10 +141,10 @@ public partial class GameSession : Node
     public void StopLevel()
     {
         Abort();
-        _ui.ScoreSummary.SetHP(health);
-        _ui.ScoreSummary.SetScore(score);
-        _ui.ScoreSummary.SetGraze(graze);
-        _ui.ScoreSummary.Visible = true;
+        ui.ScoreSummary.SetHP(health);
+        ui.ScoreSummary.SetScore(score);
+        ui.ScoreSummary.SetGraze(graze);
+        ui.ScoreSummary.Visible = true;
     }
     private AudioStream grazeSfx = AudioUtils.LoadAudio("res://data/sounds/graze.wav");
     private AudioStream hurtSfx = AudioUtils.LoadAudio("res://data/sounds/hurt.wav");
@@ -150,8 +152,8 @@ public partial class GameSession : Node
     {
         health--;
         if (!_lastStartParams.Paranoid) score -= Math.Max((int)(100*(health+1)/maxHealth), 0);
-        _ui.HUD.SetHealth(health);
-        _ui.HUD.SetScore(score);
+        ui.HUD.SetHealth(health);
+        ui.HUD.SetScore(score);
         if (health <= 0)
             StopLevel();
         AudioUtils.Instance.PlayAudio(hurtSfx, AudioUtils.SFXVolume);
@@ -162,15 +164,15 @@ public partial class GameSession : Node
         if (_lastStartParams.Paranoid && _character.Hurt() && !ConfigHelper.Current.NoHit)
             return;
         score += (int)(100*health/maxHealth);
-        _ui.HUD.SetScore(score);
-        _ui.HUD.SetGraze(graze);
+        ui.HUD.SetScore(score);
+        ui.HUD.SetGraze(graze);
         AudioUtils.Instance.PlayAudio(grazeSfx, AudioUtils.SFXVolume);
     }
     public override void _PhysicsProcess(double dt)
     {
         if (!running) return;
         _character.Movement(dt);
-        _ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
+        ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
         _director.Tick(dt);
         _character.VisualFeedback();
     }

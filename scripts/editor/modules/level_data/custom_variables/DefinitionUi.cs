@@ -10,10 +10,9 @@ public partial class DefinitionUi : Control
     [Export] public Button Remove;
     [Export] public MessageDisplay ErrorDisplay;
     public string currentName = "";
-    Editor e;
+    private Editor e => Editor.Instance;
     public override void _Ready()
     {
-        e = GetNode<Editor>("/root/Editor");
         VarName.TextChanged += NameChanged;
         Definition.TextChanged += DefinitionChanged;
         Remove.Pressed += RemovePressed;

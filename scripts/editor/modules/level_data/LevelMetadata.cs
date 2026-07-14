@@ -22,7 +22,7 @@ public partial class LevelMetadata : Control
 	[Signal] public delegate void DurationChangedEventHandler();
 	[Signal] public delegate void MusicChangedEventHandler(AudioStream to);
 	[Signal] public delegate void SaveLevelRequestedEventHandler();
-	Editor e;
+	Editor e => Editor.Instance;
 	[Export] BackgroundEditor BackgroundEditor;
 	public override void _Ready()
 	{
@@ -38,7 +38,6 @@ public partial class LevelMetadata : Control
 		CharacterSelect.ItemSelected += OnCharacterSelected;
 		MusicInput.TextChanged += OnMusicTextChanged;
 		UseCustomAssets.Toggled += (t) => OnMusicTextChanged(MusicInput.Text);
-		e = GetNode<Editor>("/root/Editor");
 	}
     private void OnCharacterSelected(long index)
 	{

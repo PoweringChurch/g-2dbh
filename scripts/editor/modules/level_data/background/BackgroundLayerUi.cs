@@ -17,10 +17,9 @@ public partial class BackgroundLayerUi : Control
     [Export] MessageDisplay ErrorDisplay;
     [Export] Button remove;
     public BackgroundLayerInstance EditorLayerInstance;
-    private Editor e;
+    private Editor e => Editor.Instance;
     public override void _Ready()
     {
-        e = GetNode<Editor>("/root/Editor");
         layerName.TextChanged += OnNameChanged;
         imageName.TextChanged += OnImageChanged;
         scrollFnX.TextChanged += OnFnXChanged;

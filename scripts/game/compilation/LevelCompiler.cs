@@ -78,6 +78,7 @@ public class LevelCompiler
 			return;
         model.fnx = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionX));
 		model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
+        model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
         model.RenderGroupId = renderGroupId;
         if (model.UseShape)
             model.ShapeVect2s = CollisionUtils.FloatArrToVect2s(model.Shape);
