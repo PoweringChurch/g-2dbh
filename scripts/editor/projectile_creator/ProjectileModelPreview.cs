@@ -5,13 +5,13 @@ using System.Linq;
 public partial class ProjectileModelPreview : Node2D
 {
     public Editor e;
-    private string textureName;
-    public string TextureName
+    private string texture;
+    public string Texture
     {
-        get => textureName;
+        get => texture;
         set
         {
-            textureName = value;
+            texture = value;
             _dirty = true;
         }
     }
@@ -131,11 +131,12 @@ public partial class ProjectileModelPreview : Node2D
     }
     public override void _Draw()
     {
+        if (this.texture == null) return;
         var (x, y) = CalculatePositionAt(0, fnX, fnY, ctx);
         pos = new Vector2(x,y)/renderScale;
         // draw projectile
-        var texture = textureName != "default" ? 
-                RenderingUtils.LoadTexture(e.LevelPath + "images/", textureName) 
+        var texture = this.texture != "default" ?
+                RenderingUtils.LoadTexture(this.texture) 
                 : null;
         DrawSetTransform(Vector2.Zero,0,renderScale*Vector2.One);
         float alpha = (T <= telegraphTime) 
@@ -149,8 +150,8 @@ public partial class ProjectileModelPreview : Node2D
         {
             List<Vector2> closed = [.. shape, shape[0]];
             var points = closed.Select(p => new Vector2(p[0], p[1]) + pos).ToArray();
-            if (points.Length > 1) 
-            DrawColoredPolygon(points, new Color(1,1,1,alpha));
+            if (points.Length > 2) 
+                DrawColoredPolygon(points, new Color(1,1,1,alpha));
         }
         else
         {
@@ -158,7 +159,7 @@ public partial class ProjectileModelPreview : Node2D
         }
         // draw collision
         if (ConfigHelper.Current.ShowCollision 
-        && textureName != "default" 
+        && this.texture != "default" 
         && telegraphTime <= T
         && canCollide)
         {

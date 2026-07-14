@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Intrinsics;
 public partial class ProjectileCreator : Control
 {
@@ -12,6 +13,8 @@ public partial class ProjectileCreator : Control
     [Export] SpinBox RenderScaleInput;
     [Export] HSlider TSlider;
     [Export] VSlider Zoom;
+    [Export] CheckButton UseCustomTextureInput;
+    [Export] CheckBox LockRotationCheck;
     [Export] LineEdit TextureInput;
     [Export] Label XDisplay;
     [Export] Label YDisplay;
@@ -22,10 +25,10 @@ public partial class ProjectileCreator : Control
     [Export] LineEdit FnYInput;
     [Export] SpinBox LifetimeInput; // float
     [Export] SpinBox TelegraphTimeInput;
-    [Export] CheckButton PersistantCheckbutton;
-    [Export] CheckButton FacePlayerCheckbutton;
+    [Export] CheckBox PersistantCheckbutton;
+    [Export] CheckBox FacePlayerCheckbutton;
     // Collision
-    [Export] CheckButton CanCollideCheckbutton;
+    [Export] CheckBox CanCollideCheckbutton;
     [Export] CheckButton UseShapeCheckbutton;
     [Export] SpinBox Radius; // float
     [Export] ShapeEditor ShapeEditor;
@@ -55,9 +58,11 @@ public partial class ProjectileCreator : Control
         // preview
         TInput.ValueChanged += OnTChanged;
         TSlider.ValueChanged += OnTSliderChanged;
+        UseCustomTextureInput.Toggled += (t) => OnTextureChanged(TextureInput.Text);
         TextureInput.TextChanged += OnTextureChanged;
         RenderScaleInput.ValueChanged += OnRenderScaleChanged;
         Zoom.ValueChanged += OnZoomChanged;
+        LockRotationCheck.Toggled += OnLockRotationToggled;
         // behavior
         FnXInput.TextChanged += OnFnXChanged;
         FnYInput.TextChanged += OnFnYChanged;
@@ -76,13 +81,15 @@ public partial class ProjectileCreator : Control
         SpawnOnDeathIdInput.ValueChanged += OnSpawnModelIdChanged;
         MaxDepthInput.ValueChanged += MaxDepthChanged;
         Save.Pressed += OnSavePressed;
-    }
-
+    }    
     private void OnFacePlayerToggled(bool toggledOn)
     {
         model.FacePlayer = toggledOn;
     }
-
+    private void OnLockRotationToggled(bool toggledOn)
+    {
+        model.LockRotation = toggledOn;
+    }
     private void OnCanCollideToggled(bool toggledOn)
     {
         model.CanCollide = toggledOn;
@@ -163,11 +170,20 @@ public partial class ProjectileCreator : Control
     }
     private void OnTextureChanged(string text)
     {
-        Texture2D found = RenderingUtils.LoadTexture(e.LevelPath + "images/", text);
-        if (found != null || text == "default")
+        var path = UseCustomTextureInput.ButtonPressed ? $"res://data/default-assets/images/{text}" : $"{e.LevelPath}images/{text}";
+        Texture2D found = RenderingUtils.LoadTexture(path);
+        if (text == "default")
         {
-            model.Texture = text;
-            Preview.TextureName = text;
+            model.Texture = "default";
+            Preview.Texture = "default";
+            ErrorDisplay.ClearMessage("Texture");
+            if (found != null)
+                ErrorDisplay.SetMessage("Texture", $"[Texture] 'default' is a reserved name. Please change the name of this image.");
+        }
+        else if (found != null)
+        {
+            model.Texture = path;
+            Preview.Texture = path;
             ErrorDisplay.ClearMessage("Texture");
         }
         else ErrorDisplay.SetMessage("Texture", $"[Texture] Could not find texture of name {text} in {e.LevelPath}/images/");
@@ -262,16 +278,20 @@ public partial class ProjectileCreator : Control
         // display
         IdInput.Value = model.Id;
         NameInput.Text = model.Name;
-        TextureInput.Text = model.Texture;
+
+        TextureInput.Text = Path.GetFileName(model.Texture);
+        UseCustomTextureInput.ButtonPressed = model.Texture.StartsWith("res://");
         RenderScaleInput.Value = model.RenderScale;
         Preview.T = 0;
-        OnTextureChanged(model.Texture);
+        OnTextureChanged(Path.GetFileName(model.Texture));
         // behavior
         FnXInput.Text = model.FunctionX;
         FnYInput.Text = model.FunctionY;
         LifetimeInput.Value = model.Lifetime;
+        TelegraphTimeInput.Value = model.TelegraphTime;
         PersistantCheckbutton.ButtonPressed = model.Persistant;
         FacePlayerCheckbutton.ButtonPressed = model.FacePlayer;
+        LockRotationCheck.ButtonPressed = model.LockRotation;
         OnFnXChanged(model.FunctionX);
         OnFnYChanged(model.FunctionY);
 

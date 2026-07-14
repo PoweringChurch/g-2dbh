@@ -6,11 +6,13 @@ using Godot;
 
 public partial class LevelPreview : Control
 {
+	public const float PreviewScale = 0.6f;
 	[Export] Node2D PreviewRoot;
-	[Export] TextureRect BackgroundImage;
 	[Export] SubViewport PreviewVP;
 	private Editor e;
 	private float resScale = 1;
+	private List<BackgroundLayerInstance> bgInstances = new();
+	public List<BackgroundLayerInstance> BGInstances => bgInstances;
 	private List<RenderGroup> _renderGroups = new();
 	private float[][] _groupBuffers = new float[Editor.MaxModelCount][];
 	public override void _Ready()
@@ -390,6 +392,8 @@ public partial class LevelPreview : Control
 					if (r == SelectedReference) continue; 
 					r.SpawnX += delta.X;
 					r.SpawnY += delta.Y;
+					if (r.Type == ModelType.Pattern)
+						r.Pos = new(r.SpawnX, r.SpawnY);
 					UpdateReferenceInEditor(r, r.RootEditorId);
 				}
 			}
@@ -630,25 +634,16 @@ public partial class LevelPreview : Control
 	public void Fit(Vector2I res)
 	{
 		var win = GetTree().Root.GetVisibleRect().Size;
-		resScale = Mathf.Min(win.X / res.X, win.Y / res.Y) * 0.6f;
+		resScale = Mathf.Min(win.X / res.X, win.Y / res.Y) * PreviewScale;
 		PreviewVP.Size = (Vector2I)((Vector2)res * resScale);
 		PreviewRoot.Scale = Vector2.One * resScale;
 	}
 	private void OnWindowResized() => Fit(PlayingField.Resolutions[e.levelData.AspectRatio]);
-	public void ChangeBackgroundImage(string to)
-	{
-		if (to == "none")
-		{
-			BackgroundImage.Texture = null;
-			return;
-		}
-		var bg = RenderingUtils.LoadTexture(e.LevelPath+"images/",to);
-		BackgroundImage.Texture = bg;
-	}
 	// only call on load
 	public void Load(LevelData level)
 	{
 		nextId = 0;
+		_bakedTimeline.Clear();
 		Console.Inst.Log("[LevelPreview] Attempting to compile");
 		for (int i = 0; i < Editor.MaxModelCount; i++)
         {
@@ -666,13 +661,18 @@ public partial class LevelPreview : Control
 			r.RootEditorId = nextId++;
 			UpdateReferenceInEditor(r,r.RootEditorId);
 		}
-		Sync();
 		Console.Inst.Log("[LevelPreview] Completed compile all");
 	}
 	List<EditorReference> _bakedTimeline = new();
 	private EvalContext _ctx = new();
 	public void Sync()
 	{
+		// tick backgrounds
+		_ctx.T = e.CurrentTime;
+		for (int i = 0; i < e.levelData.BackgroundLayers.Count; i++)
+		{
+			bgInstances[i].Tick(_ctx);
+		}
 		// clear indices
 		for (int g = 0; g < _renderGroups.Count; g++)
 		{
@@ -687,10 +687,23 @@ public partial class LevelPreview : Control
 				_bakedTimeline.RemoveAt(i);
 				continue;
 			}
-			if (ProcessProjReference(r) && !CullRef(r)) 
+			if (r.Type == ModelType.Projectile)
 			{
-				var proj = e.ProjectileModels[r.Id];
-				_renderGroups[proj.RenderGroupId].BakeIndices.Add(i);
+				if (ProcessProjReference(r) && !CullRef(r)) 
+				{
+					var proj = e.ProjectileModels[r.Id];
+					_renderGroups[proj.RenderGroupId].BakeIndices.Add(i);
+				}
+			}
+			else if (r.Type == ModelType.Pattern)
+			{
+				var patt = e.PatternModels[r.Id];
+				var t = e.CurrentTime - r.T;
+				bool alive = t >= 0 && t <= patt.lifetime;
+				if (alive)
+				{
+					_renderGroups[patt.renderGroupId].BakeIndices.Add(i);
+				}
 			}
 		}
 		// draw references
@@ -710,34 +723,40 @@ public partial class LevelPreview : Control
 			{
 				int idx = group.BakeIndices[n];
 				EditorReference r = _bakedTimeline[idx];
-				var proj = e.ProjectileModels[r.Id];
-				float scale = proj.RenderScale;
 				int o = n * floatsPerInstance;
-				float drawForward = (float)r.F-Mathf.Pi; // rads
+				var proj = e.ProjectileModels[r.Id];
+				float drawForward = (r.Type == ModelType.Projectile && !proj.LockRotation) ? (float)r.F-Mathf.Pi : -Mathf.Pi; // rads
 				float cos = Mathf.Cos(drawForward);
 				float sin = Mathf.Sin(drawForward);
-				buffer[o + 0] = -scale * cos; // shear x
+				float scale = (r.Type == ModelType.Projectile) ? proj.RenderScale : 1;
+				buffer[o + 0] = -scale * cos;
 				buffer[o + 1] = -scale * sin;
 				buffer[o + 2] = 0;
 				buffer[o + 3] = r.Pos.X;
 
 				buffer[o + 4] = -scale * sin;
-				buffer[o + 5] = scale * cos; // shear y
+				buffer[o + 5] = scale * cos;
 				buffer[o + 6] = 0;
 				buffer[o + 7] = r.Pos.Y;
 				double t = e.CurrentTime - r.T;
-                float alpha = (t < proj.TelegraphTime)
+				Color color;
+				if (r.Type == ModelType.Projectile)
+				{
+					float alpha = (t < proj.TelegraphTime)
 					? (proj.TelegraphTime > 0 ? 0.2f + (float)t / proj.TelegraphTime * 0.6f : 0.8f) 
 					: 1.0f;
-				if (!InSelectedGroup(r))
-				{
-                	buffer[o + 8] = 1; buffer[o + 9] = 1; buffer[o + 10] = 1; 
+					color = new(1,1,1,alpha);
 				}
 				else
 				{
-                	buffer[o + 8] = 0.7f; buffer[o + 9] = 0.7f; buffer[o + 10] = 1;
+					color = RenderingUtils.ColorFromString(e.PatternModels[r.Id].Name);
+					color.A = 0.8f;
 				}
-				buffer[o + 11] = alpha;
+				Color filter = InSelectedGroup(r) ? new Color(0.7f, 0.7f, 1) : Colors.White;
+				buffer[o+8] = color.R*filter.R;
+				buffer[o + 9] = color.G*filter.G;
+				buffer[o + 10] = color.B*filter.B;
+				buffer[o + 11] = color.A;
 			}
 			RenderingServer.MultimeshSetBuffer(group.MultiMesh.GetRid(), buffer);
 		}
@@ -765,9 +784,9 @@ public partial class LevelPreview : Control
 		{
 			var r = processingQueue.Dequeue();
 			r.RootEditorId = modifiedId;
+			_bakedTimeline.Add(r);
 			if (r.Type == ModelType.Projectile)
 			{
-				_bakedTimeline.Add(r);
 				var proj = e.ProjectileModels[r.Id];
 				if (proj.SpawnModelOnDeath && r.Depth < proj.MaxDepth)
 				{
@@ -805,7 +824,7 @@ public partial class LevelPreview : Control
 
 		var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1, L = proj.Lifetime };
 		Vector2 basePos = new Vector2(r.SpawnX, r.SpawnY);
-
+		r.Pos = basePos;
 		for (int j = 0; j < patt.Count; j++)
 		{
 			lctx.I = j;
@@ -833,11 +852,11 @@ public partial class LevelPreview : Control
 	{
 		if (model == null)
 			return;
-        _renderGroups.Add(LevelCompiler.RenderGroupFromProjectile(model, $"user://data/levels/{e.levelData.LevelId}/images/",  PreviewRoot));
+        // create render group
+		_renderGroups.Add(LevelCompiler.RenderGroupFromProjectile(model,  PreviewRoot));
         int renderGroupId = _renderGroups.Count - 1;
 		_groupBuffers[renderGroupId] = [];
-        // create render group
-        // set everything
+        // compile and redraw
         LevelCompiler.CompileProjectile(model, renderGroupId);
 		PreviewRoot.QueueRedraw();
 	}
@@ -845,7 +864,14 @@ public partial class LevelPreview : Control
 	{
 		if (model == null)
 			return;
+		// create render group
+		var mesh = RenderingUtils.BuildCircleMesh(10);
+		_renderGroups.Add(LevelCompiler.CreateRenderGroup(mesh, new Vector2(10,10), null,  PreviewRoot));
+        int renderGroupId = _renderGroups.Count - 1;
+		_groupBuffers[renderGroupId] = [];
+		// compile
 		LevelCompiler.CompilePattern(model);
+		model.renderGroupId = renderGroupId;
 		var lctx = new EvalContext { N = model.Count };
 		double maxSpawnT = 0;
 		for (int j = 0; j < model.Count; j++)
@@ -857,6 +883,7 @@ public partial class LevelPreview : Control
 		}
 		var proj = e.ProjectileModels[model.ProjectileId];
 		model.lifetime = (float)(maxSpawnT + (proj != null ? proj.Lifetime : 0));
+		// redraw
 		PreviewRoot.QueueRedraw();
 	}
 	public void UpdateModel(IEditorModel model, bool delete = false)

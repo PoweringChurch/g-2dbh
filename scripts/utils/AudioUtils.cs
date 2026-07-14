@@ -3,22 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 public partial class AudioUtils : Node
 {
+    public static float SFXVolume => ConfigHelper.Current.SoundFXVolume*AudioVolumeMultipler;
+    public static float MusicVolume => ConfigHelper.Current.MusicVolume*AudioVolumeMultipler;
+    public const float AudioVolumeMultipler = 0.5f;
+    private static readonly string[] first = [string.Empty];
     public static AudioUtils Instance { get; private set; }
-    const string soundsDir = "user://data/sounds/";
     public override void _Ready()
     {
         Instance = this;
-    }
-    public AudioStreamPlayer PlayAudio(string audioName, float volume = 1, float time = 0)
-    {
-        var audio = LoadAudio(soundsDir, audioName);
-        if (audio == null)
-        {
-            audio = ResourceLoader.Load<AudioStream>($"res://data/sounds/{audioName}.wav"); // try default
-            if (audio == null)
-                return null;
-        }
-        return PlayAudio(audio, volume, time);
     }
     public AudioStreamPlayer PlayAudio(AudioStream audio, float volume = 1, float time = 0)
     {
@@ -38,52 +30,37 @@ public partial class AudioUtils : Node
         return player;
     }
     private static Dictionary<string, AudioStream> _audioCache = [];
-    public static AudioStream LoadAudio(string inDir, string audioName)
+    public static AudioStream LoadAudio(string path)
     {
-        string cacheKey = inDir + audioName;
-        if (_audioCache.TryGetValue(cacheKey, out var cached))
+        if (_audioCache.TryGetValue(path, out var cached))
             return cached;
-
-        foreach (string ext in new[] { "" }.Concat(ValidExtensions.Audio))
+        foreach (string ext in first.Concat(ValidExtensions.Audio))
         {
-            string path = $"{inDir}{audioName}{ext}";
-            if (!FileAccess.FileExists(path))
-                continue;
-
+            string testPath = $"{path}{ext}";
             AudioStream stream = null;
-            string lowercaseExt = ext.ToLower();
-
-            if (lowercaseExt == ".wav")
+            if (ResourceLoader.Exists(testPath))
             {
-                var wavStream = new AudioStreamWav();
-                // Godot needs raw bytes for WAV loading
-                byte[] bytes = FileAccess.GetFileAsBytes(path);
-                wavStream.Data = bytes;
-                
-                // Note: You may need to manually set format properties if your WAVs vary:
-                // wavStream.Format = AudioStreamWav.FormatEnum.Format16Bits;
-                // wavStream.MixRate = 44100;
-                // wavStream.Stereo = true;
-
-                stream = wavStream;
+                stream = ResourceLoader.Load<AudioStream>(testPath);
             }
-            else if (lowercaseExt == ".mp3")
+            else if (FileAccess.FileExists(testPath))
             {
-                var mp3Stream = new AudioStreamMP3();
-                byte[] bytes = FileAccess.GetFileAsBytes(path);
-                mp3Stream.Data = bytes;
-                stream = mp3Stream;
+                stream = LoadAudioFromFileSystem(testPath, ext.ToLowerInvariant());
             }
-            else if (lowercaseExt == ".ogg")
-            {
-                stream = AudioStreamOggVorbis.LoadFromFile(path);
-            }
-            if (stream != null)
-            {
-                _audioCache[cacheKey] = stream;
-                return stream;
-            }
+            if (stream == null)
+                continue;
+            _audioCache[path] = stream;
+            return stream;
         }
         return null;
-    } 
+    }
+    private static AudioStream LoadAudioFromFileSystem(string path, string ext)
+    {
+        return ext switch
+        {
+            ".wav" => new AudioStreamWav { Data = FileAccess.GetFileAsBytes(path) },
+            ".mp3" => new AudioStreamMP3 { Data = FileAccess.GetFileAsBytes(path) },
+            ".ogg" => AudioStreamOggVorbis.LoadFromFile(path),
+            _ => null
+        };
+    }
 }

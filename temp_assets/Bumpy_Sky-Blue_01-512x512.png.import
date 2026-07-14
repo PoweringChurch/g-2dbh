@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyx8k3dvsl1aj"
-path="res://.godot/imported/en-logo.png-65e4ed07266dd388510a519b87c26d41.ctex"
+uid="uid://bbti07k21pcjx"
+path="res://.godot/imported/Bumpy_Sky-Blue_01-512x512.png-5db26ba2fab283806fefe0b1603b5fe0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/logo/en-logo.png"
-dest_files=["res://.godot/imported/en-logo.png-65e4ed07266dd388510a519b87c26d41.ctex"]
+source_file="res://temp_assets/Bumpy_Sky-Blue_01-512x512.png"
+dest_files=["res://.godot/imported/Bumpy_Sky-Blue_01-512x512.png-5db26ba2fab283806fefe0b1603b5fe0.ctex"]
 
 [params]
 

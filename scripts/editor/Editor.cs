@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 public partial class Editor : CanvasLayer
 {
-    public static bool Open = false;
     public const int MaxModelCount = 128;
     public enum Mode { Place, Select, Delete }
     private Mode currentMode = Mode.Select;
@@ -40,7 +39,6 @@ public partial class Editor : CanvasLayer
         {
             incrementTimeBy = Math.Clamp(value, 0.125f, 128);
             _skipInput.SetValueNoSignal(value);
-            Console.Inst.Log($"Increment time by : {IncrementTimeBy}");
         }
     }
     private bool timeControls;
@@ -53,20 +51,20 @@ public partial class Editor : CanvasLayer
         }
     }
     public float CurrentTime => _timeline.CurrentTime;
-    private const string _levelDirectory = "user://data/levels/";
-    public string LevelPath => $"{_levelDirectory}{(levelData != null ? levelData.LevelId : "")}/";
+    public string LevelPath => $"{(levelData != null ? levelData.LevelPath : "")}";
     public IEditorModel SelectedModel => _modelLibrary.SelectedModel;
     private ProjectileModel[] projectileModels = new ProjectileModel[MaxModelCount];
     private PatternModel[] patternModels = new PatternModel[MaxModelCount];
     public IReadOnlyList<ProjectileModel> ProjectileModels => projectileModels;
     public IReadOnlyList<PatternModel> PatternModels => patternModels;
-    // Save the input model at the specified id. This function will set the models id to match what was provided.
+    public List<BackgroundLayerInstance> BGInstances => _preview.BGInstances;
+    // Save the input model at the specified id. This function will set the models id to match what was provided
     public void SaveProjectileModel(ProjectileModel model, int id)
     {
         projectileModels[id] = model;
         model.Id = id;
     }
-    // Save the input model at the specified id. This function will set the models id to match what was provided.
+    // Save the input model at the specified id. This function will set the models id to match what was provided
     public void SavePatternModel(PatternModel model, int id)
     {
         patternModels[id] = model;
@@ -155,8 +153,10 @@ public partial class Editor : CanvasLayer
     private Label _snapDisplay;
     // time controls
     private SpinBox _skipInput;
+    GameSession gs;
     public override void _Ready()
     {
+        gs = GetNode<GameSession>("/root/GameSession");
         // modules
         _timeline = GetNode<Timeline>(TimelinePath);
         _modelLibrary = GetNode<ModelLibrary>(ModelLibraryPath);
@@ -170,7 +170,6 @@ public partial class Editor : CanvasLayer
         _levelMeta.AspectRatioChanged += _preview.Fit;
         _levelMeta.DurationChanged += _timeline.UpdateDuration;
         _levelMeta.SaveLevelRequested += SaveLevel;
-        _levelMeta.BgImageChanged += _preview.ChangeBackgroundImage;
         _levelMeta.MusicChanged += _timeline.UpdateMusic;
         _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
         _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
@@ -210,10 +209,12 @@ public partial class Editor : CanvasLayer
     [Signal] public delegate void PasteEventHandler();
     [Signal] public delegate void DeleteEventHandler();
     [Signal] public delegate void CutEventHandler();
-
     public override void _Input(InputEvent @event)
     {
-        if (!Open) return;
+        if (gs.Running) return;
+        var focused = GetViewport().GuiGetFocusOwner();
+        if (focused is LineEdit or TextEdit)
+            return;
         CurrentMode = @event.IsActionPressed("place_bind") ? Mode.Place :
                   @event.IsActionPressed("select_bind") ? Mode.Select :
                   @event.IsActionPressed("delete_bind") ? Mode.Delete : CurrentMode;
@@ -222,12 +223,10 @@ public partial class Editor : CanvasLayer
         
         if (@event.IsActionPressed("skip_forward"))
         {
-            Console.Inst.Log($"Skipped time to {CurrentTime + IncrementTimeBy}");
             _timeline.SetTime(timeControls ? GetNextReferenceTime() : CurrentTime + IncrementTimeBy);
         }
         else if (@event.IsActionPressed("skip_backward"))
         {
-            Console.Inst.Log($"Skipped time to {CurrentTime - IncrementTimeBy}");
             _timeline.SetTime(timeControls ? GetPrevReferenceTime() : CurrentTime - IncrementTimeBy);
         }
         if (timeControls)
@@ -269,30 +268,23 @@ public partial class Editor : CanvasLayer
     public void NewLevel()
     {
         LevelData data = new();
-        string levelPath = $"{_levelDirectory}{data.LevelId}/";
-        DirAccess.MakeDirRecursiveAbsolute(levelPath);
-        DirAccess.MakeDirRecursiveAbsolute(levelPath + "images/");
-        DirAccess.MakeDirRecursiveAbsolute(levelPath + "audio/");
-        WriteJson(levelPath + "leveldata.json", data);
+        data.LevelPath = $"user://data/levels/{Guid.NewGuid()}/";
+        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath);
+        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "images/");
+        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "audio/");
+        WriteJson(data.LevelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
     public void SetPlaying(bool to) => _timeline.SetPlaying(to);
-    public bool OpenLevel(string levelId)
+    public bool OpenLevel(LevelData data)
     {
-        string levelDataPath = $"{_levelDirectory}{levelId}/leveldata.json";
-
-        if (!FileAccess.FileExists(levelDataPath))
-        {
-            Console.Inst.Log($"[Editor] Level not found: {levelDataPath}");
-            return false;
-        }
-        LevelData data = ReadJson<LevelData>(levelDataPath);
-        data.LevelId = levelId;
         ApplyLevelData(data);
         return true;
     }
     private void ApplyLevelData(LevelData data)
     {
+        PlaylistHandler.Instance.FadeOut();
+        RepairLevelData(data);
         levelData = data;
         for (int i = 0; i < MaxModelCount; i++)
         {
@@ -307,7 +299,6 @@ public partial class Editor : CanvasLayer
         _customVars.Load(data);
         _timeline.Load(data);
         _timeline.UpdateDuration();
-        _preview.ChangeBackgroundImage(data.BgImage);
         _preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
         _levelMeta.Load(data);
         _projCreator.LoadProjectile(projectileModels[0]);
@@ -316,13 +307,20 @@ public partial class Editor : CanvasLayer
         _preview.Load(data);
         _preview.Sync();
     }
+    private void RepairLevelData(LevelData data)
+    {
+        data.BackgroundLayers ??= [];
+        data.ProjectileModels ??= [];  
+        data.PatternModels ??= [];  
+        data.References ??= [];  
+        data.CustomVariables ??= [];  
+    }
     private void SaveLevel()
     {
         levelData.PatternModels = [.. patternModels];
         levelData.ProjectileModels = [.. projectileModels];
-        string levelPath = $"{_levelDirectory}{levelData.LevelId}/";
-        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelId})...");
-        WriteJson(levelPath + "leveldata.json", levelData);
+        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelPath})...");
+        WriteJson(levelData.LevelPath + "leveldata.json", levelData);
         Console.Inst.Log("[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
@@ -336,6 +334,7 @@ public partial class Editor : CanvasLayer
     {
         _timeline.RemoveMarker(reference);
         levelData.References.Remove(reference);
+        _preview.UpdateReferenceInEditor(null, reference.RootEditorId);
     }
     // opens a model in its respective creator
     public void OpenModel(IEditorModel model)

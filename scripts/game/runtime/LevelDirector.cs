@@ -7,6 +7,7 @@ public partial class LevelDirector
     public event LevelFinishedEventHandler LevelFinished;
     private PlayerCharacter _character;
     private CompiledLevel level;
+    private float speedMultiplier;
     private double elapsed;
     public double Elapsed => elapsed;
     EvalContext _ctx = new();
@@ -16,17 +17,18 @@ public partial class LevelDirector
     private int activeCount = 0;
     public int ActiveCount => activeCount;
     public int QueuedCount => (level != null) ? level.Queued.Count : 0;
-    public void StartLevel(CompiledLevel level, PlayerCharacter c)
+    public void StartLevel(CompiledLevel level, PlayerCharacter c, float mult, float startDelay = 0)
     {
         this.level = level;
         activeCount = 0;
-        elapsed = 0;
-        _ctx.T = 0;
+        elapsed = -startDelay;
+        _ctx.T = elapsed;
         _character = c;
+        speedMultiplier = mult;
     }
     public void Tick(double dt)
     {
-        elapsed += dt;
+        elapsed += dt*speedMultiplier;
         if (elapsed >= level.Duration)
         {
             activeCount = 0;
@@ -34,6 +36,11 @@ public partial class LevelDirector
             return;
         }
         _ctx.T = elapsed;
+        // tick background
+        for (int i = 0; i < level.BackgroundInstances.Count; i++)
+        {
+            level.BackgroundInstances[i].Tick(_ctx);
+        }
         // spawn references
         for (int i = level.Queued.Count - 1; i >= 0; i--)
         {

@@ -8,8 +8,8 @@
 script = ExtResource("1_fe6sa")
 VarName = NodePath("Stack/Define/Name")
 Definition = NodePath("Stack/Define/Definition")
-Remove = NodePath("Stack/Remove")
-ErrorDisplay = NodePath("Stack/Define/ErrorDisplay")
+Remove = NodePath("Stack/Define/Remove")
+ErrorDisplay = NodePath("Stack/ErrorDisplay")
 
 [node name="Stack" type="VBoxContainer" parent="." unique_id=1843599009]
 layout_mode = 2
@@ -50,7 +50,12 @@ expand_to_text_length = true
 context_menu_enabled = false
 emoji_menu_enabled = false
 
-[node name="ErrorDisplay" type="Label" parent="Stack/Define" unique_id=1294958405]
+[node name="Remove" type="Button" parent="Stack/Define" unique_id=173361387]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Remove"
+
+[node name="ErrorDisplay" type="Label" parent="Stack" unique_id=1294958405]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -58,7 +63,3 @@ size_flags_vertical = 6
 label_settings = ExtResource("2_hek1d")
 autowrap_mode = 3
 script = ExtResource("3_4p6ix")
-
-[node name="Remove" type="Button" parent="Stack" unique_id=173361387]
-layout_mode = 2
-text = "Remove"

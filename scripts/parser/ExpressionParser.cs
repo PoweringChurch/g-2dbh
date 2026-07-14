@@ -11,6 +11,19 @@ using System.Collections.Generic;
 
 // ── AST nodes ────────────────────────────────────────────────────────────────
 
+public static class Functions
+{
+    public static double Hash(double x)
+    {
+        ulong h = unchecked((ulong)BitConverter.DoubleToInt64Bits(x));
+        h ^= h >> 33;
+        h *= 0xff51afd7ed558ccdUL;
+        h ^= h >> 33;
+        h *= 0xc4ceb9fe1a85ec53UL;
+        h ^= h >> 33;
+        return (h >> 11) * (1.0 / (1UL << 53));
+    }
+}
 public struct EvalContext
 {
     public double T; // time passed since start of projectile OR pattern
@@ -102,14 +115,9 @@ public class FuncExpr : Expr
             "log2" => Math.Log2(a), "log10"=> Math.Log10(a),
             "ceil" => Math.Ceiling(a), "floor"=> Math.Floor(a),
             "sign" => Math.Sign(a), "tanh" => Math.Tanh(a),
-            "hash" => Hash(a),
+            "hash" => Functions.Hash(a),
             _ => throw new Exception($"Unknown function '{name}'")
         };
-    }
-    private double Hash(double x)
-    {
-        double large_wave = Math.Sin(x * 12.9898) * 43758.5453;
-        return large_wave - Math.Floor(large_wave);
     }
 }
 
@@ -283,6 +291,7 @@ public class ExpressionHandler(List<Token> tokens)
                     "log2" => Math.Log2(argFn(ctx)), "log10"=> Math.Log10(argFn(ctx)),
                     "ceil" => Math.Ceiling(argFn(ctx)), "floor"=> Math.Floor(argFn(ctx)),
                     "sign" => Math.Sign(argFn(ctx)), "tanh" => Math.Tanh(argFn(ctx)),
+                    "hash" => Functions.Hash(argFn(ctx)),
                     _ => throw new Exception($"Unknown function '{name}'")
                 };
             }

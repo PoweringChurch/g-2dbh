@@ -1,25 +1,21 @@
+using System;
 using Godot;
 public partial class MainMenu : CanvasLayer
 {
-    [Signal] public delegate void StartRequestedEventHandler();
-    [Signal] public delegate void CustomsRequestedEventHandler();
-    [Signal] public delegate void SettingsRequestedEventHandler();
-    [Signal] public delegate void QuitRequestedEventHandler();
+    public event Action RequestCampaign;
+    public event Action RequestLevelSelect;
+    public event Action RequestSettings;
+    public event Action RequestReturn;
     // references
-    [Export] Button _startButton;
+    [Export] Button _campaignButton;
     [Export] Button _customsButton;
     [Export] Button _settingsButton;
     [Export] Button _quitButton;
     public override void _Ready()
     {
-        _startButton.Pressed += OnStartPressed;
-        _customsButton.Pressed += OnCustomsPressed;
-        _settingsButton.Pressed  += OnSettingsPressed;
-        _quitButton.Pressed   += OnQuitPressed;
+        _campaignButton.Pressed += RequestCampaign.Invoke;
+        _customsButton.Pressed += RequestLevelSelect.Invoke;
+        _settingsButton.Pressed  += RequestSettings.Invoke;
+        _quitButton.Pressed   += RequestReturn.Invoke;
     }
-
-    void OnStartPressed() => EmitSignal(SignalName.StartRequested);
-    void OnCustomsPressed() => EmitSignal(SignalName.CustomsRequested);
-    void OnSettingsPressed() => EmitSignal(SignalName.SettingsRequested);
-    void OnQuitPressed()   => EmitSignal(SignalName.QuitRequested);
 }

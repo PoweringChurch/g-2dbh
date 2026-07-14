@@ -69,18 +69,11 @@ public class Config
     // display
     [ConfigField("Game", "Fullscreen")]
     [JsonPropertyName("fullscreen")] public bool Fullscreen { get; set; } = false;
-    // personalization
-    [ConfigField("Game", "Character")]
-    [JsonPropertyName("character")] public string Character { get; set; } = "default";
-    [ConfigField("Game", "Character Scale", 0, 1, 0.05f)]
-    [JsonPropertyName("characterScale")] public float CharacterScale { get; set; } = 0.25f;
     // sound
-    [ConfigField("Game", "Music volume", 0, 1, 0.05f)]
+    [ConfigField("Game", "Music volume", 0, 1, 0.01f)]
     [JsonPropertyName("musicVolume")] public float MusicVolume { get; set; } = 1;
-    [ConfigField("Game", "Graze volume", 0, 1, 0.05f)]
-    [JsonPropertyName("grazeVolume")] public float GrazeVolume { get; set; } = 0.1f;
-    [ConfigField("Game", "Hurt volume", 0, 1, 0.05f)]
-    [JsonPropertyName("hurtVolume")] public float HurtVolume { get; set; } = 0.1f;
+    [ConfigField("Game", "Sound volume", 0, 1, 0.01f)]
+    [JsonPropertyName("soundFx")] public float SoundFXVolume { get; set; } = 1f;
     // EDITOR
     // projectile preview
     [ConfigField("Editor", "Display projectile collision in projectile creator")]

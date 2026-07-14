@@ -26,15 +26,16 @@ public class ProjectileModel : IEditorModel
     // ==========================================
     // Visuals & Rendering
     // ==========================================
-    [JsonPropertyName("texture")] 
+    [JsonPropertyName("customTexture")]
     public string Texture { get; set; } = "default";
 
     [JsonPropertyName("renderScale")] 
     public float RenderScale { get; set; } = 1f;
+    [JsonPropertyName("lockRotation")] 
+    public bool LockRotation { get; set; } = false;
 
     [JsonPropertyName("telegraphTime")] 
     public float TelegraphTime { get; set; } = 0f;
-
     // ==========================================
     // Collision & Lifetime
     // ==========================================
@@ -103,11 +104,12 @@ public class ProjectileModel : IEditorModel
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
         FacePlayer = other.FacePlayer;
+
         // Visuals
         Texture = other.Texture;
         RenderScale = other.RenderScale;
         TelegraphTime = other.TelegraphTime;
-
+        LockRotation = other.LockRotation;
         // Collision & Lifetime
         Radius = other.Radius;
         Lifetime = other.Lifetime;

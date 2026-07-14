@@ -5,20 +5,23 @@
 [ext_resource type="Texture2D" uid="uid://e4ijaikmsvec" path="res://data/images/player_hurtbox.png" id="6_6gieq"]
 [ext_resource type="Texture2D" uid="uid://ion1t1umju4y" path="res://data/images/graze.png" id="7_qtl5y"]
 
-[node name="PlayerCharacter" type="Node2D" unique_id=647619310]
+[node name="PlayerCharacter" type="Node2D" unique_id=647619310 node_paths=PackedStringArray("CharacterDisplay", "hurtboxDisplay", "grazeDisplay")]
+z_index = 1
 script = ExtResource("1_eiuk8")
+CharacterDisplay = NodePath("CharacterDisplay")
+hurtboxDisplay = NodePath("HurtboxDisplay")
+grazeDisplay = NodePath("GrazeDisplay")
 
 [node name="CharacterDisplay" type="Sprite2D" parent="." unique_id=878056239]
-z_index = -1
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_ggc6b")
 
 [node name="HurtboxDisplay" type="Sprite2D" parent="." unique_id=621708661]
-z_index = 2
+z_index = 258
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("6_6gieq")
 
 [node name="GrazeDisplay" type="Sprite2D" parent="." unique_id=1513401407]
-z_index = 3
+z_index = 257
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("7_qtl5y")

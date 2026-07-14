@@ -1,25 +1,29 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 public partial class LevelMetadata : Control
 {
+    [Export] Control BackgroundHolder;
 	[Export] LineEdit LevelNameInput;
 	[Export] LineEdit AuthorInput;
-	[Export] LineEdit BGImageInput;
 	[Export] LineEdit MusicInput;
+	[Export] CheckButton UseCustomAssets;
 	[Export] SpinBox HealthInput;
-	[Export] SpinBox DurationInput;
+	[Export] SpinBox DurationInput; 
 	[Export] OptionButton AspectRatioInput;
+	[Export] OptionButton CharacterSelect;
 	[Export] Button SaveLevel;
 	[Export] Button OpenLevelFolder;
+	[Export] Button OpenBgEditor;
 	[Export] MessageDisplay ErrorDisplay;
 	[Signal] public delegate void AspectRatioChangedEventHandler(Vector2I aspectRatio);
 	[Signal] public delegate void DurationChangedEventHandler();
-	[Signal] public delegate void BgImageChangedEventHandler(string to);
 	[Signal] public delegate void MusicChangedEventHandler(AudioStream to);
 	[Signal] public delegate void SaveLevelRequestedEventHandler();
 	Editor e;
-
+	[Export] BackgroundEditor BackgroundEditor;
 	public override void _Ready()
 	{
 		base._Ready();
@@ -27,17 +31,24 @@ public partial class LevelMetadata : Control
 		AuthorInput.TextChanged += OnAuthorChanged;
 		HealthInput.ValueChanged += OnHealthChanged;
 		DurationInput.ValueChanged += OnDurationChanged;
-		MusicInput.TextChanged += OnMusicTextChanged;
 		AspectRatioInput.ItemSelected += OnAspectSelect;
 		OpenLevelFolder.Pressed += OnLevelFolderOpen;
 		SaveLevel.Pressed += OnSavePressed;
-		BGImageInput.TextChanged += OnBgImageChanged;
+		OpenBgEditor.Pressed += OnBgEditPressed;
+		CharacterSelect.ItemSelected += OnCharacterSelected;
+		MusicInput.TextChanged += OnMusicTextChanged;
+		UseCustomAssets.Toggled += (t) => OnMusicTextChanged(MusicInput.Text);
 		e = GetNode<Editor>("/root/Editor");
 	}
-
+    private void OnCharacterSelected(long index)
+	{
+		e.levelData.Character = (int)index;
+	}
     private void OnMusicTextChanged(string newSong)
 	{
-		var found = AudioUtils.LoadAudio(e.LevelPath + "audio/", newSong);
+		string path = UseCustomAssets.ButtonPressed ? $"{e.LevelPath}/audio/{newSong}"
+		: $"res://data/default-assets/audio/{newSong}";
+		AudioStream found = AudioUtils.LoadAudio(path);
 		if (found != null && newSong == "none")
 		{
 			ErrorDisplay.SetMessage("Music", $"[Music] 'none' is a reserved name, please rename this audio file.");
@@ -45,28 +56,16 @@ public partial class LevelMetadata : Control
 		}
 		if (found != null || newSong == "none")
 		{
-			e.levelData.Music = newSong;
+			e.levelData.Music = path;
 			EmitSignal(SignalName.MusicChanged, found);
 			ErrorDisplay.ClearMessage("Music");
 		}
 		else ErrorDisplay.SetMessage("Music", $"[Music] Could not find audio of name {newSong} in audio folder.");
 	}
 
-    private void OnBgImageChanged(string text)
+    private void OnBgEditPressed()
 	{
-		Texture2D found = RenderingUtils.LoadTexture(e.LevelPath + "images/", text);
-		if (found != null && text == "none")
-		{
-			ErrorDisplay.SetMessage("Background", $"[BG Image] 'none' is a reserved name, please rename this image file.");
-			return;
-		}
-		if (found != null || text == "none")
-		{
-			e.levelData.BgImage = text;
-			EmitSignal(SignalName.BgImageChanged, text);
-			ErrorDisplay.ClearMessage("Background");
-		}
-		else ErrorDisplay.SetMessage("Background", $"[BG Image] Could not find image of name {text} in images folder.");
+		BackgroundEditor.Visible = true;
 	}
 	private void OnSavePressed()
 	{
@@ -105,12 +104,17 @@ public partial class LevelMetadata : Control
 		e.levelData.DisplayName = text;
 	public void Load(LevelData data)
 	{
+		foreach (var child in BackgroundHolder.GetChildren())
+			child.QueueFree();
 		AuthorInput.Text = data.Author;
 		AspectRatioInput.Selected = data.AspectRatio;
+		CharacterSelect.Selected = data.Character;
 		HealthInput.Value = data.Health;
 		DurationInput.Value = data.Duration;
-		BGImageInput.Text = data.BgImage;
-		MusicInput.Text = data.Music;
+		MusicInput.Text = Path.GetFileName(data.Music);
 		LevelNameInput.Text = data.DisplayName;
+		BackgroundHolder.Position = (Vector2)PlayingField.Resolutions[data.AspectRatio]/2*LevelPreview.PreviewScale;
+		UseCustomAssets.ButtonPressed = !data.Music.StartsWith("res://");
+		BackgroundEditor.Load(data);
 	}
 }

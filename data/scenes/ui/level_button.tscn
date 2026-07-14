@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://tenwm3wojuji"]
+
+[ext_resource type="Script" uid="uid://bbiu6usr2mc6t" path="res://scripts/ui/screens/level_select/LevelButton.cs" id="1_bttxn"]
+
+[node name="LevelButton" type="Button" unique_id=898039256 node_paths=PackedStringArray("levelName", "author", "duration")]
+custom_minimum_size = Vector2(0, 60)
+script = ExtResource("1_bttxn")
+levelName = NodePath("Sort/Stack/Name")
+author = NodePath("Sort/Stack/Author")
+duration = NodePath("Sort/Duration")
+
+[node name="Sort" type="HBoxContainer" parent="." unique_id=1300392627]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stack" type="VBoxContainer" parent="Sort" unique_id=419319402]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="Sort/Stack" unique_id=131672884]
+layout_mode = 2
+text = "awesome level"
+clip_text = true
+
+[node name="Author" type="Label" parent="Sort/Stack" unique_id=2146815936]
+layout_mode = 2
+text = "by author"
+
+[node name="Duration" type="Label" parent="Sort" unique_id=477878781]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+text = "00:00"

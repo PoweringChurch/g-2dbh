@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://doakhaehlstpl"
-path="res://.godot/imported/cn-logo.png-c888f211c20d4abc9123ba15591612dd.ctex"
+uid="uid://cruuhefxci2vu"
+path="res://.godot/imported/snow-mine.png-362bcc44948c2fbcbdcddd6a767ace13.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/logo/cn-logo.png"
-dest_files=["res://.godot/imported/cn-logo.png-c888f211c20d4abc9123ba15591612dd.ctex"]
+source_file="res://data/default-assets/images/snow-mine.png"
+dest_files=["res://.godot/imported/snow-mine.png-362bcc44948c2fbcbdcddd6a767ace13.ctex"]
 
 [params]
 

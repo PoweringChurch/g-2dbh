@@ -19,6 +19,7 @@ public class PatternModel : IEditorModel
     [JsonIgnore] public Func<EvalContext, double> fnf;
     // editor only
     [JsonIgnore] public float lifetime;
+    [JsonIgnore] public int renderGroupId;
     public PatternModel() { }
     public PatternModel(PatternModel other)
     {

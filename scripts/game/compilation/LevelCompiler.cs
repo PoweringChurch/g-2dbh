@@ -8,6 +8,26 @@ public class LevelCompiler
     public static CompiledLevel CompileLevel(LevelData level, Node2D gameRoot)
     {
         CompiledLevel compiled = new();
+        // set custom variables
+        CustomVariableExpr.Definitions.Clear();
+        foreach (var kvp in level.CustomVariables)
+            CustomVariableExpr.Definitions[kvp.Key] = ExpressionHandler.Parse(kvp.Value);
+        // compile background
+        var backgroundroot = new Node2D();
+        backgroundroot.Position = PlayingField.Resolutions[level.AspectRatio]/2;
+        gameRoot.AddChild(backgroundroot);
+        for (int i = 0; i < level.BackgroundLayers.Count; i++)
+        {
+            var layer = level.BackgroundLayers[i];
+            var instance = new BackgroundLayerInstance();
+            var sprite = new Sprite2D();
+            instance.AddChild(sprite);
+            instance.Sprite = sprite;
+            instance.Layer = layer;
+            compiled.BackgroundInstances.Add(instance);
+            instance.ApplyLayerParams();
+            backgroundroot.AddChild(instance);
+        }
         // compile projectiles
         for (int i = 0; i < level.ProjectileModels.Length; i++)
         {
@@ -15,7 +35,7 @@ public class LevelCompiler
             var m = level.ProjectileModels[i];
             if (m == null)
                 continue;
-            compiled.RenderGroups.Add(RenderGroupFromProjectile(m, $"user://data/levels/{level.LevelId}/images/", gameRoot));
+            compiled.RenderGroups.Add(RenderGroupFromProjectile(m, gameRoot));
             // set up render group
             int renderGroupId = compiled.RenderGroups.Count - 1;
             CompileProjectile(m, renderGroupId);
@@ -71,10 +91,13 @@ public class LevelCompiler
 		model.fnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
 		model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionFwd));
     }
-    public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, string levelPath, Node2D root)
+    public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, Node2D root)
     {
         RenderGroup renderGroup;
-        Texture2D tex = RenderingUtils.LoadTexture(levelPath, model.Texture);
+        var tex = model.Texture != "default" ?
+                RenderingUtils.LoadTexture(model.Texture) 
+                : null;
+        
         if (tex != null) // if theres a texture
 		{
 			var mesh = new QuadMesh { Size = tex.GetSize() }; // build a texture mesh
