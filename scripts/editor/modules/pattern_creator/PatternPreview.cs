@@ -1,157 +1,203 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
-public partial class PatternPreview : Node2D
+// Assumes a PatternModel class exists bundling the fields PatternModelPreview
+// used to expose individually: ProjModel, FnX, FnY, FnT, FnFwd,
+// ProjModelFnX, ProjModelFnY, Count. Mirrors how ProjectileModel backs
+// ProjectilePreview.
+public partial class PatternPreview : Control
 {
-    // display baked
-    static Color deadColor = new(1, 1, 1, 0.3f);
-    private ProjectileModel projModel;
-    public ProjectileModel ProjModel
-    {
-        get => projModel;
-        set { projModel = value; _dirty = true; }
-    }
-    private Expr fnX;
-    public Expr FnX
-    {
-        get => fnX;
-        set { fnX = value; _dirty = true; }
-    }
-    private Expr fnY;
-    public Expr FnY
-    {
-        get => fnY;
-        set { fnY = value; _dirty = true; }
-    }
-    private Expr fnT;
-    public Expr FnT
-    {
-        get => fnT;
-        set { fnT = value; _dirty = true; }
-    }
-    private Expr fnFwd;
-    public Expr FnFwd
-    {
-        get => fnFwd;
-        set { fnFwd = value; _dirty = true; }
-    }
-    private Expr projModelFnX;
-    public Expr ProjModelFnX
-    {
-        get => projModelFnX;
-        set { projModelFnX = value; _dirty = true; }
-    }
-    private Expr projModelFnY;
-    public Expr ProjModelFnY
-    {
-        get => projModelFnY;
-        set { projModelFnY = value; _dirty = true; }
-    }
-    private int count = 1;
-    public int Count
-    {
-        get => count;
-        set
-        {
-            count = value;
-            _dirty = true;
-        }
-    }
-    private EvalContext ctx = new() { T = 0 };
-    public double T
-    {
-        get => ctx.T;
-        set
-        {
-            ctx.T = Math.Max(value, 0);
-            _dirty = true;
-        }
-    }
-    private Editor e => Editor.Instance;
-    private bool _dirty = true;
-    public override void _Process(double delta)
-    {
-        if (_dirty)
-        {
-            QueueRedraw();
-            _dirty = false;
-        }
-    }
-    public override void _Draw()
-    {
-        if (projModel == null)
-            return;
-        EvalContext lctx = new() { N = count > 1 ? count - 1 : 1 }; // live ctx, stores i, n, projectile t
-        // loop through count and draw a projectile for i in count
-        for (int i = 0; i < Count; i++)
-        {
-            lctx.I = i;
-            // generate values
-            double genFwd = fnFwd != null ? fnFwd.Eval(lctx) : 0;
-            double genT = fnT != null ? fnT.Eval(lctx) : 0;
-            var startxy = CalculatePositionAt(0, fnX, fnY, lctx);
-            double rawT = ctx.T - genT;
-            bool alive = rawT >= 0 && rawT < projModel.Lifetime;
-            lctx.T = Math.Clamp(rawT, 0, projModel.Lifetime);
-            lctx.L = projModel.Lifetime;
-            var (x, y) = CalculatePositionAt((float)genFwd, projModelFnX, projModelFnY, lctx);
-            // draw
-            var texture = projModel.Texture != "default" ?
-                RenderingUtils.LoadTexture(projModel.Texture)
-                : null;
-            DrawProjectileShape(projModel, texture, new Vector2(startxy.x + x, startxy.y + y), (float)genFwd, alive ? Colors.White : deadColor);
-        }
-        DrawSetTransform(Vector2.Zero, 0, Vector2.One);
-        DrawPath(fnX, fnY, lctx, 0, Colors.Green);
-    }
-    private void DrawProjectileShape(ProjectileModel model,
-    Texture2D texture, Vector2 pos,
-    float forward, Color color)
-    {
-        DrawSetTransform(pos, forward, Vector2.One);
-        if (texture != null)
-        {
-            DrawTexture(texture, -texture.GetSize() / 2, color);
-            return;
-        }
-        if (model.UseShape && model.Shape != null)
-        {
-            var points = model.Shape.Select(p => new Vector2(p[0], p[1])).ToArray();
-            DrawPolyline(points, color, 1.5f, true);
-            if (points.Length > 1)
-                DrawLine(points[^1], points[0], color, 1.5f);
-        }
-        else
-            DrawCircle(Vector2.Zero, model.Radius, color);
-    }
-    private void DrawPath(Expr fnx, Expr fny,
-    EvalContext pctx, double fwd,
-    Color color)
-    {
-        int steps = ConfigHelper.Current.PathFidelity;
-        Vector2[] points = new Vector2[steps];
-        for (int j = 0; j < steps; j++)
-        {
-            pctx.I = Math.Min(pctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
-            var (x, y) = CalculatePositionAt((float)fwd, fnx, fny, pctx);
-            points[j] = new Vector2(x, y);
-        }
-        DrawPolyline(points, color, ConfigHelper.Current.PathThickness, true);
-        DrawCircle(points[0], ConfigHelper.Current.PathThickness * 1.5f, color);
-    }
-    private static (float x, float y) CalculatePositionAt(float fwd, Expr fnx, Expr fny, EvalContext ctx)
-    {
-        float fwdTravel = fnx != null ? (float)fnx.Eval(ctx) : 0;
-        float perpTravel = fny != null ? (float)fny.Eval(ctx) : 0;
+	private struct ProjectileInstance
+	{
+		public Vector2 Pos;
+		public float F;
+		public double T;
+		public bool Alive;
+	}
+	public PatternModel Model;
+	[Export] private Control DrawOn;
+	[Export] private Button PlaybackToggle;
+	[Export] private Button HomeButton;
+	[Export] private SpinBox TimeSpin;
+	private bool dirty = false;
+	private SpatialReference reference;
+	private ProjectileInstance[] instances = [];
+	private Vector2[] pathPoints = [];
+	private bool dragging = false;
+	private bool panning = false;
+	private bool playing = false;
 
-        float cos = MathF.Cos(fwd);
-        float sin = MathF.Sin(fwd);
+	private double time = 0;
+	public override void _Ready()
+	{
+		time = 0;
+		DrawOn.Draw += DrawPath;
+		DrawOn.Draw += DrawProjectileShapes;
+		DrawOn.Draw += DrawHitboxes;
+		PlaybackToggle.Pressed += () => { playing = !playing; PlaybackToggle.Text = playing ? "❚❚" : "▶"; };
+		TimeSpin.ValueChanged += (v) => { time = v; MarkDirty(); };
+		HomeButton.Pressed += Home;
+	}
+	public void Load(PatternModel m)
+	{
+		Model = m;
+		Home();
+	}
+	public void MarkDirty()
+	{
+		dirty = true;
+	}
+	private void Home()
+	{
+		reference.SpawnPos = new Vector2(918, 694) / 2;
+		TimeSpin.Value = 0;
+		MarkDirty();
+	}
+	public override void _GuiInput(InputEvent @event)
+	{
+		if (@event is InputEventMouseButton mb)
+		{
+			if (mb.ButtonIndex == MouseButton.Left)
+			{
+				if (mb.Pressed)
+				{
+					var dist = (mb.Position - reference.SpawnPos).Length();
+					dragging = dist < 20;
+				}
+				else
+					dragging = false;
+			}
+			else if (mb.ButtonIndex == MouseButton.Middle)
+			{
+				panning = mb.Pressed;
+			}
+		}
+		else if (@event is InputEventMouseMotion mm)
+		{
+			if (dragging)
+			{
+				reference.SpawnPos = mm.Position - DrawOn.Position;
+				MarkDirty();
+			}
+			else if (panning)
+			{
+				reference.SpawnPos += mm.Relative;
+				MarkDirty();
+			}
+		}
+	}
+	public override void _Process(double dt)
+	{
+		if (playing)
+		{
+			TimeSpin.Value += dt;
+		}
+		if (dirty)
+		{
+			Sync();
+			dirty = false;
+		}
+	}
 
-        float x = cos * fwdTravel - sin * perpTravel;
-        float y = sin * fwdTravel + cos * perpTravel;
+	private void Sync()
+	{
+		if (Model == null) 
+			return;
+		if (Editor.Instance.ProjectileModels[Model.ProjectileId] == null)
+			return;
+		var pm = Editor.Instance.ProjectileModels[Model.ProjectileId];
+		int count = Math.Max(Model.Count, 1);
+		var lctx = new EvalContext { N = count > 1 ? count - 1 : 1 };
+		if (instances.Length != count)
+			instances = new ProjectileInstance[count];
+		for (int i = 0; i < count; i++)
+		{
+			lctx.I = i;
+			double genFwd = Model.fnf(lctx);
+			double genT = Model.fnt(lctx);
+			var start = LevelDirector.CalculateSpawnPosition(Model.fnx, Model.fny, (float)reference.SpawnF, lctx);
+			var f = genFwd + reference.SpawnF;
+			lctx.T = Math.Clamp(time-genT,0,pm.Lifetime);
+			lctx.L = pm.Lifetime;
+			var movement = LevelDirector.CalculateMovement(pm.fnx, pm.fny, f, lctx);
+			bool alive = lctx.T > 0 && lctx.T < pm.Lifetime;
+			instances[i] = new ProjectileInstance
+			{
+				Pos = reference.SpawnPos + start + movement,
+				F = (float)(reference.SpawnF+f),
+				Alive = alive,
+				T = lctx.T
+			};
+		}
+		BuildPath(lctx);
+		DrawOn.QueueRedraw();
+	}
 
-        return (x, y);
-    }
+	private void BuildPath(EvalContext lctx)
+	{
+		int steps = ConfigHelper.Current.PathFidelity;
+		if (pathPoints.Length != steps)
+			pathPoints = new Vector2[steps];
+		for (int j = 0; j < steps; j++)
+		{
+			lctx.I = Math.Min(lctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
+			var (x, y) = LevelDirector.CalculateSpawnPosition(Model.fnx, Model.fny, 0, lctx);
+			pathPoints[j] = reference.SpawnPos + new Vector2(x, y);
+		}
+	}
+	private void DrawPath()
+	{
+		if (Model == null || pathPoints.Length == 0)
+			return;
+		DrawOn.DrawSetTransform(Vector2.Zero, 0, Vector2.One);
+		DrawOn.DrawPolyline(pathPoints, Colors.Green, ConfigHelper.Current.PathThickness, true);
+		DrawOn.DrawCircle(pathPoints[0], ConfigHelper.Current.PathThickness * 1.5f, Colors.Green);
+	}
+
+	private void DrawProjectileShapes()
+	{
+		if (Model == null)
+			return;
+		if (Editor.Instance.ProjectileModels[Model.ProjectileId] == null)
+			return;
+		var pm = Editor.Instance.ProjectileModels[Model.ProjectileId];
+		var texture = pm.Texture != "default" ? RenderingUtils.LoadTexture(pm.Texture) : null;
+		foreach (var inst in instances)
+		{
+			var color = Colors.White;
+			if (!inst.Alive) color.A *= 0.5f;
+			var forward = pm.LockRotation ? 0 : inst.F;
+			DrawOn.DrawSetTransform(inst.Pos, forward, Vector2.One * pm.RenderScale);
+			if (texture != null)
+			{
+				DrawOn.DrawTexture(texture, -texture.GetSize() / 2, color);
+				continue;
+			}
+			if (pm.UseShape && pm.Shape != null)
+				DrawOn.DrawColoredPolygon([.. pm.ShapeVect2s, pm.ShapeVect2s[0]], color);
+			else
+				DrawOn.DrawCircle(Vector2.Zero, pm.Radius, color);
+		}
+	}
+
+	private void DrawHitboxes()
+	{
+		if (Model == null)
+			return;
+		var pm = Editor.Instance.ProjectileModels[Model.ProjectileId];
+		if (!pm.CanCollide)
+			return;
+		foreach (var inst in instances)
+		{
+			bool show = inst.Alive && (inst.T > pm.TelegraphTime);
+			if (!show) continue;
+
+			var forward = pm.LockRotation ? 0 : inst.F;
+			DrawOn.DrawSetTransform(inst.Pos, forward, Vector2.One * pm.RenderScale);
+			if (pm.UseShape && pm.Shape != null)
+				DrawOn.DrawPolyline([.. pm.ShapeVect2s, pm.ShapeVect2s[0]], Colors.Red);
+			else
+				DrawOn.DrawCircle(Vector2.Zero, pm.Radius, Colors.Red, false);
+		}
+	}
 }

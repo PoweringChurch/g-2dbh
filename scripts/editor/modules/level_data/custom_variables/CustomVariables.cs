@@ -5,7 +5,7 @@ using System.Linq;
 public partial class CustomVariables : Control
 {
     [Export] Button NewDefinition;
-    [Export] VBoxContainer List;
+    [Export] Container List;
     [Export] PackedScene DefinitionUi;
     public override void _Ready()
     {
@@ -26,6 +26,7 @@ public partial class CustomVariables : Control
     {
         var definitionUi = DefinitionUi.Instantiate<DefinitionUi>();
         List.AddChild(definitionUi);
+        definitionUi.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         return definitionUi;
     }
 }

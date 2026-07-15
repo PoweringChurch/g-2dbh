@@ -1,14 +1,17 @@
 using Godot;
 public partial class ProjectileCreator : Control
 {
-    private ProjectileModel Model;
-    private Editor e => Editor.Instance;
+    public static ProjectileCreator Instance;
+    [Export] public ProjectilePreview ProjectilePreview {get; private set;}
+    public ProjectileModel Model {get; private set;}
     [Export] ProjectileCollisionEditor Collision;
     [Export] ProjectileVisuals Visuals;
     [Export] ProjectileMovementEditor MovementInspector;
     [Export] ProjectileInfo Info;
     [Export] PackedScene ProjectileModelUi;
     [Export] VBoxContainer ModelList;
+    public override void _EnterTree() => 
+        Instance = this;
     public void Load(LevelData data)
     {
         foreach (var ui in ModelList.GetChildren())
@@ -27,9 +30,11 @@ public partial class ProjectileCreator : Control
     {
         newModel ??= new();
         Model = new ProjectileModel(newModel);
+        MovementInspector.Load(Model);
         Collision.Load(Model);
         Visuals.Load(Model);
-        MovementInspector.Load(Model);
         Info.Load(Model);
+        ProjectilePreview.Load(Model);
+        ProjectilePreview.MarkDirty();
     }
 }

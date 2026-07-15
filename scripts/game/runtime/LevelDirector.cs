@@ -56,7 +56,7 @@ public partial class LevelDirector
                 else if (r.Type == ModelType.Projectile)
                 {
                     if (level.Projectiles[r.Id].FacePlayer)
-                        r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)-Mathf.Pi/2;
+                        r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)+BulletRenderer.DrawnForwardOffset/2;
                     if (activeCount == MaxBulletCount)
                         continue;
                     activeReferences[activeCount++] = r;
@@ -85,23 +85,20 @@ public partial class LevelDirector
             _ctx.T = elapsed - r.T;
             _ctx.L = proj.Lifetime;
             // move projectile
-            double xTravel = proj.fnx(_ctx);
-            double yTravel = proj.fny(_ctx);
-            double cos = Math.Cos(r.F);
-            double sin = Math.Sin(r.F);
-            float x = (float)(cos * xTravel - sin * yTravel);
-            float y = (float)(sin * xTravel + cos * yTravel);
-            var pos = new Vector2(x,y);
-            r.Pos = r.SpawnPos+pos;
+            var f = proj.fnf(_ctx)+r.SpawnF;
+            var pos = CalculateMovement(proj.fnx, proj.fny, f, _ctx);
+            r.Pos = r.SpawnPos + pos;
+            r.F = f;
             // collision w player
             if (_ctx.T <= proj.TelegraphTime || !proj.CanCollide) // check if in telegraph
                 return;
             float distSq = (r.Pos - _character.Position).LengthSquared();
             float rSumH = proj.Radius + PlayerCharacter.HurtRadius;
             float rSumG = proj.Radius + PlayerCharacter.GrazeRadius;
+            float forward = (float)(proj.LockRotation ? BulletRenderer.DrawnForwardOffset : r.F+BulletRenderer.DrawnForwardOffset);
             bool ghit = proj.ShapeVect2s == null ?
             distSq <= rSumG * rSumG 
-            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, (float)r.F-Mathf.Pi, true);
+            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, forward, true);
             if (!_hasGrazed[i] && ghit && !ConfigHelper.Current.NoGraze)
             {
                 _character.Graze();
@@ -110,7 +107,7 @@ public partial class LevelDirector
             }
             bool hit = proj.ShapeVect2s == null ? 
             distSq <= rSumH * rSumH 
-            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.HurtRadius, (float)r.F-Mathf.Pi, true);
+            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.HurtRadius, forward, true);
             if (hit && !ConfigHelper.Current.NoHit && _character.Hurt() )
             {
                 if (!proj.Persistant)
@@ -125,21 +122,14 @@ public partial class LevelDirector
         _ctx.L = proj.Lifetime;
         _ctx.N = patt.Count > 1 ? patt.Count - 1 : 1;
         if (patt.FacePlayer)
-            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)-Mathf.Pi/2;
+            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)+BulletRenderer.DrawnForwardOffset/2;
         for (int j = 0; j < patt.Count; j++)
         {
             _ctx.I = j;
             // calculate spawn conditions of child
             double t = patt.fnt(_ctx);
             double fwd = patt.fnf(_ctx);
-            double xTravel = patt.fnx(_ctx);
-            double yTravel = patt.fny(_ctx);
-
-            double cos = Math.Cos(r.F);
-            double sin = Math.Sin(r.F);
-            float x = (float)(cos * xTravel - sin * yTravel);
-            float y = (float)(sin * xTravel + cos * yTravel);
-            var pos = new Vector2(x, y);
+            var pos = CalculateSpawnPosition(patt.fnx, patt.fny, r.F, _ctx);
             // add new projectile to queue
             level.Queued.Add(new()
             {
@@ -177,4 +167,26 @@ public partial class LevelDirector
         _hasGrazed[index] = _hasGrazed[activeCount-1];
         activeCount--;
     }
+    public static Vector2 CalculateMovement(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, double f, EvalContext ctx)
+	{
+		double xTravel = efnx(ctx);
+		double yTravel = efny(ctx);
+		double cos = Math.Cos(f);
+		double sin = Math.Sin(f);
+		float x = (float)(cos * xTravel - sin * yTravel);
+		float y = (float)(sin * xTravel + cos * yTravel);
+		var pos = new Vector2(x, y);
+		return pos;
+	}
+	public static Vector2 CalculateSpawnPosition(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, double f, EvalContext ctx)
+	{
+		double xDelta = efnx(ctx);
+		double yDelta = efny(ctx);
+		double cos = Math.Cos(f);
+		double sin = Math.Sin(f);
+		float x = (float)(cos * yDelta - sin * xDelta);
+		float y = (float)(sin * yDelta + cos * xDelta);
+		var pos = new Vector2(x, y);
+		return pos;
+	}
 }

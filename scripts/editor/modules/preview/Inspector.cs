@@ -33,8 +33,8 @@ public partial class Inspector : Control
         }
         xinput.SetValueNoSignal(r.SpawnX);
         yinput.SetValueNoSignal(r.SpawnY);
+        fwdinput.SetValueNoSignal(r.SpawnF);
         tinput.SetValueNoSignal(r.T);
-        fwdinput.SetValueNoSignal(r.F);
         idinput.SetValueNoSignal(r.Id);
         typeInput.Selected = (int)r.Type;
     }
@@ -59,7 +59,7 @@ public partial class Inspector : Control
     private void OnFwdChanged(double value)
     {
         if (e.SelectedReference == null) return;
-        e.SelectedReference.F = (float)value;
+        e.SelectedReference.SpawnF = (float)value;
         e.SyncPreview();
     }
     private void OnIdChanged(double value)

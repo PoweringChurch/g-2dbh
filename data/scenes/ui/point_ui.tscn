@@ -3,9 +3,11 @@
 [node name="Point" type="HBoxContainer" unique_id=392631642]
 offset_right = 188.0
 offset_bottom = 31.0
+size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="." unique_id=328568914]
 layout_mode = 2
+size_flags_horizontal = 0
 text = "0"
 horizontal_alignment = 1
 
@@ -32,5 +34,5 @@ prefix = "Y"
 [node name="Delete" type="Button" parent="." unique_id=1064948095]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 text = "×"

@@ -64,8 +64,7 @@ public partial class LevelSelect : CanvasLayer
     }
     protected void OnNewLevelPressed()
     {
-        var ui = GetNode<UIManager>("/root/UIManager");
-        ui.ShowEditor();
+        UIManager.Instance.ShowEditor();
         e.NewLevel();
         PopulateList();
     }    protected static T ReadJson<T>(string path)

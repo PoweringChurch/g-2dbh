@@ -8,12 +8,13 @@ public class EditorReference
 {
     public float SpawnX {get; set;}
     public float SpawnY {get; set;}
+    public double SpawnF {get; set;}
     public double T { get; set; }
-    public double F { get; set; }
     public ModelType Type { get; set; }
     public int Id { get; set; }
     // editor only
     [JsonIgnore] public Vector2 Pos {get; set;}
+    [JsonIgnore] public double F { get; set; }
     [JsonIgnore] public int Depth {get; set;}
     [JsonIgnore] public int RootEditorId = -1;
     public EditorReference() {}
@@ -21,8 +22,8 @@ public class EditorReference
     {
         SpawnX = other.SpawnX;
         SpawnY = other.SpawnY;
+        SpawnF = other.SpawnF;
         T = other.T;
-        F = other.F;
         Type = other.Type;
         Id = other.Id;
     }

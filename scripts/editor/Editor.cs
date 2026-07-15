@@ -41,10 +41,11 @@ public partial class Editor : CanvasLayer
         modelLibrary.Refresh();
         projCreator.Load(levelData);
     }
-    public void SavePatternModel(PatternModel model, int id)
+    public void SavePatternModel(PatternModel model)
     {
-        levelData.PatternModels[id] = model;
-        model.Id = id;
+        levelData.PatternModels[model.Id] = model;
+        preview.CompilePattern(model);
+        preview.UpdateModel(model);
         modelLibrary.Refresh();
     }
     public void DeleteProjectileModel(int id)
@@ -67,8 +68,8 @@ public partial class Editor : CanvasLayer
                     DeleteReference(r);
                 }
             }
+            preview.Sync();
         };
-        preview.Sync();
     }
     public void RemovePatternModel(int id, Control ui)
     {
@@ -108,10 +109,6 @@ public partial class Editor : CanvasLayer
         levelMeta.DurationChanged += timeline.UpdateDuration;
         levelMeta.SaveLevelRequested += SaveLevel;
         levelMeta.MusicChanged += timeline.UpdateMusic;
-
-        patternCreator.ModelSaved += (m) => modelLibrary.Refresh();
-        patternCreator.ModelSaved += (m) => preview.UpdateModel(m);
-        patternCreator.ModelSaved += preview.CompilePattern;
 
         GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
     }
@@ -160,6 +157,7 @@ public partial class Editor : CanvasLayer
         levelMeta.Load(data);
         projCreator.Load(data);
         projCreator.LoadProjectile(levelData.ProjectileModels[0]);
+        patternCreator.Load(data);
         patternCreator.LoadPattern(levelData.PatternModels[0]);
         modelLibrary.Refresh();
         preview.Load(data);

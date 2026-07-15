@@ -58,8 +58,9 @@ public class LevelCompiler
             {
                 SpawnPos = new Vector2(r.SpawnX, r.SpawnY),
                 Pos = new Vector2(r.SpawnX, r.SpawnY),
+                SpawnF = r.SpawnF,
+                F = r.SpawnF,
                 T = r.T,
-                F = r.F,
                 Type = r.Type,
                 Id = r.Id,
                 Depth = 0,
@@ -90,7 +91,7 @@ public class LevelCompiler
 		model.fnx = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionX));
 		model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
 		model.fnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
-		model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionFwd));
+		model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
     }
     public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, Node2D root)
     {

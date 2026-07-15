@@ -9,7 +9,7 @@ public class PatternModel : IEditorModel
     [JsonPropertyName("fnX")] public string FunctionX { get; set; } = "0";
     [JsonPropertyName("fnY")] public string FunctionY { get; set; } = "0";
     [JsonPropertyName("fnT")] public string FunctionT { get; set; } = "0";
-    [JsonPropertyName("fnFwd")] public string FunctionFwd { get; set; } = "0";
+    [JsonPropertyName("fnFwd")] public string FunctionF { get; set; } = "0";
     [JsonPropertyName("count")] public int Count { get; set; } = 1;
     [JsonPropertyName("facePlayer")] public bool FacePlayer { get; set; } = false;
     // game only
@@ -30,7 +30,7 @@ public class PatternModel : IEditorModel
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
         FunctionT = other.FunctionT;
-        FunctionFwd = other.FunctionFwd;
+        FunctionF = other.FunctionF;
         Count = other.Count;
         FacePlayer = other.FacePlayer;
     }

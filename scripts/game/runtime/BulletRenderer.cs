@@ -4,6 +4,7 @@ using Godot;
 
 public class BulletRenderer
 {
+    public const float DrawnForwardOffset = 0;
     private readonly CompiledLevel level;
     private readonly float[][] groupBuffers;
     private GameSession __gs => GameSession.Instance;
@@ -69,7 +70,7 @@ public class BulletRenderer
                 float alpha = (t < proj.TelegraphTime) 
 					? (proj.TelegraphTime > 0 ? 0.4f + (float)t / proj.TelegraphTime * 0.4f : 0.8f) 
 					: 1.0f;
-                float drawForward = !proj.LockRotation ? (float)r.F-Mathf.Pi : -Mathf.Pi; // rads
+                float drawForward = !proj.LockRotation ? (float)r.F + DrawnForwardOffset: DrawnForwardOffset;
 
 				float cos = Mathf.Cos(drawForward);
 				float sin = Mathf.Sin(drawForward);
@@ -113,9 +114,10 @@ public class BulletRenderer
             double t = __elapsed - r.T;
             bool show = (t > proj.TelegraphTime) && proj.CanCollide;
             if (!show) continue;
+            float drawForward = (float)(!proj.LockRotation ? r.F + DrawnForwardOffset: DrawnForwardOffset);
             if (proj.UseShape && proj.Shape != null)
             {
-                var rotated = CollisionUtils.TranslatePolygon([.. proj.ShapeVect2s, proj.ShapeVect2s[0]], r.Pos, (float)r.F);
+                var rotated = CollisionUtils.TranslatePolygon([.. proj.ShapeVect2s, proj.ShapeVect2s[0]], r.Pos, drawForward, true, true);
                 __gs.GameRoot.DrawPolyline(rotated, Colors.Red, 2);
             }
             else __gs.GameRoot.DrawCircle(r.Pos, proj.Radius, Colors.Red, false, 2);
