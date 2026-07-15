@@ -25,6 +25,7 @@ public partial class ProjectileCollisionEditor : Control
         Model = newModel;
         Radius.Value = Model.Radius;
         UseShape.ButtonPressed = Model.UseShape;
+        ToggleUseShape(Model.UseShape);
         ShapeEditor.Load(Model.Shape);
         pp.MarkDirty();
     }

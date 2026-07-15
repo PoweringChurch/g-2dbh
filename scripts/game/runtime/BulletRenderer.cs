@@ -4,7 +4,7 @@ using Godot;
 
 public class BulletRenderer
 {
-    public const float DrawnForwardOffset = 0;
+    public const float DrawnForwardOffset = -Mathf.Pi;
     private readonly CompiledLevel level;
     private readonly float[][] groupBuffers;
     private GameSession __gs => GameSession.Instance;

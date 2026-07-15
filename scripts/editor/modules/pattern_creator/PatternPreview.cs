@@ -1,10 +1,6 @@
 using System;
 using Godot;
 
-// Assumes a PatternModel class exists bundling the fields PatternModelPreview
-// used to expose individually: ProjModel, FnX, FnY, FnT, FnFwd,
-// ProjModelFnX, ProjModelFnY, Count. Mirrors how ProjectileModel backs
-// ProjectilePreview.
 public partial class PatternPreview : Control
 {
 	private struct ProjectileInstance
@@ -193,7 +189,7 @@ public partial class PatternPreview : Control
 			if (!show) continue;
 
 			var forward = pm.LockRotation ? 0 : inst.F;
-			DrawOn.DrawSetTransform(inst.Pos, forward, Vector2.One * pm.RenderScale);
+			DrawOn.DrawSetTransform(inst.Pos, forward, Vector2.One);
 			if (pm.UseShape && pm.Shape != null)
 				DrawOn.DrawPolyline([.. pm.ShapeVect2s, pm.ShapeVect2s[0]], Colors.Red);
 			else

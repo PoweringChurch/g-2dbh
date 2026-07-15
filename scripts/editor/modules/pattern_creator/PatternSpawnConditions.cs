@@ -25,17 +25,17 @@ public partial class PatternSpawnConditions : Control
                 Yi.Text = preset.FunctionY;
                 Fi.Text = preset.FunctionF;
                 Ti.Text = preset.FunctionT;
-                FunctionChanged("x(i)", Model.FunctionX);
-                FunctionChanged("y(i)", Model.FunctionY);
-                FunctionChanged("f(i)", Model.FunctionF);
-                FunctionChanged("t(i)", Model.FunctionF);
+                FunctionChanged("x(i)", preset.FunctionX);
+                FunctionChanged("y(i)", preset.FunctionY);
+                FunctionChanged("f(i)", preset.FunctionF);
+                FunctionChanged("t(i)", preset.FunctionF);
             };
         }
         Xi.TextChanged += (text) => FunctionChanged("x(i)", text);
         Yi.TextChanged += (text) => FunctionChanged("y(i)", text);
         Fi.TextChanged += (text) => FunctionChanged("f(i)", text);
         Ti.TextChanged += (text) => FunctionChanged("t(i)", text);
-        Count.ValueChanged += (v) => {Model.Count = (int)v; pp.MarkDirty();};
+        Count.ValueChanged += (v) => { Model.Count = (int)v; pp.MarkDirty(); };
         ProjectileId.ValueChanged += ProjectileIdChanged;
     }
     private void ProjectileIdChanged(double v)

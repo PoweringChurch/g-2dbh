@@ -581,7 +581,7 @@ PreviewVP = NodePath("SubViewport")
 
 [node name="SubViewport" type="SubViewport" parent="Editor/Sections/Modules/Preview" unique_id=1942392425]
 handle_input_locally = false
-size = Vector2i(864, 864)
+size = Vector2i(900, 900)
 render_target_update_mode = 4
 
 [node name="BackgroundColor" type="ColorRect" parent="Editor/Sections/Modules/Preview/SubViewport" unique_id=1701605494]
@@ -1121,7 +1121,6 @@ layout_mode = 2
 scale = NodePath("Config/Scale/Repea")
 
 [node name="ModelEditor" type="Control" parent="Editor" unique_id=2007401369 node_paths=PackedStringArray("Close")]
-visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -1187,7 +1186,7 @@ theme_override_constants/separation = 8
 [node name="Movement" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=68224156 node_paths=PackedStringArray("presets", "Xt", "Yt", "Ft", "Lifetime", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("39_rqtf5")
-presets = [NodePath("Presets/linear"), NodePath("Presets/sine"), NodePath("Presets/aimed"), NodePath("Presets/homing"), NodePath("Presets/bezier")]
+presets = [NodePath("Presets/linear"), NodePath("Presets/sine")]
 Xt = NodePath("Inspector/xt/LineEdit")
 Yt = NodePath("Inspector/yt/LineEdit")
 Ft = NodePath("Inspector/ft/LineEdit")
@@ -1206,26 +1205,17 @@ layout_mode = 2
 layout_mode = 2
 text = "Linear"
 script = ExtResource("41_1vm84")
+FunctionX = "0"
+FunctionY = "1000*(t/l)"
+FunctionF = "0"
 
 [node name="sine" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Presets" unique_id=545620557]
 layout_mode = 2
 text = "Sine"
 script = ExtResource("41_1vm84")
-
-[node name="aimed" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Presets" unique_id=1391859317]
-layout_mode = 2
-text = "Aimed"
-script = ExtResource("41_1vm84")
-
-[node name="homing" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Presets" unique_id=1974237122]
-layout_mode = 2
-text = "Homing"
-script = ExtResource("41_1vm84")
-
-[node name="bezier" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Presets" unique_id=991317524]
-layout_mode = 2
-text = "Bezier"
-script = ExtResource("41_1vm84")
+FunctionX = "0"
+FunctionY = "1000*(t/l)"
+FunctionF = "sin(t)"
 
 [node name="Inspector" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement" unique_id=1274670830]
 layout_mode = 2
@@ -1346,8 +1336,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.25
 max_value = 4.0
-step = 0.01
-value = 0.25
+step = 0.05
+value = 1.0
+exp_edit = true
+tick_count = 9
+ticks_position = 3
 
 [node name="lock" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual" unique_id=817286092]
 layout_mode = 2

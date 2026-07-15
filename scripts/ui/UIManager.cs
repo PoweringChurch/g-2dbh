@@ -98,6 +98,7 @@ public partial class UIManager : Node
         if (uiPath[^1] == e)
         {
             e.SetPlaying(false);
+            PlaylistHandler.Instance.FadeIn();
         }
         if (uiPath.Count > 1)
             for (int i = uiPath.Count-1; i > 0; i--)

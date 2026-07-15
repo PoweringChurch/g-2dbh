@@ -14,15 +14,15 @@ public partial class ProjectileVisuals : Control
     private string[] textures;
     public override void _Ready()
     {
-        var texList = new List<string>();
+        var texList = new List<string>() {"default"};
         var dir = DirAccess.Open("res://data/default-assets/images/");
         var files = dir.GetFiles();
         for (int i = 0; i < files.Length; i++)
         {
             var file = files[i];
             if (file.EndsWith(".import") || file.StartsWith('.')) continue;
-            texList.Add("res://data/default-assets/images/"+file);
             var fileName = Path.GetFileNameWithoutExtension(file);
+            texList.Add("res://data/default-assets/images/"+fileName);
             TextureDropdown.AddItem(fileName);
         }
         textures = [.. texList];
@@ -41,18 +41,15 @@ public partial class ProjectileVisuals : Control
         Model = newModel;
         ScaleSlider.Value = Model.RenderScale;
         LockRotation.ButtonPressed = Model.LockRotation;
-        if (Model.Texture.Equals("default"))
-        {
-            TextureDropdown.Selected = 0;
-            return;
-        }
         int found = 0;
         for (int i = 0; i < textures.Length; i++)
-        if (textures[i] == Model.Texture)
         {
-            found = i;
-            break;
+            if (textures[i] == Model.Texture)
+            {
+                found = i;
+                break;
+            }
         }
-        TextureDropdown.Selected = found;
+        TextureDropdown.Select(found);
     }
 }

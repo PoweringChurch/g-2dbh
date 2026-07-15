@@ -22,15 +22,15 @@ public partial class ProjectileMovementEditor : Control
                 Xt.Text = preset.FunctionX;
                 Yt.Text = preset.FunctionY;
                 Ft.Text = preset.FunctionF;
-                FunctionChanged("x(t)", Model.FunctionX);
-                FunctionChanged("y(t)", Model.FunctionY);
-                FunctionChanged("f(t)", Model.FunctionF);
+                FunctionChanged("x(t)", preset.FunctionX);
+                FunctionChanged("y(t)", preset.FunctionY);
+                FunctionChanged("f(t)", preset.FunctionF);
             };
         }
         Xt.TextChanged += (text) => FunctionChanged("x(t)", text);
         Yt.TextChanged += (text) => FunctionChanged("y(t)", text);
         Ft.TextChanged += (text) => FunctionChanged("f(t)", text);
-        Lifetime.ValueChanged += (v) => {Model.Lifetime = v; pp.MarkDirty();};
+        Lifetime.ValueChanged += (v) => { Model.Lifetime = v; pp.MarkDirty(); };
     }
     private void FunctionChanged(string funcName, string text)
     {

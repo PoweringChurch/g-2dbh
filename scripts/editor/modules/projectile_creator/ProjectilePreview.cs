@@ -105,7 +105,7 @@ public partial class ProjectilePreview : Control
         bool show = Model.CanCollide && (ctx.T > Model.TelegraphTime) && alive;
         if (!show) return;
         var forward = Model.LockRotation ? 0 : (float)reference.F;
-        DrawOn.DrawSetTransform(reference.Pos, forward, Vector2.One * Model.RenderScale);
+        DrawOn.DrawSetTransform(reference.Pos, forward, Vector2.One);
         if (Model.UseShape && Model.Shape != null)
         {
             DrawOn.DrawPolyline([.. Model.ShapeVect2s, Model.ShapeVect2s[0]], Colors.Red);
@@ -144,12 +144,12 @@ public partial class ProjectilePreview : Control
         {
             lctx.T = Math.Min(Model.Lifetime, ConfigHelper.Current.MaxPathLength) / steps * i;
             lctx.L = Model.Lifetime;
-            var (x, y) = LevelDirector.CalculateMovement(Model.fnx, Model.fny, Model.fnf(lctx) + reference.F, lctx);
+            var (x, y) = LevelDirector.CalculateMovement(Model.fnx, Model.fny, Model.fnf(lctx) + reference.SpawnF, lctx);
             points[i] = new(reference.SpawnPos.X + x, reference.SpawnPos.Y + y);
         }
         DrawOn.DrawSetTransform(Vector2.Zero, 0, Vector2.One);
         DrawOn.DrawPolyline(points, RenderingUtils.ColorFromString(Model.Name), ConfigHelper.Current.PathThickness, true);
         DrawOn.DrawCircle(points[0], ConfigHelper.Current.PathThickness * 1.5f, RenderingUtils.ColorFromString(Model.Name));
-        DrawOn.DrawDashedLine(reference.SpawnPos, reference.SpawnPos + (Vector2.FromAngle((float)reference.F - (BulletRenderer.DrawnForwardOffset / 2)) * 50), Colors.DarkRed, 4f);
+        DrawOn.DrawDashedLine(reference.Pos, reference.Pos + (Vector2.FromAngle((float)reference.F - (BulletRenderer.DrawnForwardOffset / 2)) * 50), Colors.DarkRed, 4f);
     }
 }
