@@ -604,7 +604,8 @@ public partial class LevelPreview : Control
 			{
 				lctx.T = Math.Min(proj.Lifetime, ConfigHelper.Current.MaxPathLength) / steps * i;
 				lctx.L = proj.Lifetime;
-				var (x, y) = LevelDirector.CalculatePosition(proj.fnx, proj.fny, proj.fnf(lctx) + r.F, lctx);
+				double f = MathSafe.Sanitize(proj.fnf(lctx)) + r.F;
+				var (x, y) = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, lctx);
 				points[i] = new(r.SpawnX + x, r.SpawnY + y);
 			}
 			PreviewRoot.DrawPolyline(points, RenderingUtils.ColorFromString(proj.Name), ConfigHelper.Current.PathThickness, true);
@@ -770,7 +771,7 @@ public partial class LevelPreview : Control
 		_ctx.L = proj.Lifetime;
 		bool alive = _ctx.T >= 0 && _ctx.T <= proj.Lifetime;
 		if (!alive) return false;
-		var f = proj.fnf(_ctx) + r.SpawnF;
+		var f = MathSafe.Sanitize(proj.fnf(_ctx)) + r.SpawnF;
 		var pos = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, _ctx);
 		r.Pos = new Vector2(r.SpawnX, r.SpawnY) + pos;
 		r.F = f;
@@ -795,7 +796,7 @@ public partial class LevelPreview : Control
 				{
 					var lctx = new EvalContext() { T = proj.Lifetime, L = proj.Lifetime };
 					Vector2 spawnpos = new(r.SpawnX, r.SpawnY);
-					var f = r.SpawnF + proj.fnf(lctx);
+					var f = r.SpawnF + MathSafe.Sanitize(proj.fnf(lctx));
 					var delta = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, lctx);
 					Vector2 endPos = spawnpos + delta;
 					var childRef = new EditorReference()
@@ -834,8 +835,8 @@ public partial class LevelPreview : Control
 		{
 			lctx.T = 0;
 			lctx.I = j;
-			double spawnDelay = patt.fnt(lctx);
-			double fwdOffset = patt.fnf(lctx);
+			double spawnDelay = MathSafe.Sanitize(patt.fnt(lctx));
+			double fwdOffset = MathSafe.Sanitize(patt.fnf(lctx));
 			Vector2 spawnOffset = LevelDirector.CalculatePosition(patt.fnx, patt.fny, r.SpawnF, lctx);
 			Vector2 childAbsoluteSpawnPos = basePos + spawnOffset;
 			var subBulletRef = new EditorReference

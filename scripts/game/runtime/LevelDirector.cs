@@ -85,7 +85,7 @@ public partial class LevelDirector
             _ctx.T = elapsed - r.T;
             _ctx.L = proj.Lifetime;
             // move projectile
-            var f = proj.fnf(_ctx)+r.SpawnF;
+            var f = MathSafe.Sanitize(proj.fnf(_ctx))+r.SpawnF;
             var pos = CalculatePosition(proj.fnx, proj.fny, f, _ctx);
             r.Pos = r.SpawnPos + pos;
             r.F = f;
@@ -127,8 +127,8 @@ public partial class LevelDirector
         {
             _ctx.I = j;
             // calculate spawn conditions of child
-            double t = patt.fnt(_ctx);
-            double fwd = patt.fnf(_ctx);
+            double t = MathSafe.Sanitize(patt.fnt(_ctx));
+            double fwd = MathSafe.Sanitize(patt.fnf(_ctx));
             var pos = CalculatePosition(patt.fnx, patt.fny, r.F, _ctx);
             // add new projectile to queue
             level.Queued.Add(new()
@@ -169,8 +169,8 @@ public partial class LevelDirector
     }
     public static Vector2 CalculatePosition(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, double f, EvalContext ctx)
 	{
-		double xTravel = efnx(ctx);
-		double yTravel = efny(ctx);
+		double xTravel = MathSafe.Sanitize(efnx(ctx));
+		double yTravel = MathSafe.Sanitize(efny(ctx));
 		double cos = Math.Cos(f);
 		double sin = Math.Sin(f);
 		float x = (float)(cos * xTravel - sin * yTravel);
