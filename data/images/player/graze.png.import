@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cruuhefxci2vu"
-path="res://.godot/imported/snow-mine.png-284503358932522c9fdff2798fd566e7.ctex"
+uid="uid://ion1t1umju4y"
+path="res://.godot/imported/graze.png-f1cd41ee56187f685abfa62169979eb5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/projectiles/snow-mine.png"
-dest_files=["res://.godot/imported/snow-mine.png-284503358932522c9fdff2798fd566e7.ctex"]
+source_file="res://data/images/player/graze.png"
+dest_files=["res://.godot/imported/graze.png-f1cd41ee56187f685abfa62169979eb5.ctex"]
 
 [params]
 

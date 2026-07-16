@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ion1t1umju4y"
-path="res://.godot/imported/graze.png-66957e0c188b7fbc06f4156f2194c689.ctex"
+uid="uid://x5k2f4fdv5f1"
+path="res://.godot/imported/default.png-df0ad430de11e1fc145458dd965aa276.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/graze.png"
-dest_files=["res://.godot/imported/graze.png-66957e0c188b7fbc06f4156f2194c689.ctex"]
+source_file="res://data/images/player/characters/default.png"
+dest_files=["res://.godot/imported/default.png-df0ad430de11e1fc145458dd965aa276.ctex"]
 
 [params]
 

@@ -5,6 +5,34 @@ using Godot;
 
 public class LevelCompiler
 {
+    public readonly static TextureData[] BackgroundTextures =
+    {
+        new() {TextureName = "None", TexturePath = "none"},
+        new() {TextureName = "Snow", TexturePath = "res://data/images/backgrounds/snow-scroller.png"},
+        new() {TextureName = "Storm", TexturePath = "res://data/images/backgrounds/storm-scroller.png"},
+    };
+    public readonly static TextureData[] ProjectileTextures =
+    {
+        new() {TextureName = "Default", TexturePath = "default"},
+        new() {TextureName = "Black Icicle", TexturePath = "res://data/images/projectiles/black-icicle.png"},
+        new() {TextureName = "Blizzard Snowflake", TexturePath = "res://data/images/projectiles/blizzard-snowflake.png"},
+        new() {TextureName = "Crystal Comet", TexturePath = "res://data/images/projectiles/crystal-comet.png"},
+        new() {TextureName = "Hail", TexturePath = "res://data/images/projectiles/hail.png"},
+        new() {TextureName = "Icicle", TexturePath = "res://data/images/projectiles/icicle.png"},
+        new() {TextureName = "Large Snowflake", TexturePath = "res://data/images/projectiles/large-snowflake.png"},
+        new() {TextureName = "Snow Mine", TexturePath = "res://data/images/projectiles/snow-mine.png"},
+        new() {TextureName = "Snow", TexturePath = "res://data/images/projectiles/snow.png"},
+        new() {TextureName = "Snowball", TexturePath = "res://data/images/projectiles/snowball.png"},
+        new() {TextureName = "Snowflake", TexturePath = "res://data/images/projectiles/snowflake.png"},
+    };
+    public readonly static SongData[] SongData =
+    {
+        new() {SongName = "Freezing Adventure", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/freezing-adventure.mp3"},
+        new() {SongName = "A Snowy Night", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/a-snowy-night-2026.mp3"},
+        new() {SongName = "Raspberry and Purple", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/raspberry-and-purple.mp3"},
+        new() {SongName = "Witching Hour", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/witching-hour.mp3"},
+        new() {SongName = "The Final Voyage (MANIA Mix)", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/the-final-voyage.mp3"},
+    };
     public static CompiledLevel CompileLevel(LevelData level, Node2D gameRoot)
     {
         CompiledLevel compiled = new();
@@ -96,10 +124,7 @@ public class LevelCompiler
     public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, Node2D root)
     {
         RenderGroup renderGroup;
-        var tex = model.Texture != "default" ?
-                RenderingUtils.LoadTexture(model.Texture) 
-                : null;
-        
+        var tex = RenderingUtils.LoadTexture(ProjectileTextures[model.TextureId].TexturePath);
         if (tex != null) // if theres a texture
 		{
 			var mesh = new QuadMesh { Size = tex.GetSize() }; // build a texture mesh

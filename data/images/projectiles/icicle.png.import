@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ruo0ord8tk7k"
-path="res://.godot/imported/snow-scroller.png-adcd92cfb8ac0964f927a69ba6576f02.ctex"
+uid="uid://bn5e3ywtkicj5"
+path="res://.godot/imported/icicle.png-dcfcf6fbf8579af140c86299ce9962d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/backgrounds/snow-scroller.png"
-dest_files=["res://.godot/imported/snow-scroller.png-adcd92cfb8ac0964f927a69ba6576f02.ctex"]
+source_file="res://data/images/projectiles/icicle.png"
+dest_files=["res://.godot/imported/icicle.png-dcfcf6fbf8579af140c86299ce9962d8.ctex"]
 
 [params]
 

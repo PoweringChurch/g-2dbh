@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dka8arywxl15l"
-path="res://.godot/imported/storm-scroller.png-811c80dfb95b203adaac225ab52c3ca2.ctex"
+uid="uid://b4g22is2tknt0"
+path="res://.godot/imported/snow.png-3297dc2d661ffa04df41bae624a261fb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/backgrounds/storm-scroller.png"
-dest_files=["res://.godot/imported/storm-scroller.png-811c80dfb95b203adaac225ab52c3ca2.ctex"]
+source_file="res://data/images/projectiles/snow.png"
+dest_files=["res://.godot/imported/snow.png-3297dc2d661ffa04df41bae624a261fb.ctex"]
 
 [params]
 

@@ -176,7 +176,7 @@ public partial class Timeline : Control
         ClearMarkers();
         foreach (var r in data.References)
             AddMarker(r);
-        var musicname = data.Music;
+        var musicname = data.MusicId;
         var found = AudioUtils.LoadAudio($"{e.LevelPath}/audio/{musicname}");
         EditorAudioPreview.Stream = found;
         SetTime(0, false);

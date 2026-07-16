@@ -189,7 +189,7 @@ public partial class PatternPreview : Control
 		if (Editor.Instance.ProjectileModels[Model.ProjectileId] == null)
 			return;
 		var pm = Editor.Instance.ProjectileModels[Model.ProjectileId];
-		var texture = pm.Texture != "default" ? RenderingUtils.LoadTexture(pm.Texture) : null;
+		var texture = RenderingUtils.LoadTexture(LevelCompiler.ProjectileTextures[pm.TextureId].TexturePath);
 		foreach (var inst in instances)
 		{
 			var color = Colors.White;
@@ -213,6 +213,8 @@ public partial class PatternPreview : Control
 		if (Model == null)
 			return;
 		var pm = Editor.Instance.ProjectileModels[Model.ProjectileId];
+		if (pm == null)
+			return;
 		if (!pm.CanCollide)
 			return;
 		foreach (var inst in instances)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://degdpl4h35cv3"
-path="res://.godot/imported/large-snowflake.png-104e5b1c366eddd0904f68cafd61e946.ctex"
+uid="uid://co5sl07vwd84s"
+path="res://.godot/imported/chinese.png-fdea2064e33641ee1b086160571d9479.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/projectiles/large-snowflake.png"
-dest_files=["res://.godot/imported/large-snowflake.png-104e5b1c366eddd0904f68cafd61e946.ctex"]
+source_file="res://data/images/player/characters/chinese.png"
+dest_files=["res://.godot/imported/chinese.png-fdea2064e33641ee1b086160571d9479.ctex"]
 
 [params]
 

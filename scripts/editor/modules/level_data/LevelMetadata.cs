@@ -5,7 +5,6 @@ using System.IO;
 public partial class LevelMetadata : Control
 {
 	[ExportGroup("Song")]
-	[Export] SongData[] SongDataArray { get; set; }
 	[Export] Button NextSong;
 	[Export] Button PrevSong;
 	[Export] Label SongNameLabel;
@@ -58,7 +57,7 @@ public partial class LevelMetadata : Control
 	}
 	private void GoNextSong()
 	{
-		if (currentSong < SongDataArray.Length-1)
+		if (currentSong < LevelCompiler.SongData.Length-1)
 		{
 			currentSong++;
 			ApplyCurrentSong();
@@ -74,8 +73,8 @@ public partial class LevelMetadata : Control
 	}
 	private void ApplyCurrentSong()
 	{
-		var info = SongDataArray[currentSong];
-		e.levelData.Music = info.StreamPath;
+		e.levelData.MusicId = currentSong;
+		var info = LevelCompiler.SongData[currentSong];
 		var stream = AudioUtils.LoadAudio(info.StreamPath);
 		MusicChanged.Invoke(stream);
 		SongNameLabel.Text = info.SongName;
@@ -100,14 +99,7 @@ public partial class LevelMetadata : Control
 		DurationInput.Value = data.Duration;
 		LevelNameInput.Text = data.DisplayName;
 		BackgroundEditor.Load(data);
-		for (int i = 0; i < SongDataArray.Length; i++)
-		{
-			if (SongDataArray[i].StreamPath == data.Music)
-			{
-				currentSong = i;
-				break;
-			}
-		}
+		currentSong = data.MusicId;
 		ApplyCurrentSong();
 	}
 }

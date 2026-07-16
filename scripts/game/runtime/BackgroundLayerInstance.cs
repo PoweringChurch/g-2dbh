@@ -10,7 +10,7 @@ public partial class BackgroundLayerInstance : Parallax2D
     public Sprite2D Sprite;
     public void ApplyLayerParams()
     {
-        var text = RenderingUtils.LoadTexture(Layer.Image);
+        var text = RenderingUtils.LoadTexture(LevelCompiler.BackgroundTextures[Layer.BackgroundId].TexturePath);
         scrollx = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.ScrollFunctionX));
         scrolly = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.ScrollFunctionY));
         transparency = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.TransparencyFn));

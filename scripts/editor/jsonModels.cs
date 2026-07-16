@@ -37,7 +37,7 @@ public class LevelData
 {
     [JsonPropertyName("displayName")] public string DisplayName { get; set; } = "New Level";
     [JsonPropertyName("author")] public string Author { get; set; } = "Unknown";
-    [JsonPropertyName("music")] public string Music { get; set; } = "none";
+    [JsonPropertyName("musicId")] public int MusicId { get; set; } = 0;
     [JsonPropertyName("health")] public int Health { get; set; } = 3;
     [JsonPropertyName("aspectRatio")] public int AspectRatio { get; set; } = 0;
     [JsonPropertyName("duration")] public float Duration { get; set; } = 10;

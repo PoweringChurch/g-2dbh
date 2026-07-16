@@ -18,24 +18,11 @@ public partial class BackgroundLayerUi : Control
     [Export] Button remove;
     public BackgroundLayerInstance EditorLayerInstance;
     private Editor e => Editor.Instance;
-    private string[] backgrounds;
     public override void _Ready()
     {
-        var bgList = new List<string>() {"none"};
-        var dir = DirAccess.Open("res://data/default-assets/images/backgrounds/");
-        var files = dir.GetFiles();
-        for (int i = 0; i < files.Length; i++)
-        {
-            var file = files[i];
-            if (file.EndsWith(".import") || file.StartsWith('.')) continue;
-            var fileName = Path.GetFileNameWithoutExtension(file);
-            bgList.Add("res://data/default-assets/images/backgrounds/"+fileName);
-            imageSelect.AddItem(fileName);
-        }
-        backgrounds = [.. bgList];
-        dir.ListDirEnd();
+        for (int i = 0; i < LevelCompiler.BackgroundTextures.Length; i++)
+            imageSelect.AddItem(LevelCompiler.BackgroundTextures[i].TextureName);
         imageSelect.ItemSelected += OnImageChanged;
-
         layerName.TextChanged += OnNameChanged;
         scrollFnX.TextChanged += OnFnXChanged;
         scrollFnY.TextChanged += OnFnyChanged;
@@ -59,17 +46,7 @@ public partial class BackgroundLayerUi : Control
         repeatCount.Value = layer.RepeatCount;
         order.Value = layer.Order;
         scale.Value = layer.Scale;
-
-        int found = 0;
-        for (int i = 0; i < backgrounds.Length; i++)
-        {
-            if (backgrounds[i] == layer.Image)
-            {
-                found = i;
-                break;
-            }
-        }
-        imageSelect.Select(found);
+        imageSelect.Select(layer.BackgroundId);
     }
     private void OnRemovePressed()
     {
@@ -116,7 +93,7 @@ public partial class BackgroundLayerUi : Control
     }
     private void OnImageChanged(long idx)
     {
-        EditorLayerInstance.Layer.Image = backgrounds[idx];
+        EditorLayerInstance.Layer.BackgroundId = (int)idx;
         EditorLayerInstance.ApplyLayerParams();
     }
     private void OnOrderChanged(double to)

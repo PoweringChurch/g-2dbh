@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bn5e3ywtkicj5"
-path="res://.godot/imported/icicle.png-03d056038be6a73b9d96fbb2b1e3d97d.ctex"
+uid="uid://e4ijaikmsvec"
+path="res://.godot/imported/player_hurtbox.png-36a7f8a51cbae9c67e41a454898fe2cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/projectiles/icicle.png"
-dest_files=["res://.godot/imported/icicle.png-03d056038be6a73b9d96fbb2b1e3d97d.ctex"]
+source_file="res://data/images/player/player_hurtbox.png"
+dest_files=["res://.godot/imported/player_hurtbox.png-36a7f8a51cbae9c67e41a454898fe2cd.ctex"]
 
 [params]
 

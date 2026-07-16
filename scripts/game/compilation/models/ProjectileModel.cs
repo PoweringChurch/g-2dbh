@@ -28,8 +28,8 @@ public class ProjectileModel : IEditorModel
     // ==========================================
     // Visuals & Rendering
     // ==========================================
-    [JsonPropertyName("customTexture")]
-    public string Texture { get; set; } = "default";
+    [JsonPropertyName("textureId")]
+    public int TextureId { get; set; } = 0;
 
     [JsonPropertyName("renderScale")] 
     public float RenderScale { get; set; } = 1f;
@@ -109,7 +109,7 @@ public class ProjectileModel : IEditorModel
         FunctionF = other.FunctionF;
 
         // Visuals
-        Texture = other.Texture;
+        TextureId = other.TextureId;
         RenderScale = other.RenderScale;
         TelegraphTime = other.TelegraphTime;
         LockRotation = other.LockRotation;

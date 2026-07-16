@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j4yhos0a2u3h"
-path="res://.godot/imported/hail.png-af2385005bfdc79106ce18ded9d3de5e.ctex"
+uid="uid://ruo0ord8tk7k"
+path="res://.godot/imported/snow-scroller.png-ea135dee4643ea7334e16e5b541a2931.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/projectiles/hail.png"
-dest_files=["res://.godot/imported/hail.png-af2385005bfdc79106ce18ded9d3de5e.ctex"]
+source_file="res://data/images/backgrounds/snow-scroller.png"
+dest_files=["res://.godot/imported/snow-scroller.png-ea135dee4643ea7334e16e5b541a2931.ctex"]
 
 [params]
 

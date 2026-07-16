@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://e4ijaikmsvec"
-path="res://.godot/imported/player_hurtbox.png-d299d21aa61eee88524c57f7a0cfe479.ctex"
+uid="uid://b7e14nvrlcetp"
+path="res://.godot/imported/snowflake.png-70e13896d4d0c15526e736c67d7032ea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/player_hurtbox.png"
-dest_files=["res://.godot/imported/player_hurtbox.png-d299d21aa61eee88524c57f7a0cfe479.ctex"]
+source_file="res://data/images/projectiles/snowflake.png"
+dest_files=["res://.godot/imported/snowflake.png-70e13896d4d0c15526e736c67d7032ea.ctex"]
 
 [params]
 

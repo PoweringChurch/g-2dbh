@@ -46,7 +46,6 @@
 [ext_resource type="Script" uid="uid://dc2w0ihohtdkh" path="res://scripts/editor/modules/level_data/background/BackgroundEditor.cs" id="28_0rl1p"]
 [ext_resource type="Script" uid="uid://cfibamy3fls3g" path="res://scripts/utils/Overlay.cs" id="28_xuqvo"]
 [ext_resource type="PackedScene" uid="uid://bqnjj1cp37xxx" path="res://data/scenes/ui/background_layer_ui.tscn" id="29_ok6jj"]
-[ext_resource type="Script" uid="uid://i5km7s41r4dp" path="res://scripts/resources/SongData.cs" id="29_wu3dr"]
 [ext_resource type="Script" uid="uid://cg5girl3b27s7" path="res://scripts/editor/modules/projectile_creator/ModelEditor.cs" id="34_b17eg"]
 [ext_resource type="Script" uid="uid://6mamhfg45b20" path="res://scripts/ui/screens/level_select/LevelDisplay.cs" id="35_ok6jj"]
 [ext_resource type="PackedScene" uid="uid://c5xi4uxw2i1sr" path="res://data/scenes/ui/projectile_model_ui.tscn" id="36_ntx8l"]
@@ -58,7 +57,7 @@
 [ext_resource type="Script" uid="uid://dd3thl1sd8us4" path="res://scripts/editor/modules/projectile_creator/ProjectilePreview.cs" id="45_uatky"]
 [ext_resource type="Script" uid="uid://bgylg3dvojxgp" path="res://scripts/editor/modules/pattern_creator/PatternSpawnConditions.cs" id="46_1vm84"]
 [ext_resource type="Script" uid="uid://bq08efnsrdwhh" path="res://scripts/editor/modules/pattern_creator/PatternInfo.cs" id="47_wu3dr"]
-[ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/characters/default.png" id="48_0cbny"]
+[ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/images/player/characters/default.png" id="48_0cbny"]
 [ext_resource type="PackedScene" uid="uid://cldtmabfj55tq" path="res://data/scenes/ui/pattern_model_ui.tscn" id="48_cyx1q"]
 [ext_resource type="Script" uid="uid://d1lp26bmvrse4" path="res://scripts/ui/screens/campaign/Campaign.cs" id="48_hrvbo"]
 [ext_resource type="Script" uid="uid://kwdca7icqqm" path="res://scripts/ui/screens/campaign/StoryInfo.cs" id="49_hrvbo"]
@@ -68,45 +67,6 @@
 [ext_resource type="Texture2D" uid="uid://bismr438prupb" path="res://temp_assets/Bumpy_Sky-Blue_02-512x512.png" id="52_e71vb"]
 [ext_resource type="Script" uid="uid://db423rhi1soph" path="res://scripts/ui/screens/campaign/CampaignCharacterDisplay.cs" id="56_e71vb"]
 [ext_resource type="Script" uid="uid://qah1bfxp7wrq" path="res://scripts/game/GameSession.cs" id="61_rm4vd"]
-
-[sub_resource type="Resource" id="Resource_1vm84"]
-script = ExtResource("29_wu3dr")
-SongName = "Freezing Adventure"
-Author = "Seigamantic"
-StreamPath = "res://data/music/ice-story/freezing-adventure.mp3"
-metadata/_custom_type_script = "uid://i5km7s41r4dp"
-
-[sub_resource type="Resource" id="Resource_wu3dr"]
-script = ExtResource("29_wu3dr")
-SongName = "A Snowy Night (2026)"
-Author = "Seigamantic"
-StreamPath = "res://data/music/ice-story/a-snowy-night-2026.mp3"
-metadata/_custom_type_script = "uid://i5km7s41r4dp"
-
-[sub_resource type="Resource" id="Resource_cyx1q"]
-script = ExtResource("29_wu3dr")
-SongName = "Raspberry And Purple"
-Author = "Seigamantic"
-StreamPath = "res://data/music/ice-story/raspberry-and-purple.mp3"
-metadata/_custom_type_script = "uid://i5km7s41r4dp"
-
-[sub_resource type="Resource" id="Resource_0dhbp"]
-script = ExtResource("29_wu3dr")
-SongName = "Witching Hour"
-Author = "Seigamantic"
-StreamPath = "res://data/music/ice-story/witching-hour.mp3"
-metadata/_custom_type_script = "uid://i5km7s41r4dp"
-
-[sub_resource type="Resource" id="Resource_jx0wj"]
-script = ExtResource("29_wu3dr")
-SongName = "The Final Voyage (MANIA Mix)"
-Author = "Seigamantic"
-StreamPath = "res://data/music/ice-story/the-final-voyage.mp3"
-metadata/_custom_type_script = "uid://i5km7s41r4dp"
-
-[sub_resource type="LabelSettings" id="LabelSettings_sm6fg"]
-font_size = 12
-font_color = Color(0.74558026, 0.7455802, 0.7455802, 1)
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -828,7 +788,6 @@ focus_mode = 0
 mouse_behavior_recursive = 2
 title = "Level Data"
 script = ExtResource("5_ycdy4")
-SongDataArray = Array[Object]([SubResource("Resource_1vm84"), SubResource("Resource_wu3dr"), SubResource("Resource_cyx1q"), SubResource("Resource_0dhbp"), SubResource("Resource_jx0wj")])
 NextSong = NodePath("Sort/Top/Left/Music/SongSelect/Next")
 PrevSong = NodePath("Sort/Top/Left/Music/SongSelect/Prev")
 SongNameLabel = NodePath("Sort/Top/Left/Music/SongSelect/Stack/Name")
@@ -1179,13 +1138,16 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Movement" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=68224156 node_paths=PackedStringArray("PresetContainer", "Xt", "Yt", "Ft", "Lifetime", "ErrorDisplay")]
+[node name="Movement" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=68224156 node_paths=PackedStringArray("PresetContainer", "Xt", "XtClear", "Yt", "YtClear", "Ft", "FtClear", "Lifetime", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("39_rqtf5")
 PresetContainer = NodePath("Presets")
 Xt = NodePath("Inspector/xt/LineEdit")
+XtClear = NodePath("Inspector/xt/Clear")
 Yt = NodePath("Inspector/yt/LineEdit")
+YtClear = NodePath("Inspector/yt/Clear")
 Ft = NodePath("Inspector/ft/LineEdit")
+FtClear = NodePath("Inspector/ft/Clear")
 Lifetime = NodePath("Inspector/lifetime/SpinBox")
 ErrorDisplay = NodePath("Inspector/ErrorDisplay")
 
@@ -1194,8 +1156,9 @@ layout_mode = 2
 text = "Movement"
 label_settings = ExtResource("7_getpj")
 
-[node name="Presets" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement" unique_id=1386861193]
+[node name="Presets" type="GridContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement" unique_id=750332281]
 layout_mode = 2
+columns = 2
 
 [node name="Inspector" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement" unique_id=1274670830]
 layout_mode = 2
@@ -1217,6 +1180,11 @@ placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
 
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/xt" unique_id=1295409292]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
+
 [node name="yt" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector" unique_id=757718787]
 layout_mode = 2
 
@@ -1234,6 +1202,11 @@ placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
 
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/yt" unique_id=551369981]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
+
 [node name="ft" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector" unique_id=1637436672]
 layout_mode = 2
 
@@ -1250,6 +1223,11 @@ text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
+
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/ft" unique_id=1874711839]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
 
 [node name="lifetime" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector" unique_id=629147781]
 layout_mode = 2
@@ -1302,10 +1280,6 @@ text = "Texture"
 [node name="OptionButton" type="OptionButton" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/texture" unique_id=674382688]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 1
-popup/item_0/text = "default"
-popup/item_0/id = 0
 
 [node name="scale" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual" unique_id=1878815357]
 layout_mode = 2
@@ -1659,14 +1633,18 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "Yi", "Fi", "Ti", "Count", "ProjectileId", "ErrorDisplay")]
+[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "XiClear", "Yi", "YiClear", "Fi", "FiClear", "Ti", "TiClear", "Count", "ProjectileId", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("46_1vm84")
 PresetContainer = NodePath("Presets")
 Xi = NodePath("Inspector/xi/LineEdit")
+XiClear = NodePath("Inspector/xi/Clear")
 Yi = NodePath("Inspector/yi/LineEdit")
+YiClear = NodePath("Inspector/yi/Clear")
 Fi = NodePath("Inspector/fi/LineEdit")
+FiClear = NodePath("Inspector/fi/Clear")
 Ti = NodePath("Inspector/ti/LineEdit")
+TiClear = NodePath("Inspector/ti/Clear")
 Count = NodePath("Inspector/count/SpinBox")
 ProjectileId = NodePath("Inspector/ProjectileId/SpinBox")
 ErrorDisplay = NodePath("Inspector/ErrorDisplay")
@@ -1676,8 +1654,9 @@ layout_mode = 2
 text = "Spawn Conditions"
 label_settings = ExtResource("7_getpj")
 
-[node name="Presets" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions" unique_id=419892955]
+[node name="Presets" type="GridContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions" unique_id=340441312]
 layout_mode = 2
+columns = 2
 
 [node name="Inspector" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions" unique_id=1736976164]
 layout_mode = 2
@@ -1699,6 +1678,11 @@ placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
 
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/xi" unique_id=1124617540]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
+
 [node name="yi" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=237985321]
 layout_mode = 2
 
@@ -1715,6 +1699,11 @@ text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
+
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/yi" unique_id=1552871827]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
 
 [node name="fi" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=1444093377]
 layout_mode = 2
@@ -1733,6 +1722,11 @@ placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
 
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/fi" unique_id=216286067]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
+
 [node name="ti" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=1113412452]
 layout_mode = 2
 
@@ -1749,6 +1743,11 @@ text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
+
+[node name="Clear" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/ti" unique_id=582084909]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+text = "x"
 
 [node name="count" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=2144616298]
 layout_mode = 2
@@ -1776,13 +1775,6 @@ layout_mode = 2
 size_flags_horizontal = 10
 max_value = 127.0
 rounded = true
-
-[node name="Info" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=497654315]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "This is the information that the game uses to determine the spawning conditions of each bullet in the pattern"
-label_settings = SubResource("LabelSettings_sm6fg")
-autowrap_mode = 3
 
 [node name="ErrorDisplay" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=211005039]
 layout_mode = 2

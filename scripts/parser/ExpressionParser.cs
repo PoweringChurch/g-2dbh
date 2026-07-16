@@ -92,7 +92,6 @@ public class BinaryExpr : Expr
         '-' => l.Eval(context) - r.Eval(context),
         '*' => l.Eval(context) * r.Eval(context),
         '/' => l.Eval(context) / r.Eval(context),
-        '%' => l.Eval(context) % r.Eval(context),
         '^' => Math.Pow(l.Eval(context), r.Eval(context)),
         _   => throw new Exception($"Unknown op '{op}'")
     };

@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://cmdv85ht0w5k2"]
 
 [ext_resource type="Script" uid="uid://c50av0fb4ugr4" path="res://scripts/game/runtime/PlayerCharacter.cs" id="1_eiuk8"]
-[ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/characters/default.png" id="2_ggc6b"]
-[ext_resource type="Texture2D" uid="uid://e4ijaikmsvec" path="res://data/images/player_hurtbox.png" id="6_6gieq"]
-[ext_resource type="Texture2D" uid="uid://ion1t1umju4y" path="res://data/images/graze.png" id="7_qtl5y"]
+[ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/images/player/characters/default.png" id="2_ggc6b"]
+[ext_resource type="Texture2D" uid="uid://e4ijaikmsvec" path="res://data/images/player/player_hurtbox.png" id="6_6gieq"]
+[ext_resource type="Texture2D" uid="uid://ion1t1umju4y" path="res://data/images/player/graze.png" id="7_qtl5y"]
 
 [node name="PlayerCharacter" type="Node2D" unique_id=647619310 node_paths=PackedStringArray("CharacterDisplay", "hurtboxDisplay", "grazeDisplay")]
 z_index = 1

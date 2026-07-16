@@ -155,7 +155,7 @@ public partial class ProjectilePreview : Control
         if (!alive) color.A *= 0.5f;
         var forward = Model.LockRotation ? 0 : (float)reference.F;
         DrawOn.DrawSetTransform(WorldToScreen(reference.Pos), forward, Vector2.One * Model.RenderScale * zoom);
-        var texture = RenderingUtils.LoadTexture(Model.Texture);
+        var texture = RenderingUtils.LoadTexture(LevelCompiler.ProjectileTextures[Model.TextureId].TexturePath);
         if (texture != null)
         {
             DrawOn.DrawTexture(texture, -texture.GetSize() / 2, color);

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://co5sl07vwd84s"
-path="res://.godot/imported/chinese.png-8e68680bb5ac39a9a4b4296803563022.ctex"
+uid="uid://j4yhos0a2u3h"
+path="res://.godot/imported/hail.png-22876328897c33acf31a035d167bdc8e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/characters/chinese.png"
-dest_files=["res://.godot/imported/chinese.png-8e68680bb5ac39a9a4b4296803563022.ctex"]
+source_file="res://data/images/projectiles/hail.png"
+dest_files=["res://.godot/imported/hail.png-22876328897c33acf31a035d167bdc8e.ctex"]
 
 [params]
 
