@@ -40,11 +40,11 @@ public partial class UIManager : Node
     }
     public override void _Input(InputEvent e)
     {
-        if (e.IsActionPressed("pause"))
+        if (e.IsActionPressed("return"))
         {
             if (_canPause)
                 TogglePause(true);
-            else
+            else if (uiPath.Count > 1)
                 Return();
         }
     }

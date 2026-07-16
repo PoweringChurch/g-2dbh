@@ -123,7 +123,7 @@ public partial class GameSession : Node
         else if (startParams.Faster) multiplier = 3/2f;
 
         GAP.VolumeLinear = AudioUtils.MusicVolume;
-        GAP.Stream = AudioUtils.LoadAudio($"{levelData.MusicId}");
+        GAP.Stream = AudioUtils.LoadAudio(LevelCompiler.SongData[levelData.MusicId].StreamPath);
         GAP.PitchScale = multiplier;
         PlaylistHandler.Instance.FadeOut();
         

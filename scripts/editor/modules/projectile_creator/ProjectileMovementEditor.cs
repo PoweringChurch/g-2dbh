@@ -15,7 +15,7 @@ public partial class ProjectileMovementEditor : Control
         new()
         {
             Name = "Circle",
-            FunctionX = "cos(t/l*tau)*100",
+            FunctionX = "sin(t/l*tau)*100",
             FunctionY = "cos(t/l*tau)*100"
         },
         new()
