@@ -5,7 +5,16 @@ public partial class PatternSpawnConditions : Control
 {
     private static readonly EvalContext testCtx = new() { T = 0, L = 1 };
     public PatternModel Model;
-    [Export] private PresetFunctionsUi[] presets;
+    private Preset[] presets =
+    {
+        new()
+        {
+            Name = "Circle",
+            FunctionX = "sin(i/n*tau)*50",
+            FunctionY = "cos(i/n*tau)*50"
+        }
+    };
+    [Export] private Container PresetContainer;
     [Export] private LineEdit Xi;
     [Export] private LineEdit Yi;
     [Export] private LineEdit Fi;
@@ -19,17 +28,15 @@ public partial class PatternSpawnConditions : Control
         for (int i = 0; i < presets.Length; i++)
         {
             var preset = presets[i];
-            preset.Pressed += () =>
+            var presetBtn = new Button() {Text = preset.Name, SizeFlagsHorizontal = SizeFlags.ExpandFill};
+            presetBtn.Pressed += () =>
             {
-                Xi.Text = preset.FunctionX;
-                Yi.Text = preset.FunctionY;
-                Fi.Text = preset.FunctionF;
-                Ti.Text = preset.FunctionT;
-                FunctionChanged("x(i)", preset.FunctionX);
-                FunctionChanged("y(i)", preset.FunctionY);
-                FunctionChanged("f(i)", preset.FunctionF);
-                FunctionChanged("t(i)", preset.FunctionF);
+                if (preset.FunctionX != null) { Xi.Text = preset.FunctionX; FunctionChanged("x(i)", preset.FunctionX); }
+                if (preset.FunctionY != null) { Yi.Text = preset.FunctionY; FunctionChanged("y(i)", preset.FunctionY); }
+                if (preset.FunctionF != null) { Fi.Text = preset.FunctionF; FunctionChanged("f(i)", preset.FunctionF); }
+                if (preset.FunctionT != null) { Ti.Text = preset.FunctionT; FunctionChanged("t(i)", preset.FunctionT); }
             };
+            PresetContainer.AddChild(presetBtn);
         }
         Xi.TextChanged += (text) => FunctionChanged("x(i)", text);
         Yi.TextChanged += (text) => FunctionChanged("y(i)", text);

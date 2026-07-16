@@ -23,6 +23,12 @@ public partial class PatternPreview : Control
 	private bool panning = false;
 	private bool playing = false;
 
+	private float zoom = 1f;
+	private Vector2 zoomPan = Vector2.Zero;
+	private const float ZoomMin = 0.25f;
+	private const float ZoomMax = 4f;
+	private const float ZoomStep = 1.1f;
+
 	private double time = 0;
 	public override void _Ready()
 	{
@@ -47,8 +53,26 @@ public partial class PatternPreview : Control
 	{
 		reference.SpawnPos = new Vector2(918, 694) / 2;
 		TimeSpin.Value = 0;
+		zoom = 1f;
+		zoomPan = Vector2.Zero;
 		MarkDirty();
 	}
+
+	private Vector2 ViewCenter => DrawOn.Size / 2;
+	private Vector2 WorldToScreen(Vector2 world) => ViewCenter + zoomPan + (world - ViewCenter) * zoom;
+	private Vector2 ScreenToWorld(Vector2 screen) => ViewCenter + (screen - ViewCenter - zoomPan) / zoom;
+
+	private void ApplyZoom(float newZoom, Vector2 screenPos)
+	{
+		newZoom = Mathf.Clamp(newZoom, ZoomMin, ZoomMax);
+		if (Mathf.IsEqualApprox(newZoom, zoom))
+			return;
+		var worldUnderCursor = ScreenToWorld(screenPos);
+		zoom = newZoom;
+		zoomPan = screenPos - ViewCenter - (worldUnderCursor - ViewCenter) * zoom;
+		MarkDirty();
+	}
+
 	public override void _GuiInput(InputEvent @event)
 	{
 		if (@event is InputEventMouseButton mb)
@@ -57,7 +81,7 @@ public partial class PatternPreview : Control
 			{
 				if (mb.Pressed)
 				{
-					var dist = (mb.Position - reference.SpawnPos).Length();
+					var dist = (mb.Position - WorldToScreen(reference.SpawnPos)).Length();
 					dragging = dist < 20;
 				}
 				else
@@ -67,17 +91,25 @@ public partial class PatternPreview : Control
 			{
 				panning = mb.Pressed;
 			}
+			else if (mb.ButtonIndex == MouseButton.WheelUp && mb.Pressed)
+			{
+				ApplyZoom(zoom * ZoomStep, mb.Position - DrawOn.Position);
+			}
+			else if (mb.ButtonIndex == MouseButton.WheelDown && mb.Pressed)
+			{
+				ApplyZoom(zoom / ZoomStep, mb.Position - DrawOn.Position);
+			}
 		}
 		else if (@event is InputEventMouseMotion mm)
 		{
 			if (dragging)
 			{
-				reference.SpawnPos = mm.Position - DrawOn.Position;
+				reference.SpawnPos = ScreenToWorld(mm.Position - DrawOn.Position);
 				MarkDirty();
 			}
 			else if (panning)
 			{
-				reference.SpawnPos += mm.Relative;
+				reference.SpawnPos += mm.Relative / zoom;
 				MarkDirty();
 			}
 		}
@@ -111,11 +143,11 @@ public partial class PatternPreview : Control
 			lctx.I = i;
 			double genFwd = Model.fnf(lctx);
 			double genT = Model.fnt(lctx);
-			var start = LevelDirector.CalculateSpawnPosition(Model.fnx, Model.fny, (float)reference.SpawnF, lctx);
+			var start = LevelDirector.CalculatePosition(Model.fnx, Model.fny, (float)reference.SpawnF, lctx);
 			var f = genFwd + reference.SpawnF;
 			lctx.T = Math.Clamp(time-genT,0,pm.Lifetime);
 			lctx.L = pm.Lifetime;
-			var movement = LevelDirector.CalculateMovement(pm.fnx, pm.fny, f, lctx);
+			var movement = LevelDirector.CalculatePosition(pm.fnx, pm.fny, f, lctx);
 			bool alive = lctx.T > 0 && lctx.T < pm.Lifetime;
 			instances[i] = new ProjectileInstance
 			{
@@ -137,8 +169,8 @@ public partial class PatternPreview : Control
 		for (int j = 0; j < steps; j++)
 		{
 			lctx.I = Math.Min(lctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
-			var (x, y) = LevelDirector.CalculateSpawnPosition(Model.fnx, Model.fny, 0, lctx);
-			pathPoints[j] = reference.SpawnPos + new Vector2(x, y);
+			var (x, y) = LevelDirector.CalculatePosition(Model.fnx, Model.fny, 0, lctx);
+			pathPoints[j] = WorldToScreen(reference.SpawnPos + new Vector2(x, y));
 		}
 	}
 	private void DrawPath()
@@ -163,7 +195,7 @@ public partial class PatternPreview : Control
 			var color = Colors.White;
 			if (!inst.Alive) color.A *= 0.5f;
 			var forward = pm.LockRotation ? 0 : inst.F;
-			DrawOn.DrawSetTransform(inst.Pos, forward, Vector2.One * pm.RenderScale);
+			DrawOn.DrawSetTransform(WorldToScreen(inst.Pos), forward, Vector2.One * pm.RenderScale * zoom);
 			if (texture != null)
 			{
 				DrawOn.DrawTexture(texture, -texture.GetSize() / 2, color);
@@ -189,7 +221,7 @@ public partial class PatternPreview : Control
 			if (!show) continue;
 
 			var forward = pm.LockRotation ? 0 : inst.F;
-			DrawOn.DrawSetTransform(inst.Pos, forward, Vector2.One);
+			DrawOn.DrawSetTransform(WorldToScreen(inst.Pos), forward, Vector2.One * zoom);
 			if (pm.UseShape && pm.Shape != null)
 				DrawOn.DrawPolyline([.. pm.ShapeVect2s, pm.ShapeVect2s[0]], Colors.Red);
 			else

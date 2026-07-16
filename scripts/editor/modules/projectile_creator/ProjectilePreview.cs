@@ -15,6 +15,13 @@ public partial class ProjectilePreview : Control
     private bool dragging = false;
     private bool panning = false;
     private bool playing = false;
+
+    private float zoom = 1f;
+    private Vector2 zoomPan = Vector2.Zero;
+    private const float ZoomMin = 0.25f;
+    private const float ZoomMax = 4f;
+    private const float ZoomStep = 1.1f;
+
     public override void _Ready()
     {
         ctx.T = 0;
@@ -36,10 +43,28 @@ public partial class ProjectilePreview : Control
     }
     private void Home()
     {
-        reference.SpawnPos = new Vector2(918, 694) / 2; 
+        reference.SpawnPos = new Vector2(918, 694) / 2;
         TimeSpin.Value = 0;
-        MarkDirty(); 
+        zoom = 1f;
+        zoomPan = Vector2.Zero;
+        MarkDirty();
     }
+
+    private Vector2 ViewCenter => DrawOn.Size / 2;
+    private Vector2 WorldToScreen(Vector2 world) => ViewCenter + zoomPan + (world - ViewCenter) * zoom;
+    private Vector2 ScreenToWorld(Vector2 screen) => ViewCenter + (screen - ViewCenter - zoomPan) / zoom;
+
+    private void ApplyZoom(float newZoom, Vector2 screenPos)
+    {
+        newZoom = Mathf.Clamp(newZoom, ZoomMin, ZoomMax);
+        if (Mathf.IsEqualApprox(newZoom, zoom))
+            return;
+        var worldUnderCursor = ScreenToWorld(screenPos);
+        zoom = newZoom;
+        zoomPan = screenPos - ViewCenter - (worldUnderCursor - ViewCenter) * zoom;
+        MarkDirty();
+    }
+
     public override void _GuiInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton mb)
@@ -48,7 +73,7 @@ public partial class ProjectilePreview : Control
             {
                 if (mb.Pressed)
                 {
-                    var dist = (mb.Position - reference.Pos).Length();
+                    var dist = (mb.Position - WorldToScreen(reference.Pos)).Length();
                     dragging = dist < 20;
                 }
                 else
@@ -58,17 +83,25 @@ public partial class ProjectilePreview : Control
             {
                 panning = mb.Pressed;
             }
+            else if (mb.ButtonIndex == MouseButton.WheelUp && mb.Pressed)
+            {
+                ApplyZoom(zoom * ZoomStep, mb.Position - DrawOn.Position);
+            }
+            else if (mb.ButtonIndex == MouseButton.WheelDown && mb.Pressed)
+            {
+                ApplyZoom(zoom / ZoomStep, mb.Position - DrawOn.Position);
+            }
         }
         else if (@event is InputEventMouseMotion mm)
         {
             if (dragging)
             {
-                reference.SpawnPos = mm.Position - DrawOn.Position;
+                reference.SpawnPos = ScreenToWorld(mm.Position - DrawOn.Position);
                 MarkDirty();
             }
             else if (panning)
             {
-                reference.SpawnPos += mm.Relative;
+                reference.SpawnPos += mm.Relative / zoom;
                 MarkDirty();
             }
         }
@@ -92,7 +125,7 @@ public partial class ProjectilePreview : Control
             return;
         ctx.L = Model.Lifetime;
         var f = Model.fnf(ctx) + reference.SpawnF;
-        var pos = LevelDirector.CalculateMovement(Model.fnx, Model.fny, f, ctx);
+        var pos = LevelDirector.CalculatePosition(Model.fnx, Model.fny, f, ctx);
         reference.Pos = reference.SpawnPos + pos;
         reference.F = f;
         DrawOn.QueueRedraw();
@@ -105,7 +138,7 @@ public partial class ProjectilePreview : Control
         bool show = Model.CanCollide && (ctx.T > Model.TelegraphTime) && alive;
         if (!show) return;
         var forward = Model.LockRotation ? 0 : (float)reference.F;
-        DrawOn.DrawSetTransform(reference.Pos, forward, Vector2.One);
+        DrawOn.DrawSetTransform(WorldToScreen(reference.Pos), forward, Vector2.One * zoom);
         if (Model.UseShape && Model.Shape != null)
         {
             DrawOn.DrawPolyline([.. Model.ShapeVect2s, Model.ShapeVect2s[0]], Colors.Red);
@@ -121,7 +154,7 @@ public partial class ProjectilePreview : Control
         var color = Colors.White;
         if (!alive) color.A *= 0.5f;
         var forward = Model.LockRotation ? 0 : (float)reference.F;
-        DrawOn.DrawSetTransform(reference.Pos, forward, Vector2.One * Model.RenderScale);
+        DrawOn.DrawSetTransform(WorldToScreen(reference.Pos), forward, Vector2.One * Model.RenderScale * zoom);
         var texture = RenderingUtils.LoadTexture(Model.Texture);
         if (texture != null)
         {
@@ -144,12 +177,12 @@ public partial class ProjectilePreview : Control
         {
             lctx.T = Math.Min(Model.Lifetime, ConfigHelper.Current.MaxPathLength) / steps * i;
             lctx.L = Model.Lifetime;
-            var (x, y) = LevelDirector.CalculateMovement(Model.fnx, Model.fny, Model.fnf(lctx) + reference.SpawnF, lctx);
-            points[i] = new(reference.SpawnPos.X + x, reference.SpawnPos.Y + y);
+            var (x, y) = LevelDirector.CalculatePosition(Model.fnx, Model.fny, Model.fnf(lctx) + reference.SpawnF, lctx);
+            points[i] = WorldToScreen(new(reference.SpawnPos.X + x, reference.SpawnPos.Y + y));
         }
         DrawOn.DrawSetTransform(Vector2.Zero, 0, Vector2.One);
         DrawOn.DrawPolyline(points, RenderingUtils.ColorFromString(Model.Name), ConfigHelper.Current.PathThickness, true);
         DrawOn.DrawCircle(points[0], ConfigHelper.Current.PathThickness * 1.5f, RenderingUtils.ColorFromString(Model.Name));
-        DrawOn.DrawDashedLine(reference.Pos, reference.Pos + (Vector2.FromAngle((float)reference.F - (BulletRenderer.DrawnForwardOffset / 2)) * 50), Colors.DarkRed, 4f);
+        DrawOn.DrawDashedLine(WorldToScreen(reference.Pos), WorldToScreen(reference.Pos + (Vector2.FromAngle((float)reference.F - (BulletRenderer.DrawnForwardOffset / 2)) * 50)), Colors.DarkRed, 4f);
     }
 }

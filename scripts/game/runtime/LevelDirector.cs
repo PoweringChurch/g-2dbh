@@ -86,7 +86,7 @@ public partial class LevelDirector
             _ctx.L = proj.Lifetime;
             // move projectile
             var f = proj.fnf(_ctx)+r.SpawnF;
-            var pos = CalculateMovement(proj.fnx, proj.fny, f, _ctx);
+            var pos = CalculatePosition(proj.fnx, proj.fny, f, _ctx);
             r.Pos = r.SpawnPos + pos;
             r.F = f;
             // collision w player
@@ -129,7 +129,7 @@ public partial class LevelDirector
             // calculate spawn conditions of child
             double t = patt.fnt(_ctx);
             double fwd = patt.fnf(_ctx);
-            var pos = CalculateSpawnPosition(patt.fnx, patt.fny, r.F, _ctx);
+            var pos = CalculatePosition(patt.fnx, patt.fny, r.F, _ctx);
             // add new projectile to queue
             level.Queued.Add(new()
             {
@@ -167,7 +167,7 @@ public partial class LevelDirector
         _hasGrazed[index] = _hasGrazed[activeCount-1];
         activeCount--;
     }
-    public static Vector2 CalculateMovement(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, double f, EvalContext ctx)
+    public static Vector2 CalculatePosition(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, double f, EvalContext ctx)
 	{
 		double xTravel = efnx(ctx);
 		double yTravel = efny(ctx);
@@ -175,17 +175,6 @@ public partial class LevelDirector
 		double sin = Math.Sin(f);
 		float x = (float)(cos * xTravel - sin * yTravel);
 		float y = (float)(sin * xTravel + cos * yTravel);
-		var pos = new Vector2(x, y);
-		return pos;
-	}
-	public static Vector2 CalculateSpawnPosition(Func<EvalContext, double> efnx, Func<EvalContext, double> efny, double f, EvalContext ctx)
-	{
-		double xDelta = efnx(ctx);
-		double yDelta = efny(ctx);
-		double cos = Math.Cos(f);
-		double sin = Math.Sin(f);
-		float x = (float)(cos * yDelta - sin * xDelta);
-		float y = (float)(sin * yDelta + cos * xDelta);
 		var pos = new Vector2(x, y);
 		return pos;
 	}

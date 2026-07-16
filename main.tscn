@@ -69,35 +69,35 @@
 [ext_resource type="Script" uid="uid://db423rhi1soph" path="res://scripts/ui/screens/campaign/CampaignCharacterDisplay.cs" id="56_e71vb"]
 [ext_resource type="Script" uid="uid://qah1bfxp7wrq" path="res://scripts/game/GameSession.cs" id="61_rm4vd"]
 
-[sub_resource type="Resource" id="Resource_wu3dr"]
+[sub_resource type="Resource" id="Resource_1vm84"]
 script = ExtResource("29_wu3dr")
 SongName = "Freezing Adventure"
 Author = "Seigamantic"
 StreamPath = "res://data/music/ice-story/freezing-adventure.mp3"
 metadata/_custom_type_script = "uid://i5km7s41r4dp"
 
-[sub_resource type="Resource" id="Resource_cyx1q"]
+[sub_resource type="Resource" id="Resource_wu3dr"]
 script = ExtResource("29_wu3dr")
 SongName = "A Snowy Night (2026)"
 Author = "Seigamantic"
 StreamPath = "res://data/music/ice-story/a-snowy-night-2026.mp3"
 metadata/_custom_type_script = "uid://i5km7s41r4dp"
 
-[sub_resource type="Resource" id="Resource_0dhbp"]
+[sub_resource type="Resource" id="Resource_cyx1q"]
 script = ExtResource("29_wu3dr")
-SongName = "Raspberry and Purple"
+SongName = "Raspberry And Purple"
 Author = "Seigamantic"
 StreamPath = "res://data/music/ice-story/raspberry-and-purple.mp3"
 metadata/_custom_type_script = "uid://i5km7s41r4dp"
 
-[sub_resource type="Resource" id="Resource_jx0wj"]
+[sub_resource type="Resource" id="Resource_0dhbp"]
 script = ExtResource("29_wu3dr")
 SongName = "Witching Hour"
 Author = "Seigamantic"
 StreamPath = "res://data/music/ice-story/witching-hour.mp3"
 metadata/_custom_type_script = "uid://i5km7s41r4dp"
 
-[sub_resource type="Resource" id="Resource_kkkcx"]
+[sub_resource type="Resource" id="Resource_jx0wj"]
 script = ExtResource("29_wu3dr")
 SongName = "The Final Voyage (MANIA Mix)"
 Author = "Seigamantic"
@@ -828,7 +828,7 @@ focus_mode = 0
 mouse_behavior_recursive = 2
 title = "Level Data"
 script = ExtResource("5_ycdy4")
-SongDataArray = Array[Object]([SubResource("Resource_wu3dr"), SubResource("Resource_cyx1q"), SubResource("Resource_0dhbp"), SubResource("Resource_jx0wj"), SubResource("Resource_kkkcx")])
+SongDataArray = Array[Object]([SubResource("Resource_1vm84"), SubResource("Resource_wu3dr"), SubResource("Resource_cyx1q"), SubResource("Resource_0dhbp"), SubResource("Resource_jx0wj")])
 NextSong = NodePath("Sort/Top/Left/Music/SongSelect/Next")
 PrevSong = NodePath("Sort/Top/Left/Music/SongSelect/Prev")
 SongNameLabel = NodePath("Sort/Top/Left/Music/SongSelect/Stack/Name")
@@ -890,11 +890,6 @@ emoji_menu_enabled = false
 [node name="Music" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left" unique_id=2101583833]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music" unique_id=2012501782]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Music"
-
 [node name="SongSelect" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music" unique_id=1776730282]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -902,6 +897,7 @@ size_flags_horizontal = 3
 [node name="Prev" type="Button" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect" unique_id=568021885]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "<"
 
@@ -910,10 +906,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Name" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect/Stack" unique_id=556620060]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Song name"
 horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="Author" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect/Stack" unique_id=9915731]
 layout_mode = 2
@@ -925,6 +923,7 @@ horizontal_alignment = 1
 [node name="Next" type="Button" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect" unique_id=212072064]
 custom_minimum_size = Vector2(25, 25)
 layout_mode = 2
+size_flags_horizontal = 8
 size_flags_vertical = 0
 text = ">"
 
@@ -1116,6 +1115,7 @@ select_all_on_focus = true
 [node name="EditorAudioPreview" type="AudioStreamPlayer" parent="Editor" unique_id=1220983324]
 
 [node name="ModelEditor" type="Control" parent="Editor" unique_id=2007401369 node_paths=PackedStringArray("Close")]
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -1140,13 +1140,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
-current_tab = 1
+current_tab = 0
 tab_0/title = "Projectiles"
 tab_1/title = "Patterns"
 tab_2/title = "Advanced"
 
 [node name="ProjectileEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2111981338 node_paths=PackedStringArray("ProjectilePreview", "Collision", "Visuals", "MovementInspector", "Info", "ModelList", "NextFree")]
-visible = false
 layout_mode = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("5_w48qg")
@@ -1628,6 +1627,7 @@ size_flags_vertical = 8
 text = "↩"
 
 [node name="PatternEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2001507019 node_paths=PackedStringArray("PatternPreview", "Info", "Spawning", "ModelList", "NextFree")]
+visible = false
 layout_mode = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("15_getpj")

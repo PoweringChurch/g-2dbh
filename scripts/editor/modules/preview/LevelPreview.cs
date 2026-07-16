@@ -604,7 +604,7 @@ public partial class LevelPreview : Control
 			{
 				lctx.T = Math.Min(proj.Lifetime, ConfigHelper.Current.MaxPathLength) / steps * i;
 				lctx.L = proj.Lifetime;
-				var (x, y) = LevelDirector.CalculateMovement(proj.fnx, proj.fny, proj.fnf(lctx) + r.F, lctx);
+				var (x, y) = LevelDirector.CalculatePosition(proj.fnx, proj.fny, proj.fnf(lctx) + r.F, lctx);
 				points[i] = new(r.SpawnX + x, r.SpawnY + y);
 			}
 			PreviewRoot.DrawPolyline(points, RenderingUtils.ColorFromString(proj.Name), ConfigHelper.Current.PathThickness, true);
@@ -623,7 +623,7 @@ public partial class LevelPreview : Control
 			for (int i = 0; i < steps; i++)
 			{
 				lctx.I = lctx.N / steps * i;
-				var (x, y) = LevelDirector.CalculateSpawnPosition(patt.fnx, patt.fny, r.SpawnF, lctx);
+				var (x, y) = LevelDirector.CalculatePosition(patt.fnx, patt.fny, r.SpawnF, lctx);
 				points[i] = new(r.SpawnX + x, r.SpawnY + y);
 				PreviewRoot.DrawCircle(points[i], ConfigHelper.Current.PathThickness * 1.5f, RenderingUtils.ColorFromString(e.ProjectileModels[patt.ProjectileId].Name));
 			}
@@ -771,7 +771,7 @@ public partial class LevelPreview : Control
 		bool alive = _ctx.T >= 0 && _ctx.T <= proj.Lifetime;
 		if (!alive) return false;
 		var f = proj.fnf(_ctx) + r.SpawnF;
-		var pos = LevelDirector.CalculateMovement(proj.fnx, proj.fny, f, _ctx);
+		var pos = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, _ctx);
 		r.Pos = new Vector2(r.SpawnX, r.SpawnY) + pos;
 		r.F = f;
 		return true;
@@ -796,7 +796,7 @@ public partial class LevelPreview : Control
 					var lctx = new EvalContext() { T = proj.Lifetime, L = proj.Lifetime };
 					Vector2 spawnpos = new(r.SpawnX, r.SpawnY);
 					var f = r.SpawnF + proj.fnf(lctx);
-					var delta = LevelDirector.CalculateMovement(proj.fnx, proj.fny, f, lctx);
+					var delta = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, lctx);
 					Vector2 endPos = spawnpos + delta;
 					var childRef = new EditorReference()
 					{
@@ -836,7 +836,7 @@ public partial class LevelPreview : Control
 			lctx.I = j;
 			double spawnDelay = patt.fnt(lctx);
 			double fwdOffset = patt.fnf(lctx);
-			Vector2 spawnOffset = LevelDirector.CalculateSpawnPosition(patt.fnx, patt.fny, r.SpawnF, lctx);
+			Vector2 spawnOffset = LevelDirector.CalculatePosition(patt.fnx, patt.fny, r.SpawnF, lctx);
 			Vector2 childAbsoluteSpawnPos = basePos + spawnOffset;
 			var subBulletRef = new EditorReference
 			{

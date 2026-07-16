@@ -26,16 +26,13 @@ public partial class ProjectileMovementEditor : Control
         {
             var preset = presets[i];
             var presetBtn = new Button() {Text = preset.Name, SizeFlagsHorizontal = SizeFlags.ExpandFill};
-            PresetContainer.AddChild(presetBtn);
             presetBtn.Pressed += () =>
             {
-                Xt.Text = preset.FunctionX;
-                Yt.Text = preset.FunctionY;
-                Ft.Text = preset.FunctionF;
-                FunctionChanged("x(t)", preset.FunctionX);
-                FunctionChanged("y(t)", preset.FunctionY);
-                FunctionChanged("f(t)", preset.FunctionF);
+                if (preset.FunctionX != null) { Xt.Text = preset.FunctionX; FunctionChanged("x(i)", preset.FunctionX); }
+                if (preset.FunctionY != null) { Yt.Text = preset.FunctionY; FunctionChanged("y(i)", preset.FunctionY); }
+                if (preset.FunctionF != null) { Ft.Text = preset.FunctionF; FunctionChanged("f(i)", preset.FunctionF); }
             };
+            PresetContainer.AddChild(presetBtn);
         }
         Xt.TextChanged += (text) => FunctionChanged("x(t)", text);
         Yt.TextChanged += (text) => FunctionChanged("y(t)", text);

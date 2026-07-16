@@ -47,6 +47,7 @@ public partial class Editor : CanvasLayer
         preview.CompilePattern(model);
         preview.UpdateModel(model);
         modelLibrary.Refresh();
+        pattCreator.Load(levelData);
     }
     public void DeleteProjectileModel(int id)
     {
