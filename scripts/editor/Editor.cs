@@ -35,7 +35,7 @@ public partial class Editor : CanvasLayer
     public void SaveProjectileModel(ProjectileModel model)
     {
         levelData.ProjectileModels[model.Id] = model;
-        patternCreator.ProjectileModelUpdated(model);
+        pattCreator.ProjectileModelUpdated(model);
         preview.CompileProjectile(model);
         preview.UpdateModel(model);
         modelLibrary.Refresh();
@@ -63,15 +63,17 @@ public partial class Editor : CanvasLayer
                 {
                     DeleteReference(r);
                 }
-                else if (r.Type == ModelType.Pattern && levelData.PatternModels[id].ProjectileId == id)
+                if (r.Type == ModelType.Pattern && levelData.PatternModels[r.Id].ProjectileId == id)
                 {
                     DeleteReference(r);
                 }
             }
+            projCreator.Load(levelData);
+            modelLibrary.Refresh();
             preview.Sync();
         };
     }
-    public void RemovePatternModel(int id, Control ui)
+    public void DeletePatternModel(int id)
     {
         var popup = Popups.Instance.Show(Popups.DefaultType.YN, 
         $"Are you sure you want to delete pattern '{levelData.PatternModels[id].Name}' (Id {id})? All patterns with the associated id will be removed.");
@@ -82,7 +84,8 @@ public partial class Editor : CanvasLayer
             for (int i = levelData.References.Count - 1; i >= 0; i--)
                 if (levelData.References[i].Id == id)
                     DeleteReference(levelData.References[i]);
-            ui.QueueFree();
+            modelLibrary.Refresh();
+            pattCreator.Load(levelData);
             preview.Sync();
         };
     }
@@ -95,7 +98,7 @@ public partial class Editor : CanvasLayer
     [Export] private LevelMetadata levelMeta;
     [Export] private LevelPreview preview;
     [Export] private ProjectileCreator projCreator;
-    [Export] private PatternCreator patternCreator;
+    [Export] private PatternCreator pattCreator;
     [Export] private Inspector inspector;
     [Export] private CustomVariables customVars;
     GameSession gs => GameSession.Instance;
@@ -157,8 +160,8 @@ public partial class Editor : CanvasLayer
         levelMeta.Load(data);
         projCreator.Load(data);
         projCreator.LoadProjectile(levelData.ProjectileModels[0]);
-        patternCreator.Load(data);
-        patternCreator.LoadPattern(levelData.PatternModels[0]);
+        pattCreator.Load(data);
+        pattCreator.LoadPattern(levelData.PatternModels[0]);
         modelLibrary.Refresh();
         preview.Load(data);
         preview.Sync();
@@ -196,7 +199,7 @@ public partial class Editor : CanvasLayer
         if (model is ProjectileModel pm)
             projCreator.LoadProjectile(pm);
         else if (model is PatternModel ptm)
-            patternCreator.LoadPattern(ptm);
+            pattCreator.LoadPattern(ptm);
     }
     private static void WriteJson<T>(string path, T data)
     {

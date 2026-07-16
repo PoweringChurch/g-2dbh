@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Godot;
 
@@ -6,8 +7,7 @@ public partial class BackgroundLayerUi : Control
 {
     private static readonly EvalContext testCtx = new() {T = 1};
     [Export] LineEdit layerName;
-    [Export] CheckButton useCustomTexture;
-    [Export] LineEdit imageName;
+    [Export] OptionButton imageSelect;
     [Export] SpinBox repeatCount;
     [Export] SpinBox order;
     [Export] SpinBox scale;
@@ -18,10 +18,25 @@ public partial class BackgroundLayerUi : Control
     [Export] Button remove;
     public BackgroundLayerInstance EditorLayerInstance;
     private Editor e => Editor.Instance;
+    private string[] backgrounds;
     public override void _Ready()
     {
+        var bgList = new List<string>() {"none"};
+        var dir = DirAccess.Open("res://data/default-assets/images/backgrounds/");
+        var files = dir.GetFiles();
+        for (int i = 0; i < files.Length; i++)
+        {
+            var file = files[i];
+            if (file.EndsWith(".import") || file.StartsWith('.')) continue;
+            var fileName = Path.GetFileNameWithoutExtension(file);
+            bgList.Add("res://data/default-assets/images/backgrounds/"+fileName);
+            imageSelect.AddItem(fileName);
+        }
+        backgrounds = [.. bgList];
+        dir.ListDirEnd();
+        imageSelect.ItemSelected += OnImageChanged;
+
         layerName.TextChanged += OnNameChanged;
-        imageName.TextChanged += OnImageChanged;
         scrollFnX.TextChanged += OnFnXChanged;
         scrollFnY.TextChanged += OnFnyChanged;
         transparencyFn.TextChanged += OnFnTransparencyChanged;
@@ -38,15 +53,23 @@ public partial class BackgroundLayerUi : Control
     {
         EditorLayerInstance.Layer = layer;
         layerName.Text = layer.Name;
-        imageName.Text = Path.GetFileName(layer.Image);
-        useCustomTexture.ButtonPressed = !layer.Image.StartsWith("res://");
         scrollFnX.Text = layer.ScrollFunctionX;
         scrollFnY.Text = layer.ScrollFunctionY;
         transparencyFn.Text = layer.TransparencyFn;
         repeatCount.Value = layer.RepeatCount;
         order.Value = layer.Order;
         scale.Value = layer.Scale;
-        useCustomTexture.Toggled += (t) => OnImageChanged(imageName.Text);
+
+        int found = 0;
+        for (int i = 0; i < backgrounds.Length; i++)
+        {
+            if (backgrounds[i] == layer.Image)
+            {
+                found = i;
+                break;
+            }
+        }
+        imageSelect.Select(found);
     }
     private void OnRemovePressed()
     {
@@ -91,17 +114,9 @@ public partial class BackgroundLayerUi : Control
         }
         catch (Exception e) { ErrorDisplay.SetMessage("FnY", "[Scroll Y] " + e.Message); }
     }
-    private void OnImageChanged(string text)
+    private void OnImageChanged(long idx)
     {
-        var path = useCustomTexture.ButtonPressed ? $"{e.LevelPath}images/{text}" : $"res://data/default-assets/images/{text}";
-        var tex = RenderingUtils.LoadTexture(path);
-        if (tex == null)
-        {
-            ErrorDisplay.SetMessage("Texture", $"[Image] Image of name '{text}' could not be found");
-            return;
-        }
-        ErrorDisplay.ClearMessage("Texture");
-        EditorLayerInstance.Layer.Image = path;
+        EditorLayerInstance.Layer.Image = backgrounds[idx];
         EditorLayerInstance.ApplyLayerParams();
     }
     private void OnOrderChanged(double to)

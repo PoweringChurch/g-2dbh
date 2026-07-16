@@ -10,8 +10,24 @@ public partial class ProjectileCreator : Control
     [Export] ProjectileInfo Info;
     [Export] PackedScene ProjectileModelUi;
     [Export] VBoxContainer ModelList;
+    [Export] Button NextFree;
     public override void _EnterTree() => 
         Instance = this;
+    public override void _Ready()
+    {
+        NextFree.Pressed += GoNextFree;
+    }
+    private void GoNextFree()
+    {
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+        {
+            if (Editor.Instance.ProjectileModels[i] == null)
+            {
+                Editor.Instance.OpenModel(new ProjectileModel() {Id = i});
+                return;
+            }
+        }
+    }
     public void Load(LevelData data)
     {
         foreach (var ui in ModelList.GetChildren())

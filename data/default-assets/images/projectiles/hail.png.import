@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://degdpl4h35cv3"
-path="res://.godot/imported/large-snowflake.png-518552afdae738d89d939206838335c7.ctex"
+uid="uid://j4yhos0a2u3h"
+path="res://.godot/imported/hail.png-af2385005bfdc79106ce18ded9d3de5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/large-snowflake.png"
-dest_files=["res://.godot/imported/large-snowflake.png-518552afdae738d89d939206838335c7.ctex"]
+source_file="res://data/default-assets/images/projectiles/hail.png"
+dest_files=["res://.godot/imported/hail.png-af2385005bfdc79106ce18ded9d3de5e.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j4yhos0a2u3h"
-path="res://.godot/imported/hail.png-b3b9ddc89fd2ac42a6ad6af9739357ef.ctex"
+uid="uid://bn5e3ywtkicj5"
+path="res://.godot/imported/icicle.png-03d056038be6a73b9d96fbb2b1e3d97d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/hail.png"
-dest_files=["res://.godot/imported/hail.png-b3b9ddc89fd2ac42a6ad6af9739357ef.ctex"]
+source_file="res://data/default-assets/images/projectiles/icicle.png"
+dest_files=["res://.godot/imported/icicle.png-03d056038be6a73b9d96fbb2b1e3d97d.ctex"]
 
 [params]
 

@@ -30,7 +30,6 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 focus_mode = 1
 placeholder_text = "<name>"
-expand_to_text_length = true
 context_menu_enabled = false
 emoji_menu_enabled = false
 
@@ -46,7 +45,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 focus_mode = 1
 placeholder_text = "<define>"
-expand_to_text_length = true
 context_menu_enabled = false
 emoji_menu_enabled = false
 

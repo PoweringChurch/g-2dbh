@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://b3qh0jjrqph47" path="res://scripts/ui/PlaylistHandler.cs" id="1_gngh3"]
 [ext_resource type="Script" uid="uid://bpcx5qyxrct03" path="res://scripts/ui/UIManager.cs" id="1_pjyto"]
-[ext_resource type="AudioStream" uid="uid://cfn0mimeu7b5e" path="res://data/music/a-snowy-night.mp3" id="2_0n3wm"]
+[ext_resource type="AudioStream" uid="uid://cfn0mimeu7b5e" path="res://data/music/main-menu/a-snowy-night.mp3" id="2_0n3wm"]
 [ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/screens/HUD.cs" id="2_dg77c"]
 [ext_resource type="Theme" uid="uid://dq7qa8sty0ce0" path="res://data/other/themes/default_ui.tres" id="2_ryguw"]
 [ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/screens/MainMenu.cs" id="2_ycdy4"]
 [ext_resource type="LabelSettings" uid="uid://dou3cdouhk0b8" path="res://data/other/label_settings/hud_label_settings.tres" id="3_d13ii"]
-[ext_resource type="AudioStream" uid="uid://dcxikbmbdtm6" path="res://data/music/luminous-river.mp3" id="3_qnost"]
+[ext_resource type="AudioStream" uid="uid://dcxikbmbdtm6" path="res://data/music/main-menu/luminous-river.mp3" id="3_qnost"]
 [ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/screens/PauseMenu.cs" id="3_ycdy4"]
 [ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/screens/level_select/LevelSelect.cs" id="4_vivmo"]
-[ext_resource type="AudioStream" uid="uid://c6dk38uue44ea" path="res://data/music/sunrise-tree-branch.mp3" id="4_wnkbs"]
+[ext_resource type="AudioStream" uid="uid://c6dk38uue44ea" path="res://data/music/main-menu/sunrise-tree-branch.mp3" id="4_wnkbs"]
 [ext_resource type="Texture2D" uid="uid://bi5soxhucmn8d" path="res://data/other/themes/default_ui_assets/svgs/faster.svg" id="5_d2t1y"]
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/modules/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/modules/level_data/LevelMetadata.cs" id="5_ycdy4"]
@@ -46,12 +46,12 @@
 [ext_resource type="Script" uid="uid://dc2w0ihohtdkh" path="res://scripts/editor/modules/level_data/background/BackgroundEditor.cs" id="28_0rl1p"]
 [ext_resource type="Script" uid="uid://cfibamy3fls3g" path="res://scripts/utils/Overlay.cs" id="28_xuqvo"]
 [ext_resource type="PackedScene" uid="uid://bqnjj1cp37xxx" path="res://data/scenes/ui/background_layer_ui.tscn" id="29_ok6jj"]
+[ext_resource type="Script" uid="uid://i5km7s41r4dp" path="res://scripts/resources/SongData.cs" id="29_wu3dr"]
 [ext_resource type="Script" uid="uid://cg5girl3b27s7" path="res://scripts/editor/modules/projectile_creator/ModelEditor.cs" id="34_b17eg"]
 [ext_resource type="Script" uid="uid://6mamhfg45b20" path="res://scripts/ui/screens/level_select/LevelDisplay.cs" id="35_ok6jj"]
 [ext_resource type="PackedScene" uid="uid://c5xi4uxw2i1sr" path="res://data/scenes/ui/projectile_model_ui.tscn" id="36_ntx8l"]
 [ext_resource type="Script" uid="uid://c0a3d1qkyknoe" path="res://scripts/editor/modules/projectile_creator/ProjectileMovementEditor.cs" id="39_rqtf5"]
 [ext_resource type="Script" uid="uid://bd7wygiww7b5s" path="res://scripts/editor/Toolbar.cs" id="39_ruth0"]
-[ext_resource type="Script" uid="uid://bxuytcydyan7u" path="res://scripts/editor/modules/projectile_creator/PresetFunctionsUi.cs" id="41_1vm84"]
 [ext_resource type="Script" uid="uid://ce51ge6a5nvjo" path="res://scripts/editor/modules/projectile_creator/ProjectileVisuals.cs" id="42_wu3dr"]
 [ext_resource type="Script" uid="uid://dlynwfalg1qjp" path="res://scripts/editor/modules/projectile_creator/ProjectileCollisionEditor.cs" id="43_cyx1q"]
 [ext_resource type="Script" uid="uid://cwblvkmrlra3" path="res://scripts/editor/modules/projectile_creator/ProjectileInfo.cs" id="44_0dhbp"]
@@ -68,6 +68,41 @@
 [ext_resource type="Texture2D" uid="uid://bismr438prupb" path="res://temp_assets/Bumpy_Sky-Blue_02-512x512.png" id="52_e71vb"]
 [ext_resource type="Script" uid="uid://db423rhi1soph" path="res://scripts/ui/screens/campaign/CampaignCharacterDisplay.cs" id="56_e71vb"]
 [ext_resource type="Script" uid="uid://qah1bfxp7wrq" path="res://scripts/game/GameSession.cs" id="61_rm4vd"]
+
+[sub_resource type="Resource" id="Resource_wu3dr"]
+script = ExtResource("29_wu3dr")
+SongName = "Freezing Adventure"
+Author = "Seigamantic"
+StreamPath = "res://data/music/ice-story/freezing-adventure.mp3"
+metadata/_custom_type_script = "uid://i5km7s41r4dp"
+
+[sub_resource type="Resource" id="Resource_cyx1q"]
+script = ExtResource("29_wu3dr")
+SongName = "A Snowy Night (2026)"
+Author = "Seigamantic"
+StreamPath = "res://data/music/ice-story/a-snowy-night-2026.mp3"
+metadata/_custom_type_script = "uid://i5km7s41r4dp"
+
+[sub_resource type="Resource" id="Resource_0dhbp"]
+script = ExtResource("29_wu3dr")
+SongName = "Raspberry and Purple"
+Author = "Seigamantic"
+StreamPath = "res://data/music/ice-story/raspberry-and-purple.mp3"
+metadata/_custom_type_script = "uid://i5km7s41r4dp"
+
+[sub_resource type="Resource" id="Resource_jx0wj"]
+script = ExtResource("29_wu3dr")
+SongName = "Witching Hour"
+Author = "Seigamantic"
+StreamPath = "res://data/music/ice-story/witching-hour.mp3"
+metadata/_custom_type_script = "uid://i5km7s41r4dp"
+
+[sub_resource type="Resource" id="Resource_kkkcx"]
+script = ExtResource("29_wu3dr")
+SongName = "The Final Voyage (MANIA Mix)"
+Author = "Seigamantic"
+StreamPath = "res://data/music/ice-story/the-final-voyage.mp3"
+metadata/_custom_type_script = "uid://i5km7s41r4dp"
 
 [sub_resource type="LabelSettings" id="LabelSettings_sm6fg"]
 font_size = 12
@@ -453,15 +488,15 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "Quit"
 
-[node name="Editor" type="CanvasLayer" parent="." unique_id=1802501679 node_paths=PackedStringArray("toolbar", "timeline", "modelLibrary", "levelMeta", "preview", "projCreator", "patternCreator", "inspector", "customVars")]
+[node name="Editor" type="CanvasLayer" parent="." unique_id=1802501679 node_paths=PackedStringArray("toolbar", "timeline", "modelLibrary", "levelMeta", "preview", "projCreator", "pattCreator", "inspector", "customVars")]
 script = ExtResource("23_uit24")
 toolbar = NodePath("Sections/Toolbar")
 timeline = NodePath("Sections/Timeline")
-modelLibrary = NodePath("Sections/Modules/Right/ModelLibrary")
+modelLibrary = NodePath("Sections/Modules/Right/Sort/ModelLibrary")
 levelMeta = NodePath("Sections/Modules/Right/LevelMetadata")
 preview = NodePath("Sections/Modules/Preview")
 projCreator = NodePath("ModelEditor/Tabs/ProjectileEditor")
-patternCreator = NodePath("ModelEditor/Tabs/PatternEditor")
+pattCreator = NodePath("ModelEditor/Tabs/PatternEditor")
 inspector = NodePath("Sections/Modules/Right/Inspector")
 customVars = NodePath("ModelEditor/Tabs/AdvancedPanel/Tabs/Custom")
 
@@ -479,6 +514,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 3
 theme = ExtResource("2_ryguw")
 
 [node name="Timeline" type="FoldableContainer" parent="Editor/Sections" unique_id=590144886 node_paths=PackedStringArray("Playhead", "PlayheadPositionInput", "TimelineBar", "ErrorDisplay", "PlayPauseButton", "SpeedInput", "LoopToggle", "EditorAudioPreview")]
@@ -736,63 +772,69 @@ max_value = 127.0
 rounded = true
 allow_greater = true
 
-[node name="ModelLibrary" type="TabContainer" parent="Editor/Sections/Modules/Right" unique_id=2067613034 node_paths=PackedStringArray("PatternModelList", "ProjectileModelList", "ProjectileNextFree", "PatternNextFree")]
+[node name="Sort" type="HBoxContainer" parent="Editor/Sections/Modules/Right" unique_id=1592205055]
 layout_mode = 2
 size_flags_vertical = 3
+focus_behavior_recursive = 1
+
+[node name="Actions" type="VBoxContainer" parent="Editor/Sections/Modules/Right/Sort" unique_id=1523940174]
+layout_mode = 2
+
+[node name="EditModels" type="Button" parent="Editor/Sections/Modules/Right/Sort/Actions" unique_id=427279978]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Edit (Q)"
+
+[node name="ModelLibrary" type="TabContainer" parent="Editor/Sections/Modules/Right/Sort" unique_id=2067613034 node_paths=PackedStringArray("PatternModelList", "ProjectileModelList", "OpenModelEditor", "ModelEditor")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+focus_mode = 1
 current_tab = 0
 script = ExtResource("11_ryguw")
 PatternModelList = NodePath("Patterns/List")
 ProjectileModelList = NodePath("Projectiles/List")
-ProjectileNextFree = NodePath("Projectiles/List/Button")
-PatternNextFree = NodePath("Patterns/List/Button")
 ModelUITemplate = ExtResource("17_jq2sk")
+OpenModelEditor = NodePath("../Actions/EditModels")
+ModelEditor = NodePath("../../../../../ModelEditor")
 
-[node name="Projectiles" type="ScrollContainer" parent="Editor/Sections/Modules/Right/ModelLibrary" unique_id=689027904]
+[node name="Projectiles" type="ScrollContainer" parent="Editor/Sections/Modules/Right/Sort/ModelLibrary" unique_id=689027904]
 custom_minimum_size = Vector2(0, 240)
 layout_mode = 2
 horizontal_scroll_mode = 0
 metadata/_tab_index = 0
 
-[node name="List" type="VBoxContainer" parent="Editor/Sections/Modules/Right/ModelLibrary/Projectiles" unique_id=1261164839]
+[node name="List" type="VBoxContainer" parent="Editor/Sections/Modules/Right/Sort/ModelLibrary/Projectiles" unique_id=1261164839]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="Editor/Sections/Modules/Right/ModelLibrary/Projectiles/List" unique_id=949954076]
-layout_mode = 2
-focus_mode = 0
-theme_override_font_sizes/font_size = 22
-text = "Next Free"
-
-[node name="Patterns" type="ScrollContainer" parent="Editor/Sections/Modules/Right/ModelLibrary" unique_id=1905273804]
+[node name="Patterns" type="ScrollContainer" parent="Editor/Sections/Modules/Right/Sort/ModelLibrary" unique_id=1905273804]
 visible = false
 custom_minimum_size = Vector2(0, 240)
 layout_mode = 2
 horizontal_scroll_mode = 0
 metadata/_tab_index = 1
 
-[node name="List" type="VBoxContainer" parent="Editor/Sections/Modules/Right/ModelLibrary/Patterns" unique_id=984567383]
+[node name="List" type="VBoxContainer" parent="Editor/Sections/Modules/Right/Sort/ModelLibrary/Patterns" unique_id=984567383]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Button" type="Button" parent="Editor/Sections/Modules/Right/ModelLibrary/Patterns/List" unique_id=971022363]
-layout_mode = 2
-focus_mode = 0
-text = "Next Free"
-
-[node name="LevelMetadata" type="FoldableContainer" parent="Editor/Sections/Modules/Right" unique_id=1220126277 node_paths=PackedStringArray("BackgroundHolder", "LevelNameInput", "AuthorInput", "MusicInput", "UseCustomAssets", "HealthInput", "DurationInput", "AspectRatioInput", "CharacterSelect", "SaveLevel", "OpenLevelFolder", "OpenBgEditor", "ErrorDisplay", "BackgroundEditor")]
+[node name="LevelMetadata" type="FoldableContainer" parent="Editor/Sections/Modules/Right" unique_id=1220126277 node_paths=PackedStringArray("NextSong", "PrevSong", "SongNameLabel", "SongAuthorLabel", "LevelNameInput", "AuthorInput", "HealthInput", "DurationInput", "AspectRatioInput", "CharacterSelect", "SaveLevel", "OpenLevelFolder", "OpenBgEditor", "ErrorDisplay", "BackgroundEditor")]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 mouse_behavior_recursive = 2
 title = "Level Data"
 script = ExtResource("5_ycdy4")
-BackgroundHolder = NodePath("../../Preview/SubViewport/Background")
+SongDataArray = Array[Object]([SubResource("Resource_wu3dr"), SubResource("Resource_cyx1q"), SubResource("Resource_0dhbp"), SubResource("Resource_jx0wj"), SubResource("Resource_kkkcx")])
+NextSong = NodePath("Sort/Top/Left/Music/SongSelect/Next")
+PrevSong = NodePath("Sort/Top/Left/Music/SongSelect/Prev")
+SongNameLabel = NodePath("Sort/Top/Left/Music/SongSelect/Stack/Name")
+SongAuthorLabel = NodePath("Sort/Top/Left/Music/SongSelect/Stack/Author")
 LevelNameInput = NodePath("Sort/Top/Left/LevelName/LevelName")
 AuthorInput = NodePath("Sort/Top/Left/Author/Author")
-MusicInput = NodePath("Sort/Top/Left/Music/MusicName")
-UseCustomAssets = NodePath("Sort/Top/Left/CustomMusic/CheckButton")
 HealthInput = NodePath("Sort/Top/Right/Health/Health")
 DurationInput = NodePath("Sort/Top/Right/Duration/Durati")
 AspectRatioInput = NodePath("Sort/Top/Left/AspectRatio/AspectDropdown")
@@ -829,33 +871,6 @@ placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
 
-[node name="CustomMusic" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left" unique_id=1851484050]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/CustomMusic" unique_id=44572897]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Custom music"
-
-[node name="CheckButton" type="CheckButton" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/CustomMusic" unique_id=201362850]
-layout_mode = 2
-
-[node name="Music" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left" unique_id=2101583833]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music" unique_id=2012501782]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Music"
-
-[node name="MusicName" type="LineEdit" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music" unique_id=2140445858]
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 1
-placeholder_text = "..."
-context_menu_enabled = false
-emoji_menu_enabled = false
-
 [node name="Author" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left" unique_id=1015832539]
 layout_mode = 2
 
@@ -872,6 +887,47 @@ placeholder_text = "..."
 context_menu_enabled = false
 emoji_menu_enabled = false
 
+[node name="Music" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left" unique_id=2101583833]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music" unique_id=2012501782]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Music"
+
+[node name="SongSelect" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music" unique_id=1776730282]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Prev" type="Button" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect" unique_id=568021885]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_vertical = 0
+text = "<"
+
+[node name="Stack" type="VBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect" unique_id=648073408]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Name" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect/Stack" unique_id=556620060]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Song name"
+horizontal_alignment = 1
+
+[node name="Author" type="Label" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect/Stack" unique_id=9915731]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Author name"
+label_settings = ExtResource("7_getpj")
+horizontal_alignment = 1
+
+[node name="Next" type="Button" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/Music/SongSelect" unique_id=212072064]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_vertical = 0
+text = ">"
+
 [node name="AspectRatio" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left" unique_id=2112971349]
 layout_mode = 2
 
@@ -881,6 +937,7 @@ size_flags_horizontal = 3
 text = "Aspect Ratio"
 
 [node name="AspectDropdown" type="OptionButton" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Left/AspectRatio" unique_id=606217035]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 focus_mode = 0
 selected = 1
@@ -907,7 +964,7 @@ text = "Background"
 [node name="Button" type="Button" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Right/BgImage" unique_id=1386898912]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Edit"
+text = "Edit (W)"
 
 [node name="Health" type="HBoxContainer" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Top/Right" unique_id=148922302]
 layout_mode = 2
@@ -973,7 +1030,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 theme_override_font_sizes/font_size = 22
-text = "Save"
+text = "Save (Ctrl + S)"
 
 [node name="LevelFolder" type="Button" parent="Editor/Sections/Modules/Right/LevelMetadata/Sort/Actions" unique_id=1259712084]
 layout_mode = 2
@@ -1044,7 +1101,7 @@ layout_mode = 2
 
 [node name="TimeLabel" type="Label" parent="Editor/Sections/Toolbar/Buttons/TimeControl" unique_id=1066893983]
 layout_mode = 2
-text = "Time increment"
+text = "Time increment (Alt + Scroll)"
 
 [node name="SkipInput" type="SpinBox" parent="Editor/Sections/Toolbar/Buttons/TimeControl" unique_id=108080847]
 custom_minimum_size = Vector2(120, 0)
@@ -1057,68 +1114,6 @@ allow_greater = true
 select_all_on_focus = true
 
 [node name="EditorAudioPreview" type="AudioStreamPlayer" parent="Editor" unique_id=1220983324]
-
-[node name="BackgroundEditor" type="PanelContainer" parent="Editor" unique_id=808029005 node_paths=PackedStringArray("BackgroundHolder", "Organize", "NewLayer", "Close", "List")]
-visible = false
-custom_minimum_size = Vector2(400, 0)
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -267.0
-grow_horizontal = 0
-grow_vertical = 2
-theme = ExtResource("2_ryguw")
-script = ExtResource("28_0rl1p")
-BackgroundHolder = NodePath("../Sections/Modules/Preview/SubViewport/Background")
-bglayerui = ExtResource("29_ok6jj")
-Organize = NodePath("Sort/Top/Organize")
-NewLayer = NodePath("Sort/New")
-Close = NodePath("Sort/Top/Close")
-List = NodePath("Sort/Scroll/List")
-
-[node name="Sort" type="VBoxContainer" parent="Editor/BackgroundEditor" unique_id=1683402461]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Editor/BackgroundEditor/Sort" unique_id=1105487845]
-layout_mode = 2
-text = "Background Editor"
-
-[node name="Top" type="HBoxContainer" parent="Editor/BackgroundEditor/Sort" unique_id=441682303]
-layout_mode = 2
-
-[node name="Close" type="Button" parent="Editor/BackgroundEditor/Sort/Top" unique_id=1430661965]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "Close menu"
-
-[node name="Organize" type="Button" parent="Editor/BackgroundEditor/Sort/Top" unique_id=865935694]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "Organize"
-
-[node name="New" type="Button" parent="Editor/BackgroundEditor/Sort" unique_id=1406780953]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "New Layer
-"
-
-[node name="Scroll" type="ScrollContainer" parent="Editor/BackgroundEditor/Sort" unique_id=321592238]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="List" type="VBoxContainer" parent="Editor/BackgroundEditor/Sort/Scroll" unique_id=185489262]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 0
-
-[node name="BackgroundLayerUi" parent="Editor/BackgroundEditor/Sort/Scroll/List" unique_id=1809618226 node_paths=PackedStringArray("scale") instance=ExtResource("29_ok6jj")]
-layout_mode = 2
-scale = NodePath("Config/Scale/Repea")
 
 [node name="ModelEditor" type="Control" parent="Editor" unique_id=2007401369 node_paths=PackedStringArray("Close")]
 layout_mode = 3
@@ -1135,7 +1130,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("34_b17eg")
-Close = NodePath("Topbar/Close")
+Close = NodePath("BottomBar/Close")
 
 [node name="Tabs" type="TabContainer" parent="Editor/ModelEditor" unique_id=1864920924]
 layout_mode = 1
@@ -1145,12 +1140,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
-current_tab = 0
+current_tab = 1
 tab_0/title = "Projectiles"
 tab_1/title = "Patterns"
 tab_2/title = "Advanced"
 
-[node name="ProjectileEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2111981338 node_paths=PackedStringArray("ProjectilePreview", "Collision", "Visuals", "MovementInspector", "Info", "ModelList")]
+[node name="ProjectileEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2111981338 node_paths=PackedStringArray("ProjectilePreview", "Collision", "Visuals", "MovementInspector", "Info", "ModelList", "NextFree")]
+visible = false
 layout_mode = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("5_w48qg")
@@ -1161,6 +1157,7 @@ MovementInspector = NodePath("Sort/Sort/ModelEdit/List/Movement")
 Info = NodePath("Sort/Sort/ModelEdit/List/ProjectileInfo")
 ProjectileModelUi = ExtResource("36_ntx8l")
 ModelList = NodePath("Sort/Sort/ModelSelect/List")
+NextFree = NodePath("Sort/Sort/NextFree")
 metadata/_tab_index = 0
 metadata/_tab_name = "Projectiles"
 
@@ -1183,10 +1180,10 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="Movement" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=68224156 node_paths=PackedStringArray("presets", "Xt", "Yt", "Ft", "Lifetime", "ErrorDisplay")]
+[node name="Movement" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=68224156 node_paths=PackedStringArray("PresetContainer", "Xt", "Yt", "Ft", "Lifetime", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("39_rqtf5")
-presets = [NodePath("Presets/linear"), NodePath("Presets/sine")]
+PresetContainer = NodePath("Presets")
 Xt = NodePath("Inspector/xt/LineEdit")
 Yt = NodePath("Inspector/yt/LineEdit")
 Ft = NodePath("Inspector/ft/LineEdit")
@@ -1200,22 +1197,6 @@ label_settings = ExtResource("7_getpj")
 
 [node name="Presets" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement" unique_id=1386861193]
 layout_mode = 2
-
-[node name="linear" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Presets" unique_id=415704397]
-layout_mode = 2
-text = "Linear"
-script = ExtResource("41_1vm84")
-FunctionX = "0"
-FunctionY = "1000*(t/l)"
-FunctionF = "0"
-
-[node name="sine" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Presets" unique_id=545620557]
-layout_mode = 2
-text = "Sine"
-script = ExtResource("41_1vm84")
-FunctionX = "0"
-FunctionY = "1000*(t/l)"
-FunctionF = "sin(t)"
 
 [node name="Inspector" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement" unique_id=1274670830]
 layout_mode = 2
@@ -1231,6 +1212,7 @@ text = "x(t) = "
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/xt" unique_id=1509888390]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1247,6 +1229,7 @@ text = "y(t) = "
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/yt" unique_id=501734677]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1263,6 +1246,7 @@ text = "f(t) = "
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/ft" unique_id=474757530]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1282,18 +1266,19 @@ size_flags_horizontal = 3
 step = 0.05
 allow_greater = true
 
-[node name="Info" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector" unique_id=2121893305]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "This is the information that the game uses every tick for the movement of the projectile"
-label_settings = SubResource("LabelSettings_sm6fg")
-autowrap_mode = 3
-
 [node name="ErrorDisplay" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector" unique_id=1644648369]
 layout_mode = 2
 text = "some things are wrong here"
 label_settings = ExtResource("7_cegan")
 script = ExtResource("8_074og")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Movement/Inspector/ErrorDisplay" unique_id=1475158476]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Visual" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=1894502974 node_paths=PackedStringArray("TextureDropdown", "ScaleSlider", "LockRotation")]
 layout_mode = 2
@@ -1572,6 +1557,12 @@ label_settings = ExtResource("7_getpj")
 horizontal_alignment = 1
 clip_text = true
 
+[node name="NextFree" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort" unique_id=809976628]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 22
+text = "Next Free"
+
 [node name="ModelSelect" type="ScrollContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort" unique_id=845538229]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
@@ -1636,8 +1627,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "↩"
 
-[node name="PatternEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2001507019 node_paths=PackedStringArray("PatternPreview", "Info", "Spawning", "ModelList")]
-visible = false
+[node name="PatternEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2001507019 node_paths=PackedStringArray("PatternPreview", "Info", "Spawning", "ModelList", "NextFree")]
 layout_mode = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("15_getpj")
@@ -1646,6 +1636,7 @@ Info = NodePath("Sort/Sort/ModelEdit/List/PatternInfo")
 Spawning = NodePath("Sort/Sort/ModelEdit/List/SpawnConditions")
 PatternModelUi = ExtResource("48_cyx1q")
 ModelList = NodePath("Sort/Sort/ModelSelect/Sort")
+NextFree = NodePath("Sort/Sort/NextFree")
 metadata/_tab_index = 1
 metadata/_tab_name = "Patterns"
 
@@ -1668,10 +1659,10 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("presets", "Xi", "Yi", "Fi", "Ti", "Count", "ProjectileId", "ErrorDisplay")]
+[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "Yi", "Fi", "Ti", "Count", "ProjectileId", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("46_1vm84")
-presets = [NodePath("Presets/linear")]
+PresetContainer = NodePath("Presets")
 Xi = NodePath("Inspector/xi/LineEdit")
 Yi = NodePath("Inspector/yi/LineEdit")
 Fi = NodePath("Inspector/fi/LineEdit")
@@ -1688,11 +1679,6 @@ label_settings = ExtResource("7_getpj")
 [node name="Presets" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions" unique_id=419892955]
 layout_mode = 2
 
-[node name="linear" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Presets" unique_id=972854724]
-layout_mode = 2
-text = "Linear"
-script = ExtResource("41_1vm84")
-
 [node name="Inspector" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions" unique_id=1736976164]
 layout_mode = 2
 
@@ -1707,6 +1693,7 @@ text = "x(i) ="
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/xi" unique_id=1274496962]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1723,6 +1710,7 @@ text = "y(i) = "
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/yi" unique_id=481278956]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1739,6 +1727,7 @@ text = "f(i) = "
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/fi" unique_id=573491928]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1755,6 +1744,7 @@ text = "t(i) = "
 [node name="LineEdit" type="LineEdit" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/ti" unique_id=941426570]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "0"
 placeholder_text = "..."
 context_menu_enabled = false
@@ -1864,6 +1854,12 @@ label_settings = ExtResource("7_getpj")
 horizontal_alignment = 1
 clip_text = true
 
+[node name="NextFree" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort" unique_id=1980011368]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 22
+text = "Next Free"
+
 [node name="ModelSelect" type="ScrollContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort" unique_id=668763725]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
@@ -1945,6 +1941,7 @@ layout_mode = 2
 size_flags_vertical = 3
 tab_alignment = 2
 current_tab = 0
+tab_0/title = "Custom Global Variables"
 
 [node name="Custom" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/AdvancedPanel/Tabs" unique_id=2143877547 node_paths=PackedStringArray("NewDefinition", "List")]
 layout_mode = 2
@@ -1953,6 +1950,7 @@ NewDefinition = NodePath("New")
 List = NodePath("ScrollContainer/List")
 DefinitionUi = ExtResource("19_4k2k6")
 metadata/_tab_index = 0
+metadata/_tab_name = "Custom Global Variables"
 
 [node name="New" type="Button" parent="Editor/ModelEditor/Tabs/AdvancedPanel/Tabs/Custom" unique_id=316533653]
 layout_mode = 2
@@ -2355,7 +2353,7 @@ size_flags_vertical = 0
 text = "Converts radians into degrees angle*rad2deg = angle in degrees"
 autowrap_mode = 3
 
-[node name="Topbar" type="HBoxContainer" parent="Editor/ModelEditor" unique_id=701644502]
+[node name="BottomBar" type="HBoxContainer" parent="Editor/ModelEditor" unique_id=701644502]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 1
 anchors_preset = 7
@@ -2371,19 +2369,102 @@ grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 0
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Topbar" unique_id=1885721717]
+[node name="Label" type="Label" parent="Editor/ModelEditor/BottomBar" unique_id=1885721717]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "Model Editor"
 horizontal_alignment = 1
 
-[node name="Close" type="Button" parent="Editor/ModelEditor/Topbar" unique_id=452610640]
+[node name="Close" type="Button" parent="Editor/ModelEditor/BottomBar" unique_id=452610640]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-text = "Close"
+text = "Close (Q)"
+
+[node name="BackgroundEditor" type="PanelContainer" parent="Editor" unique_id=808029005 node_paths=PackedStringArray("BackgroundHolder", "Organize", "NewLayer", "Close", "List")]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -360.0
+offset_right = 640.0
+offset_bottom = 360.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_ryguw")
+script = ExtResource("28_0rl1p")
+BackgroundHolder = NodePath("../Sections/Modules/Preview/SubViewport/Background")
+bglayerui = ExtResource("29_ok6jj")
+Organize = NodePath("Sort/Top/Organize")
+NewLayer = NodePath("Sort/New")
+Close = NodePath("Sort/Top/Close")
+List = NodePath("Sort/Seperator/Scroll/GridContainer")
+
+[node name="Sort" type="VBoxContainer" parent="Editor/BackgroundEditor" unique_id=1683402461]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Editor/BackgroundEditor/Sort" unique_id=1105487845]
+layout_mode = 2
+text = "Background Editor"
+
+[node name="Top" type="HBoxContainer" parent="Editor/BackgroundEditor/Sort" unique_id=441682303]
+layout_mode = 2
+
+[node name="Close" type="Button" parent="Editor/BackgroundEditor/Sort/Top" unique_id=1430661965]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Close menu"
+
+[node name="Organize" type="Button" parent="Editor/BackgroundEditor/Sort/Top" unique_id=865935694]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Organize"
+
+[node name="New" type="Button" parent="Editor/BackgroundEditor/Sort" unique_id=1406780953]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "New Layer
+"
+
+[node name="Seperator" type="MarginContainer" parent="Editor/BackgroundEditor/Sort" unique_id=1516316038]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BackgroundColoring" type="ColorRect" parent="Editor/BackgroundEditor/Sort/Seperator" unique_id=985514491]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.024054958, 0.07873268, 0.08987131, 1)
+
+[node name="Scroll" type="ScrollContainer" parent="Editor/BackgroundEditor/Sort/Seperator" unique_id=321592238]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="Editor/BackgroundEditor/Sort/Seperator/Scroll" unique_id=1452108649]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="BackgroundLayerUi" parent="Editor/BackgroundEditor/Sort/Seperator/Scroll/GridContainer" unique_id=1809618226 node_paths=PackedStringArray("scale") instance=ExtResource("29_ok6jj")]
+layout_mode = 2
+scale = NodePath("Config/Scale/Repea")
 
 [node name="LevelSelect" type="CanvasLayer" parent="." unique_id=2141416188 node_paths=PackedStringArray("_levelList", "_returnButton", "_levelDisplay", "_newLevelButton", "_refreshButton", "_openLevelsFolder")]
 visible = false
@@ -2858,10 +2939,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 text = "Open data folder"
-
-[node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
-visible = false
-script = ExtResource("23_1u8w0")
 
 [node name="Console" type="CanvasLayer" parent="." unique_id=1952028464 node_paths=PackedStringArray("_consoleText", "_save")]
 process_mode = 3
@@ -3508,3 +3585,6 @@ custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
+
+[node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
+script = ExtResource("23_1u8w0")

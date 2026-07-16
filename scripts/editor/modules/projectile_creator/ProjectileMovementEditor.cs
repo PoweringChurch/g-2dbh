@@ -5,7 +5,15 @@ public partial class ProjectileMovementEditor : Control
 {
     private static readonly EvalContext testCtx = new() { T = 0, L = 1 };
     public ProjectileModel Model;
-    [Export] private PresetFunctionsUi[] presets;
+    private readonly Preset[] presets =
+    {
+        new()
+        {
+            Name = "Linear",
+            FunctionY = "1000*(t/l)"
+        }
+    };
+    [Export] private Container PresetContainer;
     [Export] private LineEdit Xt;
     [Export] private LineEdit Yt;
     [Export] private LineEdit Ft;
@@ -17,7 +25,9 @@ public partial class ProjectileMovementEditor : Control
         for (int i = 0; i < presets.Length; i++)
         {
             var preset = presets[i];
-            preset.Pressed += () =>
+            var presetBtn = new Button() {Text = preset.Name, SizeFlagsHorizontal = SizeFlags.ExpandFill};
+            PresetContainer.AddChild(presetBtn);
+            presetBtn.Pressed += () =>
             {
                 Xt.Text = preset.FunctionX;
                 Yt.Text = preset.FunctionY;

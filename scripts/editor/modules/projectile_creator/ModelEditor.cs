@@ -13,5 +13,9 @@ public partial class ModelEditor : Control
         if (Editor.CannotUseBinds()) return;
         if (@event.IsActionPressed("model_editor")) Visible = !Visible;
     }
-
+}
+public struct Preset
+{
+    public string Name;
+    public string FunctionX, FunctionY, FunctionF, FunctionT;
 }

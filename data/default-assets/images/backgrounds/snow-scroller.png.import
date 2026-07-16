@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8h5titmxxua5"
-path="res://.godot/imported/blizzard-snowflake.png-523c8182d0cf3c4d64846d38b54c091c.ctex"
+uid="uid://ruo0ord8tk7k"
+path="res://.godot/imported/snow-scroller.png-adcd92cfb8ac0964f927a69ba6576f02.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/blizzard-snowflake.png"
-dest_files=["res://.godot/imported/blizzard-snowflake.png-523c8182d0cf3c4d64846d38b54c091c.ctex"]
+source_file="res://data/default-assets/images/backgrounds/snow-scroller.png"
+dest_files=["res://.godot/imported/snow-scroller.png-adcd92cfb8ac0964f927a69ba6576f02.ctex"]
 
 [params]
 

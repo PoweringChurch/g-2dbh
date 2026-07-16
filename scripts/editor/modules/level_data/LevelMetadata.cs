@@ -2,69 +2,84 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 public partial class LevelMetadata : Control
 {
-    [Export] Control BackgroundHolder;
+	[ExportGroup("Song")]
+	[Export] SongData[] SongDataArray { get; set; }
+	[Export] Button NextSong;
+	[Export] Button PrevSong;
+	[Export] Label SongNameLabel;
+	[Export] Label SongAuthorLabel;
+
+	[ExportGroup("Level Metadata")]
 	[Export] LineEdit LevelNameInput;
 	[Export] LineEdit AuthorInput;
-	[Export] LineEdit MusicInput;
-	[Export] CheckButton UseCustomAssets;
 	[Export] SpinBox HealthInput;
-	[Export] SpinBox DurationInput; 
+	[Export] SpinBox DurationInput;
 	[Export] OptionButton AspectRatioInput;
 	[Export] OptionButton CharacterSelect;
+
+	[ExportGroup("Actions")]
 	[Export] Button SaveLevel;
 	[Export] Button OpenLevelFolder;
 	[Export] Button OpenBgEditor;
+
+	[ExportGroup("References")]
 	[Export] MessageDisplay ErrorDisplay;
-	[Signal] public delegate void AspectRatioChangedEventHandler(Vector2I aspectRatio);
-	[Signal] public delegate void DurationChangedEventHandler();
-	[Signal] public delegate void MusicChangedEventHandler(AudioStream to);
-	[Signal] public delegate void SaveLevelRequestedEventHandler();
-	Editor e => Editor.Instance;
 	[Export] BackgroundEditor BackgroundEditor;
+
+	public event Action<Vector2I> AspectRatioChanged;
+	public event Action<AudioStream> MusicChanged;
+	public event Action DurationChanged;
+	public event Action SaveLevelRequested;
+	Editor e => Editor.Instance;
+    public override void _Input(InputEvent @event)
+    {
+		if (Editor.CannotUseBinds()) return;
+        if (@event.IsActionPressed("background_editor")) BackgroundEditor.Visible = !BackgroundEditor.Visible;
+    }
+	private int currentSong = 0;
 	public override void _Ready()
 	{
 		base._Ready();
-		LevelNameInput.TextChanged += OnLevelNameSubmit;
-		AuthorInput.TextChanged += OnAuthorChanged;
-		HealthInput.ValueChanged += OnHealthChanged;
-		DurationInput.ValueChanged += OnDurationChanged;
-		AspectRatioInput.ItemSelected += OnAspectSelect;
-		OpenLevelFolder.Pressed += OnLevelFolderOpen;
+		LevelNameInput.TextChanged += (text) => e.levelData.DisplayName = text;
+		AuthorInput.TextChanged += (text) => e.levelData.Author = text;
+		HealthInput.ValueChanged += (val) => e.levelData.Health = (int)val;
+		DurationInput.ValueChanged += (val) => {e.levelData.Duration = (float)val; DurationChanged.Invoke();};
+		AspectRatioInput.ItemSelected += (idx) => { 
+			e.levelData.AspectRatio = AspectRatioInput.Selected; AspectRatioChanged.Invoke(PlayingField.Resolutions[idx]); };
+		OpenLevelFolder.Pressed += () => OS.ShellOpen(ProjectSettings.GlobalizePath(e.LevelPath));;
+		OpenBgEditor.Pressed += () => BackgroundEditor.Visible = true;
+		CharacterSelect.ItemSelected += (idx) => e.levelData.Character = (int)idx;
 		SaveLevel.Pressed += OnSavePressed;
-		OpenBgEditor.Pressed += OnBgEditPressed;
-		CharacterSelect.ItemSelected += OnCharacterSelected;
-		MusicInput.TextChanged += OnMusicTextChanged;
-		UseCustomAssets.Toggled += (t) => OnMusicTextChanged(MusicInput.Text);
-	}
-    private void OnCharacterSelected(long index)
-	{
-		e.levelData.Character = (int)index;
-	}
-    private void OnMusicTextChanged(string newSong)
-	{
-		string path = UseCustomAssets.ButtonPressed ? $"{e.LevelPath}/audio/{newSong}"
-		: $"res://data/default-assets/audio/{newSong}";
-		AudioStream found = AudioUtils.LoadAudio(path);
-		if (found != null && newSong == "none")
-		{
-			ErrorDisplay.SetMessage("Music", $"[Music] 'none' is a reserved name, please rename this audio file.");
-			return;
-		}
-		if (found != null || newSong == "none")
-		{
-			e.levelData.Music = path;
-			EmitSignal(SignalName.MusicChanged, found);
-			ErrorDisplay.ClearMessage("Music");
-		}
-		else ErrorDisplay.SetMessage("Music", $"[Music] Could not find audio of name {newSong} in audio folder.");
-	}
 
-    private void OnBgEditPressed()
+		NextSong.Pressed += GoNextSong;
+		PrevSong.Pressed += GoPrevSong;
+	}
+	private void GoNextSong()
 	{
-		BackgroundEditor.Visible = true;
+		if (currentSong < SongDataArray.Length-1)
+		{
+			currentSong++;
+			ApplyCurrentSong();
+		}
+	}
+	private void GoPrevSong()
+	{
+		if (currentSong > 0)
+		{
+			currentSong--;
+			ApplyCurrentSong();
+		}
+	}
+	private void ApplyCurrentSong()
+	{
+		var info = SongDataArray[currentSong];
+		e.levelData.Music = info.StreamPath;
+		var stream = AudioUtils.LoadAudio(info.StreamPath);
+		MusicChanged.Invoke(stream);
+		SongNameLabel.Text = info.SongName;
+		SongAuthorLabel.Text = info.Author; 
 	}
 	private void OnSavePressed()
 	{
@@ -74,46 +89,25 @@ public partial class LevelMetadata : Control
 			ErrorDisplay.SetMessage("Save", "[Save] Cannot save with unresolved errors.");
 			return;
 		}
-		EmitSignal(SignalName.SaveLevelRequested);
+		SaveLevelRequested.Invoke();
 	}
-	private void OnLevelFolderOpen()
-	{
-		var path = ProjectSettings.GlobalizePath(e.LevelPath); ;
-		OS.ShellOpen(path);
-	}
-	private void OnAspectSelect(long i)
-	{
-		e.levelData.AspectRatio = AspectRatioInput.Selected;
-		EmitSignal(SignalName.AspectRatioChanged, PlayingField.Resolutions[i]);
-	}
-	private void OnDurationChanged(double val)
-	{
-		e.levelData.Duration = (float)val;
-		EmitSignal(SignalName.DurationChanged);
-	}
-	private void OnHealthChanged(double val)
-	{
-		e.levelData.Health = (int)val;
-	}
-	private void OnAuthorChanged(string text)
-	{
-		e.levelData.Author = text;
-	}
-	private void OnLevelNameSubmit(string text) =>
-		e.levelData.DisplayName = text;
 	public void Load(LevelData data)
 	{
-		foreach (var child in BackgroundHolder.GetChildren())
-			child.QueueFree();
 		AuthorInput.Text = data.Author;
 		AspectRatioInput.Selected = data.AspectRatio;
 		CharacterSelect.Selected = data.Character;
 		HealthInput.Value = data.Health;
 		DurationInput.Value = data.Duration;
-		MusicInput.Text = Path.GetFileName(data.Music);
 		LevelNameInput.Text = data.DisplayName;
-		BackgroundHolder.Position = (Vector2)PlayingField.Resolutions[data.AspectRatio]/2*LevelPreview.PreviewScale;
-		UseCustomAssets.ButtonPressed = !data.Music.StartsWith("res://");
 		BackgroundEditor.Load(data);
+		for (int i = 0; i < SongDataArray.Length; i++)
+		{
+			if (SongDataArray[i].StreamPath == data.Music)
+			{
+				currentSong = i;
+				break;
+			}
+		}
+		ApplyCurrentSong();
 	}
 }

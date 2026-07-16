@@ -11,8 +11,24 @@ public partial class PatternCreator : Control
     [Export] PatternSpawnConditions Spawning;
     [Export] PackedScene PatternModelUi;
     [Export] VBoxContainer ModelList;
+    [Export] Button NextFree;
     public override void _EnterTree() => 
         Instance = this;
+    public override void _Ready()
+    {
+        NextFree.Pressed += GoNextFree;
+    }
+    private void GoNextFree()
+    {
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+        {
+            if (Editor.Instance.PatternModels[i] == null)
+            {
+                Editor.Instance.OpenModel(new PatternModel() {Id = i});
+                return;
+            }
+        }
+    }
     public void Load(LevelData data)
     {
         foreach (var ui in ModelList.GetChildren())

@@ -11,16 +11,14 @@ public partial class BackgroundLayerInstance : Parallax2D
     public void ApplyLayerParams()
     {
         var text = RenderingUtils.LoadTexture(Layer.Image);
-        if (text == null )
-            return;
         scrollx = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.ScrollFunctionX));
         scrolly = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.ScrollFunctionY));
         transparency = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.TransparencyFn));
 
         Sprite.Texture = text;
         Sprite.Scale = Layer.Scale*Vector2.One;
-
-        RepeatSize = text.GetSize()*Scale;
+        if (text != null)
+            RepeatSize = text.GetSize()*Scale;
         RepeatTimes = Layer.RepeatCount;
         ZIndex = Layer.Order;
     }

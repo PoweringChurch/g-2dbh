@@ -878,7 +878,7 @@ public partial class LevelPreview : Control
 		// compile
 		LevelCompiler.CompilePattern(model);
 		model.renderGroupId = renderGroupId;
-		var lctx = new EvalContext { N = model.Count };
+		var lctx = new EvalContext { I = 0, N = model.Count > 1 ? model.Count - 1 : 1 };
 		double maxSpawnT = 0;
 		for (int j = 0; j < model.Count; j++)
 		{

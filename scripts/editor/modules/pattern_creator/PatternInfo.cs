@@ -8,16 +8,17 @@ public partial class PatternInfo : Control
     [Export] private LineEdit ProjectileName;
     [Export] private Button DeleteBtn;
     [Export] private Button SaveBtn;
+    private Editor e => Editor.Instance;
     public override void _Ready()
     {
         SaveBtn.Pressed += Save;
-        DeleteBtn.Pressed += () => Editor.Instance.DeleteProjectileModel((int)IdSelect.Value);
+        DeleteBtn.Pressed += () => e.DeletePatternModel((int)IdSelect.Value);
     }
     private void Save()
     {
         Model.Name = ProjectileName.Text;
         Model.Id = (int)IdSelect.Value;
-        Editor.Instance.SavePatternModel(new PatternModel(Model));
+        e.SavePatternModel(new PatternModel(Model));
     }
     public void Load(PatternModel newModel)
     {

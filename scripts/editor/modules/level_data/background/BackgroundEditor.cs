@@ -9,7 +9,7 @@ public partial class BackgroundEditor : Control
     [Export] Button Organize;
     [Export] Button NewLayer;
     [Export] Button Close;
-    [Export] VBoxContainer List;
+    [Export] Container List;
     private Editor e => Editor.Instance;
     public override void _Ready()
     {
@@ -27,6 +27,9 @@ public partial class BackgroundEditor : Control
     }
     public void Load(LevelData data)
     {
+        foreach (var child in BackgroundHolder.GetChildren())
+			child.QueueFree();
+		BackgroundHolder.Position = (Vector2)PlayingField.Resolutions[data.AspectRatio]/2*LevelPreview.PreviewScale;
         e.BGInstances.Clear();
         foreach (var child in List.GetChildren())
             child.QueueFree();

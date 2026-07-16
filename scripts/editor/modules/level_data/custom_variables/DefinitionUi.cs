@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class DefinitionUi : Control
@@ -9,65 +10,67 @@ public partial class DefinitionUi : Control
     [Export] public LineEdit Definition;
     [Export] public Button Remove;
     [Export] public MessageDisplay ErrorDisplay;
-    public string currentName = "";
+    public string CurrentDef = "0";
+    public string CurrentName = "";
+    private Dictionary<string, string> modifying;
     private Editor e => Editor.Instance;
+    public event Action<string, string, string> ModifiedContext;
     public override void _Ready()
     {
-        VarName.TextChanged += NameChanged;
-        Definition.TextChanged += DefinitionChanged;
-        Remove.Pressed += RemovePressed;
+        if (modifying == null)
+            Console.Inst.LogErr("This dictionary UI does not have a modifying dictionary set!");
+        VarName.TextChanged += ChangeName;
+        Definition.TextChanged += (txt) => {ChangeDefinition(CurrentName, txt); ModifiedContext?.Invoke(CurrentName, modifying[CurrentName], null);};
+        Remove.Pressed += () => { modifying.Remove(CurrentName); QueueFree();};
     }
-    public void SetParams(string varname, string definition)
+    public void SetParams(Dictionary<string, string> toMod, string varname, string definition)
     {
+        modifying = toMod;
         VarName.Text = varname;
         Definition.Text = definition;
-        NameChanged(varname);
-        DefinitionChanged(definition);
+        ChangeName(varname);
+        ChangeDefinition(varname, definition);
     }
-    private void DefinitionChanged(string to)
+    private void ChangeDefinition(string name, string newDef)
     {
         try
         {
-            var fn = ExpressionHandler.Parse(to);
+            var fn = ExpressionHandler.Parse(newDef);
             fn.Eval(testContext);
-            CustomVariableExpr.Definitions[currentName] = fn;
-            e.levelData.CustomVariables[currentName] = to;
+            modifying[name] = newDef;
             ErrorDisplay.ClearMessage("Definition");
         }
         catch (Exception e) { ErrorDisplay.SetMessage("Definition", "[Definition] " + e.Message); }
     }
-    private void RemovePressed()
+    private void ChangeName(string newName)
     {
-        CustomVariableExpr.Definitions.Remove(currentName);
-        QueueFree();
-    }
-    private void NameChanged(string to)
-    {
-        bool hasInvalidChars = to.Any(c => !char.IsLetterOrDigit(c));
+        bool hasInvalidChars = newName.Any(c => !char.IsLetterOrDigit(c));
         if (hasInvalidChars)
         {
             ErrorDisplay.SetMessage("Name", "[Variable Name] Name contains invalid characters");
             return;
         }
-        if (to is "pi" or "tau" or "phi" or "deg2rad" or "rad2deg")
+        if (newName is "pi" or "tau" or "phi" or "deg2rad" or "rad2deg")
         {
             ErrorDisplay.SetMessage("Name", "[Variable Name] A constant with this name already exists");
             return;
         }
-        if (CustomVariableExpr.Definitions.ContainsKey(to))
+        if (CustomVariableExpr.Definitions.ContainsKey(newName))
         {
             ErrorDisplay.SetMessage("Name", "[Variable Name] A variable with this name already exists");
             return;
         }
-        if (string.IsNullOrEmpty(to))
+        if (string.IsNullOrEmpty(newName))
         {
             ErrorDisplay.SetMessage("Name", "[Variable Name] Variable must have a name");
             return;
         }
         ErrorDisplay.ClearMessage("Name");
-        CustomVariableExpr.Definitions.Remove(currentName);
-        e.levelData.CustomVariables.Remove(currentName);
-        currentName = to;
-        DefinitionChanged(Definition.Text);
+        // add def with new name
+        string oldName = CurrentName;
+        CurrentName = newName;
+        ChangeDefinition(CurrentName, Definition.Text);
+        modifying.Remove(oldName);
+        ModifiedContext?.Invoke(CurrentName, Definition.Text, oldName);
     }
 }

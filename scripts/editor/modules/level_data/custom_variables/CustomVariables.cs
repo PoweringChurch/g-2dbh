@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class CustomVariables : Control
@@ -9,7 +10,7 @@ public partial class CustomVariables : Control
     [Export] PackedScene DefinitionUi;
     public override void _Ready()
     {
-        NewDefinition.Pressed += () => CreateNewDefinition();
+        NewDefinition.Pressed += () => CreateNewDefinition(Editor.Instance.levelData.CustomVariables, "", "0");
     }
     public void Load(LevelData data)
     {
@@ -18,15 +19,20 @@ public partial class CustomVariables : Control
         CustomVariableExpr.Definitions.Clear();
         foreach (var def in data.CustomVariables)
         {
-            var defui = CreateNewDefinition();
-            defui.SetParams(def.Key, def.Value);
+            CreateNewDefinition(data.CustomVariables, def.Key, def.Value);
         }
     }
-    private DefinitionUi CreateNewDefinition()
+    private void CreateNewDefinition(Dictionary<string, string> modifying, string name, string definition)
     {
-        var definitionUi = DefinitionUi.Instantiate<DefinitionUi>();
-        List.AddChild(definitionUi);
-        definitionUi.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        return definitionUi;
+        var defUi = DefinitionUi.Instantiate<DefinitionUi>();
+        defUi.ModifiedContext += (name, def, old) =>
+        {
+            if (old != null && CustomVariableExpr.Definitions.TryGetValue(old, out var _))
+                CustomVariableExpr.Definitions.Remove(old);
+            CustomVariableExpr.Definitions[name] = ExpressionHandler.Parse(def);
+        };
+        defUi.SetParams(modifying, name, definition);
+        List.AddChild(defUi);
+        defUi.SizeFlagsHorizontal = SizeFlags.ExpandFill;
     }
 }

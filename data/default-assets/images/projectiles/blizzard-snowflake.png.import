@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4g22is2tknt0"
-path="res://.godot/imported/snow.png-0601bb2c842086faf45f8237e1a5391d.ctex"
+uid="uid://b8h5titmxxua5"
+path="res://.godot/imported/blizzard-snowflake.png-5d38cd227763b539a4540293eed96ae2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/default-assets/images/snow.png"
-dest_files=["res://.godot/imported/snow.png-0601bb2c842086faf45f8237e1a5391d.ctex"]
+source_file="res://data/default-assets/images/projectiles/blizzard-snowflake.png"
+dest_files=["res://.godot/imported/blizzard-snowflake.png-5d38cd227763b539a4540293eed96ae2.ctex"]
 
 [params]
 
