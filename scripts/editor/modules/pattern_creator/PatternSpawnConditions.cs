@@ -183,7 +183,6 @@ public partial class PatternSpawnConditions : Control
         Count.Value = Model.Count;
         SpawningId.SetValueNoSignal(Model.SpawningId);
         SpawningType.Select((int)Model.SpawningType);
-        GD.Print(SpawningType);
         FunctionChanged("x(i)", Model.FunctionX);
         FunctionChanged("y(i)", Model.FunctionY);
         FunctionChanged("f(i)", Model.FunctionF);

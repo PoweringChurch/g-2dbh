@@ -82,17 +82,7 @@ public class LevelCompiler
         for (int i = 0; i < level.References.Count; i++)
         {
             var r = level.References[i];
-            var sr = new SpatialReference()
-            {
-                SpawnPos = new Vector2(r.SpawnX, r.SpawnY),
-                Pos = new Vector2(r.SpawnX, r.SpawnY),
-                SpawnF = r.SpawnF,
-                F = r.SpawnF,
-                T = r.T,
-                Type = r.Type,
-                Id = r.Id,
-                Depth = 0,
-            };
+            var sr = EditorToSpatialReference(r);
             compiled.Queued.Add(sr);
         }
         // set duration
@@ -111,6 +101,9 @@ public class LevelCompiler
         model.RenderGroupId = renderGroupId;
         if (model.UseShape)
             model.ShapeVect2s = CollisionUtils.FloatArrToVect2s(model.Shape);
+        model.RuntimeSpawns = [];
+        foreach (var spawn in model.Spawns)
+            model.RuntimeSpawns.Add(EditorToSpatialReference(spawn));
     }
     public static void CompilePattern(PatternModel model)
     {
@@ -121,6 +114,18 @@ public class LevelCompiler
 		model.fnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
 		model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
     }
+    public static SpatialReference EditorToSpatialReference(EditorReference r) => 
+        new() 
+        {
+            SpawnPos = new Vector2(r.SpawnX, r.SpawnY),
+            Pos = new Vector2(r.SpawnX, r.SpawnY),
+            SpawnF = r.SpawnF,
+            F = r.SpawnF,
+            T = r.T,
+            Type = r.Type,
+            Id = r.Id,
+            Depth = 0, 
+        };
     public static RenderGroup RenderGroupFromProjectile(ProjectileModel model, Node2D root)
     {
         RenderGroup renderGroup;

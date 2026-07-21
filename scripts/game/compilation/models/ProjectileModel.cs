@@ -67,7 +67,7 @@ public class ProjectileModel : IEditorModel
     [JsonIgnore] public Func<EvalContext, double> fnf { get; set; }
     [JsonIgnore] public int RenderGroupId { get; set; }
     [JsonIgnore] public List<Vector2> ShapeVect2s { get; set; }
-
+    [JsonIgnore] public List<SpatialReference> RuntimeSpawns { get; set; }
     // Constructors
     public ProjectileModel() { }
 
@@ -95,8 +95,12 @@ public class ProjectileModel : IEditorModel
         CanCollide = other.CanCollide;
         Persistant = other.Persistant;
 
-        // Nested On-Death Spawning
-        Spawns = new(other.Spawns);
+        Spawns = [];
+        for (int i = 0; i < other.Spawns.Count; i++)
+        {
+            var spawn = other.Spawns[i];
+            Spawns.Add(new(spawn));
+        }
         MaxDepth = other.MaxDepth;
 
         UseShape = other.UseShape;
@@ -117,8 +121,8 @@ public class ProjectileModel : IEditorModel
         fnf = other.fnf;
         RenderGroupId = other.RenderGroupId;
         if (other.ShapeVect2s != null)
-        {
             ShapeVect2s = new List<Vector2>(other.ShapeVect2s);
-        }
+        if (other.RuntimeSpawns != null)
+            RuntimeSpawns = new List<SpatialReference>(other.RuntimeSpawns);
     }
 }

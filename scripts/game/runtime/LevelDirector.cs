@@ -71,9 +71,9 @@ public partial class LevelDirector
         {
             var lctx = new EvalContext { T = elapsed - r.T, L = proj.Lifetime };
             // move projectile
-            var f = MathSafe.Sanitize(proj.fnf(lctx))+r.SpawnF;
-            var pos = CalculatePosition(proj.fnx, proj.fny, f, lctx);
-            r.Pos = r.SpawnPos + pos;
+            var f = MathSafe.Sanitize(proj.fnf(lctx)) + r.SpawnF;
+            var pos = CalculatePosition(proj.fnx, proj.fny, f, lctx) + r.SpawnPos;
+            r.Pos = pos;
             r.F = f;
             // collision w player
             if (lctx.T <= proj.TelegraphTime || !proj.CanCollide) // check if in telegraph
@@ -148,16 +148,17 @@ public partial class LevelDirector
         {
             lctx.I = j;
             // calculate spawn conditions of child
-            double t = MathSafe.Sanitize(patt.fnt(lctx));
-            double f = MathSafe.Sanitize(patt.fnf(lctx));
-            var pos = CalculatePosition(patt.fnx, patt.fny, r.F, lctx);
+            double childT = MathSafe.Sanitize(patt.fnt(lctx)) + r.T;
+            double childF = MathSafe.Sanitize(patt.fnf(lctx)) + r.F;
+            var childPos = CalculatePosition(patt.fnx, patt.fny, r.F, lctx) + r.SpawnPos;
             // add new reference to queue
             level.Queued.Add(new()
             {
-                SpawnPos = r.SpawnPos + pos,
-                Pos = r.SpawnPos + pos,
-                T = r.T + t,
-                F = r.F + f,
+                SpawnPos =  childPos,
+                Pos = childPos,
+                SpawnF = childF,
+                F = childF,
+                T = childT,
                 Type = patt.SpawningType,
                 Id = patt.SpawningId,
                 Depth = r.Depth

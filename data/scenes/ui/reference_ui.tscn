@@ -132,6 +132,5 @@ text = "X"
 
 [node name="ErrorDisplay" type="Label" parent="Stack" unique_id=1653218433]
 layout_mode = 2
-text = "awesome error"
 label_settings = ExtResource("2_tsfve")
 script = ExtResource("3_hxdow")
