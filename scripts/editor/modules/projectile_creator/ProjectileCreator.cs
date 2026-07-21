@@ -8,6 +8,7 @@ public partial class ProjectileCreator : Control
     [Export] ProjectileVisuals Visuals;
     [Export] ProjectileMovementEditor MovementInspector;
     [Export] ProjectileInfo Info;
+    [Export] SpawnsEditor SpawnEditor;
     [Export] PackedScene ProjectileModelUi;
     [Export] VBoxContainer ModelList;
     [Export] Button NextFree;
@@ -50,6 +51,7 @@ public partial class ProjectileCreator : Control
         Collision.Load(Model);
         Visuals.Load(Model);
         Info.Load(Model);
+        SpawnEditor.Load(Model);
         ProjectilePreview.Load(Model);
         ProjectilePreview.MarkDirty();
     }

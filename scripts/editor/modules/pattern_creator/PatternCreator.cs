@@ -43,7 +43,7 @@ public partial class PatternCreator : Control
     }
     public void ProjectileModelUpdated(ProjectileModel model)
     {
-        if (model.Id == Model.ProjectileId)
+        if (Model.SpawningType == ModelType.Projectile && model.Id == Model.SpawningId)
         {
             Spawning.Load(Model);
         }

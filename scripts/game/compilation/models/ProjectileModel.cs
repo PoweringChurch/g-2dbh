@@ -5,18 +5,14 @@ using Godot;
 
 public class ProjectileModel : IEditorModel
 {
-    // ==========================================
     // Core Metadata
-    // ==========================================
     [JsonPropertyName("id")] 
     public int Id { get; set; } = 0;
 
     [JsonPropertyName("name")] 
     public string Name { get; set; } = "unnamed";
 
-    // ==========================================
     // Movement & Math Functions
-    // ==========================================
     [JsonPropertyName("fnX")] 
     public string FunctionX { get; set; } = "0";
 
@@ -25,9 +21,7 @@ public class ProjectileModel : IEditorModel
     [JsonPropertyName("fnF")] 
     public string FunctionF { get; set; } = "0";
 
-    // ==========================================
     // Visuals & Rendering
-    // ==========================================
     [JsonPropertyName("textureId")]
     public int TextureId { get; set; } = 0;
 
@@ -38,9 +32,7 @@ public class ProjectileModel : IEditorModel
 
     [JsonPropertyName("telegraphTime")] 
     public float TelegraphTime { get; set; } = 0f;
-    // ==========================================
     // Collision & Lifetime
-    // ==========================================
     [JsonPropertyName("radius")] 
     public float Radius { get; set; } = 8;
 
@@ -55,44 +47,28 @@ public class ProjectileModel : IEditorModel
     [JsonPropertyName("facePlayer")] 
     public bool FacePlayer { get; set; }
 
-    // ==========================================
     // Custom Collision Shape
-    // ==========================================
     [JsonPropertyName("useShape")] 
     public bool UseShape { get; set; } = false;
 
     [JsonPropertyName("shape")] 
     public float[][] Shape { get; set; } = null;
 
-    // ==========================================
-    // Death Spawning Mechanics (Nested Patterns)
-    // ==========================================
-    [JsonPropertyName("spawnModelOnDeath")] 
-    public bool SpawnModelOnDeath { get; set; } = false;
-
-    [JsonPropertyName("spawnOnDeathType")] 
-    public ModelType SpawnOnDeathType { get; set; } = ModelType.Projectile;
-
-    [JsonPropertyName("spawnOnDeath")] 
-    public int SpawnOnDeathId { get; set; } = 0;
+    // Spawning Mechanics
+    [JsonPropertyName("spawns")] 
+    public List<EditorReference> Spawns {get; set;} = [];
 
     [JsonPropertyName("maxDepth")] 
     public int MaxDepth { get; set; } = 1;
 
-    // ==========================================
     // Runtime / Game-Only Properties
-    // ==========================================
     [JsonIgnore] public Func<EvalContext, double> fnx { get; set; }
     [JsonIgnore] public Func<EvalContext, double> fny { get; set; }
     [JsonIgnore] public Func<EvalContext, double> fnf { get; set; }
     [JsonIgnore] public int RenderGroupId { get; set; }
     [JsonIgnore] public List<Vector2> ShapeVect2s { get; set; }
 
-    // ==========================================
     // Constructors
-    // ==========================================
-
-
     public ProjectileModel() { }
 
     public ProjectileModel(ProjectileModel other)
@@ -120,9 +96,7 @@ public class ProjectileModel : IEditorModel
         Persistant = other.Persistant;
 
         // Nested On-Death Spawning
-        SpawnModelOnDeath = other.SpawnModelOnDeath;
-        SpawnOnDeathType = other.SpawnOnDeathType;
-        SpawnOnDeathId = other.SpawnOnDeathId;
+        Spawns = new(other.Spawns);
         MaxDepth = other.MaxDepth;
 
         UseShape = other.UseShape;

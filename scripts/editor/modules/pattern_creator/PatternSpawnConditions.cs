@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class PatternSpawnConditions : Control
@@ -77,7 +78,8 @@ public partial class PatternSpawnConditions : Control
     [Export] private LineEdit Ti;
     [Export] private Button TiClear;
     [Export] private SpinBox Count;
-    [Export] private SpinBox ProjectileId;
+    [Export] private SpinBox SpawningId;
+    [Export] private OptionButton SpawningType;
     [Export] private MessageDisplay ErrorDisplay;
     private PatternPreview pp => PatternCreator.Instance.PatternPreview;
     public override void _Ready()
@@ -100,22 +102,57 @@ public partial class PatternSpawnConditions : Control
         Fi.TextChanged += (text) => FunctionChanged("f(i)", text);
         Ti.TextChanged += (text) => FunctionChanged("t(i)", text);
         Count.ValueChanged += (v) => { Model.Count = (int)v; pp.MarkDirty(); };
-        ProjectileId.ValueChanged += ProjectileIdChanged;
+        SpawningId.ValueChanged += SpawningIdChanged;
         XiClear.Pressed += () => {Xi.Text = "0"; FunctionChanged("x(i)", "0");};
         YiClear.Pressed += () => {Yi.Text = "0"; FunctionChanged("y(i)", "0");};
         FiClear.Pressed += () => {Fi.Text = "0"; FunctionChanged("f(i)", "0");};
         TiClear.Pressed += () => {Ti.Text = "0"; FunctionChanged("t(i)", "0");};
+        SpawningType.ItemSelected += (idx) => {Model.SpawningType = (ModelType)idx; SpawningIdChanged(Model.SpawningId); };
     }
-    private void ProjectileIdChanged(double v)
+    private bool RecurseCheckInvalid(int currentId, ModelType currentType, HashSet<int> visitedPatterns = null)
+    {
+        visitedPatterns ??= new HashSet<int>();
+        if (currentType == ModelType.Pattern)
+        {
+            if (currentId == Model.Id || visitedPatterns.Contains(currentId))
+                return true;
+            visitedPatterns.Add(currentId);
+        }
+        // recurse
+        if (currentType == ModelType.Pattern)
+        {
+            var pattern = Editor.Instance.PatternModels[currentId];
+            // traverse to whatever this pattern spawns
+            return RecurseCheckInvalid(pattern.SpawningId, pattern.SpawningType, new HashSet<int>(visitedPatterns));
+        }
+        else if (currentType == ModelType.Projectile)
+        {
+            var proj = Editor.Instance.ProjectileModels[currentId];
+            // check all child models spawned by this projectile
+            foreach (var reference in proj.Spawns)
+                if (RecurseCheckInvalid(reference.Id, reference.Type, new HashSet<int>(visitedPatterns)))
+                    return true;
+        }
+        return false; // valid
+    }
+    private void SpawningIdChanged(double v)
     {
         int id = (int)v;
-        if (Editor.Instance.ProjectileModels[id] == null)
+        if (Model.SpawningType == ModelType.Projectile && Editor.Instance.ProjectileModels[id] == null)
         {
-            ErrorDisplay.SetMessage("Projectile Id", $"[Projectile Id] Projectile of id {id} does not exist");
+            ErrorDisplay.SetMessage("SpawningId", $"[Spawning Id] Projectile of id {id} does not exist");
+            return;
+        } else if (Model.SpawningType == ModelType.Pattern && Editor.Instance.PatternModels[id] == null)
+        {
+            ErrorDisplay.SetMessage("SpawningId", $"[Spawning Id] Pattern of id {id} does not exist");
+            return;
+        } else if (RecurseCheckInvalid(id, Model.SpawningType))
+        {
+            ErrorDisplay.SetMessage("SpawningId", $"[Spawning Id] This spawn id would cause a recursive loop");
             return;
         }
-        ErrorDisplay.ClearMessage("Projectile Id");
-        Model.Id = id;
+        ErrorDisplay.ClearMessage("SpawningId");
+        Model.SpawningId = id;
         pp.MarkDirty();
     }
     private void FunctionChanged(string funcName, string text)
@@ -144,7 +181,9 @@ public partial class PatternSpawnConditions : Control
         Fi.Text = Model.FunctionF;
         Ti.Text = Model.FunctionT;
         Count.Value = Model.Count;
-        ProjectileId.Value = Model.ProjectileId;
+        SpawningId.SetValueNoSignal(Model.SpawningId);
+        SpawningType.Select((int)Model.SpawningType);
+        GD.Print(SpawningType);
         FunctionChanged("x(i)", Model.FunctionX);
         FunctionChanged("y(i)", Model.FunctionY);
         FunctionChanged("f(i)", Model.FunctionF);

@@ -621,14 +621,15 @@ public partial class LevelPreview : Control
 				return;
 			Vector2[] points = new Vector2[steps];
 			var lctx = new EvalContext() { N = patt.Count };
+			var color = RenderingUtils.ColorFromString(patt.Name);
 			for (int i = 0; i < steps; i++)
 			{
 				lctx.I = lctx.N / steps * i;
 				var (x, y) = LevelDirector.CalculatePosition(patt.fnx, patt.fny, r.SpawnF, lctx);
 				points[i] = new(r.SpawnX + x, r.SpawnY + y);
-				PreviewRoot.DrawCircle(points[i], ConfigHelper.Current.PathThickness * 1.5f, RenderingUtils.ColorFromString(e.ProjectileModels[patt.ProjectileId].Name));
+				PreviewRoot.DrawCircle(points[i], ConfigHelper.Current.PathThickness * 1.5f, color);
 			}
-			PreviewRoot.DrawPolyline(points, RenderingUtils.ColorFromString(patt.Name), ConfigHelper.Current.PathThickness, true);
+			PreviewRoot.DrawPolyline(points, color, ConfigHelper.Current.PathThickness, true);
 			var spawnPos = new Vector2(r.SpawnX, r.SpawnY);
 			PreviewRoot.DrawDashedLine(spawnPos, spawnPos + (Vector2.FromAngle((float)r.SpawnF + (Mathf.Pi / 2)) * 50), Colors.DarkRed, 4f);
 		}
@@ -673,7 +674,7 @@ public partial class LevelPreview : Control
 		_ctx.T = e.CurrentTime;
 		for (int i = 0; i < e.levelData.BackgroundLayers.Count; i++)
 		{
-			bgInstances[i].Tick(_ctx);
+			bgInstances[i].Tick(e.CurrentTime);
 		}
 		// clear indices
 		for (int g = 0; g < _renderGroups.Count; g++)
@@ -791,29 +792,7 @@ public partial class LevelPreview : Control
 			_bakedTimeline.Add(r);
 			if (r.Type == ModelType.Projectile)
 			{
-				var proj = e.ProjectileModels[r.Id];
-				if (proj.SpawnModelOnDeath && r.Depth < proj.MaxDepth)
-				{
-					var lctx = new EvalContext() { T = proj.Lifetime, L = proj.Lifetime };
-					Vector2 spawnpos = new(r.SpawnX, r.SpawnY);
-					var f = r.SpawnF + MathSafe.Sanitize(proj.fnf(lctx));
-					var delta = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, lctx);
-					Vector2 endPos = spawnpos + delta;
-					var childRef = new EditorReference()
-					{
-						SpawnX = endPos.X,
-						SpawnY = endPos.Y,
-						Pos = endPos,
-						SpawnF = r.SpawnF + f,
-						F = r.SpawnF + f,
-						T = r.T + proj.Lifetime,
-						Type = proj.SpawnOnDeathType,
-						RootEditorId = modifiedId,
-						Id = proj.SpawnOnDeathId,
-						Depth = r.Depth + 1,
-					};
-					processingQueue.Enqueue(childRef);
-				}
+				UnpackProjectileIntoQueue(r, processingQueue);
 			}
 			else if (r.Type == ModelType.Pattern)
 			{
@@ -821,19 +800,43 @@ public partial class LevelPreview : Control
 			}
 		}
 	}
+	private void UnpackProjectileIntoQueue(EditorReference r, Queue<EditorReference> queue)
+	{
+		var proj = e.ProjectileModels[r.Id];
+		if (r.Depth >= proj.MaxDepth) return;
+		for (int i = 0; i < proj.Spawns.Count; i++)
+		{
+			var childRef = proj.Spawns[i];
+			var pctx = new EvalContext { T = childRef.T, L = proj.Lifetime }; // parent context at time of child spawning
+			double parentF = r.SpawnF+MathSafe.Sanitize(proj.fnf(pctx));
+			var parentPos = LevelDirector.CalculatePosition(proj.fnx, proj.fny, parentF, pctx) + new Vector2(r.SpawnX, r.SpawnY);
+			Vector2 childSpawnPos = parentPos + new Vector2(childRef.SpawnX, childRef.SpawnY);
+			double childT = MathSafe.Sanitize(childRef.T+r.T);
+			double childF = parentF + childRef.SpawnF;
+			var newRef = new EditorReference()
+			{
+				SpawnX = childSpawnPos.X,
+				SpawnY = childSpawnPos.Y,
+				Pos = childSpawnPos,
+				SpawnF = childF,
+				F = childF,
+				T = childT,
+				Type = childRef.Type,
+				Id = childRef.Id,
+				Depth = r.Depth +1
+			};
+			queue.Enqueue(newRef);
+		}
+	}
 	private void UnpackPatternIntoQueue(EditorReference r, Queue<EditorReference> queue)
 	{
 		var patt = e.PatternModels[r.Id];
 		if (patt == null) return;
-		var proj = e.ProjectileModels[patt.ProjectileId];
-		if (proj == null) return;
-
-		var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1, L = proj.Lifetime };
+		var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1};
 		Vector2 basePos = new Vector2(r.SpawnX, r.SpawnY);
 		r.Pos = basePos;
 		for (int j = 0; j < patt.Count; j++)
 		{
-			lctx.T = 0;
 			lctx.I = j;
 			double spawnDelay = MathSafe.Sanitize(patt.fnt(lctx));
 			double fwdOffset = MathSafe.Sanitize(patt.fnf(lctx));
@@ -841,8 +844,8 @@ public partial class LevelPreview : Control
 			Vector2 childAbsoluteSpawnPos = basePos + spawnOffset;
 			var subBulletRef = new EditorReference
 			{
-				Id = patt.ProjectileId,
-				Type = ModelType.Projectile,
+				Id = patt.SpawningId,
+				Type = patt.SpawningType,
 				RootEditorId = r.RootEditorId,
 				T = r.T + spawnDelay,
 				SpawnX = childAbsoluteSpawnPos.X,
@@ -888,7 +891,7 @@ public partial class LevelPreview : Control
 			if (t > maxSpawnT)
 				maxSpawnT = t;
 		}
-		var proj = e.ProjectileModels[model.ProjectileId];
+		var proj = e.ProjectileModels[model.SpawningId];
 		model.lifetime = (float)(maxSpawnT + (proj != null ? proj.Lifetime : 0));
 		// redraw
 		PreviewRoot.QueueRedraw();

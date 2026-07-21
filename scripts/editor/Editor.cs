@@ -64,9 +64,11 @@ public partial class Editor : CanvasLayer
                 {
                     DeleteReference(r);
                 }
-                if (r.Type == ModelType.Pattern && levelData.PatternModels[r.Id].ProjectileId == id)
+                if (r.Type == ModelType.Pattern)
                 {
-                    DeleteReference(r);
+                    var patt = levelData.PatternModels[r.Id];
+                    if (patt.SpawningType == ModelType.Projectile && patt.SpawningId == id)
+                        DeleteReference(r);
                 }
             }
             projCreator.Load(levelData);

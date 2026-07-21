@@ -51,6 +51,8 @@
 [ext_resource type="PackedScene" uid="uid://c5xi4uxw2i1sr" path="res://data/scenes/ui/projectile_model_ui.tscn" id="36_ntx8l"]
 [ext_resource type="Script" uid="uid://c0a3d1qkyknoe" path="res://scripts/editor/modules/projectile_creator/ProjectileMovementEditor.cs" id="39_rqtf5"]
 [ext_resource type="Script" uid="uid://bd7wygiww7b5s" path="res://scripts/editor/Toolbar.cs" id="39_ruth0"]
+[ext_resource type="Script" uid="uid://0vklv8ch17sk" path="res://scripts/editor/modules/projectile_creator/spawns/SpawnsEditor.cs" id="39_wu3dr"]
+[ext_resource type="PackedScene" uid="uid://buixvfhspflve" path="res://data/scenes/ui/reference_ui.tscn" id="40_cyx1q"]
 [ext_resource type="Script" uid="uid://ce51ge6a5nvjo" path="res://scripts/editor/modules/projectile_creator/ProjectileVisuals.cs" id="42_wu3dr"]
 [ext_resource type="Script" uid="uid://dlynwfalg1qjp" path="res://scripts/editor/modules/projectile_creator/ProjectileCollisionEditor.cs" id="43_cyx1q"]
 [ext_resource type="Script" uid="uid://cwblvkmrlra3" path="res://scripts/editor/modules/projectile_creator/ProjectileInfo.cs" id="44_0dhbp"]
@@ -1074,7 +1076,6 @@ select_all_on_focus = true
 [node name="EditorAudioPreview" type="AudioStreamPlayer" parent="Editor" unique_id=1220983324]
 
 [node name="ModelEditor" type="Control" parent="Editor" unique_id=2007401369 node_paths=PackedStringArray("Close")]
-visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -1099,12 +1100,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
-current_tab = 0
+current_tab = 1
 tab_0/title = "Projectiles"
 tab_1/title = "Patterns"
 tab_2/title = "Advanced"
 
-[node name="ProjectileEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2111981338 node_paths=PackedStringArray("ProjectilePreview", "Collision", "Visuals", "MovementInspector", "Info", "ModelList", "NextFree")]
+[node name="ProjectileEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2111981338 node_paths=PackedStringArray("ProjectilePreview", "Collision", "Visuals", "MovementInspector", "Info", "SpawnEditor", "ModelList", "NextFree")]
+visible = false
 layout_mode = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("5_w48qg")
@@ -1113,6 +1115,7 @@ Collision = NodePath("Sort/Sort/ModelEdit/List/Collision")
 Visuals = NodePath("Sort/Sort/ModelEdit/List/Visual")
 MovementInspector = NodePath("Sort/Sort/ModelEdit/List/Movement")
 Info = NodePath("Sort/Sort/ModelEdit/List/ProjectileInfo")
+SpawnEditor = NodePath("Sort/Sort/ModelEdit/List/Spawns")
 ProjectileModelUi = ExtResource("36_ntx8l")
 ModelList = NodePath("Sort/Sort/ModelSelect/List")
 NextFree = NodePath("Sort/Sort/NextFree")
@@ -1130,6 +1133,7 @@ size_flags_horizontal = 0
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 3
+scroll_vertical = 276
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit" unique_id=2054287680]
@@ -1312,10 +1316,12 @@ text = "Lock Rotation"
 layout_mode = 2
 size_flags_horizontal = 10
 
-[node name="Collision" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=848117596 node_paths=PackedStringArray("Radius", "UseShape", "ShapeEditor")]
+[node name="Collision" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=848117596 node_paths=PackedStringArray("Radius", "TelegraphTime", "CanCollide", "UseShape", "ShapeEditor")]
 layout_mode = 2
 script = ExtResource("43_cyx1q")
 Radius = NodePath("radius/SpinBox")
+TelegraphTime = NodePath("telegraphtime/SpinBox")
+CanCollide = NodePath("cancollide/CheckButton")
 UseShape = NodePath("useshape/CheckButton")
 ShapeEditor = NodePath("shapeeditor")
 
@@ -1324,11 +1330,38 @@ layout_mode = 2
 text = "Collision"
 label_settings = ExtResource("7_getpj")
 
+[node name="cancollide" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision" unique_id=562916536]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/cancollide" unique_id=27730573]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Can Collide"
+
+[node name="CheckButton" type="CheckButton" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/cancollide" unique_id=815093746]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="telegraphtime" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision" unique_id=706384396]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/telegraphtime" unique_id=385050074]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Telegraph Time"
+
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/telegraphtime" unique_id=433901791]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+step = 0.01
+allow_greater = true
+
 [node name="radius" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision" unique_id=656535802]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/radius" unique_id=1704282350]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Radius"
 
@@ -1353,55 +1386,67 @@ size_flags_horizontal = 10
 [node name="shapeeditor" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision" unique_id=2011022750 node_paths=PackedStringArray("PointContainer", "NewPoint", "XTranslate", "YTranslate", "ScaleTranslate", "ForwardTranslate", "ApplyTranslation")]
 layout_mode = 2
 script = ExtResource("6_074og")
-PointContainer = NodePath("Points")
-NewPoint = NodePath("Points/NewPoint")
-XTranslate = NodePath("shapeTranslate/Sort/Left/X/SpinBox")
-YTranslate = NodePath("shapeTranslate/Sort/Left/Y/SpinBox")
-ScaleTranslate = NodePath("shapeTranslate/Sort/Right/S/SpinBox")
-ForwardTranslate = NodePath("shapeTranslate/Sort/Right/F/SpinBox")
-ApplyTranslation = NodePath("shapeTranslate/Sort/Apply")
+PointContainer = NodePath("PointsList/Points")
+NewPoint = NodePath("NewPoint")
+XTranslate = NodePath("shapeTranslate/Stack/Sort/Left/X/SpinBox")
+YTranslate = NodePath("shapeTranslate/Stack/Sort/Left/Y/SpinBox")
+ScaleTranslate = NodePath("shapeTranslate/Stack/Sort/Right/S/SpinBox")
+ForwardTranslate = NodePath("shapeTranslate/Stack/Sort/Right/F/SpinBox")
+ApplyTranslation = NodePath("shapeTranslate/Stack/Apply")
 pointUi = ExtResource("22_0rl1p")
 
-[node name="Points" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor" unique_id=2033471131]
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="NewPoint" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/Points" unique_id=196298835]
+[node name="NewPoint" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor" unique_id=196298835]
 custom_minimum_size = Vector2(190, 0)
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 22
 text = "+"
 
+[node name="PointsList" type="FoldableContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor" unique_id=1643534938]
+layout_mode = 2
+folded = true
+title = "Points"
+
+[node name="Points" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/PointsList" unique_id=2033471131]
+visible = false
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [node name="shapeTranslate" type="FoldableContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor" unique_id=1686781879]
 layout_mode = 2
-title = "Shape Translate"
+folded = true
+title = "Points Translate"
 
-[node name="Sort" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate" unique_id=1521586221]
+[node name="Stack" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate" unique_id=2060488846]
+visible = false
 layout_mode = 2
 
-[node name="Apply" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort" unique_id=129224235]
+[node name="Apply" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack" unique_id=129224235]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 focus_mode = 0
 text = "Apply"
 
-[node name="Left" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort" unique_id=2082308871]
+[node name="Sort" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack" unique_id=1521586221]
+layout_mode = 2
+
+[node name="Left" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort" unique_id=2082308871]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="X" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Left" unique_id=1826668942]
+[node name="X" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Left" unique_id=1826668942]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Left/X" unique_id=1846732635]
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Left/X" unique_id=1846732635]
+custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "X"
+size_flags_horizontal = 0
+text = "Pos X"
 horizontal_alignment = 1
 
-[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Left/X" unique_id=1474831312]
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Left/X" unique_id=1474831312]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -1409,16 +1454,17 @@ step = 0.01
 allow_greater = true
 allow_lesser = true
 
-[node name="Y" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Left" unique_id=1987096187]
+[node name="Y" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Left" unique_id=1987096187]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Left/Y" unique_id=740387783]
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Left/Y" unique_id=740387783]
+custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-text = "Y"
+size_flags_horizontal = 0
+text = "Pos Y"
 horizontal_alignment = 1
 
-[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Left/Y" unique_id=2027965348]
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Left/Y" unique_id=2027965348]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -1426,20 +1472,21 @@ step = 0.01
 allow_greater = true
 allow_lesser = true
 
-[node name="Right" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort" unique_id=533729955]
+[node name="Right" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort" unique_id=533729955]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="S" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Right" unique_id=875074982]
+[node name="S" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Right" unique_id=875074982]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Right/S" unique_id=1240407990]
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Right/S" unique_id=1240407990]
+custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 text = "Scale"
 horizontal_alignment = 1
 
-[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Right/S" unique_id=499369770]
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Right/S" unique_id=499369770]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -1448,22 +1495,63 @@ value = 1.0
 allow_greater = true
 allow_lesser = true
 
-[node name="F" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Right" unique_id=1027742742]
+[node name="F" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Right" unique_id=1027742742]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Right/F" unique_id=969919923]
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Right/F" unique_id=969919923]
+custom_minimum_size = Vector2(85, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 text = "Fwd"
 horizontal_alignment = 1
 
-[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Sort/Right/F" unique_id=1515603341]
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Collision/shapeeditor/shapeTranslate/Stack/Sort/Right/F" unique_id=1515603341]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
 step = 0.01
 allow_greater = true
 allow_lesser = true
+
+[node name="Spawns" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=1612615790 node_paths=PackedStringArray("SpawnsUiContainer", "MaxDepth", "NewButton")]
+layout_mode = 2
+script = ExtResource("39_wu3dr")
+SpawnsUiContainer = NodePath("SpawnsList/List")
+MaxDepth = NodePath("radius/SpinBox")
+NewButton = NodePath("New")
+SpawnEditorUi = ExtResource("40_cyx1q")
+
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns" unique_id=605372723]
+layout_mode = 2
+text = "Spawns"
+label_settings = ExtResource("7_getpj")
+
+[node name="radius" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns" unique_id=880868412]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns/radius" unique_id=808185191]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Max Depth"
+
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns/radius" unique_id=344427088]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+max_value = 16.0
+rounded = true
+
+[node name="New" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns" unique_id=1817260943]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "+"
+
+[node name="SpawnsList" type="FoldableContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns" unique_id=1985189212]
+layout_mode = 2
+title = "Spawns"
+
+[node name="List" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns/SpawnsList" unique_id=1490415690]
+layout_mode = 2
 
 [node name="ProjectileInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=1032109005 node_paths=PackedStringArray("IdSelect", "ProjectileName", "DeleteBtn", "SaveBtn")]
 layout_mode = 2
@@ -1502,7 +1590,7 @@ layout_mode = 2
 text = "Id"
 
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/ProjectileInfo/IdSelect" unique_id=412259668]
-custom_minimum_size = Vector2(50, 0)
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 max_value = 127.0
@@ -1601,7 +1689,6 @@ size_flags_vertical = 8
 text = "↩"
 
 [node name="PatternEditor" type="PanelContainer" parent="Editor/ModelEditor/Tabs" unique_id=2001507019 node_paths=PackedStringArray("PatternPreview", "Info", "Spawning", "ModelList", "NextFree")]
-visible = false
 layout_mode = 2
 theme = ExtResource("2_ryguw")
 script = ExtResource("15_getpj")
@@ -1633,7 +1720,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "XiClear", "Yi", "YiClear", "Fi", "FiClear", "Ti", "TiClear", "Count", "ProjectileId", "ErrorDisplay")]
+[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "XiClear", "Yi", "YiClear", "Fi", "FiClear", "Ti", "TiClear", "Count", "SpawningId", "SpawningType", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("46_1vm84")
 PresetContainer = NodePath("Presets")
@@ -1646,7 +1733,8 @@ FiClear = NodePath("Inspector/fi/Clear")
 Ti = NodePath("Inspector/ti/LineEdit")
 TiClear = NodePath("Inspector/ti/Clear")
 Count = NodePath("Inspector/count/SpinBox")
-ProjectileId = NodePath("Inspector/ProjectileId/SpinBox")
+SpawningId = NodePath("Inspector/spawningId/SpinBox")
+SpawningType = NodePath("Inspector/spawningType/OptionButton")
 ErrorDisplay = NodePath("Inspector/ErrorDisplay")
 
 [node name="MovementLabel" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions" unique_id=1678121578]
@@ -1761,15 +1849,35 @@ text = "Count"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ProjectileId" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=1610358061]
+[node name="spawningType" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=954603691]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningType" unique_id=362504794]
+layout_mode = 2
+text = "Spawn Type"
+horizontal_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningType" unique_id=615605475]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+selected = 0
+item_count = 2
+popup/item_0/text = "Projectile"
+popup/item_0/id = 0
+popup/item_1/text = "Pattern"
+popup/item_1/id = 1
+
+[node name="spawningId" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=1610358061]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/ProjectileId" unique_id=1221013816]
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningId" unique_id=1221013816]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Projectile Id"
+text = "Spawn Id"
 
-[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/ProjectileId" unique_id=1566882731]
+[node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningId" unique_id=1566882731]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 size_flags_horizontal = 10
@@ -1778,15 +1886,14 @@ rounded = true
 
 [node name="ErrorDisplay" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=211005039]
 layout_mode = 2
-text = "some things are wrong here"
 label_settings = ExtResource("7_cegan")
 script = ExtResource("8_074og")
 
-[node name="PatternInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=800381671 node_paths=PackedStringArray("IdSelect", "ProjectileName", "DeleteBtn", "SaveBtn")]
+[node name="PatternInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=800381671 node_paths=PackedStringArray("IdSelect", "PatternName", "DeleteBtn", "SaveBtn")]
 layout_mode = 2
 script = ExtResource("47_wu3dr")
 IdSelect = NodePath("IdSelect/SpinBox")
-ProjectileName = NodePath("Name/LineEdit")
+PatternName = NodePath("Name/LineEdit")
 DeleteBtn = NodePath("../Actions/Delete")
 SaveBtn = NodePath("../Actions/Save")
 

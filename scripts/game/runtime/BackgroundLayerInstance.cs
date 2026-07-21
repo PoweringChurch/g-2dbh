@@ -22,8 +22,9 @@ public partial class BackgroundLayerInstance : Parallax2D
         RepeatTimes = Layer.RepeatCount;
         ZIndex = Layer.Order;
     }
-    public void Tick(EvalContext ctx)
+    public void Tick(double time)
     {
+        var ctx = new EvalContext() {T = time};
         ScrollOffset = (scrollx == null || scrolly == null) ? Vector2.Zero : new((float)scrollx(ctx), (float)scrolly(ctx));
         Modulate = (transparency == null) ? Colors.White : new(1,1,1,1-(float)transparency(ctx));
     }

@@ -3,6 +3,14 @@ using Godot;
 
 public partial class ProjectilePreview : Control
 {
+    private struct SpawnInstance
+	{
+		public Vector2 Pos;
+		public float F;
+		public double T;
+		public bool Alive;
+	}
+	private SpawnInstance[] instances = [];
     public ProjectileModel Model;
     [Export] private Control DrawOn;
     [Export] private Button PlaybackToggle;
@@ -32,15 +40,9 @@ public partial class ProjectilePreview : Control
         TimeSpin.ValueChanged += (v) => { ctx.T = v; MarkDirty(); };
         HomeButton.Pressed += Home;
     }
-    public void Load(ProjectileModel m)
-    {
-        Model = m;
-        Home();
-    }
-    public void MarkDirty()
-    {
+    public void Load(ProjectileModel m) { Model = m; Home(); }
+    public void MarkDirty() =>
         dirty = true;
-    }
     private void Home()
     {
         reference.SpawnPos = new Vector2(918, 694) / 2;
@@ -49,7 +51,6 @@ public partial class ProjectilePreview : Control
         zoomPan = Vector2.Zero;
         MarkDirty();
     }
-
     private Vector2 ViewCenter => DrawOn.Size / 2;
     private Vector2 WorldToScreen(Vector2 world) => ViewCenter + zoomPan + (world - ViewCenter) * zoom;
     private Vector2 ScreenToWorld(Vector2 screen) => ViewCenter + (screen - ViewCenter - zoomPan) / zoom;

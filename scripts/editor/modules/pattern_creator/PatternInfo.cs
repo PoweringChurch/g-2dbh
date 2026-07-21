@@ -5,7 +5,7 @@ public partial class PatternInfo : Control
 {
     public PatternModel Model;
     [Export] private SpinBox IdSelect;
-    [Export] private LineEdit ProjectileName;
+    [Export] private LineEdit PatternName;
     [Export] private Button DeleteBtn;
     [Export] private Button SaveBtn;
     private Editor e => Editor.Instance;
@@ -16,7 +16,7 @@ public partial class PatternInfo : Control
     }
     private void Save()
     {
-        Model.Name = ProjectileName.Text;
+        Model.Name = PatternName.Text;
         Model.Id = (int)IdSelect.Value;
         e.SavePatternModel(new PatternModel(Model));
     }
@@ -24,6 +24,6 @@ public partial class PatternInfo : Control
     {
         Model = newModel;
         IdSelect.Value = newModel.Id;
-        ProjectileName.Text = newModel.Name;
+        PatternName.Text = newModel.Name;
     }
 }
