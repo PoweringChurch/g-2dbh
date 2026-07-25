@@ -104,6 +104,7 @@ public partial class Editor : CanvasLayer
     [Export] private PatternCreator pattCreator;
     [Export] private Inspector inspector;
     [Export] private CustomVariables customVars;
+    [Export] private NotificationBoard notifBoard;
     GameSession gs => GameSession.Instance;
     public override void _EnterTree() =>
         Instance = this;
@@ -115,13 +116,9 @@ public partial class Editor : CanvasLayer
         levelMeta.DurationChanged += timeline.UpdateDuration;
         levelMeta.SaveLevelRequested += SaveLevel;
         levelMeta.MusicChanged += timeline.UpdateMusic;
-
-        GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
     }
     public void UpdateInspector() =>
         inspector.Update(SelectedReference);
-    public void RefreshTimelineMarker(EditorReference r) =>
-        timeline.RefreshMarker(r);
     [Signal] public delegate void CopyEventHandler();
     [Signal] public delegate void PasteEventHandler();
     [Signal] public delegate void DeleteEventHandler();
@@ -142,7 +139,7 @@ public partial class Editor : CanvasLayer
         data.LevelPath = $"user://data/levels/{Guid.NewGuid()}/";
         DirAccess.MakeDirRecursiveAbsolute(data.LevelPath);
         DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "audio/");
-        WriteJson(data.LevelPath + "leveldata.json", data);
+        SerializationUtils.WriteJson(data.LevelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
     public void SetPlaying(bool to) => timeline.SetPlaying(to);
@@ -179,12 +176,14 @@ public partial class Editor : CanvasLayer
     }
     private void SaveLevel()
     {
-        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelPath})...");
-        WriteJson(levelData.LevelPath + "leveldata.json", levelData);
+        SerializationUtils.WriteJson(levelData.LevelPath + "leveldata.json", levelData);
+        notifBoard.ShowMessage($"Saved level successfully ({DateTime.Now})");
         Console.Inst.Log("[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
         preview.Sync();
+    public void UpdateReference(EditorReference r) =>
+        preview.UpdateReferenceInEditor(r, r.RootEditorId);
     public void AddReference(EditorReference reference)
     {
         timeline.AddMarker(reference);
@@ -203,15 +202,5 @@ public partial class Editor : CanvasLayer
             projCreator.LoadProjectile(pm);
         else if (model is PatternModel ptm)
             pattCreator.LoadPattern(ptm);
-    }
-    private static void WriteJson<T>(string path, T data)
-    {
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
-        if (file == null)
-        {
-            Console.Inst.LogErr($"Failed to open file for writing: {path}");
-        }
-        var s = JsonSerializer.Serialize(data);
-        file.StoreString(s);
     }
 }

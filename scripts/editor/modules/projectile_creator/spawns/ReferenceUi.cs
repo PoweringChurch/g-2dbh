@@ -4,6 +4,7 @@ using System;
 public partial class ReferenceUi : Control
 {
     private EditorReference Editing;
+    [Export] public Label nameLabel;
     [Export] public SpinBox spawnx;
     [Export] public SpinBox spawny;
     [Export] public SpinBox fwd;
@@ -34,6 +35,7 @@ public partial class ReferenceUi : Control
         time.SetValueNoSignal(Editing.T);
         id.SetValueNoSignal(Editing.Id);
         type.Select((int)Editing.Type);
+        IdChanged(Editing.Id);
     }
     private void IdChanged(double v)
     {
@@ -45,6 +47,7 @@ public partial class ReferenceUi : Control
                 Editing.Id = id;
                 pp.MarkDirty();
                 errdisplay.ClearMessage("id");
+                nameLabel.Text = Editor.Instance.ProjectileModels[id].Name;
             } else errdisplay.SetMessage("id", $"[Id] Projectile model of id '{id}' does not exist");
         } else if (Editing.Type == ModelType.Pattern)
         {
@@ -53,6 +56,7 @@ public partial class ReferenceUi : Control
                 Editing.Id = id;
                 pp.MarkDirty();
                 errdisplay.ClearMessage("id");
+                nameLabel.Text = Editor.Instance.PatternModels[id].Name;
             } else errdisplay.SetMessage("id", $"[Id] Pattern model of id '{id}' does not exist");
         }
     }

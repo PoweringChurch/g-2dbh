@@ -25,16 +25,13 @@ public partial class ShapeEditor : Control
         ApplyTranslation.Pressed += OnApplyTranslationPressed;
     }
 
-    public List<Vector2> GetShape() => new(_points);
-
-    public void Load(float[][] shape)
+    public void Load(List<Vector2> shape)
     {
         Clear();
 
-        var pts = CollisionUtils.FloatArrToVect2s(shape);
-        if (pts != null)
+        if (shape != null)
         {
-            foreach (var pt in pts)
+            foreach (var pt in shape)
                 AddPointInternal(pt);
         }
 

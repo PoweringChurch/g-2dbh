@@ -26,7 +26,6 @@ public partial class Timeline : Control
     private bool _loop = false;
     private bool _dirty = false;
     private Dictionary<EditorReference, TimelineMarker> _markers = new();
-    private Dictionary<string, bool> _visibleModels = new();
     private Editor e => Editor.Instance;
     public override void _Ready()
     {
@@ -61,7 +60,7 @@ public partial class Timeline : Control
             Playhead.MaxValue = e.levelData.Duration;
             PlayheadPositionInput.MaxValue = e.levelData.Duration;
             foreach (var m in _markers)
-                m.Value.Refresh(e.levelData.Duration, new Vector2(1920, 40));
+                m.Value.Refresh();
             _dirty = false;
         }
         if (!_playing)
@@ -185,11 +184,12 @@ public partial class Timeline : Control
     {
         var marker = new TimelineMarker();
         TimelineBar.AddChild(marker);
-        marker.Init(r, e.levelData.Duration, new Vector2(1920, 40));
+        marker.Init(r);
         _markers[r] = marker;
     }
     public void RemoveMarker(EditorReference r)
     {
+        if (r == null) return;
         if (_markers.TryGetValue(r, out var marker))
         {
             marker.QueueFree();
@@ -201,10 +201,5 @@ public partial class Timeline : Control
         foreach (var marker in _markers.Values)
             marker.QueueFree();
         _markers.Clear();
-    }
-    public void RefreshMarker(EditorReference r)
-    {
-        if (r == null) return;
-        _markers[r].Refresh(e.levelData.Duration, new Vector2(1920, 40));
     }
 }

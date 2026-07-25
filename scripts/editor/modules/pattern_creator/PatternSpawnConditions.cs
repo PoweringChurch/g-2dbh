@@ -78,6 +78,7 @@ public partial class PatternSpawnConditions : Control
     [Export] private LineEdit Ti;
     [Export] private Button TiClear;
     [Export] private SpinBox Count;
+    [Export] private Label spawningNameLabel;
     [Export] private SpinBox SpawningId;
     [Export] private OptionButton SpawningType;
     [Export] private MessageDisplay ErrorDisplay;
@@ -153,6 +154,9 @@ public partial class PatternSpawnConditions : Control
         }
         ErrorDisplay.ClearMessage("SpawningId");
         Model.SpawningId = id;
+        spawningNameLabel.Text = (Model.SpawningType == ModelType.Projectile) 
+            ? Editor.Instance.ProjectileModels[id].Name 
+            : Editor.Instance.PatternModels[id].Name;
         pp.MarkDirty();
     }
     private void FunctionChanged(string funcName, string text)
@@ -187,5 +191,6 @@ public partial class PatternSpawnConditions : Control
         FunctionChanged("y(i)", Model.FunctionY);
         FunctionChanged("f(i)", Model.FunctionF);
         FunctionChanged("t(i)", Model.FunctionT);
+        SpawningIdChanged(Model.SpawningId);
     }
 }

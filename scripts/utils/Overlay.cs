@@ -23,7 +23,7 @@ public partial class Overlay : CanvasLayer
         if (@event.IsActionPressed("debug_overlay"))
             Visible = !Visible;
         if (@event.IsActionPressed("show_hitboxes"))
-            ShowHitboxes = !ShowHitboxes;    
+            ShowHitboxes = !ShowHitboxes;
     }
     public override void _Process(double dt)
     {

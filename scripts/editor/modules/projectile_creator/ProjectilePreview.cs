@@ -210,7 +210,7 @@ public partial class ProjectilePreview : Control
                     continue;
                 }
                 if (proj.UseShape && proj.Shape != null)
-                    DrawOn.DrawColoredPolygon([.. proj.ShapeVect2s, proj.ShapeVect2s[0]], color);
+                    DrawOn.DrawColoredPolygon([.. proj.Shape, proj.Shape[0]], color);
                 else
                     DrawOn.DrawCircle(Vector2.Zero, proj.Radius, color);
             }
@@ -242,7 +242,7 @@ public partial class ProjectilePreview : Control
             var forward = pm.LockRotation ? 0 : inst.F;
             DrawOn.DrawSetTransform(WorldToScreen(inst.Pos), forward, Vector2.One * zoom);
             if (pm.UseShape && pm.Shape != null)
-                DrawOn.DrawPolyline([.. pm.ShapeVect2s, pm.ShapeVect2s[0]], Colors.Red);
+                DrawOn.DrawPolyline([.. pm.Shape, pm.Shape[0]], Colors.Red);
             else
                 DrawOn.DrawCircle(Vector2.Zero, pm.Radius, Colors.Red, false);
         }
@@ -251,14 +251,14 @@ public partial class ProjectilePreview : Control
     {
         if (Model == null)
             return;
-        bool alive = ctx.T >= 0 && ctx.T <= ctx.L;
-        bool show = Model.CanCollide && (ctx.T > Model.TelegraphTime) && alive;
+        bool alive = ctx.T >= 0 && ctx.T < ctx.L;
+        bool show = Model.CanCollide && (ctx.T >= Model.TelegraphTime) && alive;
         if (!show) return;
         var forward = Model.LockRotation ? 0 : (float)reference.F;
         DrawOn.DrawSetTransform(WorldToScreen(reference.Pos), forward, Vector2.One * zoom);
         if (Model.UseShape && Model.Shape != null)
         {
-            DrawOn.DrawPolyline([.. Model.ShapeVect2s, Model.ShapeVect2s[0]], Colors.Red);
+            DrawOn.DrawPolyline([.. Model.Shape, Model.Shape[0]], Colors.Red);
         }
         else
             DrawOn.DrawCircle(Vector2.Zero, Model.Radius, Colors.Red, false);
@@ -267,7 +267,7 @@ public partial class ProjectilePreview : Control
     {
         if (Model == null)
             return;
-        bool alive = ctx.T >= 0 && ctx.T <= ctx.L;
+        bool alive = ctx.T >= 0 && ctx.T < ctx.L;
         var color = Colors.White;
         if (!alive) color.A *= 0.5f;
         var forward = Model.LockRotation ? 0 : (float)reference.F;
@@ -280,7 +280,7 @@ public partial class ProjectilePreview : Control
         }
         if (Model.UseShape && Model.Shape != null)
         {
-            DrawOn.DrawColoredPolygon([.. Model.ShapeVect2s, Model.ShapeVect2s[0]], color);
+            DrawOn.DrawColoredPolygon([.. Model.Shape, Model.Shape[0]], color);
         }
         else
             DrawOn.DrawCircle(Vector2.Zero, Model.Radius, color);

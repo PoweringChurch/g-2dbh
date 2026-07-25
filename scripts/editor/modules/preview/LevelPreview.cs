@@ -7,19 +7,36 @@ using Godot;
 public partial class LevelPreview : Control
 {
 	public const float PreviewScale = 0.8f;
+	private float resScale = 1;
 	[Export] Node2D PreviewRoot;
 	[Export] SubViewport PreviewVP;
+	private MultiMeshInstance2D mmInst;
 	private Editor e => Editor.Instance;
-	private float resScale = 1;
 	private List<BackgroundLayerInstance> bgInstances = new();
 	public List<BackgroundLayerInstance> BGInstances => bgInstances;
-	private List<RenderGroup> _renderGroups = new();
-	private float[][] _groupBuffers = new float[Editor.MaxModelCount][];
+	private MultiMesh multiMesh;
 	public override void _Ready()
 	{
 		GetTree().Root.SizeChanged += OnWindowResized;
 		PreviewRoot.Draw += () => DrawGizmos(SelectedReference);
-
+		multiMesh = new MultiMesh
+        {
+            Mesh = new QuadMesh(),
+            TransformFormat = MultiMesh.TransformFormatEnum.Transform2D,
+            UseColors = true,
+            UseCustomData = true,
+            InstanceCount = 0,
+        };
+		var shader = GD.Load<Shader>("res://shaders/projectile_atlas.gdshader");
+        var shaderMaterial = new ShaderMaterial();
+        shaderMaterial.Shader = shader;
+        mmInst = new MultiMeshInstance2D
+        {
+            Multimesh = multiMesh,
+            Texture = RenderingUtils.GetProjectileAtlas(),
+            Material = shaderMaterial
+        };
+        PreviewRoot.AddChild(mmInst);
 		e.Copy += Copy;
 		e.Paste += Paste;
 		e.Cut += Cut;
@@ -115,16 +132,9 @@ public partial class LevelPreview : Control
 		copiedAtPos = ToPreviewLocal(currentMpos);
 		copiedAtTime = e.CurrentTime;
 		// references have a T variable telling when it spawns and a SpawnPos variable telling where to spawn.
-		if (_inGroup)
+		foreach (var r in groupSelection)
 		{
-			foreach (var r in groupSelection)
-			{
-				copied.Add(r);
-			}
-		}
-		else if (selectedReference != null)
-		{
-			copied.Add(SelectedReference);
+			copied.Add(r);
 		}
 	}
 	private void Paste()
@@ -668,6 +678,7 @@ public partial class LevelPreview : Control
 	}
 	List<EditorReference> _bakedTimeline = new();
 	private EvalContext _ctx = new();
+	private int written;
 	public void Sync()
 	{
 		// tick backgrounds
@@ -676,11 +687,7 @@ public partial class LevelPreview : Control
 		{
 			bgInstances[i].Tick(e.CurrentTime);
 		}
-		// clear indices
-		for (int g = 0; g < _renderGroups.Count; g++)
-		{
-			_renderGroups[g].BakeIndices.Clear();
-		}
+		written = 0;
 		// tick references
 		for (int i = _bakedTimeline.Count - 1; i >= 0; i--)
 		{
@@ -690,79 +697,106 @@ public partial class LevelPreview : Control
 				_bakedTimeline.RemoveAt(i);
 				continue;
 			}
+			bool alive = false;
 			if (r.Type == ModelType.Projectile)
-			{
-				if (ProcessProjReference(r) && !CullRef(r))
-				{
-					var proj = e.ProjectileModels[r.Id];
-					_renderGroups[proj.RenderGroupId].BakeIndices.Add(i);
-				}
-			}
+				alive = ProcessProjReference(r) && !IsOutOfBounds(r);
 			else if (r.Type == ModelType.Pattern)
 			{
 				var patt = e.PatternModels[r.Id];
 				var t = e.CurrentTime - r.T;
-				bool alive = t >= 0 && t <= patt.lifetime;
-				if (alive)
-				{
-					_renderGroups[patt.renderGroupId].BakeIndices.Add(i);
-				}
+				alive = t >= 0 && t <= patt.lifetime;
 			}
+			if (alive)
+				DrawReference(r);
 		}
-		// draw references
-		const int floatsPerInstance = 12;
-		for (int g = 0; g < _renderGroups.Count; g++)
+		multiMesh.InstanceCount = written;
+		if (written > 0)
 		{
-			var group = _renderGroups[g];
-			int count = group.BakeIndices.Count;
-			group.MultiMesh.InstanceCount = count;
-			if (count == 0) continue;
-			int required = count * floatsPerInstance;
-			if (_groupBuffers[g].Length != required)
-				_groupBuffers[g] = new float[required];
-			ref float[] buffer = ref _groupBuffers[g];
-			// draw references
-			for (int n = 0; n < count; n++)
-			{
-				int idx = group.BakeIndices[n];
-				EditorReference r = _bakedTimeline[idx];
-				int o = n * floatsPerInstance;
-				var proj = e.ProjectileModels[r.Id];
-				float drawForward = (r.Type == ModelType.Projectile && !proj.LockRotation) ? (float)r.F + BulletRenderer.DrawnForwardOffset : BulletRenderer.DrawnForwardOffset; // rads
-				float cos = Mathf.Cos(drawForward);
-				float sin = Mathf.Sin(drawForward);
-				float scale = (r.Type == ModelType.Projectile) ? proj.RenderScale : 1;
-				buffer[o + 0] = -scale * cos;
-				buffer[o + 1] = -scale * sin;
-				buffer[o + 2] = 0;
-				buffer[o + 3] = r.Pos.X;
-
-				buffer[o + 4] = -scale * sin;
-				buffer[o + 5] = scale * cos;
-				buffer[o + 6] = 0;
-				buffer[o + 7] = r.Pos.Y;
-				double t = e.CurrentTime - r.T;
-				Color color;
-				if (r.Type == ModelType.Projectile)
-				{
-					float alpha = (t < proj.TelegraphTime)
-					? (proj.TelegraphTime > 0 ? 0.2f + (float)t / proj.TelegraphTime * 0.6f : 0.8f)
-					: 1.0f;
-					color = new(1, 1, 1, alpha);
-				}
-				else
-				{
-					color = RenderingUtils.ColorFromString(e.PatternModels[r.Id].Name);
-					color.A = 0.8f;
-				}
-				Color filter = InSelectedGroup(r) ? new Color(0.7f, 0.7f, 1) : Colors.White;
-				buffer[o + 8] = color.R * filter.R;
-				buffer[o + 9] = color.G * filter.G;
-				buffer[o + 10] = color.B * filter.B;
-				buffer[o + 11] = color.A;
-			}
-			RenderingServer.MultimeshSetBuffer(group.MultiMesh.GetRid(), buffer);
+			RenderingServer.MultimeshSetBuffer(multiMesh.GetRid(), buffer.AsSpan(0, written * floatsPerInstance).ToArray());
+			mmInst.QueueRedraw();
 		}
+	}
+	private float[] buffer = [];
+	const int floatsPerInstance = 16; // 8 transform + 4 color + 4 uv
+	private void DrawReference(EditorReference r)
+	{
+		// draw references
+		var proj = e.ProjectileModels[r.Id];
+		double t = e.CurrentTime - r.T;
+		// calc color
+		Color filter = InSelectedGroup(r) ? new Color(0.7f, 0.7f, 1) : Colors.White;
+		Color color = new();
+		if (r.Type == ModelType.Projectile)
+		{
+			float alpha = (t < proj.TelegraphTime)
+			? (proj.TelegraphTime > 0 ? 0.2f + (float)t / proj.TelegraphTime * 0.4f : 0.8f) : 1.0f;
+			color = new(1, 1, 1, alpha);
+		} else if (r.Type == ModelType.Pattern)
+		{ 
+			color = RenderingUtils.ColorFromString(e.PatternModels[r.Id].Name); 
+			color.A = 0.8f; 
+		}
+		// calc forward
+		float drawForward = BulletRenderer.DrawnForwardOffset;
+		if (r.Type == ModelType.Projectile && !proj.LockRotation)
+			drawForward += (float)r.F;
+		// calc scale
+		Vector2 scale = Vector2.One;
+		if (r.Type == ModelType.Projectile)
+			scale = proj.RenderScale;
+		// determine textureId
+		int textureId = 0;
+		if (r.Type == ModelType.Projectile)
+			textureId = proj.TextureId;
+		// write
+		WriteIntoBuffer(r.Pos, scale, drawForward, color*filter, textureId);
+		written++;
+	}
+	private void WriteIntoBuffer(Vector2 pos, Vector2 scale, float forward, Color color, int textureId)
+	{
+		int o = written * floatsPerInstance;
+		int required = o + floatsPerInstance;
+		if (buffer.Length < required)
+		{
+			int newSize = Math.Max(required, Math.Max(buffer.Length * 2, floatsPerInstance * 16));
+			Array.Resize(ref buffer, newSize);
+		}
+		float cos = Mathf.Cos(forward);
+		float sin = Mathf.Sin(forward);
+
+		var rect = RenderingUtils.Rects[textureId];
+		var pixelSize = rect.Size*RenderingUtils.AtlasSize;
+		buffer[o + 0] = -scale.X * cos * pixelSize.X;
+		buffer[o + 1] = -scale.X * sin * pixelSize.X;
+		buffer[o + 2] = 0;
+		buffer[o + 3] = pos.X;
+
+		buffer[o + 4] = -scale.Y * sin * pixelSize.Y;
+		buffer[o + 5] = scale.Y * cos * pixelSize.Y;
+		buffer[o + 6] = 0;
+		buffer[o + 7] = pos.Y;
+		buffer[o + 8] = color.R;
+		buffer[o + 9] = color.G;
+		buffer[o + 10] = color.B;
+		buffer[o + 11] = color.A;
+
+		
+		buffer[o + 12] = rect.Position.X;
+		buffer[o + 13] = rect.Position.Y;
+		buffer[o + 14] = rect.Size.X;
+		buffer[o + 15] = rect.Size.Y;
+	}
+	private bool IsOutOfBounds(EditorReference r)
+	{
+		var proj = e.ProjectileModels[r.Id];
+		if (proj.Persistant) return false;
+		var resolution = PlayingField.Resolutions[e.levelData.AspectRatio];
+		var bounds = RenderingUtils.Rects[proj.TextureId].Size*RenderingUtils.AtlasSize;
+		bool isOutOfBounds = r.Pos.X < -bounds.X * proj.RenderScale.X
+		|| r.Pos.X > resolution.X + bounds.X * proj.RenderScale.X
+		|| r.Pos.Y < -bounds.Y * proj.RenderScale.Y
+		|| r.Pos.Y > resolution.Y + bounds.Y * proj.RenderScale.Y;
+		return isOutOfBounds;
 	}
 	private bool ProcessProjReference(EditorReference r)
 	{
@@ -823,7 +857,8 @@ public partial class LevelPreview : Control
 				T = childT,
 				Type = childRef.Type,
 				Id = childRef.Id,
-				Depth = r.Depth +1
+				Depth = r.Depth +1,
+				RootEditorId = r.RootEditorId
 			};
 			queue.Enqueue(newRef);
 		}
@@ -863,11 +898,8 @@ public partial class LevelPreview : Control
 		if (model == null)
 			return;
 		// create render group
-		_renderGroups.Add(LevelCompiler.RenderGroupFromProjectile(model, PreviewRoot));
-		int renderGroupId = _renderGroups.Count - 1;
-		_groupBuffers[renderGroupId] = [];
 		// compile and redraw
-		LevelCompiler.CompileProjectile(model, renderGroupId);
+		LevelCompiler.CompileProjectile(model);
 		PreviewRoot.QueueRedraw();
 	}
 	public void CompilePattern(PatternModel model)
@@ -876,12 +908,8 @@ public partial class LevelPreview : Control
 			return;
 		// create render group
 		var mesh = RenderingUtils.BuildCircleMesh(10);
-		_renderGroups.Add(LevelCompiler.CreateRenderGroup(mesh, new Vector2(10, 10), null, PreviewRoot));
-		int renderGroupId = _renderGroups.Count - 1;
-		_groupBuffers[renderGroupId] = [];
 		// compile
 		LevelCompiler.CompilePattern(model);
-		model.renderGroupId = renderGroupId;
 		var lctx = new EvalContext { I = 0, N = model.Count > 1 ? model.Count - 1 : 1 };
 		double maxSpawnT = 0;
 		for (int j = 0; j < model.Count; j++)
@@ -910,17 +938,5 @@ public partial class LevelPreview : Control
 			}
 		}
 		Sync();
-	}
-	private bool CullRef(EditorReference r)
-	{
-		var proj = e.ProjectileModels[r.Id];
-		if (proj.Persistant) return false;
-		var resolution = PlayingField.Resolutions[e.levelData.AspectRatio];
-		var bounds = _renderGroups[proj.RenderGroupId].Bounds;
-		bool isOutOfBounds = r.Pos.X < -bounds.X
-		|| r.Pos.X > resolution.X + bounds.X
-		|| r.Pos.Y < -bounds.Y
-		|| r.Pos.Y > resolution.Y + bounds.Y;
-		return isOutOfBounds;
 	}
 }

@@ -10,4 +10,9 @@ public struct SpatialReference
     public double F;
     public double T;
     public int Depth;
+    public override string ToString()
+    {
+        return $"Id={Id}, Type={Type}, SpawnPos={SpawnPos}, Pos={Pos}, SpawnF={SpawnF}, F={F}, T={T}, Depth={Depth}";
+    }
+
 }

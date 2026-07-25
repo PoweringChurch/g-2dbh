@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Godot;
 
@@ -25,16 +26,17 @@ public class ProjectileModel : IEditorModel
     [JsonPropertyName("textureId")]
     public int TextureId { get; set; } = 0;
 
-    [JsonPropertyName("renderScale")] 
-    public float RenderScale { get; set; } = 1f;
+    [JsonPropertyName("renderScale")]
+    public Vector2 RenderScale { get; set; } = Vector2.One;
+    
     [JsonPropertyName("lockRotation")] 
     public bool LockRotation { get; set; } = false;
 
     [JsonPropertyName("telegraphTime")] 
-    public float TelegraphTime { get; set; } = 0f;
+    public float TelegraphTime { get; set; } = 0.5f;
     // Collision & Lifetime
     [JsonPropertyName("radius")] 
-    public float Radius { get; set; } = 8;
+    public float Radius { get; set; } = 12.5f;
 
     [JsonPropertyName("lifetime")] 
     public double Lifetime { get; set; } = 10;
@@ -51,8 +53,8 @@ public class ProjectileModel : IEditorModel
     [JsonPropertyName("useShape")] 
     public bool UseShape { get; set; } = false;
 
-    [JsonPropertyName("shape")] 
-    public float[][] Shape { get; set; } = null;
+    [JsonPropertyName("shape")]
+    public List<Vector2> Shape { get; set; } = new();
 
     // Spawning Mechanics
     [JsonPropertyName("spawns")] 
@@ -65,8 +67,6 @@ public class ProjectileModel : IEditorModel
     [JsonIgnore] public Func<EvalContext, double> fnx { get; set; }
     [JsonIgnore] public Func<EvalContext, double> fny { get; set; }
     [JsonIgnore] public Func<EvalContext, double> fnf { get; set; }
-    [JsonIgnore] public int RenderGroupId { get; set; }
-    [JsonIgnore] public List<Vector2> ShapeVect2s { get; set; }
     [JsonIgnore] public List<SpatialReference> RuntimeSpawns { get; set; }
     // Constructors
     public ProjectileModel() { }
@@ -102,27 +102,11 @@ public class ProjectileModel : IEditorModel
             Spawns.Add(new(spawn));
         }
         MaxDepth = other.MaxDepth;
-
         UseShape = other.UseShape;
-        if (other.Shape != null)
-        {
-            Shape = new float[other.Shape.Length][];
-            for (int i = 0; i < other.Shape.Length; i++)
-            {
-                if (other.Shape[i] != null)
-                {
-                    Shape[i] = (float[])other.Shape[i].Clone();
-                }
-            }
-        }
-
+        Shape = new(other.Shape);
+        
         fnx = other.fnx;
         fny = other.fny;
         fnf = other.fnf;
-        RenderGroupId = other.RenderGroupId;
-        if (other.ShapeVect2s != null)
-            ShapeVect2s = new List<Vector2>(other.ShapeVect2s);
-        if (other.RuntimeSpawns != null)
-            RuntimeSpawns = new List<SpatialReference>(other.RuntimeSpawns);
     }
 }

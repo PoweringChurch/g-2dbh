@@ -82,18 +82,18 @@ public partial class LevelDirector
             float rSumH = proj.Radius + PlayerCharacter.HurtRadius;
             float rSumG = proj.Radius + PlayerCharacter.GrazeRadius;
             float forward = (float)(proj.LockRotation ? BulletRenderer.DrawnForwardOffset : r.F+BulletRenderer.DrawnForwardOffset);
-            bool ghit = proj.ShapeVect2s == null ?
-            distSq <= rSumG * rSumG 
-            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, forward, true);
+            bool ghit = !proj.UseShape 
+            ? distSq <= rSumG * rSumG 
+            : CollisionUtils.PolygonVsCircle([.. proj.Shape], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, forward, true);
             if (!_hasGrazed[i] && ghit && !ConfigHelper.Current.NoGraze)
             {
                 _character.Graze();
                 if (!ConfigHelper.Current.NoGrazeTracking)
                     _hasGrazed[i] = true;
             }
-            bool hit = proj.ShapeVect2s == null ? 
-            distSq <= rSumH * rSumH 
-            : CollisionUtils.PolygonVsCircle([.. proj.ShapeVect2s], r.Pos, _character.Position, PlayerCharacter.HurtRadius, forward, true);
+            bool hit = !proj.UseShape 
+            ? distSq <= rSumH * rSumH 
+            : CollisionUtils.PolygonVsCircle([.. proj.Shape], r.Pos, _character.Position, PlayerCharacter.HurtRadius, forward, true);
             if (hit && !ConfigHelper.Current.NoHit && _character.Hurt() )
             {
                 if (!proj.Persistant)

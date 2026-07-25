@@ -68,8 +68,11 @@
 [ext_resource type="Script" uid="uid://bpktldml628xb" path="res://scripts/ui/screens/campaign/StoryLevelButton.cs" id="50_uypp3"]
 [ext_resource type="Texture2D" uid="uid://dnvu8jf4cy5m7" path="res://temp_assets/Effect_6.png" id="51_4w656"]
 [ext_resource type="Texture2D" uid="uid://bismr438prupb" path="res://temp_assets/Bumpy_Sky-Blue_02-512x512.png" id="52_e71vb"]
+[ext_resource type="Script" uid="uid://c8sreubj5wl24" path="res://scripts/ui/stuff/NotificationBoard.cs" id="53_jx0wj"]
+[ext_resource type="LabelSettings" uid="uid://rxega0c6oy6h" path="res://data/other/label_settings/success_notif_label_setting.tres" id="54_kkkcx"]
 [ext_resource type="Script" uid="uid://db423rhi1soph" path="res://scripts/ui/screens/campaign/CampaignCharacterDisplay.cs" id="56_e71vb"]
 [ext_resource type="Script" uid="uid://qah1bfxp7wrq" path="res://scripts/game/GameSession.cs" id="61_rm4vd"]
+[ext_resource type="Script" uid="uid://cetphdgtjyr21" path="res://scripts/utils/EditorUtils.cs" id="73_kkkcx"]
 
 [node name="main" type="Node2D" unique_id=1049112894]
 
@@ -451,7 +454,7 @@ size_flags_vertical = 3
 focus_mode = 0
 text = "Quit"
 
-[node name="Editor" type="CanvasLayer" parent="." unique_id=1802501679 node_paths=PackedStringArray("toolbar", "timeline", "modelLibrary", "levelMeta", "preview", "projCreator", "pattCreator", "inspector", "customVars")]
+[node name="Editor" type="CanvasLayer" parent="." unique_id=1802501679 node_paths=PackedStringArray("toolbar", "timeline", "modelLibrary", "levelMeta", "preview", "projCreator", "pattCreator", "inspector", "customVars", "notifBoard")]
 script = ExtResource("23_uit24")
 toolbar = NodePath("Sections/Toolbar")
 timeline = NodePath("Sections/Timeline")
@@ -462,6 +465,7 @@ projCreator = NodePath("ModelEditor/Tabs/ProjectileEditor")
 pattCreator = NodePath("ModelEditor/Tabs/PatternEditor")
 inspector = NodePath("Sections/Modules/Right/Inspector")
 customVars = NodePath("ModelEditor/Tabs/AdvancedPanel/Tabs/Custom")
+notifBoard = NodePath("Notifications")
 
 [node name="Fill" type="ColorRect" parent="Editor" unique_id=1855270682]
 anchors_preset = 15
@@ -1077,7 +1081,6 @@ select_all_on_focus = true
 [node name="EditorAudioPreview" type="AudioStreamPlayer" parent="Editor" unique_id=1220983324]
 
 [node name="ModelEditor" type="Control" parent="Editor" unique_id=2007401369 node_paths=PackedStringArray("Close")]
-visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -1134,6 +1137,7 @@ size_flags_horizontal = 0
 [node name="ModelEdit" type="ScrollContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort" unique_id=2055832255]
 layout_mode = 2
 size_flags_vertical = 3
+scroll_vertical = 100
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit" unique_id=2054287680]
@@ -1252,11 +1256,12 @@ layout_mode = 2
 label_settings = ExtResource("7_cegan")
 script = ExtResource("8_074og")
 
-[node name="Visual" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=1894502974 node_paths=PackedStringArray("TextureDropdown", "ScaleSlider", "LockRotation")]
+[node name="Visual" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=1894502974 node_paths=PackedStringArray("TextureDropdown", "XScaleSlider", "YScaleSlider", "LockRotation")]
 layout_mode = 2
 script = ExtResource("42_wu3dr")
 TextureDropdown = NodePath("texture/OptionButton")
-ScaleSlider = NodePath("scale/Slider")
+XScaleSlider = NodePath("scalex/Slider")
+YScaleSlider = NodePath("scaley/Slider")
 LockRotation = NodePath("lock/CheckButton")
 
 [node name="VisualLabel" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual" unique_id=1080185969]
@@ -1276,15 +1281,34 @@ text = "Texture"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="scale" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual" unique_id=1878815357]
+[node name="scalex" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual" unique_id=1878815357]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/scale" unique_id=618339690]
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/scalex" unique_id=618339690]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-text = "Scale"
+text = "Scale X"
 
-[node name="Slider" type="HSlider" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/scale" unique_id=1271137101]
+[node name="Slider" type="HSlider" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/scalex" unique_id=1271137101]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.25
+max_value = 4.0
+step = 0.05
+value = 1.0
+exp_edit = true
+tick_count = 9
+ticks_position = 3
+
+[node name="scaley" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual" unique_id=1605243013]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/scaley" unique_id=196782897]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Scale Y"
+
+[node name="Slider" type="HSlider" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Visual/scaley" unique_id=1040853750]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = 0.25
@@ -1559,17 +1583,16 @@ text = "+"
 
 [node name="SpawnFold" type="FoldableContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns" unique_id=1746828517]
 layout_mode = 2
-folded = true
 title = "Spawned Objects"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns/SpawnFold" unique_id=878893831]
-visible = false
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List/Spawns/SpawnFold/ScrollContainer" unique_id=1490415690]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="ProjectileInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Sort/ModelEdit/List" unique_id=1032109005 node_paths=PackedStringArray("IdSelect", "ProjectileName", "DeleteBtn", "SaveBtn")]
 layout_mode = 2
@@ -1739,7 +1762,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "XiClear", "Yi", "YiClear", "Fi", "FiClear", "Ti", "TiClear", "Count", "SpawningId", "SpawningType", "ErrorDisplay")]
+[node name="SpawnConditions" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List" unique_id=1711777439 node_paths=PackedStringArray("PresetContainer", "Xi", "XiClear", "Yi", "YiClear", "Fi", "FiClear", "Ti", "TiClear", "Count", "spawningNameLabel", "SpawningId", "SpawningType", "ErrorDisplay")]
 layout_mode = 2
 script = ExtResource("46_1vm84")
 PresetContainer = NodePath("Presets")
@@ -1752,6 +1775,7 @@ FiClear = NodePath("Inspector/fi/Clear")
 Ti = NodePath("Inspector/ti/LineEdit")
 TiClear = NodePath("Inspector/ti/Clear")
 Count = NodePath("Inspector/count/SpinBox")
+spawningNameLabel = NodePath("Inspector/spawningId/NameLabel")
 SpawningId = NodePath("Inspector/spawningId/SpinBox")
 SpawningType = NodePath("Inspector/spawningType/OptionButton")
 ErrorDisplay = NodePath("Inspector/ErrorDisplay")
@@ -1867,6 +1891,7 @@ text = "Count"
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/count" unique_id=1253367731]
 layout_mode = 2
 size_flags_horizontal = 3
+max_value = 1000.0
 
 [node name="spawningType" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=954603691]
 layout_mode = 2
@@ -1880,12 +1905,12 @@ horizontal_alignment = 1
 [node name="OptionButton" type="OptionButton" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningType" unique_id=615605475]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 3
 selected = 0
 item_count = 2
-popup/item_0/text = "Projectile"
+popup/item_0/text = " Projectile"
 popup/item_0/id = 0
-popup/item_1/text = "Pattern"
+popup/item_1/text = " Pattern"
 popup/item_1/id = 1
 
 [node name="spawningId" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector" unique_id=1610358061]
@@ -1896,10 +1921,17 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Spawn Id"
 
+[node name="NameLabel" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningId" unique_id=903198011]
+layout_mode = 2
+size_flags_horizontal = 3
+label_settings = ExtResource("7_getpj")
+clip_text = true
+text_overrun_behavior = 3
+
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Sort/ModelEdit/List/SpawnConditions/Inspector/spawningId" unique_id=1566882731]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 max_value = 127.0
 rounded = true
 
@@ -2589,6 +2621,23 @@ columns = 2
 [node name="BackgroundLayerUi" parent="Editor/BackgroundEditor/Sort/Seperator/Scroll/GridContainer" unique_id=1809618226 node_paths=PackedStringArray("scale") instance=ExtResource("29_ok6jj")]
 layout_mode = 2
 scale = NodePath("Config/Scale/Repea")
+
+[node name="Notifications" type="VBoxContainer" parent="Editor" unique_id=2109673764]
+clip_contents = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -280.0
+offset_right = 240.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("2_ryguw")
+script = ExtResource("53_jx0wj")
+NotificationLabelSettings = Array[LabelSettings]([ExtResource("54_kkkcx")])
 
 [node name="LevelSelect" type="CanvasLayer" parent="." unique_id=2141416188 node_paths=PackedStringArray("_levelList", "_returnButton", "_levelDisplay", "_newLevelButton", "_refreshButton", "_openLevelsFolder")]
 visible = false
@@ -3712,3 +3761,6 @@ size_flags_vertical = 4
 
 [node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
 script = ExtResource("23_1u8w0")
+
+[node name="Node" type="Node" parent="." unique_id=1708326534]
+script = ExtResource("73_kkkcx")

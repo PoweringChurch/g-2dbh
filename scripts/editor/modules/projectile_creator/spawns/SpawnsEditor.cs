@@ -26,7 +26,6 @@ public partial class SpawnsEditor : Control
             Model.Spawns.Remove(reference);
             TrySpawnSizeWarning();
             ProjectileCreator.Instance.ProjectilePreview.MarkDirty();
-
         };
         TrySpawnSizeWarning();
         ProjectileCreator.Instance.ProjectilePreview.MarkDirty();
@@ -43,6 +42,13 @@ public partial class SpawnsEditor : Control
             var newUi = SpawnEditorUi.Instantiate<ReferenceUi>();
             newUi.Load(reference);
             SpawnsUiContainer.AddChild(newUi);
+            newUi.remove.Pressed += () =>
+            {
+                newUi.QueueFree();
+                Model.Spawns.Remove(reference);
+                TrySpawnSizeWarning();
+                ProjectileCreator.Instance.ProjectilePreview.MarkDirty();
+            };
         }
         TrySpawnSizeWarning();
         ProjectileCreator.Instance.ProjectilePreview.MarkDirty();

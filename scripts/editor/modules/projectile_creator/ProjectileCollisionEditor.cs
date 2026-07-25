@@ -13,7 +13,7 @@ public partial class ProjectileCollisionEditor : Control
     {
         Radius.ValueChanged += (v) => {Model.Radius = (float)v; pp.MarkDirty();};
         UseShape.Toggled += ToggleUseShape;
-        ShapeEditor.ShapeUpdated += (pts) => {Model.Shape = CollisionUtils.Vect2sToFloatArr(pts); pp.MarkDirty();};
+        ShapeEditor.ShapeUpdated += (pts) => {Model.Shape = pts; pp.MarkDirty();};
         CanCollide.Toggled += (on) => { Model.CanCollide = on; pp.MarkDirty(); };
         TelegraphTime.ValueChanged += (v) => { Model.TelegraphTime = (float)v; pp.MarkDirty(); };
     }

@@ -16,7 +16,7 @@ public partial class StoryInfo : Control
         for (int i = 0; i < LevelButtons.Length; i++)
         {
             var btn = LevelButtons[i];
-            datas[i] = ReadJson<LevelData>(btn.LevelPath);
+            datas[i] = SerializationUtils.ReadJson<LevelData>(btn.LevelPath);
             int cache = i;
             btn.Pressed += () => ClickButton(cache);
         }
@@ -31,19 +31,4 @@ public partial class StoryInfo : Control
         CharacterDisplay.MoveTo(pos);
     }
     public LevelData GetLeveldata(int idx) => datas[idx];
-    private static T ReadJson<T>(string path)
-    {
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-        if (file == null)
-        {
-            Console.Inst.LogErr($"[GameSession] Could not open file: {path}  (error: {FileAccess.GetOpenError()})");
-            return default;
-        }
-        try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
-        catch (JsonException ex)
-        {
-            Console.Inst.LogErr($"[GameSession] JSON parse error in '{path}': {ex.Message}");
-            return default;
-        }
-    }
 }

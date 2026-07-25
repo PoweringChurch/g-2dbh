@@ -133,7 +133,8 @@ public partial class PatternPreview : Control
 		bool isProj = Model.SpawningType == ModelType.Projectile;
 		var proj = isProj ? Editor.Instance.ProjectileModels[Model.SpawningId] : null;
 		var patt = !isProj ? Editor.Instance.PatternModels[Model.SpawningId] : null;
-
+		if (proj == null && patt == null)
+			return;
 		double lifetime = isProj ? proj.Lifetime : patt.lifetime;
 		float spawnF = (float)reference.SpawnF;
 
@@ -157,7 +158,7 @@ public partial class PatternPreview : Control
 			{
 				lctx.T = localTime;
 			}
-			bool alive = localTime > 0 && localTime < lifetime;
+			bool alive = localTime >= 0 && localTime < lifetime;
 			instances[i] = new ChildInstance
 			{
 				Pos = startPos + movement,
@@ -210,7 +211,7 @@ public partial class PatternPreview : Control
 					continue;
 				}
 				if (proj.UseShape && proj.Shape != null)
-					DrawOn.DrawColoredPolygon([.. proj.ShapeVect2s, proj.ShapeVect2s[0]], color);
+					DrawOn.DrawColoredPolygon([.. proj.Shape, proj.Shape[0]], color);
 				else
 					DrawOn.DrawCircle(Vector2.Zero, proj.Radius, color);
 			}
@@ -232,17 +233,19 @@ public partial class PatternPreview : Control
 		if (Model == null || Model.SpawningType == ModelType.Pattern)
 			return;
 		var pm = Editor.Instance.ProjectileModels[Model.SpawningId];
+		if (pm == null)
+			return;
 		if (!pm.CanCollide)
 			return;
 		foreach (var inst in instances)
 		{
-			bool show = inst.Alive && (inst.T > pm.TelegraphTime);
+			bool show = inst.Alive && (inst.T >= pm.TelegraphTime);
 			if (!show) continue;
 
 			var forward = pm.LockRotation ? 0 : inst.F;
 			DrawOn.DrawSetTransform(WorldToScreen(inst.Pos), forward, Vector2.One * zoom);
 			if (pm.UseShape && pm.Shape != null)
-				DrawOn.DrawPolyline([.. pm.ShapeVect2s, pm.ShapeVect2s[0]], Colors.Red);
+				DrawOn.DrawPolyline([.. pm.Shape, pm.Shape[0]], Colors.Red);
 			else
 				DrawOn.DrawCircle(Vector2.Zero, pm.Radius, Colors.Red, false);
 		}

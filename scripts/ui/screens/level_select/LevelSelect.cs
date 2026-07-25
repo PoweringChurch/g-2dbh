@@ -45,7 +45,7 @@ public partial class LevelSelect : CanvasLayer
     }
     protected virtual void AddLevelButton(string levelName)
     {
-        var levelData = ReadJson<LevelData>($"{levelDirectory}{levelName}/leveldata.json");
+        var levelData = SerializationUtils.ReadJson<LevelData>($"{levelDirectory}{levelName}/leveldata.json");
         bool invalid = levelData == null;
         if (invalid) return;
         var titleText = string.IsNullOrWhiteSpace(levelData.DisplayName) ? "unnamed" : levelData.DisplayName;
@@ -67,12 +67,5 @@ public partial class LevelSelect : CanvasLayer
         UIManager.Instance.ShowEditor();
         e.NewLevel();
         PopulateList();
-    }    protected static T ReadJson<T>(string path)
-    {
-        if (!FileAccess.FileExists(path)) return default;
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-        if (file == null) return default;
-        try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
-        catch { return default; }
     }
 }
