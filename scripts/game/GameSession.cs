@@ -1,12 +1,10 @@
 using System;
-using System.Text.Json;
 using Godot;
 public partial class GameSession : Node
 {
     public static GameSession Instance;
     public const float StartDelay = 2;
     public const float FadeOutTime = 2;
-    public GameAudioPlayer GAP {get; private set;}
     public double Elapsed
     {
         get
@@ -19,18 +17,16 @@ public partial class GameSession : Node
     {
         "default.png", "chinese.png"
     };
-    public static NodePath SubViewportPath = "/root/main/HUD/Sort/SubViewportContainer/SubViewport";
-    public static NodePath GameAudioPlayerPath = "/root/main/HUD/GameAudioPlayer";
-    public static NodePath BackgroundImagePath = SubViewportPath+"/BackgroundImage";
+    [Export] public SubViewport Svp;
+    [Export] public GameAudioPlayer GAP { get; private set;}
     public Node2D GameRoot {get; private set;}
-    private SubViewport _svp;
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
     private PlayerCharacter _character;
     private LevelDirector _director;
     private BulletRenderer _renderer;
     private UIManager ui => UIManager.Instance;
     private LevelData _lastLevelData;
-    private PlayingField _playingField;
+    private PlayingField playingField;
     private StartParams _lastStartParams;
     private int score, health, graze;
     private float maxHealth, duration;
@@ -40,9 +36,7 @@ public partial class GameSession : Node
         Instance = this;
     public override void _Ready()
     {
-        _svp = GetNode<SubViewport>(SubViewportPath);
-        GAP = GetNode<GameAudioPlayer>(GameAudioPlayerPath);
-        _playingField = GetNode<PlayingField>("/root/PlayingField");
+        playingField = GetNode<PlayingField>("/root/PlayingField");
         SetPhysicsProcess(false);
         SetProcess(false);
     }
@@ -80,7 +74,7 @@ public partial class GameSession : Node
         // get level data
         if (levelData == null) return false;
         GameRoot = new Node2D { Name = "GameRoot" };
-        _svp.AddChild(GameRoot);
+        Svp.AddChild(GameRoot);
         // compile
         var compiled = LevelCompiler.CompileLevel(levelData, GameRoot);
         if (compiled == null) return false;
@@ -93,7 +87,7 @@ public partial class GameSession : Node
         _character.Position = new Vector2(
             resolution.X / 2, 
             resolution.Y * 0.9f);
-        _playingField.SetRatio(levelData.AspectRatio, GameRoot);
+        playingField.SetRatio(levelData.AspectRatio, GameRoot);
 
         score = 0;
         graze = 0;
