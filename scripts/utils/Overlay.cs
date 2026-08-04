@@ -13,18 +13,17 @@ public partial class Overlay : CanvasLayer
     [Export] Label Time;
     [Export] Label DisplayHitboxes;
     [Export] Label Culled;
-    GameSession gs;
+    GameSession gs => GameSession.Instance;
     public override void _Ready()
     {
         Inst = this;
-        gs = GetNode<GameSession>("/root/GameSession");
     }
     public override void _Input(InputEvent @event)
     {
         if (@event.IsActionPressed("debug_overlay"))
             Visible = !Visible;
         if (@event.IsActionPressed("show_hitboxes"))
-            ShowHitboxes = !ShowHitboxes;    
+            ShowHitboxes = !ShowHitboxes;
     }
     public override void _Process(double dt)
     {

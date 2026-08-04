@@ -91,9 +91,8 @@ public class BinaryExpr : Expr
         '+' => l.Eval(context) + r.Eval(context),
         '-' => l.Eval(context) - r.Eval(context),
         '*' => l.Eval(context) * r.Eval(context),
-        '/' => l.Eval(context) / r.Eval(context),
-        '%' => l.Eval(context) % r.Eval(context),
-        '^' => Math.Pow(l.Eval(context), r.Eval(context)),
+        '/' => MathSafe.Div(l.Eval(context), r.Eval(context)),
+        '^' => MathSafe.Pow(l.Eval(context), r.Eval(context)),
         _   => throw new Exception($"Unknown op '{op}'")
     };
 }
@@ -108,11 +107,11 @@ public class FuncExpr : Expr
         return name switch
         {
             "sin"  => Math.Sin(a),  "cos"  => Math.Cos(a),
-            "tan"  => Math.Tan(a),  "asin" => Math.Asin(a),
-            "acos" => Math.Acos(a), "atan" => Math.Atan(a),
-            "sqrt" => Math.Sqrt(a), "abs"  => Math.Abs(a),
-            "exp"  => Math.Exp(a),  "log"  => Math.Log(a),
-            "log2" => Math.Log2(a), "log10"=> Math.Log10(a),
+            "tan"  => Math.Tan(a),  "asin" => MathSafe.Asin(a),
+            "acos" => MathSafe.Acos(a), "atan" => Math.Atan(a),
+            "sqrt" => MathSafe.Sqrt(a), "abs"  => Math.Abs(a),
+            "exp"  => Math.Exp(a),  "log"  => MathSafe.Log(a),
+            "log2" => MathSafe.Log2(a), "log10"=> MathSafe.Log10(a),
             "ceil" => Math.Ceiling(a), "floor"=> Math.Floor(a),
             "sign" => Math.Sign(a), "tanh" => Math.Tanh(a),
             "hash" => Functions.Hash(a),
@@ -216,6 +215,7 @@ public class ExpressionHandler(List<Token> tokens)
             // named constant?
             if (name is "pi" or "tau" or "phi" or "deg2rad" or "rad2deg")
                 return new ConstExpr(name);
+            // variable?
             if (name is "t" or "i" or "n" or "l")
                 return new VariableExpr(name);
             return new CustomVariableExpr(name);
@@ -271,9 +271,8 @@ public class ExpressionHandler(List<Token> tokens)
                     '+' => ctx => leftFn(ctx) + rightFn(ctx),
                     '-' => ctx => leftFn(ctx) - rightFn(ctx),
                     '*' => ctx => leftFn(ctx) * rightFn(ctx),
-                    '/' => ctx => leftFn(ctx) / rightFn(ctx),
-                    '%' => ctx => leftFn(ctx) % rightFn(ctx),
-                    '^' => ctx => Math.Pow(leftFn(ctx), rightFn(ctx)),
+                    '/' => ctx => MathSafe.Div(leftFn(ctx), rightFn(ctx)),
+                    '^' => ctx => MathSafe.Pow(leftFn(ctx), rightFn(ctx)),
                     _ => throw new NotSupportedException($"Unknown op: {b.op}")
                 };
             }
@@ -284,11 +283,11 @@ public class ExpressionHandler(List<Token> tokens)
                 return ctx => name switch
                 {
                     "sin"  => Math.Sin(argFn(ctx)),  "cos"  => Math.Cos(argFn(ctx)),
-                    "tan"  => Math.Tan(argFn(ctx)),  "asin" => Math.Asin(argFn(ctx)),
-                    "acos" => Math.Acos(argFn(ctx)), "atan" => Math.Atan(argFn(ctx)),
-                    "sqrt" => Math.Sqrt(argFn(ctx)), "abs"  => Math.Abs(argFn(ctx)),
-                    "exp"  => Math.Exp(argFn(ctx)),  "log"  => Math.Log(argFn(ctx)),
-                    "log2" => Math.Log2(argFn(ctx)), "log10"=> Math.Log10(argFn(ctx)),
+                    "tan"  => Math.Tan(argFn(ctx)),  "asin" => MathSafe.Asin(argFn(ctx)),
+                    "acos" => MathSafe.Acos(argFn(ctx)), "atan" => Math.Atan(argFn(ctx)),
+                    "sqrt" => MathSafe.Sqrt(argFn(ctx)), "abs"  => Math.Abs(argFn(ctx)),
+                    "exp"  => Math.Exp(argFn(ctx)),  "log"  => MathSafe.Log(argFn(ctx)),
+                    "log2" => MathSafe.Log2(argFn(ctx)), "log10"=> MathSafe.Log10(argFn(ctx)),
                     "ceil" => Math.Ceiling(argFn(ctx)), "floor"=> Math.Floor(argFn(ctx)),
                     "sign" => Math.Sign(argFn(ctx)), "tanh" => Math.Tanh(argFn(ctx)),
                     "hash" => Functions.Hash(argFn(ctx)),
@@ -299,4 +298,23 @@ public class ExpressionHandler(List<Token> tokens)
                 throw new NotSupportedException($"Unknown expr node: {expr.GetType()}");
         }
     }
+}
+
+public static class MathSafe
+{
+    public static double Div(double l, double r) => r == 0.0 ? 0.0 : l / r;
+    public static double Pow(double b, double e)
+    {
+        if (b == 0.0 && e < 0.0) return 0.0;
+        if (b < 0.0 && e != Math.Floor(e)) return 0.0;
+        double result = Math.Pow(b, e);
+        return double.IsFinite(result) ? result : 0.0;
+    }
+    public static double Sqrt(double a) => a < 0.0 ? 0.0 : Math.Sqrt(a);
+    public static double Log(double a)   => a <= 0.0 ? 0.0 : Math.Log(a);
+    public static double Log2(double a)  => a <= 0.0 ? 0.0 : Math.Log2(a);
+    public static double Log10(double a) => a <= 0.0 ? 0.0 : Math.Log10(a);
+    public static double Asin(double a) => Math.Asin(Math.Clamp(a, -1.0, 1.0));
+    public static double Acos(double a) => Math.Acos(Math.Clamp(a, -1.0, 1.0));
+    public static double Sanitize(double v) => double.IsFinite(v) ? v : 0.0;
 }

@@ -12,6 +12,8 @@ public partial class CampaignCharacterDisplay : Control
         Tween tween = CreateTween();
         tween.TweenProperty(this, "position", newpos-PivotOffset, 0.5f);
     }
+    public void SnapTo(Vector2 newpos) =>
+        Position = newpos-PivotOffset;
     public override void _GuiInput(InputEvent @event)
     {
         if (@event is InputEventMouseButton mb)

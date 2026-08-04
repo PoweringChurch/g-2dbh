@@ -1,0 +1,58 @@
+using Godot;
+public partial class ProjectileCreator : Control
+{
+    public static ProjectileCreator Instance;
+    [Export] public ProjectilePreview ProjectilePreview {get; private set;}
+    public ProjectileModel Model {get; private set;}
+    [Export] ProjectileCollisionEditor Collision;
+    [Export] ProjectileVisuals Visuals;
+    [Export] ProjectileMovementEditor MovementInspector;
+    [Export] ProjectileInfo Info;
+    [Export] SpawnsEditor SpawnEditor;
+    [Export] PackedScene ProjectileModelUi;
+    [Export] VBoxContainer ModelList;
+    [Export] Button NextFree;
+    public override void _EnterTree() => 
+        Instance = this;
+    public override void _Ready()
+    {
+        NextFree.Pressed += GoNextFree;
+    }
+    private void GoNextFree()
+    {
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+        {
+            if (Editor.Instance.ProjectileModels[i] == null)
+            {
+                Editor.Instance.OpenModel(new ProjectileModel() {Id = i});
+                return;
+            }
+        }
+    }
+    public void Load(LevelData data)
+    {
+        foreach (var ui in ModelList.GetChildren())
+            ui.QueueFree();
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+        {
+            var proj = data.ProjectileModels[i];
+            if (proj == null) continue;
+            var ui = ProjectileModelUi.Instantiate<ProjectileUi>();
+            ui.ApplyProjectile(proj);
+            ModelList.AddChild(ui);
+            ui.Pressed += () => LoadProjectile(proj);
+        }
+    }
+    public void LoadProjectile(ProjectileModel newModel)
+    {
+        newModel ??= new();
+        Model = new ProjectileModel(newModel);
+        MovementInspector.Load(Model);
+        Collision.Load(Model);
+        Visuals.Load(Model);
+        Info.Load(Model);
+        SpawnEditor.Load(Model);
+        ProjectilePreview.Load(Model);
+        ProjectilePreview.MarkDirty();
+    }
+}

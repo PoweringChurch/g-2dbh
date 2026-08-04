@@ -10,22 +10,21 @@ public partial class BackgroundLayerInstance : Parallax2D
     public Sprite2D Sprite;
     public void ApplyLayerParams()
     {
-        var text = RenderingUtils.LoadTexture(Layer.Image);
-        if (text == null )
-            return;
+        var text = RenderingUtils.LoadTexture(LevelCompiler.BackgroundTextures[Layer.BackgroundId].TexturePath);
         scrollx = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.ScrollFunctionX));
         scrolly = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.ScrollFunctionY));
         transparency = ExpressionHandler.Compile(ExpressionHandler.Parse(Layer.TransparencyFn));
 
         Sprite.Texture = text;
         Sprite.Scale = Layer.Scale*Vector2.One;
-
-        RepeatSize = text.GetSize()*Scale;
+        if (text != null)
+            RepeatSize = text.GetSize()*Scale;
         RepeatTimes = Layer.RepeatCount;
         ZIndex = Layer.Order;
     }
-    public void Tick(EvalContext ctx)
+    public void Tick(double time)
     {
+        var ctx = new EvalContext() {T = time};
         ScrollOffset = (scrollx == null || scrolly == null) ? Vector2.Zero : new((float)scrollx(ctx), (float)scrolly(ctx));
         Modulate = (transparency == null) ? Colors.White : new(1,1,1,1-(float)transparency(ctx));
     }

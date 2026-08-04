@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://buixvfhspflve"]
+
+[ext_resource type="Script" uid="uid://pwqcts8xq52v" path="res://scripts/editor/modules/projectile_creator/spawns/ReferenceUi.cs" id="1_0tbyp"]
+[ext_resource type="LabelSettings" uid="uid://bicj1kvtn0gcb" path="res://data/other/label_settings/subheading_label_settings.tres" id="2_hxdow"]
+[ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="2_tsfve"]
+[ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="3_hxdow"]
+
+[node name="ReferenceUi" type="FoldableContainer" unique_id=410549155 node_paths=PackedStringArray("nameLabel", "spawnx", "spawny", "fwd", "time", "id", "type", "errdisplay", "remove")]
+size_flags_horizontal = 3
+title = "Spawned Object"
+script = ExtResource("1_0tbyp")
+nameLabel = NodePath("Stack/Info/NameLabel")
+spawnx = NodePath("Stack/TimeSpace/x/SpinBox")
+spawny = NodePath("Stack/TimeSpace/y/SpinBox")
+fwd = NodePath("Stack/TimeSpace/f/SpinBox")
+time = NodePath("Stack/TimeSpace/t/SpinBox")
+id = NodePath("Stack/Info/SpinBox")
+type = NodePath("Stack/type/OptionButton")
+errdisplay = NodePath("Stack/ErrorDisplay")
+remove = NodePath("Stack/type/remove")
+
+[node name="Stack" type="VBoxContainer" parent="." unique_id=1466079268]
+layout_mode = 2
+
+[node name="TimeSpace" type="HBoxContainer" parent="Stack" unique_id=1448862407]
+layout_mode = 2
+
+[node name="x" type="VBoxContainer" parent="Stack/TimeSpace" unique_id=1369426243]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Stack/TimeSpace/x" unique_id=87325303]
+layout_mode = 2
+text = "X"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="Stack/TimeSpace/x" unique_id=905458227]
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="y" type="VBoxContainer" parent="Stack/TimeSpace" unique_id=1977590671]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Stack/TimeSpace/y" unique_id=1464526797]
+layout_mode = 2
+text = "Y"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="Stack/TimeSpace/y" unique_id=1009412467]
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="f" type="VBoxContainer" parent="Stack/TimeSpace" unique_id=1069877621]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Stack/TimeSpace/f" unique_id=1153815492]
+layout_mode = 2
+text = "Fwd"
+horizontal_alignment = 1
+clip_text = true
+
+[node name="SpinBox" type="SpinBox" parent="Stack/TimeSpace/f" unique_id=2001650507]
+layout_mode = 2
+min_value = -1000.0
+max_value = 1000.0
+step = 0.01
+allow_greater = true
+allow_lesser = true
+
+[node name="t" type="VBoxContainer" parent="Stack/TimeSpace" unique_id=946434058]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Stack/TimeSpace/t" unique_id=500184345]
+layout_mode = 2
+text = "Time"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="Stack/TimeSpace/t" unique_id=1177186556]
+layout_mode = 2
+max_value = 1000.0
+step = 0.01
+allow_greater = true
+
+[node name="Info" type="HBoxContainer" parent="Stack" unique_id=1219904664]
+layout_mode = 2
+
+[node name="IdLabel" type="Label" parent="Stack/Info" unique_id=1919273995]
+layout_mode = 2
+text = "Id"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="Stack/Info" unique_id=173785345]
+layout_mode = 2
+size_flags_horizontal = 3
+label_settings = ExtResource("2_hxdow")
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="SpinBox" type="SpinBox" parent="Stack/Info" unique_id=904252952]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+max_value = 127.0
+rounded = true
+
+[node name="type" type="HBoxContainer" parent="Stack" unique_id=1985934175]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Stack/type" unique_id=361307908]
+layout_mode = 2
+text = "Type"
+horizontal_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="Stack/type" unique_id=861048777]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 2
+popup/item_0/text = " Projectile"
+popup/item_0/id = 0
+popup/item_1/text = " Pattern"
+popup/item_1/id = 1
+
+[node name="remove" type="Button" parent="Stack/type" unique_id=2068481777]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "X"
+
+[node name="ErrorDisplay" type="Label" parent="Stack" unique_id=2097378845]
+layout_mode = 2
+label_settings = ExtResource("2_tsfve")
+script = ExtResource("3_hxdow")

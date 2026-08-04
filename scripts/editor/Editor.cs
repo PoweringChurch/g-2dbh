@@ -4,80 +4,59 @@ using System.Collections.Generic;
 using System.Text.Json;
 public partial class Editor : CanvasLayer
 {
+    public static Editor Instance;
     public const int MaxModelCount = 128;
-    public enum Mode { Place, Select, Delete }
-    private Mode currentMode = Mode.Select;
-    public Mode CurrentMode
+    public static bool CannotUseBinds()
     {
-        get => currentMode;
-        set
-        {
-            if (value == Mode.Place)
-                _modeDisplay.Text = "Mode : Place";
-            else if (value == Mode.Select)
-                _modeDisplay.Text = "Mode : Select";
-            else if (value == Mode.Delete)
-                _modeDisplay.Text = "Mode : Delete";
-            currentMode = value;
-        }
+        if (GameSession.Instance.Running) return true;
+        var focused = Instance.GetViewport().GuiGetFocusOwner();
+        if (focused is LineEdit or TextEdit)
+            return true;
+        return false;
     }
-    private bool snap;
-    public bool Snap 
-    {
-        get => snap; 
-        set
-        {
-            snap = value;
-            _snapDisplay.Text = value ? "Snap : On" : "Snap : Off";
-        }
-    }
-    private float incrementTimeBy = 1;
-    public float IncrementTimeBy
-    {
-        get => incrementTimeBy;
-        set
-        {
-            incrementTimeBy = Math.Clamp(value, 0.125f, 128);
-            _skipInput.SetValueNoSignal(value);
-        }
-    }
-    private bool timeControls;
     public EditorReference SelectedReference
     {
-        get => _preview.SelectedReference;
+        get => preview.SelectedReference;
         set
         {
-            _preview.SelectedReference = value;
+            preview.SelectedReference = value;
         }
     }
-    public float CurrentTime => _timeline.CurrentTime;
+    public float CurrentTime => timeline.CurrentTime;
+    public Toolbar.Mode CurrentMode => toolbar.CurrentMode;
+    public bool Snap => toolbar.Snap;
+    public bool TimeControls => toolbar.TimeControls;
+    public float IncrementTimeBy => toolbar.IncrementTimeBy;
     public string LevelPath => $"{(levelData != null ? levelData.LevelPath : "")}";
-    public IEditorModel SelectedModel => _modelLibrary.SelectedModel;
-    private ProjectileModel[] projectileModels = new ProjectileModel[MaxModelCount];
-    private PatternModel[] patternModels = new PatternModel[MaxModelCount];
-    public IReadOnlyList<ProjectileModel> ProjectileModels => projectileModels;
-    public IReadOnlyList<PatternModel> PatternModels => patternModels;
-    public List<BackgroundLayerInstance> BGInstances => _preview.BGInstances;
-    // Save the input model at the specified id. This function will set the models id to match what was provided
-    public void SaveProjectileModel(ProjectileModel model, int id)
+    public IEditorModel SelectedModel => modelLibrary.SelectedModel;
+    public IReadOnlyList<ProjectileModel> ProjectileModels => levelData.ProjectileModels;
+    public IReadOnlyList<PatternModel> PatternModels => levelData.PatternModels;
+    public List<BackgroundLayerInstance> BGInstances => preview.BGInstances;
+    public void SaveProjectileModel(ProjectileModel model)
     {
-        projectileModels[id] = model;
-        model.Id = id;
+        levelData.ProjectileModels[model.Id] = model;
+        pattCreator.ProjectileModelUpdated(model);
+        preview.CompileProjectile(model);
+        preview.UpdateModel(model);
+        modelLibrary.Refresh();
+        projCreator.Load(levelData);
     }
-    // Save the input model at the specified id. This function will set the models id to match what was provided
-    public void SavePatternModel(PatternModel model, int id)
+    public void SavePatternModel(PatternModel model)
     {
-        patternModels[id] = model;
-        model.Id = id;
+        levelData.PatternModels[model.Id] = model;
+        preview.CompilePattern(model);
+        preview.UpdateModel(model);
+        modelLibrary.Refresh();
+        pattCreator.Load(levelData);
     }
-    public void RemoveProjectileModel(int id, Control ui)
+    public void DeleteProjectileModel(int id)
     {
         var popup = Popups.Instance.Show(Popups.DefaultType.YN, 
-        $"Are you sure you want to delete projectile '{projectileModels[id].Name}' (Id {id})? All projectiles and patterns with the associated id will be removed.");
+        $"Are you sure you want to delete projectile '{levelData.ProjectileModels[id].Name}' (Id {id})? All projectiles and patterns with the associated id will be removed.");
         popup.Options[0].Pressed += () =>
         {
-            _preview.UpdateModel(projectileModels[id], true);
-            projectileModels[id] = null;
+            preview.UpdateModel(levelData.ProjectileModels[id], true);
+            levelData.ProjectileModels[id] = null;
             for (int i = levelData.References.Count - 1; i >= 0; i--)
             {
                 var r = levelData.References[i];
@@ -85,197 +64,85 @@ public partial class Editor : CanvasLayer
                 {
                     DeleteReference(r);
                 }
-                else if (r.Type == ModelType.Pattern && patternModels[id].ProjectileId == id)
+                if (r.Type == ModelType.Pattern)
                 {
-                    DeleteReference(r);
+                    var patt = levelData.PatternModels[r.Id];
+                    if (patt.SpawningType == ModelType.Projectile && patt.SpawningId == id)
+                        DeleteReference(r);
                 }
             }
-            ui.QueueFree();
+            projCreator.Load(levelData);
+            modelLibrary.Refresh();
+            preview.Sync();
         };
-        _preview.Sync();
     }
-    public void RemovePatternModel(int id, Control ui)
+    public void DeletePatternModel(int id)
     {
         var popup = Popups.Instance.Show(Popups.DefaultType.YN, 
-        $"Are you sure you want to delete pattern '{patternModels[id].Name}' (Id {id})? All patterns with the associated id will be removed.");
+        $"Are you sure you want to delete pattern '{levelData.PatternModels[id].Name}' (Id {id})? All patterns with the associated id will be removed.");
         popup.Options[0].Pressed += () =>
         {
-            _preview.UpdateModel(patternModels[id], true);
-            patternModels[id] = null;
+            preview.UpdateModel(levelData.PatternModels[id], true);
+            levelData.PatternModels[id] = null;
             for (int i = levelData.References.Count - 1; i >= 0; i--)
                 if (levelData.References[i].Id == id)
                     DeleteReference(levelData.References[i]);
-            ui.QueueFree();
-            _preview.Sync();
+            modelLibrary.Refresh();
+            pattCreator.Load(levelData);
+            preview.Sync();
         };
     }
     public LevelData levelData;
-    // paths
-    const string Modules = "/root/main/EditorLayer/Sections/Modules";
-    const string TimelinePath = "/root/main/EditorLayer/Sections/Timeline";
-    const string ModelLibraryPath = Modules + "/Middle/ModelLibrary";
-    const string LevelMetaPath = Modules + "/Left/LevelMetadata";
-    const string LevelPreviewPath = Modules + "/Left/LevelPreview";
-    const string ProjCreatorPath = Modules + "/Right/Creators/ProjectileCreator";
-    const string PatternCreatorPath = Modules + "/Right/Creators/PatternCreator";
-    const string InspectorPath = Modules + "/Middle/Inspector";
-    const string CustomVariablesPath = Modules + "/Middle/Expressions/Custom";
-
-    const string ToolbarButtons = "/root/main/EditorLayer/Sections/Toolbar/Buttons";
-    // mode
-    const string PlaceButtonPath = ToolbarButtons + "/ModeSelection/Place";
-    const string SelectButtonPath = ToolbarButtons + "/ModeSelection/Select";
-    const string DeleteButtonPath = ToolbarButtons + "/ModeSelection/Delete";
-    const string ModeDisplayPath = ToolbarButtons + "/ModeSelection/ModeDisplay";
-    // snap
-    const string SnapAngleTogglePath = ToolbarButtons + "/SnapDisplay/SnapAngle";
-    const string SnapAnglePath = ToolbarButtons + "/SnapDisplay/SnapDisplay";
-    // time controls
-    const string SkipInputPath = ToolbarButtons + "/TimeControl/SkipInput";
     // references
     // modules
-    private Timeline _timeline;
-    private ModelLibrary _modelLibrary;
-    private LevelMetadata _levelMeta;
-    private LevelPreview _preview;
-    private ProjectileCreator _projCreator;
-    private PatternCreator _patternCreator;
-    private Inspector _inspector;
-    private CustomVariables _customVars;
-    // toolbar
-    // mode
-    private Button _placeButton;
-    private Button _selectButton;
-    private Button _deleteButton;
-    private Label _modeDisplay;
-    // snap
-    private Button _snapButton;
-    private Label _snapDisplay;
-    // time controls
-    private SpinBox _skipInput;
-    GameSession gs;
+    [Export] private Toolbar toolbar;
+    [Export] private Timeline timeline;
+    [Export] private ModelLibrary modelLibrary;
+    [Export] private LevelMetadata levelMeta;
+    [Export] private LevelPreview preview;
+    [Export] private ProjectileCreator projCreator;
+    [Export] private PatternCreator pattCreator;
+    [Export] private Inspector inspector;
+    [Export] private CustomVariables customVars;
+    [Export] private NotificationBoard notifBoard;
+    GameSession gs => GameSession.Instance;
+    public override void _EnterTree() =>
+        Instance = this;
+
     public override void _Ready()
     {
-        gs = GetNode<GameSession>("/root/GameSession");
-        // modules
-        _timeline = GetNode<Timeline>(TimelinePath);
-        _modelLibrary = GetNode<ModelLibrary>(ModelLibraryPath);
-        _levelMeta = GetNode<LevelMetadata>(LevelMetaPath);
-        _preview = GetNode<LevelPreview>(LevelPreviewPath);
-        _projCreator = GetNode<ProjectileCreator>(ProjCreatorPath);
-        _patternCreator = GetNode<PatternCreator>(PatternCreatorPath);
-        _inspector = GetNode<Inspector>(InspectorPath);
-        _customVars = GetNode<CustomVariables>(CustomVariablesPath);
         // events
-        _levelMeta.AspectRatioChanged += _preview.Fit;
-        _levelMeta.DurationChanged += _timeline.UpdateDuration;
-        _levelMeta.SaveLevelRequested += SaveLevel;
-        _levelMeta.MusicChanged += _timeline.UpdateMusic;
-        _projCreator.ModelSaved += _modelLibrary.OnModelSaved;
-        _projCreator.ModelSaved += _patternCreator.OnModelUpdate;
-        _projCreator.ModelSaved += _preview.CompileProjectile;
-        _projCreator.ModelSaved += (model) => _preview.UpdateModel(model, false);
-
-        _patternCreator.ModelSaved += _modelLibrary.OnModelSaved;
-        _patternCreator.ModelSaved += _preview.CompilePattern;
-        _patternCreator.ModelSaved += (model) => _preview.UpdateModel(model, false);
-
-        GetWindow().FocusEntered += RenderingUtils.EmptyTextureCache;
-        // toolbar
-        // mode
-        _placeButton = GetNode<Button>(PlaceButtonPath);
-        _selectButton = GetNode<Button>(SelectButtonPath);
-        _deleteButton = GetNode<Button>(DeleteButtonPath);
-        _modeDisplay = GetNode<Label>(ModeDisplayPath);
-        // snap
-        _snapButton = GetNode<Button>(SnapAngleTogglePath);
-        _snapDisplay = GetNode<Label>(SnapAnglePath);
-        // time controls
-        _skipInput = GetNode<SpinBox>(SkipInputPath);
-
-        // toolbar events
-        _placeButton.Pressed += () => CurrentMode = Mode.Place;
-        _selectButton.Pressed += () => CurrentMode = Mode.Select;
-        _deleteButton.Pressed += () => CurrentMode = Mode.Delete;
-        _snapButton.Pressed += () => Snap = !Snap;
-        
-        _skipInput.ValueChanged += v => IncrementTimeBy = (float)v;
+        levelMeta.AspectRatioChanged += preview.Fit;
+        levelMeta.DurationChanged += timeline.UpdateDuration;
+        levelMeta.SaveLevelRequested += SaveLevel;
+        levelMeta.MusicChanged += timeline.UpdateMusic;
     }
     public void UpdateInspector() =>
-        _inspector.Update(SelectedReference);
-    public void RefreshTimelineMarker(EditorReference r) =>
-        _timeline.RefreshMarker(r);
+        inspector.Update(SelectedReference);
     [Signal] public delegate void CopyEventHandler();
     [Signal] public delegate void PasteEventHandler();
     [Signal] public delegate void DeleteEventHandler();
     [Signal] public delegate void CutEventHandler();
     public override void _Input(InputEvent @event)
     {
-        if (gs.Running) return;
-        var focused = GetViewport().GuiGetFocusOwner();
-        if (focused is LineEdit or TextEdit)
-            return;
-        CurrentMode = @event.IsActionPressed("place_bind") ? Mode.Place :
-                  @event.IsActionPressed("select_bind") ? Mode.Select :
-                  @event.IsActionPressed("delete_bind") ? Mode.Delete : CurrentMode;
+        if (CannotUseBinds()) return;
         if (@event.IsActionPressed("save_bind")) SaveLevel();
-        if (@event.IsActionPressed("playback_toggle")) _timeline.TogglePlaying();
-        
-        if (@event.IsActionPressed("skip_forward"))
-        {
-            _timeline.SetTime(timeControls ? GetNextReferenceTime() : CurrentTime + IncrementTimeBy);
-        }
-        else if (@event.IsActionPressed("skip_backward"))
-        {
-            _timeline.SetTime(timeControls ? GetPrevReferenceTime() : CurrentTime - IncrementTimeBy);
-        }
-        if (timeControls)
-        {
-            if (@event.IsActionPressed("scroll_up")) IncrementTimeBy *= 2;
-            if (@event.IsActionPressed("scroll_down")) IncrementTimeBy /= 2;
-        }
-        if (@event.IsActionPressed("snap")) Snap = !Snap;
-
-        if      (@event.IsActionPressed("time_control")) timeControls = true;
-        else if (@event.IsActionReleased("time_control")) timeControls = false;
 
         if (@event.IsActionPressed("cut")) EmitSignal(SignalName.Cut);
 		if (@event.IsActionPressed("copy")) EmitSignal(SignalName.Copy);
 		if (@event.IsActionPressed("paste")) EmitSignal(SignalName.Paste);
 		if (@event.IsActionPressed("delete")) EmitSignal(SignalName.Delete);
-
-    }
-    private float GetNextReferenceTime()
-    {
-        float closestTime = levelData.Duration;
-        for (int i = 0; i < levelData.References.Count; i++)
-        {
-            var r = levelData.References[i];
-            if (r.T > CurrentTime && r.T < closestTime) closestTime = (float)r.T;
-        }
-        return closestTime;
-    }
-    private float GetPrevReferenceTime()
-    {
-        float closestTime = 0;
-        for (int i = 0; i < levelData.References.Count; i++)
-        {
-            var r = levelData.References[i];
-            if (r.T < CurrentTime && r.T > closestTime) closestTime = (float)r.T;
-        }
-        return closestTime;
     }
     public void NewLevel()
     {
         LevelData data = new();
         data.LevelPath = $"user://data/levels/{Guid.NewGuid()}/";
         DirAccess.MakeDirRecursiveAbsolute(data.LevelPath);
-        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "images/");
         DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "audio/");
-        WriteJson(data.LevelPath + "leveldata.json", data);
+        SerializationUtils.WriteJson(data.LevelPath + "leveldata.json", data);
         ApplyLevelData(data);
     }
-    public void SetPlaying(bool to) => _timeline.SetPlaying(to);
+    public void SetPlaying(bool to) => timeline.SetPlaying(to);
     public bool OpenLevel(LevelData data)
     {
         ApplyLevelData(data);
@@ -286,28 +153,20 @@ public partial class Editor : CanvasLayer
         PlaylistHandler.Instance.FadeOut();
         RepairLevelData(data);
         levelData = data;
-        for (int i = 0; i < MaxModelCount; i++)
-        {
-            var m = data.ProjectileModels[i];
-            projectileModels[i] = m;
-        }
-        for (int i = 0; i < MaxModelCount; i++)
-        {
-            var m = data.PatternModels[i];
-            patternModels[i] = m;
-        }
-        _customVars.Load(data);
-        _timeline.Load(data);
-        _timeline.UpdateDuration();
-        _preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
-        _levelMeta.Load(data);
-        _projCreator.LoadProjectile(projectileModels[0]);
-        _patternCreator.LoadPattern(patternModels[0]);
-        _modelLibrary.Refresh();
-        _preview.Load(data);
-        _preview.Sync();
+        customVars.Load(data);
+        timeline.Load(data);
+        timeline.UpdateDuration();
+        preview.Fit(PlayingField.Resolutions[data.AspectRatio]);
+        levelMeta.Load(data);
+        projCreator.Load(data);
+        projCreator.LoadProjectile(levelData.ProjectileModels[0]);
+        pattCreator.Load(data);
+        pattCreator.LoadPattern(levelData.PatternModels[0]);
+        modelLibrary.Refresh();
+        preview.Load(data);
+        preview.Sync();
     }
-    private void RepairLevelData(LevelData data)
+    private static void RepairLevelData(LevelData data)
     {
         data.BackgroundLayers ??= [];
         data.ProjectileModels ??= [];  
@@ -317,49 +176,31 @@ public partial class Editor : CanvasLayer
     }
     private void SaveLevel()
     {
-        levelData.PatternModels = [.. patternModels];
-        levelData.ProjectileModels = [.. projectileModels];
-        Console.Inst.Log($"[Editor] Saving level {levelData.DisplayName} ({levelData.LevelPath})...");
-        WriteJson(levelData.LevelPath + "leveldata.json", levelData);
+        SerializationUtils.WriteJson(levelData.LevelPath + "leveldata.json", levelData);
+        notifBoard.ShowMessage($"Saved level successfully ({DateTime.Now})");
         Console.Inst.Log("[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
-        _preview.Sync();
+        preview.Sync();
+    public void UpdateReference(EditorReference r) =>
+        preview.UpdateReferenceInEditor(r, r.RootEditorId);
     public void AddReference(EditorReference reference)
     {
-        _timeline.AddMarker(reference);
+        timeline.AddMarker(reference);
         levelData.References.Add(reference);
     }
     public void DeleteReference(EditorReference reference)
     {
-        _timeline.RemoveMarker(reference);
+        timeline.RemoveMarker(reference);
         levelData.References.Remove(reference);
-        _preview.UpdateReferenceInEditor(null, reference.RootEditorId);
+        preview.UpdateReferenceInEditor(null, reference.RootEditorId);
     }
     // opens a model in its respective creator
     public void OpenModel(IEditorModel model)
     {
         if (model is ProjectileModel pm)
-            _projCreator.LoadProjectile(pm);
+            projCreator.LoadProjectile(pm);
         else if (model is PatternModel ptm)
-            _patternCreator.LoadPattern(ptm);
-    }
-    private static T ReadJson<T>(string path)
-    {
-        if (!FileAccess.FileExists(path)) return default;
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-        if (file == null) return default;
-        try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
-        catch { return default; }
-    }
-    private static void WriteJson<T>(string path, T data)
-    {
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
-        if (file == null)
-        {
-            Console.Inst.LogErr($"Failed to open file for writing: {path}");
-        }
-        var s = JsonSerializer.Serialize(data);
-        file.StoreString(s);
+            pattCreator.LoadPattern(ptm);
     }
 }

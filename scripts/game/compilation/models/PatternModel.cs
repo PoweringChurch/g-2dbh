@@ -5,11 +5,12 @@ public class PatternModel : IEditorModel
 {
     [JsonPropertyName("id")] public int Id { get; set; } = 0;
     [JsonPropertyName("name")] public string Name { get; set; } = "unnamed";
-    [JsonPropertyName("projectileId")] public int ProjectileId { get; set; } = 0;
+    [JsonPropertyName("spawningId")] public int SpawningId { get; set; } = 0;
+    [JsonPropertyName("spawningType")] public ModelType SpawningType { get; set; } = ModelType.Projectile;
     [JsonPropertyName("fnX")] public string FunctionX { get; set; } = "0";
     [JsonPropertyName("fnY")] public string FunctionY { get; set; } = "0";
     [JsonPropertyName("fnT")] public string FunctionT { get; set; } = "0";
-    [JsonPropertyName("fnFwd")] public string FunctionFwd { get; set; } = "0";
+    [JsonPropertyName("fnFwd")] public string FunctionF { get; set; } = "0";
     [JsonPropertyName("count")] public int Count { get; set; } = 1;
     [JsonPropertyName("facePlayer")] public bool FacePlayer { get; set; } = false;
     // game only
@@ -26,11 +27,12 @@ public class PatternModel : IEditorModel
         other ??= new();
         Id = other.Id;
         Name = other.Name;
-        ProjectileId = other.ProjectileId;
+        SpawningId = other.SpawningId;
+        SpawningType = other.SpawningType;
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
         FunctionT = other.FunctionT;
-        FunctionFwd = other.FunctionFwd;
+        FunctionF = other.FunctionF;
         Count = other.Count;
         FacePlayer = other.FacePlayer;
     }

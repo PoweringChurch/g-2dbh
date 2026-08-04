@@ -1,46 +1,42 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Godot;
 
 public class ProjectileModel : IEditorModel
 {
-    // ==========================================
     // Core Metadata
-    // ==========================================
     [JsonPropertyName("id")] 
     public int Id { get; set; } = 0;
 
     [JsonPropertyName("name")] 
     public string Name { get; set; } = "unnamed";
 
-    // ==========================================
     // Movement & Math Functions
-    // ==========================================
     [JsonPropertyName("fnX")] 
     public string FunctionX { get; set; } = "0";
 
     [JsonPropertyName("fnY")] 
     public string FunctionY { get; set; } = "0";
+    [JsonPropertyName("fnF")] 
+    public string FunctionF { get; set; } = "0";
 
-    // ==========================================
     // Visuals & Rendering
-    // ==========================================
-    [JsonPropertyName("customTexture")]
-    public string Texture { get; set; } = "default";
+    [JsonPropertyName("textureId")]
+    public int TextureId { get; set; } = 0;
 
-    [JsonPropertyName("renderScale")] 
-    public float RenderScale { get; set; } = 1f;
+    [JsonPropertyName("renderScale")]
+    public Vector2 RenderScale { get; set; } = Vector2.One;
+    
     [JsonPropertyName("lockRotation")] 
     public bool LockRotation { get; set; } = false;
 
     [JsonPropertyName("telegraphTime")] 
-    public float TelegraphTime { get; set; } = 0f;
-    // ==========================================
+    public float TelegraphTime { get; set; } = 0.5f;
     // Collision & Lifetime
-    // ==========================================
     [JsonPropertyName("radius")] 
-    public float Radius { get; set; } = 8;
+    public float Radius { get; set; } = 12.5f;
 
     [JsonPropertyName("lifetime")] 
     public double Lifetime { get; set; } = 10;
@@ -53,43 +49,26 @@ public class ProjectileModel : IEditorModel
     [JsonPropertyName("facePlayer")] 
     public bool FacePlayer { get; set; }
 
-    // ==========================================
     // Custom Collision Shape
-    // ==========================================
     [JsonPropertyName("useShape")] 
     public bool UseShape { get; set; } = false;
 
-    [JsonPropertyName("shape")] 
-    public float[][] Shape { get; set; } = null;
+    [JsonPropertyName("shape")]
+    public List<Vector2> Shape { get; set; } = new();
 
-    // ==========================================
-    // Death Spawning Mechanics (Nested Patterns)
-    // ==========================================
-    [JsonPropertyName("spawnModelOnDeath")] 
-    public bool SpawnModelOnDeath { get; set; } = false;
-
-    [JsonPropertyName("spawnOnDeathType")] 
-    public ModelType SpawnOnDeathType { get; set; } = ModelType.Projectile;
-
-    [JsonPropertyName("spawnOnDeath")] 
-    public int SpawnOnDeathId { get; set; } = 0;
+    // Spawning Mechanics
+    [JsonPropertyName("spawns")] 
+    public List<EditorReference> Spawns {get; set;} = [];
 
     [JsonPropertyName("maxDepth")] 
     public int MaxDepth { get; set; } = 1;
 
-    // ==========================================
     // Runtime / Game-Only Properties
-    // ==========================================
     [JsonIgnore] public Func<EvalContext, double> fnx { get; set; }
     [JsonIgnore] public Func<EvalContext, double> fny { get; set; }
-    [JsonIgnore] public int RenderGroupId { get; set; }
-    [JsonIgnore] public List<Vector2> ShapeVect2s { get; set; }
-
-    // ==========================================
+    [JsonIgnore] public Func<EvalContext, double> fnf { get; set; }
+    [JsonIgnore] public List<SpatialReference> RuntimeSpawns { get; set; }
     // Constructors
-    // ==========================================
-
-
     public ProjectileModel() { }
 
     public ProjectileModel(ProjectileModel other)
@@ -103,10 +82,10 @@ public class ProjectileModel : IEditorModel
         // Math & Movement
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
-        FacePlayer = other.FacePlayer;
+        FunctionF = other.FunctionF;
 
         // Visuals
-        Texture = other.Texture;
+        TextureId = other.TextureId;
         RenderScale = other.RenderScale;
         TelegraphTime = other.TelegraphTime;
         LockRotation = other.LockRotation;
@@ -116,31 +95,18 @@ public class ProjectileModel : IEditorModel
         CanCollide = other.CanCollide;
         Persistant = other.Persistant;
 
-        // Nested On-Death Spawning
-        SpawnModelOnDeath = other.SpawnModelOnDeath;
-        SpawnOnDeathType = other.SpawnOnDeathType;
-        SpawnOnDeathId = other.SpawnOnDeathId;
-        MaxDepth = other.MaxDepth;
-
-        UseShape = other.UseShape;
-        if (other.Shape != null)
+        Spawns = [];
+        for (int i = 0; i < other.Spawns.Count; i++)
         {
-            Shape = new float[other.Shape.Length][];
-            for (int i = 0; i < other.Shape.Length; i++)
-            {
-                if (other.Shape[i] != null)
-                {
-                    Shape[i] = (float[])other.Shape[i].Clone();
-                }
-            }
+            var spawn = other.Spawns[i];
+            Spawns.Add(new(spawn));
         }
-
+        MaxDepth = other.MaxDepth;
+        UseShape = other.UseShape;
+        Shape = new(other.Shape);
+        
         fnx = other.fnx;
         fny = other.fny;
-        RenderGroupId = other.RenderGroupId;
-        if (other.ShapeVect2s != null)
-        {
-            ShapeVect2s = new List<Vector2>(other.ShapeVect2s);
-        }
+        fnf = other.fnf;
     }
 }

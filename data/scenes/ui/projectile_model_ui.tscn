@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://c5xi4uxw2i1sr"]
+
+[ext_resource type="Script" uid="uid://u0eilb2j1yrx" path="res://scripts/ui/screens/editor/ProjectileUi.cs" id="1_omj0h"]
+[ext_resource type="Texture2D" uid="uid://doakhaehlstpl" path="res://data/images/title/logo/cn-logo.png" id="2_tx0ma"]
+
+[node name="ProjectileModelUi" type="Button" unique_id=1977840014 node_paths=PackedStringArray("namelabel", "id", "color", "texture")]
+custom_minimum_size = Vector2(358, 40)
+script = ExtResource("1_omj0h")
+namelabel = NodePath("Sort/ProjectileName")
+id = NodePath("Sort/Id")
+color = NodePath("Sort/Color")
+texture = NodePath("Sort/Texture")
+
+[node name="Sort" type="HBoxContainer" parent="." unique_id=1523600513]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Id" type="Label" parent="Sort" unique_id=1332175340]
+layout_mode = 2
+text = "0"
+
+[node name="Color" type="ColorRect" parent="Sort" unique_id=1235708525]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Texture" type="TextureRect" parent="Sort" unique_id=158716081]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("2_tx0ma")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ProjectileName" type="Label" parent="Sort" unique_id=713192871]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "awesome projectile"
+clip_text = true
+text_overrun_behavior = 3

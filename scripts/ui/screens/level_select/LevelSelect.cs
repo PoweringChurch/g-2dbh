@@ -11,13 +11,11 @@ public partial class LevelSelect : CanvasLayer
     [Export] protected Button _newLevelButton;
     [Export] protected Button _refreshButton;
     [Export] protected Button _openLevelsFolder;
-    private Editor e;
-
+    private Editor e => Editor.Instance;
     public event Action RequestReturn;
     private const string levelDirectory = "user://data/levels/";
     public override void _Ready()
     {
-        e = GetNode<Editor>("/root/Editor");
         _levelDisplay.RequestRepopulate += PopulateList;
         _refreshButton.Pressed  += PopulateList;
         _openLevelsFolder.Pressed += OpenLevelsFolder;
@@ -47,7 +45,7 @@ public partial class LevelSelect : CanvasLayer
     }
     protected virtual void AddLevelButton(string levelName)
     {
-        var levelData = ReadJson<LevelData>($"{levelDirectory}{levelName}/leveldata.json");
+        var levelData = SerializationUtils.ReadJson<LevelData>($"{levelDirectory}{levelName}/leveldata.json");
         bool invalid = levelData == null;
         if (invalid) return;
         var titleText = string.IsNullOrWhiteSpace(levelData.DisplayName) ? "unnamed" : levelData.DisplayName;
@@ -66,16 +64,8 @@ public partial class LevelSelect : CanvasLayer
     }
     protected void OnNewLevelPressed()
     {
-        var ui = GetNode<UIManager>("/root/UIManager");
-        ui.ShowEditor();
+        UIManager.Instance.ShowEditor();
         e.NewLevel();
         PopulateList();
-    }    protected static T ReadJson<T>(string path)
-    {
-        if (!FileAccess.FileExists(path)) return default;
-        using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-        if (file == null) return default;
-        try { return JsonSerializer.Deserialize<T>(file.GetAsText()); }
-        catch { return default; }
     }
 }

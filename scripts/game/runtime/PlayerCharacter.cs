@@ -18,7 +18,7 @@ public partial class PlayerCharacter : Node2D
     [Signal] public delegate void OnGrazeEventHandler();
     public void ApplyTextureOfName(string name)
     {
-        CharacterDisplay.Texture = RenderingUtils.LoadTexture("res://data/characters/"+name);
+        CharacterDisplay.Texture = RenderingUtils.LoadTexture("res://data/images/player/characters/"+name);
     }
     public void Movement(double dt)
     {

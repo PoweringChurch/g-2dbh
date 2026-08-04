@@ -4,104 +4,115 @@ using Godot;
 
 public class BulletRenderer
 {
-    private readonly CompiledLevel level;
-    private readonly float[][] groupBuffers;
-    private readonly GameSession __gs;
+    public const float DrawnForwardOffset = -Mathf.Pi;
+    private readonly CompiledLevel Level;
+    private readonly MultiMesh multiMesh;
+    private GameSession gs => GameSession.Instance;
     private int __activeCount;
     private double __elapsed;
-    private int __culled = 0;
     private SpatialReference[] __active;
-    public BulletRenderer(CompiledLevel level, GameSession gs)
+    public BulletRenderer(CompiledLevel level)
     {
-        __gs = gs;
-        this.level = level;
-        groupBuffers = new float[level.RenderGroups.Count][];
-        for (int i = 0; i < groupBuffers.Length; i++)
-            groupBuffers[i] = [];
-        __gs.GameRoot.Draw += __DrawHitboxes;
+        Level = level;
+        multiMesh = new MultiMesh
+        {
+            Mesh = new QuadMesh(),
+            TransformFormat = MultiMesh.TransformFormatEnum.Transform2D,
+            UseColors = true,
+            UseCustomData = true,
+            InstanceCount = 0,
+        };
+        var shader = GD.Load<Shader>("res://shaders/projectile_atlas.gdshader");
+        var shaderMaterial = new ShaderMaterial();
+        shaderMaterial.Shader = shader;
+        var node = new MultiMeshInstance2D { 
+            Multimesh = multiMesh, 
+            Texture = RenderingUtils.GetProjectileAtlas(),
+            ShowBehindParent = true,
+            Material = shaderMaterial
+        };
+        gs.GameRoot.AddChild(node);
+        gs.GameRoot.Draw += __DrawHitboxes;
     }
-    private bool CullRef(ref SpatialReference r)
+    private bool IsOutOfBounds(ref SpatialReference r)
     {
-        var proj = level.Projectiles[r.Id];
+        var proj = Level.Projectiles[r.Id];
         if (proj.Persistant) return false;
-        var resolution = PlayingField.Resolutions[level.AspectRatio];
-        var bounds = level.RenderGroups[proj.RenderGroupId].Bounds;
-        bool isOutOfBounds = r.Pos.X < -bounds.X 
-        || r.Pos.X > resolution.X + bounds.X 
-        || r.Pos.Y < -bounds.Y 
-        || r.Pos.Y > resolution.Y + bounds.Y;
-        if (isOutOfBounds) __culled++;
+        var resolution = PlayingField.Resolutions[Level.AspectRatio];
+        var bounds = RenderingUtils.Rects[proj.TextureId].Size*RenderingUtils.AtlasSize;
+        bool isOutOfBounds = r.Pos.X < -bounds.X * proj.RenderScale.X
+        || r.Pos.X > resolution.X + bounds.X * proj.RenderScale.X
+        || r.Pos.Y < -bounds.Y * proj.RenderScale.Y
+        || r.Pos.Y > resolution.Y + bounds.Y * proj.RenderScale.Y;
         return isOutOfBounds;
     }
+    private float[] buffer = [];
+    private const int floatsPerInstance = 16; // 8 transform + 4 color + 4 uv
     public void Sync(ref SpatialReference[] active, int activeCount, double elapsed)
     {
-        __culled = 0;
-        var groups = level.RenderGroups;
-        for (int g = 0; g < groups.Count; g++)
-            groups[g].BakeIndices.Clear();
+        int culled = 0;
+        if (activeCount == 0)
+        {
+            multiMesh.InstanceCount = 0;
+            return;
+        }
+        int required = activeCount * floatsPerInstance; // upper bound
+        if (buffer.Length < required)
+            buffer = new float[required];
+        int written = 0;
         for (int i = 0; i < activeCount; i++)
         {
-            ref SpatialReference r = ref active[i];
-            if (r.Type != ModelType.Projectile) continue;
-            var proj = level.Projectiles[r.Id];
-            if (!CullRef(ref r))
-                groups[proj.RenderGroupId].BakeIndices.Add(i);
+            SpatialReference r = active[i];
+            if (IsOutOfBounds(ref r)) { culled++; continue; }
+            var proj = Level.Projectiles[r.Id];
+            var scale = proj.RenderScale;
+            double t = elapsed - r.T;
+            float alpha = (t < proj.TelegraphTime)
+                ? (proj.TelegraphTime > 0 ? 0.4f + (float)t / proj.TelegraphTime * 0.4f : 0.8f)
+                : 1.0f;
+            float drawForward = !proj.LockRotation ? (float)r.F + DrawnForwardOffset : DrawnForwardOffset;
+            float cos = Mathf.Cos(drawForward);
+            float sin = Mathf.Sin(drawForward);
+            var rect = RenderingUtils.Rects[proj.TextureId];
+            var pixelSize = rect.Size*RenderingUtils.AtlasSize;
+            int o = written * floatsPerInstance;
+            buffer[o + 0] = -scale.X * cos * pixelSize.X;
+            buffer[o + 1] = -scale.X * sin * pixelSize.X;
+            buffer[o + 2] = 0;
+            buffer[o + 3] = r.Pos.X;
+
+            buffer[o + 4] = -scale.Y * sin * pixelSize.Y;
+            buffer[o + 5] = scale.Y * cos * pixelSize.Y;
+            buffer[o + 6] = 0;
+            buffer[o + 7] = r.Pos.Y;
+
+            buffer[o + 8] = 1; buffer[o + 9] = 1; buffer[o + 10] = 1; buffer[o + 11] = alpha;
+
+            
+            buffer[o + 12] = rect.Position.X;
+            buffer[o + 13] = rect.Position.Y;
+            buffer[o + 14] = rect.Size.X;
+            buffer[o + 15] = rect.Size.Y;
+
+            written++;
         }
-        const int floatsPerInstance = 12;
-        for (int g = 0; g < groups.Count; g++)
-        {
-            var group = groups[g];
-            int count = group.BakeIndices.Count;
-            group.MultiMesh.InstanceCount = count;
-            if (count == 0) continue;
-            int required = count * floatsPerInstance;
-            if (groupBuffers[g].Length != required)
-                groupBuffers[g] = new float[required];
-            ref float[] buffer = ref groupBuffers[g];
-            for (int n = 0; n < count; n++)
-            {
-                int idx = group.BakeIndices[n];
-                ref SpatialReference r = ref active[idx];
-                var proj = level.Projectiles[r.Id];
-                float scale = proj.RenderScale;
-                int o = n * floatsPerInstance;
-                
-                double t = elapsed - r.T;
-                float alpha = (t < proj.TelegraphTime) 
-					? (proj.TelegraphTime > 0 ? 0.4f + (float)t / proj.TelegraphTime * 0.4f : 0.8f) 
-					: 1.0f;
-                float drawForward = !proj.LockRotation ? (float)r.F-Mathf.Pi : -Mathf.Pi; // rads
-
-				float cos = Mathf.Cos(drawForward);
-				float sin = Mathf.Sin(drawForward);
-
-                buffer[o + 0] = -scale * cos; // shear x
-                buffer[o + 1] = -scale * sin; // scale x
-                buffer[o + 2] = 0; // dont know dont care x
-                buffer[o + 3] = r.Pos.X; // x
-
-                buffer[o + 4] = -scale * sin; // scale y
-                buffer[o + 5] = scale * cos; // shear y
-                buffer[o + 6] = 0; // dont know dont care y
-                buffer[o + 7] = r.Pos.Y; // y
-
-                buffer[o + 8] = 1; buffer[o + 9] = 1; buffer[o + 10] = 1; buffer[o + 11] = alpha;
-            }
-            RenderingServer.MultimeshSetBuffer(group.MultiMesh.GetRid(), buffer);
-        }
+        // safe
+        multiMesh.InstanceCount = written;
+        if (written > 0)
+            RenderingServer.MultimeshSetBuffer(multiMesh.GetRid(), buffer.AsSpan(0, written * floatsPerInstance).ToArray());
         if (Overlay.ShowHitboxes)
         {
             __active = active;
             __elapsed = elapsed;
             __activeCount = activeCount;
-            __gs.GameRoot.QueueRedraw();
+            gs.GameRoot.QueueRedraw();
         }
         else if (activeCount > 0)
         {
             __activeCount = 0;
-            __gs.GameRoot.QueueRedraw();
+            gs.GameRoot.QueueRedraw();
         }
-        Overlay.Inst.SyncInfo(-1, -1, -1, __culled);
+        Overlay.Inst.SyncInfo(-1, -1, -1, culled);
     }
     const int MaxDisplays = 1<<9;
     private void __DrawHitboxes()
@@ -110,16 +121,17 @@ public class BulletRenderer
         {
             ref SpatialReference r = ref __active[i];
             if (r.Type != ModelType.Projectile) continue;
-            var proj = level.Projectiles[r.Id];
+            var proj = Level.Projectiles[r.Id];
             double t = __elapsed - r.T;
             bool show = (t > proj.TelegraphTime) && proj.CanCollide;
             if (!show) continue;
+            float drawForward = (float)(!proj.LockRotation ? r.F + DrawnForwardOffset: DrawnForwardOffset);
             if (proj.UseShape && proj.Shape != null)
             {
-                var rotated = CollisionUtils.TranslatePolygon([.. proj.ShapeVect2s, proj.ShapeVect2s[0]], r.Pos, (float)r.F);
-                __gs.GameRoot.DrawPolyline(rotated, Colors.Red, 2);
+                var rotated = CollisionUtils.TranslatePolygon([.. proj.Shape, proj.Shape[0]], r.Pos, drawForward, true, true);
+                gs.GameRoot.DrawPolyline(rotated, Colors.Red, 2);
             }
-            else __gs.GameRoot.DrawCircle(r.Pos, proj.Radius, Colors.Red, false, 2);
+            else gs.GameRoot.DrawCircle(r.Pos, proj.Radius, Colors.Red, false, 2);
         }
     }
 }

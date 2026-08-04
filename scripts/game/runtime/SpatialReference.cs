@@ -6,7 +6,13 @@ public struct SpatialReference
     public ModelType Type;
     public Vector2 SpawnPos;
     public Vector2 Pos;
-    public double T;
+    public double SpawnF;
     public double F;
+    public double T;
     public int Depth;
+    public override string ToString()
+    {
+        return $"Id={Id}, Type={Type}, SpawnPos={SpawnPos}, Pos={Pos}, SpawnF={SpawnF}, F={F}, T={T}, Depth={Depth}";
+    }
+
 }

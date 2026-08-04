@@ -4,9 +4,9 @@ using System;
 public partial class Campaign : CanvasLayer
 {
     public event Action RequestReturn;
-    [Export] private StoryInfo[] StoryInfos;
+    [Export] private StoryInfoUi[] StoryInfos;
     [Export] Button Return;
-    [Export] LevelDisplay levelDisplay;
+    [Export] CampaignLevelDisplay levelDisplay;
     [Export] Button PreviousWorld;
     [Export] Label WorldNameLabel;
     [Export] Button NextWorld;
@@ -18,7 +18,7 @@ public partial class Campaign : CanvasLayer
             var story = StoryInfos[i];
             if (story != null)
             {
-                story.ClickButton(0);
+                story.PressButton(0);
                 story.LevelSelected += OnLevelSelected;
             }
         }
@@ -39,15 +39,17 @@ public partial class Campaign : CanvasLayer
     }
     private void ShowStoryInfo(int id)
     {
-        foreach (StoryInfo s in StoryInfos)
+        foreach (StoryInfoUi s in StoryInfos)
             s.Visible = false;
-        var info = StoryInfos[id];
-        info.Visible = true;
-        WorldNameLabel.Text = info.WorldName;
-        info.ClickButton(0);
+        var infoUi = StoryInfos[id];
+        infoUi.Visible = true;
+        var storyInfo = Stories.StoryInfoById[infoUi.Id];
+        WorldNameLabel.Text = storyInfo.Name;
+        infoUi.PressButton(0);
+
     }
-    private void OnLevelSelected(LevelData data)
+    private void OnLevelSelected(CampaignLevel level)
     {
-        levelDisplay.ShowLevel(data);
+        levelDisplay.ShowLevel(level);
     }
 }

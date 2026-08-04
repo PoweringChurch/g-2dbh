@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Godot.Collections;
 using System.Linq;
 using Godot;
 public static class ValidExtensions
@@ -9,10 +9,10 @@ public static class ValidExtensions
 public static class RenderingUtils
 {
     private static readonly string[] first = [""];
-    private static readonly Dictionary<string, Texture2D> _textureCache = new();
+    private static readonly Dictionary<string, Texture2D> textureCache = new();
     public static Texture2D LoadTexture(string path)
     {
-        if (_textureCache.TryGetValue(path, out var cached))
+        if (textureCache.TryGetValue(path, out var cached))
             return cached;
         foreach (string ext in first.Concat(ValidExtensions.Image))
         {
@@ -30,13 +30,71 @@ public static class RenderingUtils
             }
             if (texture == null)
                 continue;
-            _textureCache[path] = texture;
+            textureCache[path] = texture;
             return texture;
         }
         return null;
     }
-    public static void EmptyTextureCache() =>
-        _textureCache.Clear();
+    private static Dictionary<int, Rect2> rects;
+    public static Dictionary<int, Rect2> Rects 
+    {
+        get
+        {
+            if (rects == null)
+            {
+                var table = GD.Load<AtlasRectTable>("res://data/images/atlases/projectile_rects.tres");
+                rects = table.Rects;
+                GD.Print($"Initialized rects to {table.Rects}");
+            }
+            return rects;
+        }
+    }
+    private static Texture2D[] sourceTextures;
+    private const string projectilesFolderPath = "res://data/images/projectiles/";
+    private const string projectileRectsPath = "res://data/images/atlases/projectile_rects.tres";
+    private const string projectileAtlasPath = "res://data/images/atlases/projectile_atlas.png";
+    private static string[] projectileNames =
+    {
+        "circle.png", "black-icicle.png", "blizzard-snowflake.png", 
+        "crystal-comet.png", "hail.png", "icicle.png", "large-snowflake.png", 
+        "snow-mine.png", "snow.png", "snowball.png", "snowflake.png",
+    };
+    public const int AtlasSize = 256;
+    private const int padding = 4;
+    public static void BuildProjectileAtlas()
+    {
+        sourceTextures = new Texture2D[projectileNames.Length];
+        for (int i = 0; i < projectileNames.Length; i++)
+            sourceTextures[i] = ResourceLoader.Load<Texture2D>($"{projectilesFolderPath}{projectileNames[i]}");
+        Console.Inst.Log($"Built {projectileNames.Length} textures");
+
+        var atlas = Image.CreateEmpty(AtlasSize, AtlasSize, false, Image.Format.Rgba8);
+        rects = [];
+
+        int x = 0, y = 0, rowHeight = 0;
+        for (int i = 0; i < sourceTextures.Length; i++)
+        {
+            var tex = sourceTextures[i];
+            var img = tex.GetImage();
+            if (x + img.GetWidth() > AtlasSize) { x = 0; y += rowHeight + padding; rowHeight = 0; }
+            var imgSize = img.GetSize();
+            atlas.BlitRect(img, new Rect2I(Vector2I.Zero, imgSize), new Vector2I(x, y));
+            rects[i] = new Rect2(
+                (float)x / AtlasSize, (float)y / AtlasSize,
+                (float)imgSize.X / AtlasSize, (float)imgSize.Y / AtlasSize
+            );
+            x += imgSize.X + padding;
+            rowHeight = Mathf.Max(rowHeight, imgSize.Y);
+        }
+        var table = new AtlasRectTable { Rects = rects };
+        ResourceSaver.Save(table, projectileRectsPath);
+        atlas.SavePng(projectileAtlasPath);
+        Console.Inst.Log($"Saved projectile atlas to {projectileAtlasPath} textures");
+    }
+    public static Texture2D GetProjectileAtlas()
+    {
+        return LoadTexture(projectileAtlasPath);
+    }
     private static readonly Dictionary<string, Color> _colorCache = new();
     public static Color ColorFromString(string input)
     {

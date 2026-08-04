@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://cldtmabfj55tq"]
+
+[ext_resource type="Script" uid="uid://c5i20gcevkrk7" path="res://scripts/ui/screens/editor/PatternUi.cs" id="1_uj2lb"]
+
+[node name="PatternUi" type="Button" unique_id=171462272 node_paths=PackedStringArray("namelabel", "id", "color")]
+custom_minimum_size = Vector2(358, 40)
+script = ExtResource("1_uj2lb")
+namelabel = NodePath("Sort/PatternName")
+id = NodePath("Sort/Id")
+color = NodePath("Sort/Color")
+
+[node name="Sort" type="HBoxContainer" parent="." unique_id=1548143332]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Id" type="Label" parent="Sort" unique_id=1462339520]
+layout_mode = 2
+text = "0"
+
+[node name="Color" type="ColorRect" parent="Sort" unique_id=1014708663]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PatternName" type="Label" parent="Sort" unique_id=1780803859]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "awesome pattern"
+clip_text = true
+text_overrun_behavior = 3
