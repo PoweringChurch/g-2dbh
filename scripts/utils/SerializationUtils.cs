@@ -8,7 +8,7 @@ public static class SerializationUtils
    public static readonly JsonSerializerOptions Options = new()
     {
         WriteIndented = true,
-        Converters = { new Vector2JsonConverter() }
+        Converters = { new Vector2JsonConverter(), new Color2JsonConverter() }
     };
     public static T ReadJson<T>(string path)
     {
@@ -67,6 +67,48 @@ public static class SerializationUtils
             writer.WriteStartArray();
             writer.WriteNumberValue(value.X);
             writer.WriteNumberValue(value.Y);
+            writer.WriteEndArray();
+        }
+    }
+    public class Color2JsonConverter : JsonConverter<Color>
+    {
+        public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            Utf8JsonReader snapshot = reader;
+            try
+            {
+                if (reader.TokenType != JsonTokenType.StartArray)
+                {
+                    reader.Skip();
+                    return Colors.Black;
+                }
+                reader.Read();
+                float r = reader.GetSingle();
+                reader.Read();
+                float g = reader.GetSingle();
+                reader.Read();
+                float b = reader.GetSingle();
+                reader.Read();
+                float a = reader.GetSingle();
+                reader.Read();
+                return new Color(r, g, b, a);
+            }
+            catch
+            {
+                reader = snapshot;
+                reader.Skip();
+                GD.PushWarning("Failed to parse Color, defaulting to black");
+                return Colors.Black;
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.R);
+            writer.WriteNumberValue(value.G);
+            writer.WriteNumberValue(value.B);
+            writer.WriteNumberValue(value.A);
             writer.WriteEndArray();
         }
     }

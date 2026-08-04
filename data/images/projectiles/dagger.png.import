@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bn5e3ywtkicj5"
-path="res://.godot/imported/icicle.png-dcfcf6fbf8579af140c86299ce9962d8.ctex"
+uid="uid://bwntmcfywwqsp"
+path="res://.godot/imported/dagger.png-5f5a03518b65956a975fab17e625a8ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/projectiles/icicle.png"
-dest_files=["res://.godot/imported/icicle.png-dcfcf6fbf8579af140c86299ce9962d8.ctex"]
+source_file="res://data/images/projectiles/dagger.png"
+dest_files=["res://.godot/imported/dagger.png-5f5a03518b65956a975fab17e625a8ab.ctex"]
 
 [params]
 

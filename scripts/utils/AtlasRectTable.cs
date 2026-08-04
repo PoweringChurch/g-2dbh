@@ -4,5 +4,5 @@ using Godot.Collections;
 [GlobalClass]
 public partial class AtlasRectTable : Resource
 {
-    [Export] public Dictionary<int, Rect2> Rects = [];
+    [Export] public Dictionary<string, Rect2> Rects = [];
 }

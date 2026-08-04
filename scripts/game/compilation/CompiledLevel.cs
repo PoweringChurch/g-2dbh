@@ -7,5 +7,4 @@ public class CompiledLevel
     public ProjectileModel[] Projectiles = new ProjectileModel[Editor.MaxModelCount];
     public PatternModel[] Patterns = new PatternModel[Editor.MaxModelCount];
     public double Duration;
-    public int AspectRatio;
 }

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://i4ggncq6ngdt"
-path="res://.godot/imported/crystal-comet.png-2117df258e802db702942e8ce1e65f91.ctex"
+uid="uid://bf7wgu81hpxjc"
+path="res://.godot/imported/pattern_marker.png-c50acd4c78e65d7cf9d64b74523ce4f5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/projectiles/crystal-comet.png"
-dest_files=["res://.godot/imported/crystal-comet.png-2117df258e802db702942e8ce1e65f91.ctex"]
+source_file="res://data/images/projectiles/pattern_marker.png"
+dest_files=["res://.godot/imported/pattern_marker.png-c50acd4c78e65d7cf9d64b74523ce4f5.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://degdpl4h35cv3"
-path="res://.godot/imported/large-snowflake.png-3b4002a772135147af985623b015d6db.ctex"
+uid="uid://imkynt3ie04m"
+path="res://.godot/imported/death_card.png-bfa408f920c72e60355f9692d45fe002.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/projectiles/large-snowflake.png"
-dest_files=["res://.godot/imported/large-snowflake.png-3b4002a772135147af985623b015d6db.ctex"]
+source_file="res://data/images/projectiles/death_card.png"
+dest_files=["res://.godot/imported/death_card.png-bfa408f920c72e60355f9692d45fe002.ctex"]
 
 [params]
 

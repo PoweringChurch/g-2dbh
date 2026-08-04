@@ -41,37 +41,37 @@ public static class Stories
                             {
                                 SpeakerName = "Red box",
                                 HighlightIdx = 0,
-                                Text = "This is a sample of what dialogue will look like"
+                                Text = "Welcome back! I have a dialogue system to show off."
                             },
                             new()
                             {
                                 SpeakerName = "Blue box",
                                 HighlightIdx = 1,
-                                Text = "For right now, this feature will be exclusive to campaign levels"
+                                Text = "Campaign levels can now have dialogue before or after gameplay. Right now this is just a placeholder, but it'll eventually have character artwork and unique music."
                             },
                             new()
                             {
                                 SpeakerName = "Red box",
                                 HighlightIdx = 0,
-                                Text = "There will be character art in place of these boxes further into development, and the music will change away from the main menu playlist when in dialogue"
+                                Text = "I've been working on the engine a lot behind the scenes, which is why this update took longer than expected."
                             },
                             new()
                             {
                                 SpeakerName = "Red box",
                                 HighlightIdx = 0,
-                                Text = "Also, I didn't mean for this video to take so long to come out, but trust that a lot of work has been going on in the back"
+                                Text = "This level looks different from the showcase because it's still waiting to be updated to the newest version of the game."
                             },
                             new()
                             {
                                 SpeakerName = "Blue box",
                                 HighlightIdx = 1,
-                                Text = "I'm aiming to post a video showcase of new stuff at least every week going forward, and maybe get out a playable build when the game reaches it's alpha version"
+                                Text = "I'm aiming to post a showcase around once a week as development continues."
                             },
                             new()
                             {
                                 SpeakerName = "Blue box",
                                 HighlightIdx = 1,
-                                Text = "Don't mind how the level looks a bit different from what was showcased before, it's not yet updated to the new version and many things are now incompatible"
+                                Text = "Once the game reaches alpha, I'll be looking into releasing a playable build. Thanks for following along!"
                             }
                         ]
                     },

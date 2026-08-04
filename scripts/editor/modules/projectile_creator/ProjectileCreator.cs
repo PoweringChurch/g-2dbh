@@ -7,6 +7,7 @@ public partial class ProjectileCreator : Control
     [Export] ProjectileCollisionEditor Collision;
     [Export] ProjectileVisuals Visuals;
     [Export] ProjectileMovementEditor MovementInspector;
+    [Export] ProjectileTint Tint;
     [Export] ProjectileInfo Info;
     [Export] SpawnsEditor SpawnEditor;
     [Export] PackedScene ProjectileModelUi;
@@ -50,6 +51,7 @@ public partial class ProjectileCreator : Control
         MovementInspector.Load(Model);
         Collision.Load(Model);
         Visuals.Load(Model);
+        Tint.Load(Model);
         Info.Load(Model);
         SpawnEditor.Load(Model);
         ProjectilePreview.Load(Model);

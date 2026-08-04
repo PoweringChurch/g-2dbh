@@ -81,7 +81,7 @@ public partial class LevelDirector
             float distSq = (r.Pos - _character.Position).LengthSquared();
             float rSumH = proj.Radius + PlayerCharacter.HurtRadius;
             float rSumG = proj.Radius + PlayerCharacter.GrazeRadius;
-            float forward = (float)(proj.LockRotation ? BulletRenderer.DrawnForwardOffset : r.F+BulletRenderer.DrawnForwardOffset);
+            float forward = (float)(proj.LockRotation ? 0 : r.F);
             bool ghit = !proj.UseShape 
             ? distSq <= rSumG * rSumG 
             : CollisionUtils.PolygonVsCircle([.. proj.Shape], r.Pos, _character.Position, PlayerCharacter.GrazeRadius, forward, true);
@@ -133,7 +133,7 @@ public partial class LevelDirector
         }
         // face player
         if (proj.FacePlayer)
-            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)+BulletRenderer.DrawnForwardOffset/2;
+            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X);
         // add projectile
         activeReferences[activeCount++] = r;
         _hasGrazed[activeCount-1] = false;
@@ -143,7 +143,7 @@ public partial class LevelDirector
         var patt = level.Patterns[r.Id];
         var lctx = new EvalContext {N = patt.Count > 1 ? patt.Count - 1 : 1 };
         if (patt.FacePlayer)
-            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X)+BulletRenderer.DrawnForwardOffset/2;
+            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X);
         for (int j = 0; j < patt.Count; j++)
         {
             lctx.I = j;

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4g22is2tknt0"
-path="res://.godot/imported/snow.png-3297dc2d661ffa04df41bae624a261fb.ctex"
+uid="uid://dwxwoayb3i5cp"
+path="res://.godot/imported/orb.png-c2fd193fea4a951d2cfe2369188fe2ff.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/projectiles/snow.png"
-dest_files=["res://.godot/imported/snow.png-3297dc2d661ffa04df41bae624a261fb.ctex"]
+source_file="res://data/images/projectiles/orb.png"
+dest_files=["res://.godot/imported/orb.png-c2fd193fea4a951d2cfe2369188fe2ff.ctex"]
 
 [params]
 

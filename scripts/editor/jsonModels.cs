@@ -13,10 +13,8 @@ public class EditorReference
     public ModelType Type { get; set; }
     public int Id { get; set; }
     // editor only
-    [JsonIgnore] public Vector2 Pos {get; set;}
-    [JsonIgnore] public double F { get; set; }
-    [JsonIgnore] public int Depth {get; set;}
     [JsonIgnore] public int RootEditorId = -1;
+    [JsonIgnore] public bool Selected = false;
     public EditorReference() {}
     public EditorReference(EditorReference other)
     {

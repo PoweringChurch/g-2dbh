@@ -24,6 +24,8 @@ public partial class Overlay : CanvasLayer
             Visible = !Visible;
         if (@event.IsActionPressed("show_hitboxes"))
             ShowHitboxes = !ShowHitboxes;
+        if (@event.IsActionPressed("build_sprite_atlas"))
+            RenderingUtils.BuildProjectileAtlas();
     }
     public override void _Process(double dt)
     {

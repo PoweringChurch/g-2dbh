@@ -13,7 +13,7 @@ public partial class ProjectileUi : Button
         id.Text = model.Id.ToString();
         namelabel.Text = model.Name;
         color.Color = RenderingUtils.ColorFromString(model.Name);
-        texture.Texture = RenderingUtils.LoadTexture(LevelCompiler.ProjectileTextures[model.TextureId].TexturePath);
+        //texture.Texture = RenderingUtils.LoadTexture(LevelCompiler.ProjectileTextures[model.TextureId].TexturePath);
         ProjectileId = model.Id;
     }
 }

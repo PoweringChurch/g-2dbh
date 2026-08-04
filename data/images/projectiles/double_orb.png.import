@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cruuhefxci2vu"
-path="res://.godot/imported/snow-mine.png-e991d776b1b04f8280bd6c5cfb0aaf6b.ctex"
+uid="uid://bna7jel0ddfwy"
+path="res://.godot/imported/double_orb.png-301445e0469c73b7bdab3f3dc8f3c53b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/projectiles/snow-mine.png"
-dest_files=["res://.godot/imported/snow-mine.png-e991d776b1b04f8280bd6c5cfb0aaf6b.ctex"]
+source_file="res://data/images/projectiles/double_orb.png"
+dest_files=["res://.godot/imported/double_orb.png-301445e0469c73b7bdab3f3dc8f3c53b.ctex"]
 
 [params]
 

@@ -110,7 +110,7 @@ public partial class GameSession : Node
         // start
         _lastLevelData = levelData;
         _lastStartParams = startParams;
-        _renderer = new BulletRenderer(compiled);
+        _renderer = new BulletRenderer(compiled.Projectiles, PlayingField.Resolutions[levelData.AspectRatio], GameRoot);
 
         float multiplier = 1f;
         if (startParams.Slower) multiplier = 2/3f;

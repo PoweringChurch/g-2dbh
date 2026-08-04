@@ -23,8 +23,10 @@ public class ProjectileModel : IEditorModel
     public string FunctionF { get; set; } = "0";
 
     // Visuals & Rendering
-    [JsonPropertyName("textureId")]
-    public int TextureId { get; set; } = 0;
+    [JsonPropertyName("textureName")]
+    public string TextureName { get; set; } = "orb.png";
+    [JsonPropertyName("tint")]
+    public Color Tint {get; set;} = Colors.White;
 
     [JsonPropertyName("renderScale")]
     public Vector2 RenderScale { get; set; } = Vector2.One;
@@ -85,10 +87,11 @@ public class ProjectileModel : IEditorModel
         FunctionF = other.FunctionF;
 
         // Visuals
-        TextureId = other.TextureId;
+        TextureName = other.TextureName;
         RenderScale = other.RenderScale;
         TelegraphTime = other.TelegraphTime;
         LockRotation = other.LockRotation;
+        Tint = other.Tint;
         // Collision & Lifetime
         Radius = other.Radius;
         Lifetime = other.Lifetime;

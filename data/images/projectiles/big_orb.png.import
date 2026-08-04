@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j4yhos0a2u3h"
-path="res://.godot/imported/hail.png-22876328897c33acf31a035d167bdc8e.ctex"
+uid="uid://5hg61sch0lbx"
+path="res://.godot/imported/big_orb.png-92fbb04446cfe04f8b54c47870274b91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://data/images/projectiles/hail.png"
-dest_files=["res://.godot/imported/hail.png-22876328897c33acf31a035d167bdc8e.ctex"]
+source_file="res://data/images/projectiles/big_orb.png"
+dest_files=["res://.godot/imported/big_orb.png-92fbb04446cfe04f8b54c47870274b91.ctex"]
 
 [params]
 

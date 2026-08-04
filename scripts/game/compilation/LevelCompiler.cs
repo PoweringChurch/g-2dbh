@@ -11,20 +11,6 @@ public class LevelCompiler
         new() {TextureName = "Snow", TexturePath = "res://data/images/backgrounds/snow-scroller.png"},
         new() {TextureName = "Storm", TexturePath = "res://data/images/backgrounds/storm-scroller.png"},
     };
-    public readonly static TextureData[] ProjectileTextures =
-    {
-        new() {TextureName = "Default", TexturePath = "res://data/images/projectiles/circle.png"},
-        new() {TextureName = "Black Icicle", TexturePath = "res://data/images/projectiles/black-icicle.png"},
-        new() {TextureName = "Blizzard Snowflake", TexturePath = "res://data/images/projectiles/blizzard-snowflake.png"},
-        new() {TextureName = "Crystal Comet", TexturePath = "res://data/images/projectiles/crystal-comet.png"},
-        new() {TextureName = "Hail", TexturePath = "res://data/images/projectiles/hail.png"},
-        new() {TextureName = "Icicle", TexturePath = "res://data/images/projectiles/icicle.png"},
-        new() {TextureName = "Large Snowflake", TexturePath = "res://data/images/projectiles/large-snowflake.png"},
-        new() {TextureName = "Snow Mine", TexturePath = "res://data/images/projectiles/snow-mine.png"},
-        new() {TextureName = "Snow", TexturePath = "res://data/images/projectiles/snow.png"},
-        new() {TextureName = "Snowball", TexturePath = "res://data/images/projectiles/snowball.png"},
-        new() {TextureName = "Snowflake", TexturePath = "res://data/images/projectiles/snowflake.png"},
-    };
     public readonly static SongData[] SongData =
     {
         new() {SongName = "Freezing Adventure", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/freezing-adventure.mp3"},
@@ -83,7 +69,6 @@ public class LevelCompiler
         }
         // set duration
         compiled.Duration = level.Duration;
-        compiled.AspectRatio = level.AspectRatio;
         Console.Inst.Log($"[Level Compiler] Level compiled");
         return compiled;
     }
