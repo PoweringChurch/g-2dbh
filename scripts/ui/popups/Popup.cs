@@ -1,17 +1,11 @@
 using Godot;
 
-public partial class Popup : Node
+public partial class Popup : Control
 {
-    public Label MessageLabel { get; set; }
-    public HBoxContainer ButtonRow { get; set; }
+    [Export] public Label MessageLabel { get; set; }
+    [Export] public HBoxContainer ButtonRow { get; set; }
     public Button[] Options { get; set; }
     public bool CloseOnPress {get; set;}
-
-    public void SetupNodes()
-    {
-        MessageLabel = GetNode<Label>("VBoxContainer/Label");
-        ButtonRow = GetNode<HBoxContainer>("VBoxContainer/HBoxContainer");
-    }
 
     public void SetMessage(string message)
     {

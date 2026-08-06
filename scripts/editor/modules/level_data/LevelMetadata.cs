@@ -13,14 +13,13 @@ public partial class LevelMetadata : Control
 	[ExportGroup("Level Metadata")]
 	[Export] LineEdit LevelNameInput;
 	[Export] LineEdit AuthorInput;
-	[Export] SpinBox HealthInput;
+	[Export] SpinBox DifficultyInput;
 	[Export] SpinBox DurationInput;
 	[Export] OptionButton AspectRatioInput;
 	[Export] OptionButton CharacterSelect;
 
 	[ExportGroup("Actions")]
 	[Export] Button SaveLevel;
-	[Export] Button OpenLevelFolder;
 	[Export] Button OpenBgEditor;
 
 	[ExportGroup("References")]
@@ -41,13 +40,12 @@ public partial class LevelMetadata : Control
 	public override void _Ready()
 	{
 		base._Ready();
-		LevelNameInput.TextChanged += (text) => e.levelData.DisplayName = text;
+		LevelNameInput.TextChanged += (text) => e.levelData.Name = text;
 		AuthorInput.TextChanged += (text) => e.levelData.Author = text;
-		HealthInput.ValueChanged += (val) => e.levelData.Health = (int)val;
+		DifficultyInput.ValueChanged += (val) => e.levelData.Difficulty = (float)val;
 		DurationInput.ValueChanged += (val) => {e.levelData.Duration = (float)val; DurationChanged.Invoke();};
 		AspectRatioInput.ItemSelected += (idx) => { 
 			e.levelData.AspectRatio = AspectRatioInput.Selected; AspectRatioChanged.Invoke(PlayingField.Resolutions[idx]); };
-		OpenLevelFolder.Pressed += () => OS.ShellOpen(ProjectSettings.GlobalizePath(e.LevelPath));;
 		OpenBgEditor.Pressed += () => BackgroundEditor.Visible = true;
 		CharacterSelect.ItemSelected += (idx) => e.levelData.Character = (int)idx;
 		SaveLevel.Pressed += OnSavePressed;
@@ -90,14 +88,14 @@ public partial class LevelMetadata : Control
 		}
 		SaveLevelRequested.Invoke();
 	}
-	public void Load(LevelData data)
+	public void Load(RawLevelData data)
 	{
 		AuthorInput.Text = data.Author;
 		AspectRatioInput.Selected = data.AspectRatio;
 		CharacterSelect.Selected = data.Character;
-		HealthInput.Value = data.Health;
+		DifficultyInput.Value = data.Difficulty;
 		DurationInput.Value = data.Duration;
-		LevelNameInput.Text = data.DisplayName;
+		LevelNameInput.Text = data.Name;
 		BackgroundEditor.Load(data);
 		currentSong = data.MusicId;
 		ApplyCurrentSong();

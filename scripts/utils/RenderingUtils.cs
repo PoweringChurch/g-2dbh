@@ -119,12 +119,30 @@ public static class RenderingUtils
             return new Color(1, 1, 1);
         if (_colorCache.TryGetValue(input, out var cached))
             return cached;
-        int hash = input.GetHashCode();
+        uint hash = Fnv1aHash(input);
         float hue = (hash & 0xFFFF) / 65535f;
         float sat = Mathf.Clamp(((hash >> 16) & 0xFF) / 255f, 0.4f, 1.0f);
         Color color = Color.FromHsv(hue, sat, 1);
         _colorCache[input] = color;
         return color;
+    }
+    public static Color GetContrastingColor(Color c)
+    {
+        float luminance = 0.2126f * c.R + 0.7152f * c.G + 0.0722f * c.B;
+        return luminance > 0.5f ? new Color(0, 0, 0) : new Color(1, 1, 1);
+    }
+    private static uint Fnv1aHash(string input)
+    {
+        const uint fnvPrime = 16777619;
+        const uint fnvOffsetBasis = 2166136261;
+
+        uint hash = fnvOffsetBasis;
+        foreach (char c in input)
+        {
+            hash ^= c;
+            hash *= fnvPrime;
+        }
+        return hash;
     }
     public static ArrayMesh BuildCircleMesh(float radius, bool outline = false, int segments = 20)
     {   

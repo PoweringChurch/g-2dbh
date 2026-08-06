@@ -30,7 +30,7 @@ public partial class ProjectileCreator : Control
             }
         }
     }
-    public void Load(LevelData data)
+    public void Load(RawLevelData data)
     {
         foreach (var ui in ModelList.GetChildren())
             ui.QueueFree();

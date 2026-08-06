@@ -2,7 +2,7 @@ using Godot;
 
 public struct SpatialReference
 {
-    public int Id;
+    public int ProjectileId;
     public ModelType Type;
     public Vector2 SpawnPos;
     public Vector2 Pos;
@@ -12,7 +12,6 @@ public struct SpatialReference
     public int Depth;
     public override string ToString()
     {
-        return $"Id={Id}, Type={Type}, SpawnPos={SpawnPos}, Pos={Pos}, SpawnF={SpawnF}, F={F}, T={T}, Depth={Depth}";
+        return $"ProjId={ProjectileId} Type={Type}, SpawnPos={SpawnPos}, Pos={Pos}, SpawnF={SpawnF}, F={F}, T={T}, Depth={Depth}";
     }
-
 }

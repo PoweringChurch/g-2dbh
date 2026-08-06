@@ -27,6 +27,7 @@ public partial class LevelDirector
     public void Tick(double dt)
     {
         elapsed += dt*speedMultiplier;
+        _character.CanMove = elapsed >= 0;
         if (elapsed >= level.Duration)
         {
             activeCount = 0;
@@ -62,14 +63,14 @@ public partial class LevelDirector
     private void TickProjectile(ref SpatialReference r, int i)
     {
         if (r.Type != ModelType.Projectile) return;
-        var proj = level.Projectiles[r.Id];
+        var proj = level.Projectiles[r.ProjectileId];
         if (elapsed - r.T > proj.Lifetime)
         {
             Kill(i--);
         }
         else
         {
-            var lctx = new EvalContext { T = elapsed - r.T, L = proj.Lifetime };
+            var lctx = new EvalContext { T = elapsed - r.T, L = proj.Lifetime,  Unique = GetUnique(r.ProjectileId, (int)r.Type, r.SpawnPos, r.SpawnF, r.T)};
             // move projectile
             var f = MathSafe.Sanitize(proj.fnf(lctx)) + r.SpawnF;
             var pos = CalculatePosition(proj.fnx, proj.fny, f, lctx) + r.SpawnPos;
@@ -107,12 +108,12 @@ public partial class LevelDirector
         if (activeCount == MaxBulletCount)
             return;
         // spawn children
-        var proj = level.Projectiles[r.Id];
+        var proj = level.Projectiles[r.ProjectileId];
         
         for (int j = 0; j < proj.Spawns.Count; j++)
         {
             var childRef = proj.Spawns[j];
-            var pctx = new EvalContext { T = childRef.T, L = proj.Lifetime }; // parent context at time of child spawning
+            var pctx = new EvalContext { T = childRef.T, L = proj.Lifetime, Unique = GetUnique(r.ProjectileId, (int)r.Type, r.SpawnPos, r.SpawnF, r.T) }; // parent context at time of child spawning
             double parentF = r.SpawnF+MathSafe.Sanitize(proj.fnf(pctx));
             var parentPos = CalculatePosition(proj.fnx, proj.fny, parentF, pctx) + r.SpawnPos;
 
@@ -127,7 +128,7 @@ public partial class LevelDirector
                 F = childF,
                 T = childT,
                 Type = childRef.Type,
-                Id = childRef.Id,
+                ProjectileId = childRef.Id,
                 Depth = r.Depth + 1
             });
         }
@@ -138,9 +139,9 @@ public partial class LevelDirector
         activeReferences[activeCount++] = r;
         _hasGrazed[activeCount-1] = false;
     }
-    private void SpawnPattern(ref SpatialReference r)
+    public void SpawnPattern(ref SpatialReference r)
     {
-        var patt = level.Patterns[r.Id];
+        var patt = level.Patterns[r.ProjectileId];
         var lctx = new EvalContext {N = patt.Count > 1 ? patt.Count - 1 : 1 };
         if (patt.FacePlayer)
             r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X);
@@ -160,7 +161,7 @@ public partial class LevelDirector
                 F = childF,
                 T = childT,
                 Type = patt.SpawningType,
-                Id = patt.SpawningId,
+                ProjectileId = patt.SpawningId,
                 Depth = r.Depth
             });
         }
@@ -182,4 +183,25 @@ public partial class LevelDirector
 		var pos = new Vector2(x, y);
 		return pos;
 	}
+    public static double GetUnique(int Id, int Type, Vector2 SpawnPos, double SpawnF, double SpawnT)
+    {
+        long spawnPosX = (long)Math.Round(SpawnPos.X * 10000);
+        long spawnPosY = (long)Math.Round(SpawnPos.Y * 10000);
+        long spawnF = (long)Math.Round(SpawnF * 10000);
+        long t = (long)Math.Round(SpawnT * 10000);
+        unchecked
+        {
+            long hash = 17;
+            hash = hash * 31 + Id;
+            hash = hash * 31 + Type;
+            hash = hash * 31 + spawnPosX;
+            hash = hash * 31 + spawnPosY;
+            hash = hash * 31 + spawnF;
+            hash = hash * 31 + t;
+
+            ulong positiveHash = (ulong)(hash ^ (hash >> 32));
+            double normalized = positiveHash % 1000000 / 1000000.0;
+            return (normalized * 2.0) - 1.0;
+        }
+    }
 }

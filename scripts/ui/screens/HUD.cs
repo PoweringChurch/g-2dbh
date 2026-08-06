@@ -3,34 +3,28 @@ using System;
 
 public partial class HUD : CanvasLayer
 {
-    [Export] Label _scoreLabel;
-    [Export] Label _grazeLabel;
-    [Export] Label _LevelName;
-    [Export] Label _HP;
-    [Export] Label _Duration;
-    [Export] Label _Completion;
+    [Export] Label LevelName;
+    [Export] Label Health;
+    [Export] Label Graze;
+    [Export] Label Completion;
+    [Export] Label Elapsed;
 
     [Export] TextureRect faster;
     [Export] TextureRect slower;
     [Export] TextureRect hearty;
     [Export] TextureRect perfect;
     [Export] TextureRect paranoid;
-
-    public void SetScore(int score) 
-    {
-        _scoreLabel.Text = score.ToString().PadLeft(6, '0');
-    }
-    public void SetGraze(int graze) => _grazeLabel.Text = graze.ToString();
-    public void SetHealth(int lives) => _HP.Text = lives.ToString();
+    public void SetGraze(int graze) => Graze.Text = graze.ToString();
+    public void SetHealth(int lives) => Health.Text = lives.ToString();
     public void SetLevelName(string name)
     {
-        _LevelName.Text = name;
+        LevelName.Text = name;
     }
-    public void SetCompletion(float completion) => _Completion.Text = $"{completion:P2}";
-    public void SetDuration(float duration)
+    public void SetCompletion(float completion) => Completion.Text = $"{completion:P2}";
+    public void SetElapsed(float elapsed)
     {
-        TimeSpan ts = TimeSpan.FromSeconds(duration);
-        _Duration.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
+        TimeSpan ts = TimeSpan.FromSeconds(elapsed);
+        Elapsed.Text = $"{(int)ts.TotalMinutes:00}:{ts.Seconds:00}.{ts.Milliseconds/10}";
     }
     public void SetMods(StartParams startParams)
     {
@@ -42,8 +36,9 @@ public partial class HUD : CanvasLayer
     }
     public void ResetStats()
     {
-        _scoreLabel.Text = "0";
-        _grazeLabel.Text = "0";
-        _HP.Text = "0";
+        Completion.Text = "00.00%";
+        Elapsed.Text = "00:00.00";
+        Graze.Text = "0";
+        Health.Text = "0";
     }
 }

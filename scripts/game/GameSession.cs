@@ -25,11 +25,12 @@ public partial class GameSession : Node
     private LevelDirector _director;
     private BulletRenderer _renderer;
     private UIManager ui => UIManager.Instance;
-    private LevelData _lastLevelData;
+    private RawLevelData _lastLevelData;
     private PlayingField playingField;
     private StartParams _lastStartParams;
+    private const int maxHealth = 3;
     private int score, health, graze;
-    private float maxHealth, duration;
+    private float duration;
     private bool running = false;
     public bool Running => running;
     public override void _EnterTree() =>
@@ -69,7 +70,7 @@ public partial class GameSession : Node
             GameRoot.QueueFree();
         return StartLevel(_lastLevelData, _lastStartParams);
     }
-    public bool StartLevel(LevelData levelData, StartParams startParams)
+    public bool StartLevel(RawLevelData levelData, StartParams startParams)
     {
         // get level data
         if (levelData == null) return false;
@@ -92,17 +93,14 @@ public partial class GameSession : Node
         score = 0;
         graze = 0;
         duration = levelData.Duration;
-        maxHealth = levelData.Health;
-        health = levelData.Health;
+        health = maxHealth;
         if (startParams.Healthy) health = Math.Max(3, health*2);
         else if (startParams.Perfectionist) health = 1;
         
         // setup ui
         ui.HUD.SetHealth(health);
         ui.HUD.SetGraze(0);
-        ui.HUD.SetScore(0);
-        ui.HUD.SetLevelName(levelData.DisplayName);
-        ui.HUD.SetDuration(levelData.Duration);
+        ui.HUD.SetLevelName(levelData.Name);
         ui.HUD.SetMods(startParams);
         _character.OnHurt += OnHurt;
         _character.OnGraze += OnGraze;
@@ -147,7 +145,6 @@ public partial class GameSession : Node
         health--;
         if (!_lastStartParams.Paranoid) score -= Math.Max((int)(100*(health+1)/maxHealth), 0);
         ui.HUD.SetHealth(health);
-        ui.HUD.SetScore(score);
         if (health <= 0)
             StopLevel();
         AudioUtils.Instance.PlayAudio(hurtSfx, AudioUtils.SFXVolume);
@@ -158,7 +155,6 @@ public partial class GameSession : Node
         if (_lastStartParams.Paranoid && _character.Hurt() && !ConfigHelper.Current.NoHit)
             return;
         score += (int)(100*health/maxHealth);
-        ui.HUD.SetScore(score);
         ui.HUD.SetGraze(graze);
         AudioUtils.Instance.PlayAudio(grazeSfx, AudioUtils.SFXVolume);
     }
@@ -166,7 +162,7 @@ public partial class GameSession : Node
     {
         if (!running) return;
         _character.Movement(dt);
-        ui.HUD.SetCompletion((float)(_director.Elapsed/duration));
+        if (_director.Elapsed >= 0) { ui.HUD.SetCompletion((float)(_director.Elapsed/duration)); ui.HUD.SetElapsed((float)_director.Elapsed); }
         _director.Tick(dt);
         _character.VisualFeedback();
     }
@@ -175,7 +171,6 @@ public partial class GameSession : Node
         Overlay.Inst.SyncInfo(-1, _director.QueuedCount, _director.ActiveCount);
         if (!running) return;
         _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount, _director.Elapsed);
-        // fade out in last two seconds
         if (Elapsed >= duration - FadeOutTime)
         {
             float t = (float)Math.Max(0, duration - Elapsed) / FadeOutTime;

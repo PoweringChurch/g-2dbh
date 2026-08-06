@@ -1,7 +1,36 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
+using System.Text.Json.Serialization;
+
+public enum ModelType { Projectile, Pattern }
+public class EditorReference
+{
+    public float SpawnX {get; set;}
+    public float SpawnY {get; set;}
+    public double SpawnF {get; set;}
+    public double T { get; set; }
+    public ModelType Type { get; set; }
+    public int Id { get; set; }
+    // editor only
+    [JsonIgnore] public int RootEditorId = -1;
+    [JsonIgnore] public bool Selected = false;
+    public EditorReference() {}
+    public EditorReference(EditorReference other)
+    {
+        SpawnX = other.SpawnX;
+        SpawnY = other.SpawnY;
+        SpawnF = other.SpawnF;
+        T = other.T;
+        Type = other.Type;
+        Id = other.Id;
+    }
+}
+public interface IEditorModel
+{
+    int Id {get; set;}
+    string Name { get; set; }
+}
 public partial class Editor : CanvasLayer
 {
     public static Editor Instance;
@@ -27,7 +56,6 @@ public partial class Editor : CanvasLayer
     public bool Snap => toolbar.Snap;
     public bool TimeControls => toolbar.TimeControls;
     public float IncrementTimeBy => toolbar.IncrementTimeBy;
-    public string LevelPath => $"{(levelData != null ? levelData.LevelPath : "")}";
     public IEditorModel SelectedModel => modelLibrary.SelectedModel;
     public IReadOnlyList<ProjectileModel> ProjectileModels => levelData.ProjectileModels;
     public IReadOnlyList<PatternModel> PatternModels => levelData.PatternModels;
@@ -92,7 +120,7 @@ public partial class Editor : CanvasLayer
             preview.Sync();
         };
     }
-    public LevelData levelData;
+    public RawLevelData levelData;
     // references
     // modules
     [Export] private Toolbar toolbar;
@@ -135,23 +163,18 @@ public partial class Editor : CanvasLayer
     }
     public void NewLevel()
     {
-        LevelData data = new();
-        data.LevelPath = $"user://data/levels/{Guid.NewGuid()}/";
-        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath);
-        DirAccess.MakeDirRecursiveAbsolute(data.LevelPath + "audio/");
-        SerializationUtils.WriteJson(data.LevelPath + "leveldata.json", data);
+        RawLevelData data = new() { LocalId = Guid.NewGuid().ToString(), };
         ApplyLevelData(data);
     }
     public void SetPlaying(bool to) => timeline.SetPlaying(to);
-    public bool OpenLevel(LevelData data)
+    public bool OpenLevel(RawLevelData data)
     {
         ApplyLevelData(data);
         return true;
     }
-    private void ApplyLevelData(LevelData data)
+    private void ApplyLevelData(RawLevelData data)
     {
         PlaylistHandler.Instance.FadeOut();
-        RepairLevelData(data);
         levelData = data;
         customVars.Load(data);
         timeline.Load(data);
@@ -166,19 +189,11 @@ public partial class Editor : CanvasLayer
         preview.Load(data);
         preview.Sync();
     }
-    private static void RepairLevelData(LevelData data)
-    {
-        data.BackgroundLayers ??= [];
-        data.ProjectileModels ??= [];  
-        data.PatternModels ??= [];  
-        data.References ??= [];  
-        data.CustomVariables ??= [];  
-    }
     private void SaveLevel()
     {
-        SerializationUtils.WriteJson(levelData.LevelPath + "leveldata.json", levelData);
-        notifBoard.ShowMessage($"Saved level successfully ({DateTime.Now})");
-        Console.Inst.Log("[Editor] Saved level successfully");
+        LevelStorage.SaveLevel(levelData);
+        notifBoard.ShowMessage($"Saved level successfully");
+        Console.Inst.Log($"[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
         preview.Sync();

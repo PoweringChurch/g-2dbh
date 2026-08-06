@@ -25,6 +25,7 @@ public partial class ProjectilePreview : Control
     [Export] private Button PlaybackToggle;
     [Export] private Button HomeButton;
     [Export] private SpinBox TimeSpin;
+    [Export] private CheckButton ShowHitboxes;
 
     private bool dirty = false;
     private EvalContext ctx = new();
@@ -67,6 +68,7 @@ public partial class ProjectilePreview : Control
             Multimesh = multiMesh,
             Texture = RenderingUtils.GetProjectileAtlas(),
             Material = shaderMaterial,
+            YSortEnabled = true,
             ZIndex = -1, // keep sprites behind the hitbox/gizmo overlay drawn on DrawOn
         };
         DrawOn.AddChild(mmInst);
@@ -76,6 +78,7 @@ public partial class ProjectilePreview : Control
         DrawOn.Draw += DrawHitbox;
         PlaybackToggle.Pressed += () => { playing = !playing; PlaybackToggle.Text = playing ? "❚❚" : "▶"; };
         TimeSpin.ValueChanged += (v) => { ctx.T = v; MarkDirty(); };
+        ShowHitboxes.Toggled += (on) => MarkDirty();
         HomeButton.Pressed += Home;
     }
 
@@ -149,6 +152,7 @@ public partial class ProjectilePreview : Control
         if (Model == null)
             return;
         ctx.L = Model.Lifetime;
+        ctx.Unique = GetUnique(reference.SpawnPos, reference.SpawnF, reference.T, reference.Depth);
         var f = Model.fnf(ctx) + reference.SpawnF;
         var pos = LevelDirector.CalculatePosition(Model.fnx, Model.fny, f, ctx);
         reference.Pos = reference.SpawnPos + pos;
@@ -192,7 +196,7 @@ public partial class ProjectilePreview : Control
     {
         foreach (var childRef in pm.Spawns)
         {
-            var pctx = new EvalContext { T = childRef.T, L = pm.Lifetime };
+            var pctx = new EvalContext { T = childRef.T, L = pm.Lifetime, Unique = GetUnique(basePos, baseF, baseT, depth ) };
             double parentF = baseF + MathSafe.Sanitize(pm.fnf(pctx));
             var parentPos = LevelDirector.CalculatePosition(pm.fnx, pm.fny, parentF, pctx) + basePos;
             Vector2 childSpawnPos = parentPos + new Vector2(childRef.SpawnX, childRef.SpawnY);
@@ -215,7 +219,7 @@ public partial class ProjectilePreview : Control
         if (patt == null)
             return;
 
-        var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1 };
+        var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1, Unique = GetUnique(cur.SpawnPos, cur.SpawnF, cur.SpawnT, cur.Depth) };
         for (int j = 0; j < patt.Count; j++)
         {
             lctx.I = j;
@@ -257,7 +261,7 @@ public partial class ProjectilePreview : Control
 
             double localTime = ctx.T - b.SpawnT;
             double clampedT = Math.Clamp(localTime, 0, pm.Lifetime);
-            var lctx = new EvalContext { T = clampedT, L = pm.Lifetime };
+            var lctx = new EvalContext { T = clampedT, L = pm.Lifetime, Unique = GetUnique(b.SpawnPos, b.SpawnF, b.SpawnT, b.Depth) };
 
             double f = b.SpawnF + MathSafe.Sanitize(pm.fnf(lctx));
             var movement = LevelDirector.CalculatePosition(pm.fnx, pm.fny, (float)f, lctx);
@@ -371,6 +375,8 @@ public partial class ProjectilePreview : Control
     {
         if (Model == null)
             return;
+        if (!ShowHitboxes.ButtonPressed)
+            return;
         bool alive = ctx.T >= 0 && ctx.T < ctx.L;
         bool show = Model.CanCollide && (ctx.T >= Model.TelegraphTime) && alive;
         if (!show) return;
@@ -388,11 +394,10 @@ public partial class ProjectilePreview : Control
     {
         int steps = ConfigHelper.Current.PathFidelity;
         Vector2[] points = new Vector2[steps];
-        var lctx = new EvalContext();
+        var lctx = new EvalContext() {L = Model.Lifetime, Unique = GetUnique(reference.SpawnPos, reference.SpawnF, reference.T, reference.Depth)};
         for (int i = 0; i < steps; i++)
         {
             lctx.T = Math.Min(Model.Lifetime, ConfigHelper.Current.MaxPathLength) / steps * i;
-            lctx.L = Model.Lifetime;
             var (x, y) = LevelDirector.CalculatePosition(Model.fnx, Model.fny, Model.fnf(lctx) + reference.SpawnF, lctx);
             points[i] = WorldToScreen(new(reference.SpawnPos.X + x, reference.SpawnPos.Y + y));
         }
@@ -400,5 +405,18 @@ public partial class ProjectilePreview : Control
         DrawOn.DrawPolyline(points, RenderingUtils.ColorFromString(Model.Name), ConfigHelper.Current.PathThickness, true);
         DrawOn.DrawCircle(points[0], ConfigHelper.Current.PathThickness * 1.5f, RenderingUtils.ColorFromString(Model.Name));
         DrawOn.DrawDashedLine(WorldToScreen(reference.Pos), WorldToScreen(reference.Pos + (Vector2.FromAngle((float)reference.F) * 50)), Colors.DarkRed, 4f);
+    }
+    private static double GetUnique(Vector2 SpawnPos, double SpawnF, double SpawnT, int Depth)
+    {
+        int hash = 17;
+        unchecked
+        {
+            hash = hash * 31 + SpawnPos.GetHashCode();
+            hash = hash * 31 + SpawnF.GetHashCode();
+            hash = hash * 31 + SpawnT.GetHashCode();
+            hash = hash * 31 + Depth.GetHashCode();
+        }
+        double normalized = (double)(hash & 0x7FFFFFFF) / int.MaxValue;
+        return (normalized * 2.0) - 1.0;
     }
 }

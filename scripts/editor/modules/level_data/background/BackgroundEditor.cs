@@ -25,7 +25,7 @@ public partial class BackgroundEditor : Control
             List.MoveChild(child, child.EditorLayerInstance.Layer.Order);
         }
     }
-    public void Load(LevelData data)
+    public void Load(RawLevelData data)
     {
         foreach (var child in BackgroundHolder.GetChildren())
 			child.QueueFree();

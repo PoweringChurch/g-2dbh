@@ -23,7 +23,7 @@ public partial class Console : CanvasLayer
     public void Log(object message, bool sync = true)
     {
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
-        string formattedMessage = $"[{timestamp}] {message}\n";
+        string formattedMessage = $"({timestamp}) {message}\n";
         _consoleText.InsertTextAtCaret(formattedMessage);
         if (sync)
             GD.Print(message); 

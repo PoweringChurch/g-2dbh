@@ -12,7 +12,7 @@ public partial class CustomVariables : Control
     {
         NewDefinition.Pressed += () => CreateNewDefinition(Editor.Instance.levelData.CustomVariables, "", "0");
     }
-    public void Load(LevelData data)
+    public void Load(RawLevelData data)
     {
         foreach (var child in List.GetChildren())
             child.QueueFree();

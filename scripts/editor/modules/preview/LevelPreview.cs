@@ -599,6 +599,7 @@ public partial class LevelPreview : Control
 			{
 				lctx.T = Math.Min(proj.Lifetime, ConfigHelper.Current.MaxPathLength) / steps * i;
 				lctx.L = proj.Lifetime;
+				lctx.Unique = LevelDirector.GetUnique(r.Id, (int)r.Type, new(r.SpawnX, r.SpawnY), r.SpawnF, r.T);
 				double f = MathSafe.Sanitize(proj.fnf(lctx)) + r.SpawnF;
 				var (x, y) = LevelDirector.CalculatePosition(proj.fnx, proj.fny, f, lctx);
 				points[i] = new(r.SpawnX + x, r.SpawnY + y);
@@ -615,7 +616,7 @@ public partial class LevelPreview : Control
 			if (patt == null)
 				return;
 			Vector2[] points = new Vector2[steps];
-			var lctx = new EvalContext() { N = patt.Count };
+			var lctx = new EvalContext() { N = patt.Count, Unique = LevelDirector.GetUnique(r.Id, (int)r.Type, new(r.SpawnX, r.SpawnY), r.SpawnF, r.T)};
 			var color = RenderingUtils.ColorFromString(patt.Name);
 			for (int i = 0; i < steps; i++)
 			{
@@ -638,7 +639,7 @@ public partial class LevelPreview : Control
 	}
 	private void OnWindowResized() => Fit(PlayingField.Resolutions[e.levelData.AspectRatio]);
 	// only call on load
-	public void Load(LevelData level)
+	public void Load(RawLevelData level)
 	{
 		nextId = 0;
 		levelManager.ClearTimeline();
@@ -678,7 +679,7 @@ public partial class LevelPreview : Control
 		var mesh = RenderingUtils.BuildCircleMesh(10);
 		// compile
 		LevelCompiler.CompilePattern(model);
-		var lctx = new EvalContext { I = 0, N = model.Count > 1 ? model.Count - 1 : 1 };
+		var lctx = new EvalContext { I = 0, N = model.Count > 1 ? model.Count - 1 : 1, Unique = 1 };
 		double maxSpawnT = 0;
 		for (int j = 0; j < model.Count; j++)
 		{

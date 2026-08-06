@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public enum TokenType
 {
     Number, Identifier,
-    Plus, Minus, Star, Slash, Caret,
+    Plus, Minus, Star, Slash, Percen, Caret,
     LParen, RParen,
     End
 }
@@ -52,8 +52,8 @@ public static class ExpressionLexer
             {
                 '+' => TokenType.Plus,  '-' => TokenType.Minus,
                 '*' => TokenType.Star,  '/' => TokenType.Slash,
-                '^' => TokenType.Caret, '(' => TokenType.LParen,
-                ')' => TokenType.RParen,
+                '%' => TokenType.Percen,'^' => TokenType.Caret, 
+                '(' => TokenType.LParen,')' => TokenType.RParen,
                 _ => throw new Exception($"Unknown character '{c}' in expression")
             };
             tokens.Add(new Token(tt, c.ToString()));

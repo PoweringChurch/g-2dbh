@@ -2,19 +2,16 @@ using Godot;
 
 public partial class Popups : Node
 {
-    private const string ScenePath = "res://data/scenes/ui/popup_ui.tscn";
+    [Export] public PackedScene popupScene;
+    public static Popups Instance;
     public enum DefaultType
     {
         OK,
         YN,
         OKCancel
     }
-    public static Popups Instance;
-    public override void _Ready()
-    {
+    public override void _Ready() =>
         Instance = this;
-    }
-
     private static string[] GetLabelsFor(DefaultType type) => type switch
     {
         DefaultType.OK       => ["OK"],
@@ -38,10 +35,8 @@ public partial class Popups : Node
         Create(GetLabelsFor(type), message, CloseOnPress);
     private Popup Create(string[] optionLabels, string message = "", bool CloseOnPress = true)
     {
-        var scene = GD.Load<PackedScene>(ScenePath);
-        var popup = scene.Instantiate<Popup>();
+        var popup = popupScene.Instantiate<Popup>();
         popup.CloseOnPress = CloseOnPress;
-        popup.SetupNodes();
         popup.SetMessage(message);
         popup.SetOptions(optionLabels);
         return popup;

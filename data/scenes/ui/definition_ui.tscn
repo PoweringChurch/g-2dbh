@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://co1vtkdhkdbc1"]
 
 [ext_resource type="Script" uid="uid://bivqbcsgono0f" path="res://scripts/editor/modules/level_data/custom_variables/DefinitionUi.cs" id="1_fe6sa"]
+[ext_resource type="FontFile" uid="uid://c4bxtwqu5jwfx" path="res://data/other/fonts/hack/Hack-Regular.ttf" id="2_4p6ix"]
 [ext_resource type="LabelSettings" uid="uid://duybn1f5jyn0p" path="res://data/other/label_settings/error_label_setting.tres" id="2_hek1d"]
 [ext_resource type="Script" uid="uid://d3xc3jt64k5gt" path="res://scripts/ui/stuff/MessageDisplay.cs" id="3_4p6ix"]
 
@@ -42,11 +43,15 @@ text = "="
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
 focus_mode = 1
+theme_override_fonts/font = ExtResource("2_4p6ix")
+theme_override_font_sizes/font_size = 14
+text = "gegegerrggrgreer"
 placeholder_text = "<define>"
 context_menu_enabled = false
 emoji_menu_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
 
 [node name="Remove" type="Button" parent="Stack/Define" unique_id=173361387]
 layout_mode = 2

@@ -13,6 +13,7 @@ public partial class UIManager : Node
     [Export] MainMenu _mainMenu;
     [Export] LevelSelect _levelSelect;
     [Export] Campaign _campaign;
+    [Export] DialogueHandler dialogueHandler;
     GameSession gs => GameSession.Instance;
     Editor e => Editor.Instance;
     private bool _canPause = false;
@@ -113,6 +114,7 @@ public partial class UIManager : Node
         }
         if (gs.Running)
             gs.Abort();
+        dialogueHandler.CancelDialogue();
         TogglePause(false);
         ScoreSummary.Visible = false;
         uiPath.RemoveAt(uiPath.Count-1);

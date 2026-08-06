@@ -10,7 +10,7 @@ public class EditorLevelManager
 	public List<BackgroundLayerInstance> BGInstances => bgInstances;
     private struct BakedEditorReference()
     {
-        public int Id;
+        public int ProjectileId;
         public Vector2 SpawnPos;
         public Vector2 Pos;
         public double SpawnF;
@@ -40,7 +40,8 @@ public class EditorLevelManager
         {
             Multimesh = multiMesh,
             Texture = RenderingUtils.GetProjectileAtlas(),
-            Material = shaderMaterial
+            Material = shaderMaterial,
+			YSortEnabled = true
         };
         root.AddChild(mmInst);
     }
@@ -52,6 +53,8 @@ public class EditorLevelManager
     }
 	public void Sync()
 	{
+		if (e.levelData == null)
+			return;
 		// tick backgrounds
 		for (int i = 0; i < e.levelData.BackgroundLayers.Count; i++)
 		{
@@ -67,7 +70,7 @@ public class EditorLevelManager
 				alive = ProcessProjReference(ref r) && !IsOutOfBounds(r);
 			else if (r.Type == ModelType.Pattern)
 			{
-				var patt = e.PatternModels[r.Id];
+				var patt = e.PatternModels[r.ProjectileId];
 				var t = e.CurrentTime - r.T;
 				alive = t >= 0 && t <= patt.lifetime;
 			}
@@ -86,7 +89,7 @@ public class EditorLevelManager
 	private void DrawReference(BakedEditorReference r)
 	{
 		// draw references
-		var proj = e.ProjectileModels[r.Id];
+		var proj = e.ProjectileModels[r.ProjectileId];
 		double t = e.CurrentTime - r.T;
 		// calc color
 		Color filter = r.Selected ? new Color(0.7f, 0.7f, 1) : Colors.White;
@@ -99,7 +102,7 @@ public class EditorLevelManager
 			color.A = alpha;
 		} else if (r.Type == ModelType.Pattern)
 		{ 
-			color = RenderingUtils.ColorFromString(e.PatternModels[r.Id].Name); 
+			color = RenderingUtils.ColorFromString(e.PatternModels[r.ProjectileId].Name); 
 			color.A = 0.8f; 
 		}
 		// calc forward
@@ -120,11 +123,12 @@ public class EditorLevelManager
 	}
 	private bool ProcessProjReference(ref BakedEditorReference r)
 	{
-		var proj = e.ProjectileModels[r.Id];
+		var proj = e.ProjectileModels[r.ProjectileId];
 		if (proj == null) return false;
 		var lctx = new EvalContext();
 		lctx.T = e.CurrentTime - r.T;
 		lctx.L = proj.Lifetime;
+		lctx.Unique = LevelDirector.GetUnique(r.ProjectileId, (int)r.Type, r.SpawnPos, r.SpawnF, r.T);
 		bool alive = lctx.T >= 0 && lctx.T <= proj.Lifetime;
 		if (!alive) return false;
 		var f = MathSafe.Sanitize(proj.fnf(lctx)) + r.SpawnF;
@@ -169,7 +173,7 @@ public class EditorLevelManager
 	}
 	private bool IsOutOfBounds(BakedEditorReference r)
 	{
-		var proj = e.ProjectileModels[r.Id];
+		var proj = e.ProjectileModels[r.ProjectileId];
 		if (proj.Persistant) return false;
 		var resolution = PlayingField.Resolutions[e.levelData.AspectRatio];
 		var bounds = RenderingUtils.Rects[proj.TextureName].Size*RenderingUtils.AtlasSize;
@@ -191,7 +195,7 @@ public class EditorLevelManager
             F = r.SpawnF,
             T = r.T,
             Type = r.Type,
-            Id = r.Id,
+            ProjectileId = r.Id,
             Depth = 0,
 			Selected = r.Selected,
 			RootEditorId = r.RootEditorId
@@ -216,12 +220,12 @@ public class EditorLevelManager
 	}
 	private void UnpackProjectileIntoQueue(BakedEditorReference r, Queue<BakedEditorReference> queue)
 	{
-		var proj = e.ProjectileModels[r.Id];
+		var proj = e.ProjectileModels[r.ProjectileId];
 		if (r.Depth >= proj.MaxDepth) return;
 		for (int i = 0; i < proj.Spawns.Count; i++)
 		{
 			var childRef = proj.Spawns[i];
-			var pctx = new EvalContext { T = childRef.T, L = proj.Lifetime }; // parent context at time of child spawning
+			var pctx = new EvalContext { T = childRef.T, L = proj.Lifetime, Unique = LevelDirector.GetUnique(r.ProjectileId, (int)r.Type, r.SpawnPos, r.SpawnF, r.T) }; // parent context at time of child spawning
 			double parentF = r.SpawnF+MathSafe.Sanitize(proj.fnf(pctx));
 			var parentPos = LevelDirector.CalculatePosition(proj.fnx, proj.fny, parentF, pctx) + r.SpawnPos;
 			Vector2 childSpawnPos = parentPos + new Vector2(childRef.SpawnX, childRef.SpawnY);
@@ -235,7 +239,7 @@ public class EditorLevelManager
 				F = childF,
 				T = childT,
 				Type = childRef.Type,
-				Id = childRef.Id,
+				ProjectileId = childRef.Id,
 				Depth = r.Depth +1,
 				RootEditorId = r.RootEditorId
 			};
@@ -244,9 +248,9 @@ public class EditorLevelManager
 	}
 	private void UnpackPatternIntoQueue(BakedEditorReference r, Queue<BakedEditorReference> queue)
 	{
-		var patt = e.PatternModels[r.Id];
+		var patt = e.PatternModels[r.ProjectileId];
 		if (patt == null) return;
-		var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1};
+		var lctx = new EvalContext { N = patt.Count > 1 ? patt.Count - 1 : 1, Unique = LevelDirector.GetUnique(r.ProjectileId, (int)r.Type, r.SpawnPos, r.SpawnF, r.T)};
 		Vector2 basePos = r.SpawnPos;
 		r.Pos = basePos;
 		for (int j = 0; j < patt.Count; j++)
@@ -258,7 +262,7 @@ public class EditorLevelManager
 			Vector2 childAbsoluteSpawnPos = basePos + spawnOffset;
 			var subBulletRef = new BakedEditorReference
 			{
-				Id = patt.SpawningId,
+				ProjectileId = patt.SpawningId,
 				Type = patt.SpawningType,
 				RootEditorId = r.RootEditorId,
 				T = r.T + spawnDelay,

@@ -1,13 +1,13 @@
 [gd_resource type="Theme" format=3 uid="uid://dq7qa8sty0ce0"]
 
 [ext_resource type="StyleBox" uid="uid://cllpgmvkxggtm" path="res://data/other/themes/default_ui_assets/button/button_disabled.tres" id="1_grki5"]
-[ext_resource type="FontFile" uid="uid://b4nciee2hi4u4" path="res://data/other/fonts/MonospaceTypewriter.ttf" id="1_r6ogm"]
 [ext_resource type="StyleBox" uid="uid://d3llg0atpmpq3" path="res://data/other/themes/default_ui_assets/button/button_focus.tres" id="2_63wp8"]
 [ext_resource type="StyleBox" uid="uid://cr6qxtn505l8t" path="res://data/other/themes/default_ui_assets/button/button_hover.tres" id="3_0hayp"]
 [ext_resource type="StyleBox" uid="uid://bouyr5wl76ji0" path="res://data/other/themes/default_ui_assets/button/button_normal.tres" id="4_5t184"]
 [ext_resource type="StyleBox" uid="uid://6snw5t6m5yqb" path="res://data/other/themes/default_ui_assets/button/button_pressed.tres" id="5_acgyv"]
 [ext_resource type="StyleBox" uid="uid://cb3cxbnnp0f7n" path="res://data/other/themes/default_ui_assets/margins-colored.tres" id="6_63wp8"]
 [ext_resource type="StyleBox" uid="uid://cu12q5k6oxcl" path="res://data/other/themes/default_ui_assets/foldable_container/foldable_panel.tres" id="6_mia4a"]
+[ext_resource type="StyleBox" uid="uid://f3ti35v3esji" path="res://data/other/themes/default_ui_assets/button/button_hover_pressed.tres" id="7_0hayp"]
 [ext_resource type="StyleBox" uid="uid://bwugxq5vbmksj" path="res://data/other/themes/default_ui_assets/foldable_container/foldable_title_panel_collapsed_hover.tres" id="7_vmngr"]
 [ext_resource type="StyleBox" uid="uid://cmjjgvn23c0f5" path="res://data/other/themes/default_ui_assets/margins.tres" id="8_3g5ew"]
 [ext_resource type="StyleBox" uid="uid://sqjl8be1pn8y" path="res://data/other/themes/default_ui_assets/foldable_container/foldable_title_panel_collapsed.tres" id="8_lp4km"]
@@ -25,10 +25,11 @@
 [ext_resource type="StyleBox" uid="uid://dpop3twtseaal" path="res://data/other/themes/default_ui_assets/tabs/tab_selected.tres" id="21_2c3xh"]
 [ext_resource type="StyleBox" uid="uid://vp646jccmy13" path="res://data/other/themes/default_ui_assets/tabs/tab_unselected.tres" id="22_e50j5"]
 [ext_resource type="StyleBox" uid="uid://chgkjwjul8l6d" path="res://data/other/themes/default_ui_assets/tabs/tabbar_background.tres" id="23_bsep5"]
+[ext_resource type="FontFile" uid="uid://carmnmbooel4e" path="res://data/other/fonts/babel_sans/BabelSans.ttf" id="26_0hayp"]
 
 [resource]
-default_font = ExtResource("1_r6ogm")
-default_font_size = 18
+default_font = ExtResource("26_0hayp")
+default_font_size = 20
 Button/styles/disabled = ExtResource("1_grki5")
 Button/styles/focus = ExtResource("2_63wp8")
 Button/styles/hover = ExtResource("3_0hayp")
@@ -40,6 +41,7 @@ CheckBox/styles/hover = ExtResource("6_63wp8")
 CheckBox/styles/hover_pressed = ExtResource("6_63wp8")
 CheckBox/styles/normal = ExtResource("6_63wp8")
 CheckBox/styles/pressed = ExtResource("6_63wp8")
+CheckButton/styles/hover_pressed = ExtResource("7_0hayp")
 FoldableContainer/styles/panel = ExtResource("6_mia4a")
 FoldableContainer/styles/title_collapsed_hover_panel = ExtResource("7_vmngr")
 FoldableContainer/styles/title_collapsed_panel = ExtResource("8_lp4km")

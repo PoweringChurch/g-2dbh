@@ -3,116 +3,107 @@ using System;
 
 public partial class LevelDisplay : Control
 {
-    [Export] bool HideEditAndDelete = false;
     [Export] Label LevelName;
     [Export] Label Author;
-    [Export] Label HP;
     [Export] Label Duration;
+    [Export] Label Difficulty;
     [Export] Label AspectRatio;
+    [Export] Container TagsContainer;
+
     [Export] Button Play;
     [Export] Button Edit;
     [Export] Button Delete;
     [Export] Modifiers Mods;
-    private LevelData toPlay;
+    private LevelDataSchema toPlay;
     private GameSession gs => GameSession.Instance;
     private Editor e => Editor.Instance;
     private UIManager ui => UIManager.Instance;
     public event Action RequestRepopulate;
     public override void _Ready()
     {
-        if (HideEditAndDelete)
-        {
-            Edit.Visible = false;
-            Delete.Visible = false;
-        }
         Play.Pressed += OnPlay;
         Delete.Pressed += OnDelete;
         Edit.Pressed += OnEdit;
+        Play.Disabled = true;
+        Edit.Disabled = true;
+        Delete.Disabled = true;
     }
-    public void ShowLevel(LevelData level)
+    private void ClearTags()
     {
-        toPlay = level;
-        if (level == null)
+        foreach (var child in TagsContainer.GetChildren())
+            child.QueueFree();
+    }
+    public void ShowLevel(LevelDataSchema schema)
+    {
+        toPlay = schema;
+        ClearTags();
+        if (schema == null)
         {
             LevelName.Text = "-";
             Author.Text = "-";
-            HP.Text = "-";
+            Difficulty.Text = "-";
             Duration.Text = "-";
             AspectRatio.Text = "-";
+            Play.Disabled = true;
+            Edit.Disabled = true;
+            Delete.Disabled = true;
             return;
         }
-        LevelName.Text = level.DisplayName;
-        Author.Text = level.Author;
-        HP.Text = $"{level.Health} hp";
-        Duration.Text = $"{level.Duration:F2}s";
-        string ratioLabel = level.AspectRatio switch
+        Play.Disabled = false;
+        Edit.Disabled = false;
+        Delete.Disabled = false;
+
+        LevelName.Text = schema.Name;
+        Author.Text = $"{schema.Author}";
+        Duration.Text = $"{schema.Duration:F2}s";
+        Difficulty.Text = $"{schema.Difficulty:F1}";
+        string ratioLabel = schema.AspectRatio switch
         {
-            0 => "9:16",
-            1 => "1:1",
-            2 => "3:2",
+            0 => "500, 900",
+            1 => "900, 900",
+            2 => "1350, 900",
             _ => "invalid"
         };
+        foreach (var tag in schema.Tags)
+        {
+            var tagColor = RenderingUtils.ColorFromString(tag);
+            var textColor = RenderingUtils.GetContrastingColor(tagColor);
+            var label = new Label()
+            { Text = tag, TextOverrunBehavior = TextServer.OverrunBehavior.TrimEllipsis, CustomMinimumSize = new(80, 20), LabelSettings = new() { FontColor = textColor } };
+            var colorRect = new ColorRect()
+            { Color = tagColor, AnchorTop = 0, AnchorLeft = 0, AnchorBottom = 1, AnchorRight = 1};
+            label.AddChild(colorRect);
+            TagsContainer.AddChild(label);
+        }
         AspectRatio.Text = ratioLabel;
     }
     private void OnPlay()
     {
         if (toPlay == null) return;
-        gs.StartLevel(toPlay, Mods.GetStartParams());
-    }
-    private void OnDelete()
-    {
-        if (toPlay == null) return;
-        var levelDirectory = ProjectSettings.GlobalizePath($"{toPlay.LevelPath}");
-        if (!DirAccess.DirExistsAbsolute(levelDirectory))
-        {
-            Console.Inst.LogErr($"[Editor Level Select] Could not find level director {levelDirectory}");
-            return;
-        }
-        var popup = Popups.Instance.Show(Popups.DefaultType.YN, "Are you sure you want to delete this level?");
-        popup.CloseOnPress = true;
-        popup.Options[0].Pressed += () => 
-        {
-            using var dir = DirAccess.Open(levelDirectory);
-            if (DirAccess.DirExistsAbsolute(levelDirectory))
-            {
-                DeleteDirectoryRecursive(levelDirectory);
-            }
-            DirAccess.RemoveAbsolute(levelDirectory);
-            ShowLevel(null);
-            RequestRepopulate.Invoke();
-        };
-    }
-    private static void DeleteDirectoryRecursive(string path)
-    {
-        using var dir = DirAccess.Open(path);
-        if (dir == null) return;
-        dir.ListDirBegin();
-        string fileName = dir.GetNext();
-        while (fileName != "")
-        {
-            if (fileName != "." && fileName != "..")
-            {
-                string fullPath = $"{path}/{fileName}";
-
-                if (dir.CurrentIsDir())
-                    DeleteDirectoryRecursive(fullPath);
-                else
-                    DirAccess.RemoveAbsolute(fullPath);
-            }
-            fileName = dir.GetNext();
-        }
-
-        dir.ListDirEnd();
-        DirAccess.RemoveAbsolute(path);
+        var converted = LevelDataConverter.FromSchema(toPlay);
+        gs.StartLevel(converted, Mods.GetStartParams());
     }
     private void OnEdit()
     {
         ui.ShowEditor();
-        bool success = e.OpenLevel(toPlay);
+        var converted = LevelDataConverter.FromSchema(toPlay);
+        bool success = e.OpenLevel(converted);
         if (!success)
         {
             RequestRepopulate.Invoke();
             Popups.Instance.Show(Popups.DefaultType.OK, "Something went wrong opening this level");
         }
     } 
+    private void OnDelete()
+    {
+        if (toPlay == null) return;
+        var popup = Popups.Instance.Show(Popups.DefaultType.YN, $"Are you sure you want to delete '{toPlay.Name}'?");
+        popup.CloseOnPress = true;
+        popup.Options[0].Pressed += () => 
+        {
+            LevelStorage.DeleteLevel(toPlay.LocalId);
+            ShowLevel(null);
+            RequestRepopulate.Invoke();
+        };
+    }
 }

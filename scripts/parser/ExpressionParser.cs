@@ -2,14 +2,14 @@
 // Recursive-descent parser → AST.
 // Grammar (standard precedence, right-assoc power):
 //   expr   = term  (('+' | '-') term)*
-//   term   = unary (('*' | '/') unary)*
+//   term   = unary (('*' | '/' | '%' ) unary)*
 //   unary  = '-' unary | power
 //   power  = primary ('^' unary)?
 //   primary= NUMBER | IDENT | IDENT '(' expr ')' | '(' expr ')'
 using System;
 using System.Collections.Generic;
 
-// ── AST nodes ────────────────────────────────────────────────────────────────
+// AST nodes
 
 public static class Functions
 {
@@ -29,7 +29,8 @@ public struct EvalContext
     public double T; // time passed since start of projectile OR pattern
     public double I; // index of a projectile in a pattern
     public double N; // amount of projectiles in a pattern
-    public double L; // lifetime
+    public double L; // lifetime of a projectile
+    public double Unique; // a unique number generated from the spawning conditions of a reference.
 }
 
 public abstract class Expr
@@ -52,6 +53,7 @@ public class VariableExpr : Expr
         "i" => ctx.I,
         "n" => ctx.N,
         "l" => ctx.L,
+        "unique" => ctx.Unique,
         _ => throw new NotSupportedException($"Unknown variable: {name}")
     };
 }
@@ -92,6 +94,7 @@ public class BinaryExpr : Expr
         '-' => l.Eval(context) - r.Eval(context),
         '*' => l.Eval(context) * r.Eval(context),
         '/' => MathSafe.Div(l.Eval(context), r.Eval(context)),
+        '%' => MathSafe.Mod(l.Eval(context), r.Eval(context)),
         '^' => MathSafe.Pow(l.Eval(context), r.Eval(context)),
         _   => throw new Exception($"Unknown op '{op}'")
     };
@@ -170,9 +173,16 @@ public class ExpressionHandler(List<Token> tokens)
     Expr ParseTerm()
     {
         var left = ParseUnary();
-        while (Peek.Type is TokenType.Star or TokenType.Slash)
+        while (Peek.Type is TokenType.Star or TokenType.Slash or TokenType.Percen)
         {
-            char op = Consume().Type == TokenType.Star ? '*' : '/';
+            var type = Consume().Type;
+
+            char op = '*';
+            if (type == TokenType.Slash)
+                op = '/';
+            else if (type == TokenType.Percen)
+                op = '%';
+            
             left = new BinaryExpr(op, left, ParseUnary());
         }
         return left;
@@ -216,7 +226,7 @@ public class ExpressionHandler(List<Token> tokens)
             if (name is "pi" or "tau" or "phi" or "deg2rad" or "rad2deg")
                 return new ConstExpr(name);
             // variable?
-            if (name is "t" or "i" or "n" or "l")
+            if (name is "t" or "i" or "n" or "l" or "unique")
                 return new VariableExpr(name);
             return new CustomVariableExpr(name);
         }
@@ -251,6 +261,7 @@ public class ExpressionHandler(List<Token> tokens)
                     "i" => ctx => ctx.I,
                     "n" => ctx => ctx.N,
                     "l" => ctx => ctx.L,
+                    "unique" => ctx => ctx.Unique,
                     _ => throw new NotSupportedException($"Unknown variable: {v.name}")
                 };
             case CustomVariableExpr c:
@@ -272,6 +283,7 @@ public class ExpressionHandler(List<Token> tokens)
                     '-' => ctx => leftFn(ctx) - rightFn(ctx),
                     '*' => ctx => leftFn(ctx) * rightFn(ctx),
                     '/' => ctx => MathSafe.Div(leftFn(ctx), rightFn(ctx)),
+                    '%' => ctx => MathSafe.Mod(leftFn(ctx), rightFn(ctx)),
                     '^' => ctx => MathSafe.Pow(leftFn(ctx), rightFn(ctx)),
                     _ => throw new NotSupportedException($"Unknown op: {b.op}")
                 };
@@ -302,6 +314,7 @@ public class ExpressionHandler(List<Token> tokens)
 
 public static class MathSafe
 {
+    public static double Mod(double l, double r) => r == 0.0 ? 0.0 : l % r;
     public static double Div(double l, double r) => r == 0.0 ? 0.0 : l / r;
     public static double Pow(double b, double e)
     {

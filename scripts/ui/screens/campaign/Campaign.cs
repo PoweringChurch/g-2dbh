@@ -1,15 +1,13 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Campaign : CanvasLayer
 {
     public event Action RequestReturn;
-    [Export] private StoryInfoUi[] StoryInfos;
+    [Export] StoryInfoUi[] StoryInfos;
     [Export] Button Return;
     [Export] CampaignLevelDisplay levelDisplay;
-    [Export] Button PreviousWorld;
-    [Export] Label WorldNameLabel;
-    [Export] Button NextWorld;
     private int currentStory = 0;
     public override void _Ready()
     {
@@ -19,37 +17,39 @@ public partial class Campaign : CanvasLayer
             if (story != null)
             {
                 story.PressButton(0);
+                int cached = i;
+                story.SelectionButton.ToggleMode = true;
+                story.SelectionButton.Pressed += () => ShowStoryInfo(cached);
                 story.LevelSelected += OnLevelSelected;
             }
         }
-        PreviousWorld.Pressed += () =>
-        {
-            if (currentStory > 0)
-                currentStory--;
-            ShowStoryInfo(currentStory);
-        };
-        NextWorld.Pressed += () =>
-        {
-            if (currentStory < StoryInfos.Length-1)
-                currentStory++;
-            ShowStoryInfo(currentStory);
-        };
         Return.Pressed += RequestReturn.Invoke;
         ShowStoryInfo(0);
     }
     private void ShowStoryInfo(int id)
     {
         foreach (StoryInfoUi s in StoryInfos)
+        {
             s.Visible = false;
+            s.SelectionButton.ButtonPressed = false;
+        }
         var infoUi = StoryInfos[id];
         infoUi.Visible = true;
-        var storyInfo = Stories.StoryInfoById[infoUi.Id];
-        WorldNameLabel.Text = storyInfo.Name;
+        infoUi.SelectionButton.ButtonPressed = true;
         infoUi.PressButton(0);
-
+        levelDisplay.Visible = false;
     }
-    private void OnLevelSelected(CampaignLevel level)
+    private Vector2 levelDisplayOffset = new(37.5f,0);
+    private void OnLevelSelected(Stories.CampaignLevel level, Vector2 bottomRightCornerPos)
     {
+        if (level == null)
+        {
+            levelDisplay.Visible = false;
+            return;
+        }
+        levelDisplay.Position = bottomRightCornerPos+levelDisplayOffset;
+        levelDisplay.Visible = true;
+        levelDisplay.PopAnim();
         levelDisplay.ShowLevel(level);
     }
 }

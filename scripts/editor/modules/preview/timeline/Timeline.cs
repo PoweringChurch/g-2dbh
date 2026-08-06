@@ -170,14 +170,13 @@ public partial class Timeline : Control
     {
         _dirty = true;
     }
-    public void Load(LevelData data)
+    public void Load(RawLevelData data)
     {
         ClearMarkers();
         foreach (var r in data.References)
             AddMarker(r);
-        var musicname = data.MusicId;
-        var found = AudioUtils.LoadAudio($"{e.LevelPath}/audio/{musicname}");
-        EditorAudioPreview.Stream = found;
+        var musicId = data.MusicId;
+        EditorAudioPreview.Stream = AudioUtils.LoadAudio(LevelCompiler.SongData[musicId].StreamPath);
         SetTime(0, false);
     }
     public void AddMarker(EditorReference r)

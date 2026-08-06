@@ -19,6 +19,7 @@ public partial class PatternPreview : Control
         public Vector2 SpawnPos;
         public double SpawnF;
         public double SpawnT;
+        public double Unique;
         public int Id;
     }
     private struct ResolvedSpawn
@@ -37,9 +38,9 @@ public partial class PatternPreview : Control
     [Export] private Button PlaybackToggle;
     [Export] private Button HomeButton;
     [Export] private SpinBox TimeSpin;
-
+    [Export] private CheckButton ShowHitboxes;
     private bool dirty = false;
-    private SpatialReference reference;
+    private PendingSpawn reference;
     private bool panning = false;
     private bool playing = false;
 
@@ -79,6 +80,7 @@ public partial class PatternPreview : Control
             Multimesh = multiMesh,
             Texture = RenderingUtils.GetProjectileAtlas(),
             Material = shaderMaterial,
+            YSortEnabled = true,
             ZIndex = -1, // keep sprites behind the hitbox/path overlay drawn on DrawOn
         };
         DrawOn.AddChild(mmInst);
@@ -87,6 +89,7 @@ public partial class PatternPreview : Control
         DrawOn.Draw += DrawHitboxes;
         PlaybackToggle.Pressed += () => { playing = !playing; PlaybackToggle.Text = playing ? "❚❚" : "▶"; };
         TimeSpin.ValueChanged += (v) => { time = v; MarkDirty(); };
+        ShowHitboxes.Toggled += (on) => MarkDirty();
         HomeButton.Pressed += Home;
     }
 
@@ -188,24 +191,24 @@ public partial class PatternPreview : Control
             return;
 
         var queue = new Queue<PendingSpawn>();
-        ExpandPatternIntoQueue(Model, reference.SpawnPos, reference.SpawnF, 0, 0, 0, queue);
+        
+        ExpandPatternIntoQueue(reference, queue, true);
 
         while (queue.Count > 0 && bakedSpawns.Count < MaxBakedSpawns)
         {
             var cur = queue.Dequeue();
-
             if (cur.Type == ModelType.Projectile)
             {
                 var pm = Editor.Instance.ProjectileModels[cur.Id];
                 if (pm == null) continue;
 
-                bakedSpawns.Add(new BakedSpawn { SpawnPos = cur.SpawnPos, SpawnF = cur.SpawnF, SpawnT = cur.SpawnT, Id = cur.Id });
+                bakedSpawns.Add(new BakedSpawn { SpawnPos = cur.SpawnPos, SpawnF = cur.SpawnF, SpawnT = cur.SpawnT, Id = cur.Id, Unique = GetUnique(cur) });
 
                 if (cur.Depth < pm.MaxDepth && pm.Spawns != null)
                 {
                     foreach (var childRef in pm.Spawns)
                     {
-                        var pctx = new EvalContext { T = childRef.T, L = pm.Lifetime };
+                        var pctx = new EvalContext { T = childRef.T, L = pm.Lifetime, Unique = GetUnique(cur) };
                         double parentF = cur.SpawnF + MathSafe.Sanitize(pm.fnf(pctx));
                         var parentPos = LevelDirector.CalculatePosition(pm.fnx, pm.fny, parentF, pctx) + cur.SpawnPos;
                         Vector2 childSpawnPos = parentPos + new Vector2(childRef.SpawnX, childRef.SpawnY);
@@ -228,27 +231,27 @@ public partial class PatternPreview : Control
             else // Pattern
             {
                 if (cur.PatternDepth >= MaxPatternDepth) continue;
-                var patt = Editor.Instance.PatternModels[cur.Id];
-                if (patt == null) continue;
-                ExpandPatternIntoQueue(patt, cur.SpawnPos, cur.SpawnF, cur.SpawnT, cur.Depth, cur.PatternDepth + 1, queue);
+                ExpandPatternIntoQueue(cur, queue);
             }
         }
     }
-
-    private void ExpandPatternIntoQueue(PatternModel patt, Vector2 basePos, double baseF, double baseT, int depth, int patternDepth, Queue<PendingSpawn> queue)
+    private void ExpandPatternIntoQueue(PendingSpawn cur, Queue<PendingSpawn> queue, bool useThisModel = false)
     {
+        var patt = Editor.Instance.PatternModels[cur.Id];
+        if (useThisModel)
+            patt = Model;
+        if (patt == null) return;
         int count = Math.Max(patt.Count, 1);
-        var lctx = new EvalContext { N = count > 1 ? count - 1 : 1 };
+        var lctx = new EvalContext { N = count > 1 ? count - 1 : 1, Unique = GetUnique(cur) };
         for (int i = 0; i < count; i++)
         {
             lctx.I = i;
             double genFwd = MathSafe.Sanitize(patt.fnf(lctx));
             double genT = MathSafe.Sanitize(patt.fnt(lctx));
-            Vector2 spawnOffset = LevelDirector.CalculatePosition(patt.fnx, patt.fny, (float)baseF, lctx);
-            Vector2 spawnPos = basePos + spawnOffset;
-            double f = baseF + genFwd;
-            double spawnT = baseT + genT;
-
+            Vector2 spawnOffset = LevelDirector.CalculatePosition(patt.fnx, patt.fny, (float)cur.SpawnF, lctx);
+            Vector2 spawnPos = cur.SpawnPos + spawnOffset;
+            double f = cur.SpawnF + genFwd;
+            double spawnT = cur.SpawnT + genT;
             queue.Enqueue(new PendingSpawn
             {
                 SpawnPos = spawnPos,
@@ -256,8 +259,8 @@ public partial class PatternPreview : Control
                 SpawnT = spawnT,
                 Type = patt.SpawningType,
                 Id = patt.SpawningId,
-                Depth = depth,
-                PatternDepth = patternDepth,
+                Depth = cur.Depth,
+                PatternDepth = cur.Depth+1,
             });
         }
     }
@@ -279,7 +282,7 @@ public partial class PatternPreview : Control
 
             double localTime = time - b.SpawnT;
             double clampedT = Math.Clamp(localTime, 0, pm.Lifetime);
-            var lctx = new EvalContext { T = clampedT, L = pm.Lifetime };
+            var lctx = new EvalContext { T = clampedT, L = pm.Lifetime, Unique = b.Unique };
 
             double f = b.SpawnF + MathSafe.Sanitize(pm.fnf(lctx));
             var movement = LevelDirector.CalculatePosition(pm.fnx, pm.fny, (float)f, lctx);
@@ -370,7 +373,7 @@ public partial class PatternPreview : Control
         if (steps <= 0)
             return;
         Vector2[] pathPoints = new Vector2[steps];
-        var lctx = new EvalContext() { N = Model.Count > 1 ? Model.Count - 1 : 1 };
+        var lctx = new EvalContext() { N = Model.Count > 1 ? Model.Count - 1 : 1, Unique = GetUnique(reference) };
         for (int j = 0; j < steps; j++)
         {
             lctx.I = Math.Min(lctx.N, ConfigHelper.Current.MaxPathLength) / steps * j;
@@ -384,6 +387,8 @@ public partial class PatternPreview : Control
 
     private void DrawHitboxes()
     {
+        if (!ShowHitboxes.ButtonPressed)
+            return;
         for (int i = 0; i < bakedSpawns.Count; i++)
         {
             var pm = Editor.Instance.ProjectileModels[bakedSpawns[i].Id];
@@ -400,5 +405,20 @@ public partial class PatternPreview : Control
             else
                 DrawOn.DrawCircle(Vector2.Zero, pm.Radius, Colors.Red, false);
         }
+    }
+    private static double GetUnique(PendingSpawn pendingReference)
+    {
+        int hash = 17;
+        unchecked
+        {
+            hash = hash * 31 + pendingReference.Id.GetHashCode();
+            hash = hash * 31 + pendingReference.Type.GetHashCode();
+            hash = hash * 31 + pendingReference.SpawnPos.GetHashCode();
+            hash = hash * 31 + pendingReference.SpawnF.GetHashCode();
+            hash = hash * 31 + pendingReference.SpawnT.GetHashCode();
+            hash = hash * 31 + pendingReference.Depth.GetHashCode();
+        }
+        double normalized = (double)(hash & 0x7FFFFFFF) / int.MaxValue;
+        return (normalized * 2.0) - 1.0;
     }
 }

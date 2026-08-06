@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public partial class ModelLibrary : Control
 {
-    [Export] VBoxContainer PatternModelList;
-    [Export] VBoxContainer ProjectileModelList;
+    [Export] Container PatternModelList;
+    [Export] Container ProjectileModelList;
     [Export] PackedScene ModelUITemplate;
     [Export] Button OpenModelEditor;
     [Export] ModelEditor ModelEditor;
@@ -18,7 +18,7 @@ public partial class ModelLibrary : Control
         Load((IEditorModel[])e.PatternModels, PatternModelList);
         Load((IEditorModel[])e.ProjectileModels, ProjectileModelList);
     }
-    private void Load(IEditorModel[] models, VBoxContainer container)
+    private void Load(IEditorModel[] models, Container container)
     {
         foreach (var child in container.GetChildren())
             child.QueueFree();
@@ -27,9 +27,9 @@ public partial class ModelLibrary : Control
             if (m == null)
                 continue;
             var newTemplate  = ModelUITemplate.Instantiate<VBoxContainer>();
-            var colorDisplay = newTemplate.GetNode<ColorRect>("Id/Color");
-            var idField      = newTemplate.GetNode<Label>("Id/Field");
-            var nameField    = newTemplate.GetNode<Label>("Name/Field");
+            var colorDisplay = newTemplate.GetNode<ColorRect>("Id/color");
+            var idField      = newTemplate.GetNode<Label>("Id/id");
+            var nameField    = newTemplate.GetNode<Label>("Id/name");
             var selectButton = newTemplate.GetNode<Button>("Interact/Select");
             var deleteButton = newTemplate.GetNode<Button>("Interact/Delete");
             nameField.Text = m.Name;

@@ -6,6 +6,7 @@ public partial class PlayerCharacter : Node2D
     public const float HurtRadius = 3;
     public const float GrazeRadius = 10;
     public const float BaseSpeed = 75f;
+    public bool CanMove = false;
     [Export] Sprite2D CharacterDisplay;
     [Export] Sprite2D hurtboxDisplay;
     [Export] Sprite2D grazeDisplay;
@@ -22,10 +23,11 @@ public partial class PlayerCharacter : Node2D
     }
     public void Movement(double dt)
     {
+        if (!CanMove) return;
         Vector2 inputDirection = Input.GetVector("left", "right", "up", "down").Normalized();
         bool focused = Input.IsActionPressed("focus");
         framesFocusHeld = Math.Clamp(framesFocusHeld + (focused ? 1 : -1), 0, 10);
-        float speed =  (focused ? BaseSpeed*0.5f : BaseSpeed) * (ConfigHelper.Current.SlowMovement ? 0.5f : 1);
+        float speed =  focused ? BaseSpeed*0.5f : BaseSpeed;
         Position += inputDirection*speed*(float)dt;
         Vector2 newPosition = Position + inputDirection*speed*(float)dt;
         newPosition.X = Mathf.Clamp(newPosition.X, 0, ScreenResolution.X);

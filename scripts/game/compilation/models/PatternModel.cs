@@ -3,16 +3,16 @@ using System.Text.Json.Serialization;
 using Godot;
 public class PatternModel : IEditorModel
 {
-    [JsonPropertyName("id")] public int Id { get; set; } = 0;
-    [JsonPropertyName("name")] public string Name { get; set; } = "unnamed";
-    [JsonPropertyName("spawningId")] public int SpawningId { get; set; } = 0;
-    [JsonPropertyName("spawningType")] public ModelType SpawningType { get; set; } = ModelType.Projectile;
-    [JsonPropertyName("fnX")] public string FunctionX { get; set; } = "0";
-    [JsonPropertyName("fnY")] public string FunctionY { get; set; } = "0";
-    [JsonPropertyName("fnT")] public string FunctionT { get; set; } = "0";
-    [JsonPropertyName("fnFwd")] public string FunctionF { get; set; } = "0";
-    [JsonPropertyName("count")] public int Count { get; set; } = 1;
-    [JsonPropertyName("facePlayer")] public bool FacePlayer { get; set; } = false;
+    public int Id { get; set; } = 0;
+    public string Name { get; set; } = "unnamed";
+    public int SpawningId { get; set; } = 0;
+    public ModelType SpawningType { get; set; } = ModelType.Projectile;
+    public string FunctionX { get; set; } = "0";
+    public string FunctionY { get; set; } = "0";
+    public string FunctionT { get; set; } = "0";
+    public string FunctionF { get; set; } = "0";
+    public int Count { get; set; } = 1;
+    public bool FacePlayer { get; set; } = false;
     // game only
     [JsonIgnore] public Func<EvalContext, double> fnx;
     [JsonIgnore] public Func<EvalContext, double> fny;

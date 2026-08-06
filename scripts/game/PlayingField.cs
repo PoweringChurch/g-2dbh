@@ -5,7 +5,7 @@ public partial class PlayingField : Node
 {
 	public static readonly Vector2I[] Resolutions =
 	[
-		new(506	, 900),   // 9:16
+		new(500	, 900),   // 9:16
 		new(900	, 900),   // 1:1
 		new(1350, 900),   // 3:2
 	];

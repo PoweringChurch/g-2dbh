@@ -80,6 +80,4 @@ public class Config
     [JsonPropertyName("noGraze")] public bool NoGraze { get; set; } = false;
     [ConfigField("Testing & Debugging", "No graze tracking")]
     [JsonPropertyName("noGrazeTracking")] public bool NoGrazeTracking { get; set; } = false;
-    [ConfigField("Testing & Debugging", "Slow movement")]
-    [JsonPropertyName("slowMovement")] public bool SlowMovement { get; set; } = false;
 }

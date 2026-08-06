@@ -2,23 +2,43 @@ using Godot;
 public partial class CampaignLevelDisplay : Control
 {
     [Export] Label LevelName;
-    [Export] Label LevelDifficulty;
+    [Export] Label Duration;
+    [Export] Label Difficulty;
     [Export] Button Play;
     [Export] public DialogueHandler dialogueHandler;
     private GameSession gs => GameSession.Instance;
-    private CampaignLevel toPlay;
+    private Stories.CampaignLevel toPlay;
+    private Tween activeTween;
     public override void _Ready()
     {
         Play.Pressed += () =>
         {
             dialogueHandler.PlayDialogue(toPlay.dialogue);
-            dialogueHandler.DialogueFinished += () => gs.StartLevel(SerializationUtils.ReadJson<LevelData>(toPlay.levelPath), new());
+            var schema = SerializationUtils.ReadJson<LevelDataSchema>(toPlay.levelPath);
+            var raw = LevelDataConverter.FromSchema(schema);
+            dialogueHandler.DialogueFinished += () => 
+            {
+                gs.StartLevel(raw, new());
+                dialogueHandler.DisconnectEvents();
+            };
+            dialogueHandler.DialogueCancelled += dialogueHandler.DisconnectEvents;
         };
     }
-    public void ShowLevel(CampaignLevel level)
+    public void PopAnim()
     {
-        LevelName.Text = level.levelName;
-        LevelDifficulty.Text = level.difficulty.ToString();
+        activeTween?.Kill();
+        Scale = Vector2.Zero;
+        activeTween = CreateTween();
+        activeTween.SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+        activeTween.TweenProperty(this, "scale", Vector2.One, 0.2f);
+    }
+    public void ShowLevel(Stories.CampaignLevel level)
+    {
+        toPlay = level;
+        var schema = SerializationUtils.ReadJson<LevelDataSchema>(toPlay.levelPath);
+        LevelName.Text = schema.Name;
+        Duration.Text = $"{schema.Duration:F2}s";
+        Difficulty.Text = $"{schema.Difficulty:F1}";
         toPlay = level;
     }
 }

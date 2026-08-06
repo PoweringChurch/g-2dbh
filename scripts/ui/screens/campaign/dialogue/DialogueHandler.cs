@@ -4,6 +4,7 @@ using Godot;
 public partial class DialogueHandler : Control
 {
     public event Action DialogueFinished;
+    public event Action DialogueCancelled;
     [Export] Container PortraitHolder;
     [Export] Label SpeakerLabel;
     [Export] Label DialogueLabel;
@@ -55,6 +56,21 @@ public partial class DialogueHandler : Control
             .TweenProperty(this, "modulate:a", 1.0f, 0.25f);
         ShowMessage(0);
     }
+    public void CancelDialogue()
+    {
+        if (playing)
+        {
+           playing = false;
+           Visible = false;
+           Modulate = new(1,1,1,0);
+           DialogueCancelled?.Invoke();
+        }
+    }
+    public void DisconnectEvents()
+    {
+        DialogueCancelled = null;
+        DialogueFinished = null;
+    }
     private void ShowMessage(int idx)
     {
         var message = currentDialogue.Lines[idx];
@@ -63,12 +79,12 @@ public partial class DialogueHandler : Control
         const float dim = 0.6f;
         for (int i = 0; i < portraitUis.Count; i++)
         {
-            var character = portraitUis[i];
+            var portrait = portraitUis[i];
             var targetColor = i == message.HighlightIdx
                 ? Colors.White
                 : new(dim,dim,dim,1);
             CreateTween()
-                .TweenProperty(character, "modulate", targetColor, 0.2f);
+                .TweenProperty(portrait, "modulate", targetColor, 0.2f);
         }
     }
     private void Next()

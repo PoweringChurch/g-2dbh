@@ -19,7 +19,7 @@ public class LevelCompiler
         new() {SongName = "Witching Hour", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/witching-hour.mp3"},
         new() {SongName = "The Final Voyage (MANIA Mix)", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/the-final-voyage.mp3"},
     };
-    public static CompiledLevel CompileLevel(LevelData level, Node2D gameRoot)
+    public static CompiledLevel CompileLevel(RawLevelData level, Node2D gameRoot)
     {
         CompiledLevel compiled = new();
         // set custom variables
@@ -79,9 +79,6 @@ public class LevelCompiler
         model.fnx = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionX));
 		model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
         model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
-        model.RuntimeSpawns = [];
-        foreach (var spawn in model.Spawns)
-            model.RuntimeSpawns.Add(EditorToSpatialReference(spawn));
     }
     public static void CompilePattern(PatternModel model)
     {
@@ -101,7 +98,7 @@ public class LevelCompiler
             F = r.SpawnF,
             T = r.T,
             Type = r.Type,
-            Id = r.Id,
+            ProjectileId = r.Id,
             Depth = 0, 
         };
 }
