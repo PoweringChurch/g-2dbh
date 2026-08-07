@@ -18,7 +18,7 @@ public partial class ReferenceUi : Control
     public override void _Ready()
     {
         if (Editing == null)
-            Console.Inst.Log("This reference ui doesnt have an editing reference set!!");
+            Console.LogErr("A reference ui doesnt have an editing reference set!");
         spawnx.ValueChanged += (v) => { Editing.SpawnX = (float)v; pp.MarkDirty(); };
         spawny.ValueChanged += (v) => { Editing.SpawnY = (float)v; pp.MarkDirty(); };
         fwd.ValueChanged += (v) => { Editing.SpawnF = (float)v; pp.MarkDirty(); };

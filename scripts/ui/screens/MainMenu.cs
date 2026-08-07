@@ -15,7 +15,7 @@ public partial class MainMenu : CanvasLayer
     private readonly Dictionary<Button, float> originalXPositions = new();
     private readonly Dictionary<Button, Tween> activeTweens = new();
     private const float TweenDuration = 0.2f;
-    private const float HoverOffsetX = 20.0f;
+    private const float HoverOffsetX = 100.0f;
     public override void _Ready()
     {
         SetupButton(campaignButton, RequestCampaign);
@@ -23,14 +23,15 @@ public partial class MainMenu : CanvasLayer
         SetupButton(settingsButton, RequestSettings);
         SetupButton(quitButton, RequestReturn);
     }
+    private AudioStream buttonPressedSfx = AudioUtils.LoadAudio("res://data/sounds/button_hovered.wav");
     private void SetupButton(Button button, Action action)
     {
         if (button == null) return;
         if (action != null)
             button.Pressed += action.Invoke;
         originalXPositions[button] = button.Position.X;
-        button.MouseEntered += () => AnimateButton(button, true);
-        button.MouseExited += () => AnimateButton(button, false);
+        button.MouseEntered += () => { AudioUtils.Instance.PlayAudio(buttonPressedSfx, AudioUtils.SFXVolume); AnimateButton(button, true); };
+        button.MouseExited += () => { AnimateButton(button, false); };
     }
     private void AnimateButton(Button button, bool isHovered)
     {

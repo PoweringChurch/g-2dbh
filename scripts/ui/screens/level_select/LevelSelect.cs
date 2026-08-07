@@ -23,7 +23,6 @@ public partial class LevelSelect : CanvasLayer
         LevelList.LevelDisplay.ShowLevel(null);
         var saved = LevelStorage.GetSavedLevels();
         LevelList.ShowLevelList(saved);
-        Console.Inst.Log($"[Level Select] Populated level list");
     }
     
     protected void OnNewLevelPressed()

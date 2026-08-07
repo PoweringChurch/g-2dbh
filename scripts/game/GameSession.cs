@@ -72,6 +72,7 @@ public partial class GameSession : Node
     }
     public bool StartLevel(RawLevelData levelData, StartParams startParams)
     {
+        Console.Log($"[GameSession] Starting level '{levelData.Name}' by '{levelData.Author}'");
         // get level data
         if (levelData == null) return false;
         GameRoot = new Node2D { Name = "GameRoot" };

@@ -18,7 +18,7 @@ public partial class DefinitionUi : Control
     public override void _Ready()
     {
         if (modifying == null)
-            Console.Inst.LogErr("This dictionary UI does not have a modifying dictionary set!");
+            Console.LogErr("This dictionary UI does not have a modifying dictionary set!");
         VarName.TextChanged += ChangeName;
         Definition.TextChanged += (txt) => {ChangeDefinition(CurrentName, txt); ModifiedContext?.Invoke(CurrentName, modifying[CurrentName], null);};
         Remove.Pressed += () => { modifying.Remove(CurrentName); QueueFree();};

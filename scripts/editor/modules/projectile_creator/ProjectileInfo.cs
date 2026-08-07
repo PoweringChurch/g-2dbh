@@ -7,11 +7,13 @@ public partial class ProjectileInfo : Control
     [Export] private SpinBox IdSelect;
     [Export] private LineEdit ProjectileName;
     [Export] private Button DeleteBtn;
+    [Export] private Button NextFreeBtn;
     [Export] private Button SaveBtn;
     public override void _Ready()
     {
         SaveBtn.Pressed += Save;
         DeleteBtn.Pressed += () => Editor.Instance.DeleteProjectileModel((int)IdSelect.Value);
+        NextFreeBtn.Pressed += () => IdSelect.Value = ProjectileCreator.GetNextFreeId();
     }
     private void Save()
     {

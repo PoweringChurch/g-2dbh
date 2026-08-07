@@ -193,7 +193,7 @@ public partial class Editor : CanvasLayer
     {
         LevelStorage.SaveLevel(levelData);
         notifBoard.ShowMessage($"Saved level successfully");
-        Console.Inst.Log($"[Editor] Saved level successfully");
+        Console.LogSuccess($"[Editor] Saved level successfully");
     }
     public void SyncPreview() =>
         preview.Sync();

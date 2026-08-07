@@ -81,6 +81,7 @@ public partial class LevelDisplay : Control
     {
         if (toPlay == null) return;
         var converted = LevelDataConverter.FromSchema(toPlay);
+        Console.Log($"[LevelDisplay] Started level '{toPlay.Name}' by '{toPlay.Author}', data: '{toPlay.Data}')");
         gs.StartLevel(converted, Mods.GetStartParams());
     }
     private void OnEdit()

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://ccslq2lxnsct5"]
+
+[ext_resource type="Texture2D" uid="uid://dwxwoayb3i5cp" path="res://data/images/projectiles/orb.png" id="1_5dnt8"]
+
+[node name="TextureIconButton" type="Button" unique_id=1858807898]
+custom_minimum_size = Vector2(40, 40)
+toggle_mode = true
+
+[node name="Texture" type="TextureRect" parent="." unique_id=1452692563]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_5dnt8")
+expand_mode = 1

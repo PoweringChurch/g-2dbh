@@ -25,7 +25,7 @@ public partial class StoryInfoUi : Control
     public void PressButton(int idx, bool snap = false)
     {
         var btn = LevelButtons[idx];
-        var level = Stories.StoryInfoById[Id].Levels[btn.LevelIdx];
+        var level = Stories.StoryInfoById[Id][btn.LevelIdx];
         var pos = btn.PositionAsOffset ? btn.Position+btn.CharacterPosition
             : btn.CharacterPosition;
         var brCorner = btn.Position+btn.Size;

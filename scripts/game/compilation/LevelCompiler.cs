@@ -69,7 +69,7 @@ public class LevelCompiler
         }
         // set duration
         compiled.Duration = level.Duration;
-        Console.Inst.Log($"[Level Compiler] Level compiled");
+        Console.LogInfo($"[Level Compiler] Level compiled");
         return compiled;
     }
     public static void CompileProjectile(ProjectileModel model)

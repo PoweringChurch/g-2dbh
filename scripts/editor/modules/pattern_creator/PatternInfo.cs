@@ -7,12 +7,14 @@ public partial class PatternInfo : Control
     [Export] private SpinBox IdSelect;
     [Export] private LineEdit PatternName;
     [Export] private Button DeleteBtn;
+    [Export] private Button NextFreeBtn;
     [Export] private Button SaveBtn;
     private Editor e => Editor.Instance;
     public override void _Ready()
     {
         SaveBtn.Pressed += Save;
         DeleteBtn.Pressed += () => e.DeletePatternModel((int)IdSelect.Value);
+        NextFreeBtn.Pressed += () => IdSelect.Value = PatternCreator.GetNextFreeId();
     }
     private void Save()
     {

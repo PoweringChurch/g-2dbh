@@ -10,7 +10,7 @@ public static class LevelStorage
         var schema = LevelDataConverter.ToSchema(raw, raw.LocalId);
         var path = $"{SavedLevelsDirectory}{raw.LocalId}.json";
         SerializationUtils.WriteJson(path, schema);
-        Console.Inst.Log($"Saved level to '{path}'");
+        Console.LogInfo($"Saved level to '{path}'");
     }
     public static List<LevelDataSchema> GetSavedLevels()
     {
@@ -37,6 +37,6 @@ public static class LevelStorage
         {
             dir.Remove(path);
         }
-        Console.Inst.Log($"Deleted level at '{path}'");
+        Console.LogInfo($"Deleted level at '{path}'");
     }
 }

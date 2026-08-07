@@ -14,18 +14,7 @@ public partial class PatternCreator : Control
         Instance = this;
     public override void _Ready()
     {
-        NextFree.Pressed += GoNextFree;
-    }
-    private void GoNextFree()
-    {
-        for (int i = 0; i < Editor.MaxModelCount; i++)
-        {
-            if (Editor.Instance.PatternModels[i] == null)
-            {
-                Editor.Instance.OpenModel(new PatternModel() {Id = i});
-                return;
-            }
-        }
+        NextFree.Pressed += () => Editor.Instance.OpenModel(new PatternModel() { Id = GetNextFreeId() });
     }
     public void Load(RawLevelData data)
     {
@@ -55,5 +44,12 @@ public partial class PatternCreator : Control
         Spawning.Load(Model);
         Info.Load(Model);
         PatternPreview.Load(Model);
+    }
+    public static int GetNextFreeId()
+    {
+        for (int i = 0; i < Editor.MaxModelCount; i++)
+            if (Editor.Instance.PatternModels[i] == null)
+                return i;
+        return 127;
     }
 }

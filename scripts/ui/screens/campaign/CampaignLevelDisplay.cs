@@ -18,6 +18,7 @@ public partial class CampaignLevelDisplay : Control
             var raw = LevelDataConverter.FromSchema(schema);
             dialogueHandler.DialogueFinished += () => 
             {
+                Console.Log($"[CampaignLevelDisplay] Started campaign level '{schema.Name}', data: '{schema.Data}')");
                 gs.StartLevel(raw, new());
                 dialogueHandler.DisconnectEvents();
             };

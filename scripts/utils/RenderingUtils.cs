@@ -51,13 +51,51 @@ public static class RenderingUtils
     private const string projectileAtlasPath = "res://data/images/atlases/projectile_atlas.png";
     public const int AtlasSize = 512;
     private const int padding = 4;
+    private static string[] projectileNames;
+    public static string[] GetProjectileNames()
+    {
+        if (projectileNames != null)
+            return projectileNames;
+        string[] names = [..Rects.Keys];
+        projectileNames = names;
+        return projectileNames;
+    }
+    private static string[] GetProjectileNamesFromSource()
+    {
+        if (!OS.IsDebugBuild())
+        {
+            Console.LogErr("[RenderingUtils] Cannot get projectile names from source in a release build");
+            return null;
+        }
+        if (projectileNames != null)
+            return projectileNames;
+        System.Collections.Generic.List<string> names = [];
+        var dir = DirAccess.Open(projectilesFolderPath);
+        dir.ListDirBegin();
+        string entry = dir.GetNext();
+        while (entry != "")
+        {
+            if (entry.EndsWith(".png"))
+                names.Add(entry);
+            entry = dir.GetNext();
+        }
+        dir.ListDirEnd();
+        names.Sort(StringComparer.Ordinal);
+        projectileNames = [..names];
+        return projectileNames;
+    }
     public static void BuildProjectileAtlas()
     {
-        var names = GetProjectileNames();
+        if (!OS.IsDebugBuild())
+        {
+            Console.LogErr("[RenderingUtils] Cannot build atlas from a release build");
+            return;
+        }
+        var names = GetProjectileNamesFromSource();
         sourceTextures = new Texture2D[projectileNames.Length];
         for (int i = 0; i < projectileNames.Length; i++)
             sourceTextures[i] = ResourceLoader.Load<Texture2D>($"{projectilesFolderPath}{projectileNames[i]}"); // this line causes the error
-        Console.Inst.Log($"Built {projectileNames.Length} textures");
+        Console.LogDebug($"Built {projectileNames.Length} textures");
 
         var atlas = Image.CreateEmpty(AtlasSize, AtlasSize, false, Image.Format.Rgba8);
         var rects = new Dictionary<string, Rect2>(); 
@@ -86,44 +124,45 @@ public static class RenderingUtils
         var table = new AtlasRectTable { Rects = rects };
         ResourceSaver.Save(table, projectileRectsPath);
         atlas.SavePng(projectileAtlasPath);
-        Console.Inst.Log($"Saved projectile atlas to {projectileAtlasPath} textures");
-    }
-    private static string[] projectileNames;
-    public static string[] GetProjectileNames()
-    {
-        if (projectileNames != null)
-            return projectileNames;
-        System.Collections.Generic.List<string> names = [];
-        var dir = DirAccess.Open(projectilesFolderPath);
-        dir.ListDirBegin();
-        string entry = dir.GetNext();
-        while (entry != "")
-        {
-            if (entry.EndsWith(".png"))
-                names.Add(entry);
-            entry = dir.GetNext();
-        }
-        dir.ListDirEnd();
-        names.Sort(StringComparer.Ordinal);
-        projectileNames = [..names];
-        return projectileNames;
+        Console.LogDebug($"Saved projectile atlas to {projectileAtlasPath} textures");
     }
     public static Texture2D GetProjectileAtlas()
     {
         return LoadTexture(projectileAtlasPath);
     }
-    private static readonly Dictionary<string, Color> _colorCache = new();
+    private static Dictionary<string, AtlasTexture> projectileTextureCache = new();
+    public static AtlasTexture GetProjectileTexture(string projectileId)
+    {
+        if (projectileTextureCache.TryGetValue(projectileId, out var tex))
+            return tex;
+        if (!rects.TryGetValue(projectileId, out Rect2 regionRect))
+        {
+            Console.LogErr($"[RenderingUtils] Projectile id {projectileId} not found in rect table");
+            return null;
+        }
+        var pxRegionSize = regionRect.Size*AtlasSize;
+        var pxRegionPos = regionRect.Position*AtlasSize;
+        Rect2 pxRegion = new(pxRegionPos, pxRegionSize);
+        var atlasTexture = new AtlasTexture
+        {
+            Atlas = GetProjectileAtlas(),
+            Region = pxRegion
+        };
+        projectileTextureCache[projectileId] = atlasTexture;
+        return atlasTexture;
+    }
+    private static readonly Dictionary<string, Color> colorcache = new();
     public static Color ColorFromString(string input)
     {
         if (string.IsNullOrEmpty(input))
             return new Color(1, 1, 1);
-        if (_colorCache.TryGetValue(input, out var cached))
+        if (colorcache.TryGetValue(input, out var cached))
             return cached;
         uint hash = Fnv1aHash(input);
         float hue = (hash & 0xFFFF) / 65535f;
         float sat = Mathf.Clamp(((hash >> 16) & 0xFF) / 255f, 0.4f, 1.0f);
         Color color = Color.FromHsv(hue, sat, 1);
-        _colorCache[input] = color;
+        colorcache[input] = color;
         return color;
     }
     public static Color GetContrastingColor(Color c)
@@ -187,7 +226,7 @@ public static class RenderingUtils
     {
         if (points == null || points.Length < 3) 
         {
-            Console.Inst.LogErr("[LevelCompiler] Polygon has insufficient points, skipping render mesh");
+            Console.LogErr("[LevelCompiler] Polygon has insufficient points, skipping render mesh");
             return null;
         }
         var verts = new Vector3[points.Length];
@@ -212,7 +251,7 @@ public static class RenderingUtils
             indices = Geometry2D.TriangulatePolygon(points);
             if (indices == null || indices.Length == 0)
             {
-                Console.Inst.LogErr("[LevelCompiler] Polygon failed to triangulate (self-intersecting or degenerate shape), skipping render mesh");
+                Console.LogErr("[LevelCompiler] Polygon failed to triangulate (self-intersecting or degenerate shape), skipping render mesh");
                 return null;
             }
         }

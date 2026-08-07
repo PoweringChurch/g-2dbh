@@ -643,7 +643,6 @@ public partial class LevelPreview : Control
 	{
 		nextId = 0;
 		levelManager.ClearTimeline();
-		Console.Inst.Log("[LevelPreview] Attempting to compile");
 		for (int i = 0; i < Editor.MaxModelCount; i++)
 		{
 			var m = level.ProjectileModels[i];
@@ -660,7 +659,6 @@ public partial class LevelPreview : Control
 			r.RootEditorId = nextId++;
 			levelManager.UpdateReferenceInEditor(r, r.RootEditorId);
 		}
-		Console.Inst.Log("[LevelPreview] Completed compile all");
 	}
 	public void CompileProjectile(ProjectileModel model)
 	{

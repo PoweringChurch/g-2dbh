@@ -64,9 +64,11 @@
 [ext_resource type="FontFile" uid="uid://c4bxtwqu5jwfx" path="res://data/other/fonts/hack/Hack-Regular.ttf" id="42_n5t1e"]
 [ext_resource type="Script" uid="uid://ce51ge6a5nvjo" path="res://scripts/editor/modules/projectile_creator/ProjectileVisuals.cs" id="42_wu3dr"]
 [ext_resource type="Script" uid="uid://dlynwfalg1qjp" path="res://scripts/editor/modules/projectile_creator/ProjectileCollisionEditor.cs" id="43_cyx1q"]
+[ext_resource type="PackedScene" uid="uid://ccslq2lxnsct5" path="res://data/scenes/ui/texture_icon_button.tscn" id="43_jcxqu"]
 [ext_resource type="Script" uid="uid://cwblvkmrlra3" path="res://scripts/editor/modules/projectile_creator/ProjectileInfo.cs" id="44_0dhbp"]
 [ext_resource type="Script" uid="uid://dd3thl1sd8us4" path="res://scripts/editor/modules/projectile_creator/ProjectilePreview.cs" id="45_uatky"]
 [ext_resource type="Script" uid="uid://bgylg3dvojxgp" path="res://scripts/editor/modules/pattern_creator/PatternSpawnConditions.cs" id="46_1vm84"]
+[ext_resource type="Texture2D" uid="uid://5hg61sch0lbx" path="res://data/images/projectiles/big_orb.png" id="47_wat4s"]
 [ext_resource type="Script" uid="uid://bq08efnsrdwhh" path="res://scripts/editor/modules/pattern_creator/PatternInfo.cs" id="47_wu3dr"]
 [ext_resource type="Texture2D" uid="uid://x5k2f4fdv5f1" path="res://data/images/player/characters/default.png" id="48_0cbny"]
 [ext_resource type="PackedScene" uid="uid://cldtmabfj55tq" path="res://data/scenes/ui/pattern_model_ui.tscn" id="48_cyx1q"]
@@ -94,7 +96,7 @@
 [ext_resource type="LabelSettings" uid="uid://xb02ma8uqhqa" path="res://data/other/label_settings/dialogue/speaker.tres" id="76_4obbf"]
 [ext_resource type="LabelSettings" uid="uid://qqi3l08l7b3u" path="res://data/other/label_settings/dialogue/text.tres" id="77_ovcoh"]
 [ext_resource type="StyleBox" uid="uid://bx6oweyc3m26k" path="res://data/other/themes/default_ui_assets/label/label_messagebox_normal.tres" id="82_4obbf"]
-[ext_resource type="Texture2D" uid="uid://crenhtau611uy" path="res://data/stories/snowswept_kingdom/snow_world_concept_art.png" id="82_jbvwl"]
+[ext_resource type="Texture2D" uid="uid://crenhtau611uy" path="res://data/stories/snowswept_castle/snow_world_concept_art.png" id="82_jbvwl"]
 [ext_resource type="PackedScene" uid="uid://dgiqwavlvhy8v" path="res://data/scenes/ui/popup_ui.tscn" id="95_jbvwl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h6isl"]
@@ -251,10 +253,10 @@ volume_db = 17.851
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("LevelName", "Health", "Graze", "Completion", "Elapsed", "faster", "slower", "hearty", "perfect", "paranoid")]
 script = ExtResource("2_dg77c")
 LevelName = NodePath("Sort/PanelContainer/Sort/LevelName")
-Health = NodePath("Sort/PanelContainer/Sort/Sort/Left/Health/HP")
-Graze = NodePath("Sort/PanelContainer/Sort/Sort/Left/Graze/Graze")
-Completion = NodePath("Sort/PanelContainer/Sort/Sort/Right/Completion/Completion")
-Elapsed = NodePath("Sort/PanelContainer/Sort/Sort/Right/Elapsed/Elapsed")
+Health = NodePath("Sort/PanelContainer/Sort/Stack/Health/HP")
+Graze = NodePath("Sort/PanelContainer/Sort/Stack/Graze/Graze")
+Completion = NodePath("Sort/PanelContainer/Sort/Stack/Completion/Completion")
+Elapsed = NodePath("Sort/PanelContainer/Sort/Stack/Elapsed/Elapsed")
 faster = NodePath("Sort/PanelContainer/Sort/Mods/faster")
 slower = NodePath("Sort/PanelContainer/Sort/Mods/slower")
 hearty = NodePath("Sort/PanelContainer/Sort/Mods/hearty")
@@ -315,81 +317,74 @@ theme_override_font_sizes/font_size = 32
 text = "Level"
 horizontal_alignment = 1
 
-[node name="Sort" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=432268678]
-layout_mode = 2
-
-[node name="Left" type="VBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Sort" unique_id=576234688]
+[node name="Stack" type="VBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=1118011550]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Health" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Sort/Left" unique_id=1234439246]
+[node name="Health" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Stack" unique_id=1234439246]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Left/Health" unique_id=394312831]
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Health" unique_id=394312831]
 layout_mode = 2
 size_flags_horizontal = 11
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "HP"
 
-[node name="HP" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Left/Health" unique_id=1516828342]
+[node name="HP" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Health" unique_id=1516828342]
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "0"
 horizontal_alignment = 2
 
-[node name="Graze" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Sort/Left" unique_id=849689471]
+[node name="Graze" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Stack" unique_id=849689471]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Left/Graze" unique_id=768841482]
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Graze" unique_id=768841482]
 layout_mode = 2
 size_flags_horizontal = 11
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "Graze"
 
-[node name="Graze" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Left/Graze" unique_id=742328323]
+[node name="Graze" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Graze" unique_id=742328323]
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "0"
 horizontal_alignment = 2
 
-[node name="Right" type="VBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Sort" unique_id=1118011550]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Completion" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Sort/Right" unique_id=576995216]
+[node name="Completion" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Stack" unique_id=576995216]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Right/Completion" unique_id=941309314]
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Completion" unique_id=941309314]
 layout_mode = 2
 size_flags_horizontal = 11
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "Completion"
 
-[node name="Completion" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Right/Completion" unique_id=1649597517]
+[node name="Completion" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Completion" unique_id=1649597517]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "00.00%"
 
-[node name="Elapsed" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Sort/Right" unique_id=1853301605]
+[node name="Elapsed" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort/Stack" unique_id=1853301605]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Right/Elapsed" unique_id=1700591027]
+[node name="Label" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Elapsed" unique_id=1700591027]
 layout_mode = 2
 size_flags_horizontal = 11
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "Elapsed"
 
-[node name="Elapsed" type="Label" parent="HUD/Sort/PanelContainer/Sort/Sort/Right/Elapsed" unique_id=264219706]
+[node name="Elapsed" type="Label" parent="HUD/Sort/PanelContainer/Sort/Stack/Elapsed" unique_id=264219706]
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 22
 text = "00:00.00"
 
 [node name="Mods" type="HBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=995325435]
@@ -1309,6 +1304,7 @@ tab_1/title = "Select"
 [node name="ModelEdit" type="ScrollContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info" unique_id=2055832255]
 layout_mode = 2
 size_flags_vertical = 3
+scroll_vertical = 349
 horizontal_scroll_mode = 0
 metadata/_tab_index = 0
 metadata/_tab_name = "Edit"
@@ -1432,10 +1428,12 @@ layout_mode = 2
 label_settings = ExtResource("7_cegan")
 script = ExtResource("8_074og")
 
-[node name="Visual" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List" unique_id=1894502974 node_paths=PackedStringArray("TextureDropdown", "XScaleSlider", "YScaleSlider", "LockRotation")]
+[node name="Visual" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List" unique_id=1894502974 node_paths=PackedStringArray("SelectedTextureDisplay", "TextureSelectionTabs", "XScaleSlider", "YScaleSlider", "LockRotation")]
 layout_mode = 2
 script = ExtResource("42_wu3dr")
-TextureDropdown = NodePath("texture/OptionButton")
+SelectedTextureDisplay = NodePath("texture/MarginContainer/TextureRect")
+TextureSelectionTabs = NodePath("TextureList")
+TextureIconButtonScene = ExtResource("43_jcxqu")
 XScaleSlider = NodePath("scalex/Slider")
 YScaleSlider = NodePath("scaley/Slider")
 LockRotation = NodePath("lock/CheckButton")
@@ -1453,9 +1451,43 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Texture"
 
-[node name="OptionButton" type="OptionButton" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual/texture" unique_id=674382688]
+[node name="MarginContainer" type="MarginContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual/texture" unique_id=765357543]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/margin_right = 10
+
+[node name="TextureRect" type="TextureRect" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual/texture/MarginContainer" unique_id=1348417254]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("47_wat4s")
+expand_mode = 1
+
+[node name="TextureList" type="TabContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual" unique_id=481400478]
+layout_mode = 2
+current_tab = 0
+
+[node name="Generic" type="GridContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual/TextureList" unique_id=1888749578]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 8
+metadata/_tab_index = 0
+
+[node name="Decorative" type="GridContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual/TextureList" unique_id=132322855]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 8
+metadata/_tab_index = 1
+
+[node name="Other" type="GridContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual/TextureList" unique_id=200413812]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 8
+metadata/_tab_index = 2
 
 [node name="scalex" type="HBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Visual" unique_id=1878815357]
 layout_mode = 2
@@ -1473,6 +1505,7 @@ max_value = 4.0
 step = 0.05
 value = 1.0
 exp_edit = true
+scrollable = false
 tick_count = 9
 ticks_position = 3
 
@@ -1492,6 +1525,7 @@ max_value = 4.0
 step = 0.05
 value = 1.0
 exp_edit = true
+scrollable = false
 tick_count = 9
 ticks_position = 3
 
@@ -1813,6 +1847,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 max_value = 360.0
+scrollable = false
 
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Tint/Hue" unique_id=2127085438]
 layout_mode = 2
@@ -1832,6 +1867,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 50.0
+scrollable = false
 
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Tint/Sat" unique_id=2088837076]
 layout_mode = 2
@@ -1851,6 +1887,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 50.0
+scrollable = false
 
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/Tint/Val" unique_id=41061289]
 layout_mode = 2
@@ -1858,12 +1895,13 @@ value = 50.0
 alignment = 2
 update_on_text_changed = true
 
-[node name="ProjectileInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List" unique_id=1032109005 node_paths=PackedStringArray("IdSelect", "ProjectileName", "DeleteBtn", "SaveBtn")]
+[node name="ProjectileInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List" unique_id=1032109005 node_paths=PackedStringArray("IdSelect", "ProjectileName", "DeleteBtn", "NextFreeBtn", "SaveBtn")]
 layout_mode = 2
 script = ExtResource("44_0dhbp")
 IdSelect = NodePath("IdSelect/SpinBox")
 ProjectileName = NodePath("Name/LineEdit")
 DeleteBtn = NodePath("Actions/Delete")
+NextFreeBtn = NodePath("IdSelect/NextFree")
 SaveBtn = NodePath("Actions/Save")
 
 [node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/ProjectileInfo" unique_id=730395789]
@@ -1892,12 +1930,19 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/ProjectileInfo/IdSelect" unique_id=2016448402]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_horizontal = 2
 text = "Id"
+
+[node name="NextFree" type="Button" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/ProjectileInfo/IdSelect" unique_id=1302356014]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Next Free"
 
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info/ModelEdit/List/ProjectileInfo/IdSelect" unique_id=412259668]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 max_value = 127.0
 rounded = true
 update_on_text_changed = true
@@ -2240,12 +2285,13 @@ label_settings = ExtResource("7_cegan")
 autowrap_mode = 3
 script = ExtResource("8_074og")
 
-[node name="PatternInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Info/ModelEdit/List" unique_id=800381671 node_paths=PackedStringArray("IdSelect", "PatternName", "DeleteBtn", "SaveBtn")]
+[node name="PatternInfo" type="VBoxContainer" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Info/ModelEdit/List" unique_id=800381671 node_paths=PackedStringArray("IdSelect", "PatternName", "DeleteBtn", "NextFreeBtn", "SaveBtn")]
 layout_mode = 2
 script = ExtResource("47_wu3dr")
 IdSelect = NodePath("IdSelect/SpinBox")
 PatternName = NodePath("Name/LineEdit")
 DeleteBtn = NodePath("../Actions/Delete")
+NextFreeBtn = NodePath("IdSelect/NextFree")
 SaveBtn = NodePath("../Actions/Save")
 
 [node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Info/ModelEdit/List/PatternInfo" unique_id=88406133]
@@ -2274,11 +2320,18 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Info/ModelEdit/List/PatternInfo/IdSelect" unique_id=1544606240]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+size_flags_horizontal = 2
 text = "Id"
+
+[node name="NextFree" type="Button" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Info/ModelEdit/List/PatternInfo/IdSelect" unique_id=58445386]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Next Free"
 
 [node name="SpinBox" type="SpinBox" parent="Editor/ModelEditor/Tabs/PatternEditor/Sort/Info/ModelEdit/List/PatternInfo/IdSelect" unique_id=1478637442]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 8
 max_value = 127.0
 rounded = true
 update_on_text_changed = true
@@ -3477,7 +3530,7 @@ theme_override_font_sizes/font_size = 30
 text = "Return "
 
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1278547073 node_paths=PackedStringArray("_resumeButton", "_resetButton", "_quitButton")]
-process_mode = 2
+process_mode = 3
 visible = false
 script = ExtResource("3_ycdy4")
 _resumeButton = NodePath("Panel/VBoxContainer/Resume")
@@ -3528,6 +3581,7 @@ focus_mode = 0
 text = "Quit"
 
 [node name="ScoreSummary" type="CanvasLayer" parent="." unique_id=492281522 node_paths=PackedStringArray("Score", "Graze", "HP", "ResetButton", "QuitButton")]
+process_mode = 3
 visible = false
 script = ExtResource("17_cegan")
 Score = NodePath("Panel/VBoxContainer/Score/Score")
@@ -3688,195 +3742,8 @@ size_flags_horizontal = 3
 focus_mode = 0
 text = "Open data folder"
 
-[node name="Console" type="CanvasLayer" parent="." unique_id=1952028464 node_paths=PackedStringArray("_consoleText", "_save")]
-process_mode = 3
-visible = false
-script = ExtResource("23_d13ii")
-_consoleText = NodePath("Stuff/Sort/ConsoleText")
-_save = NodePath("Stuff/Sort/Tools/Save")
-
-[node name="Stuff" type="PanelContainer" parent="Console" unique_id=190996372]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -450.0
-offset_top = -233.5
-offset_right = 450.0
-offset_bottom = 233.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Sort" type="VBoxContainer" parent="Console/Stuff" unique_id=622197934]
-layout_mode = 2
-theme = ExtResource("2_ryguw")
-
-[node name="Label" type="Label" parent="Console/Stuff/Sort" unique_id=870566543]
-layout_mode = 2
-text = "Console (F1)"
-
-[node name="ConsoleText" type="TextEdit" parent="Console/Stuff/Sort" unique_id=1174321941]
-layout_mode = 2
-size_flags_vertical = 3
-placeholder_text = "<There is nothing in the console right now.>"
-editable = false
-context_menu_enabled = false
-
-[node name="Tools" type="HBoxContainer" parent="Console/Stuff/Sort" unique_id=136362119]
-layout_mode = 2
-
-[node name="Save" type="Button" parent="Console/Stuff/Sort/Tools" unique_id=407117122]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-size_flags_horizontal = 3
-focus_mode = 0
-text = "Save"
-
-[node name="Overlay" type="CanvasLayer" parent="." unique_id=189625564 node_paths=PackedStringArray("FPS", "FrameTime", "ActiveProjectiles", "Queued", "Time", "DisplayHitboxes", "Culled")]
-process_mode = 3
-visible = false
-script = ExtResource("28_xuqvo")
-FPS = NodePath("PanelContainer/Root/FPS/Field")
-FrameTime = NodePath("PanelContainer/Root/FrameTime/Field")
-ActiveProjectiles = NodePath("PanelContainer/Root/ActiveProjectiles/Field")
-Queued = NodePath("PanelContainer/Root/Queued/Field")
-Time = NodePath("PanelContainer/Root/Time/Field")
-DisplayHitboxes = NodePath("PanelContainer/Root/ShowHitboxes/Field")
-Culled = NodePath("PanelContainer/Root/Culled/Field")
-
-[node name="PanelContainer" type="PanelContainer" parent="Overlay" unique_id=1128331307]
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -48.0
-offset_right = 208.0
-offset_bottom = 48.0
-grow_vertical = 2
-
-[node name="Root" type="VBoxContainer" parent="Overlay/PanelContainer" unique_id=886725857]
-custom_minimum_size = Vector2(280, 0)
-layout_mode = 2
-theme = ExtResource("2_ryguw")
-
-[node name="Title" type="Label" parent="Overlay/PanelContainer/Root" unique_id=986875996]
-layout_mode = 2
-text = "Debug overlay (F2)"
-horizontal_alignment = 1
-
-[node name="FPS" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1996847487]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/FPS" unique_id=1346156997]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "FPS"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/FPS" unique_id=1408358965]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="FrameTime" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1170715853]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/FrameTime" unique_id=538769684]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Frame time (ms)"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/FrameTime" unique_id=1638217291]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="ActiveProjectiles" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=676050915]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/ActiveProjectiles" unique_id=556277203]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Active projectiles"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/ActiveProjectiles" unique_id=1218765725]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="Queued" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1215887677]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Queued" unique_id=1532017583]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Queued"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Queued" unique_id=1887797541]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="Culled" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1269653927]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Culled" unique_id=1316252499]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Culled"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Culled" unique_id=1878253391]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="Time" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1947415931]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Time" unique_id=425465645]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Elapsed"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Time" unique_id=2019124542]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="ShowHitboxes" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1705692143]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/ShowHitboxes" unique_id=1989150410]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Show Hitboxes"
-
-[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/ShowHitboxes" unique_id=976889265]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "-"
-horizontal_alignment = 2
-
-[node name="NTS" type="Label" parent="Overlay/PanelContainer/Root" unique_id=124472912]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-text = "Rebuild Sprite Atlas : Ctrl+U"
-horizontal_alignment = 1
-autowrap_mode = 2
-
 [node name="Campaign" type="CanvasLayer" parent="." unique_id=1289206583 node_paths=PackedStringArray("StoryInfos", "Return", "levelDisplay")]
+visible = false
 script = ExtResource("48_hrvbo")
 StoryInfos = [NodePath("Root/IceStory")]
 Return = NodePath("Root/Return")
@@ -3918,6 +3785,12 @@ layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 texture = ExtResource("82_jbvwl")
+
+[node name="placeholderlabel" type="Label" parent="Campaign/Root/IceStory/Background" unique_id=1015338182]
+layout_mode = 0
+offset_right = 11.0
+offset_bottom = 23.0
+text = "placeholder background"
 
 [node name="CharacterDisplay" type="TextureRect" parent="Campaign/Root/IceStory" unique_id=1163547505]
 layout_mode = 0
@@ -4050,7 +3923,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 1177.0
 offset_top = 139.0
-offset_right = 1377.0
+offset_right = 1427.0
 offset_bottom = 179.0
 script = ExtResource("50_uypp3")
 CharacterPosition = Vector2(75, -50)
@@ -4065,7 +3938,7 @@ offset_left = -22.5
 offset_right = 22.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "Duel in the Frozen Castle"
+text = "Duel in the Snowswept Castle"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -4082,7 +3955,7 @@ grow_horizontal = 2
 theme_override_constants/separation = 8
 
 [node name="SnowWorld" type="Button" parent="Campaign/Root/StorySelect" unique_id=618534607]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_styles/normal = SubResource("StyleBoxFlat_ywjan")
@@ -4103,7 +3976,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
-text = "Snowswept Kingdom"
+text = "Tale of the Snowswept Castle"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true
@@ -4286,6 +4159,199 @@ text = "Click to continue"
 layout_mode = 2
 size_flags_vertical = 8
 text = "Ctrl to skip"
+
+[node name="Console" type="CanvasLayer" parent="." unique_id=1952028464 node_paths=PackedStringArray("LabelHolder", "Save", "LogsFolder")]
+process_mode = 3
+visible = false
+script = ExtResource("23_d13ii")
+LabelHolder = NodePath("Stuff/Sort/LabelHolder")
+Save = NodePath("Stuff/Sort/Tools/Save")
+LogsFolder = NodePath("Stuff/Sort/Tools/OpenLogs")
+
+[node name="Stuff" type="PanelContainer" parent="Console" unique_id=190996372]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -450.0
+offset_top = -233.5
+offset_right = 450.0
+offset_bottom = 233.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sort" type="VBoxContainer" parent="Console/Stuff" unique_id=622197934]
+layout_mode = 2
+theme = ExtResource("2_ryguw")
+
+[node name="Label" type="Label" parent="Console/Stuff/Sort" unique_id=870566543]
+layout_mode = 2
+text = "Console (F1)"
+
+[node name="LabelHolder" type="VBoxContainer" parent="Console/Stuff/Sort" unique_id=343292121]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Tools" type="HBoxContainer" parent="Console/Stuff/Sort" unique_id=136362119]
+layout_mode = 2
+
+[node name="Save" type="Button" parent="Console/Stuff/Sort/Tools" unique_id=407117122]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Save"
+
+[node name="OpenLogs" type="Button" parent="Console/Stuff/Sort/Tools" unique_id=932415236]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Open Logs Folder"
+
+[node name="Overlay" type="CanvasLayer" parent="." unique_id=189625564 node_paths=PackedStringArray("FPS", "FrameTime", "ActiveProjectiles", "Queued", "Time", "DisplayHitboxes", "Culled")]
+process_mode = 3
+visible = false
+script = ExtResource("28_xuqvo")
+FPS = NodePath("PanelContainer/Root/FPS/Field")
+FrameTime = NodePath("PanelContainer/Root/FrameTime/Field")
+ActiveProjectiles = NodePath("PanelContainer/Root/ActiveProjectiles/Field")
+Queued = NodePath("PanelContainer/Root/Queued/Field")
+Time = NodePath("PanelContainer/Root/Time/Field")
+DisplayHitboxes = NodePath("PanelContainer/Root/ShowHitboxes/Field")
+Culled = NodePath("PanelContainer/Root/Culled/Field")
+
+[node name="PanelContainer" type="PanelContainer" parent="Overlay" unique_id=1128331307]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -48.0
+offset_right = 208.0
+offset_bottom = 48.0
+grow_vertical = 2
+
+[node name="Root" type="VBoxContainer" parent="Overlay/PanelContainer" unique_id=886725857]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme = ExtResource("2_ryguw")
+
+[node name="Title" type="Label" parent="Overlay/PanelContainer/Root" unique_id=986875996]
+layout_mode = 2
+text = "Debug overlay (F2)"
+horizontal_alignment = 1
+
+[node name="FPS" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1996847487]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/FPS" unique_id=1346156997]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FPS"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/FPS" unique_id=1408358965]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="FrameTime" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1170715853]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/FrameTime" unique_id=538769684]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Frame time (ms)"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/FrameTime" unique_id=1638217291]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="ActiveProjectiles" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=676050915]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/ActiveProjectiles" unique_id=556277203]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Active projectiles"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/ActiveProjectiles" unique_id=1218765725]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="Queued" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1215887677]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Queued" unique_id=1532017583]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Queued"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Queued" unique_id=1887797541]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="Culled" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1269653927]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Culled" unique_id=1316252499]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Culled"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Culled" unique_id=1878253391]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="Time" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1947415931]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/Time" unique_id=425465645]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Elapsed"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/Time" unique_id=2019124542]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="ShowHitboxes" type="HBoxContainer" parent="Overlay/PanelContainer/Root" unique_id=1705692143]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Overlay/PanelContainer/Root/ShowHitboxes" unique_id=1989150410]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Show Hitboxes"
+
+[node name="Field" type="Label" parent="Overlay/PanelContainer/Root/ShowHitboxes" unique_id=976889265]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+horizontal_alignment = 2
+
+[node name="NTS" type="Label" parent="Overlay/PanelContainer/Root" unique_id=124472912]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "Rebuild Sprite Atlas : Ctrl+U"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="Popups" type="CanvasLayer" parent="." unique_id=1367333978]
 script = ExtResource("23_1u8w0")

@@ -15,13 +15,13 @@ public static class SerializationUtils
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
         if (file == null)
         {
-            Console.Inst.LogErr($"[Serializer] Could not open file '{path}' (error: {FileAccess.GetOpenError()})");
+            Console.LogErr($"[Serializer] Could not open file '{path}' (error: {FileAccess.GetOpenError()})");
             return default;
         }
         try { return JsonSerializer.Deserialize<T>(file.GetAsText(), Options); }
         catch (JsonException ex)
         {
-            Console.Inst.LogErr($"[Serializer] JSON parse error in '{path}' (error: {ex.Message})");
+            Console.LogErr($"[Serializer] JSON parse error in '{path}' (error: {ex.Message})");
             return default;
         }
     }
@@ -30,7 +30,7 @@ public static class SerializationUtils
         using var file = FileAccess.Open(path, FileAccess.ModeFlags.Write);
         if (file == null)
         {
-            Console.Inst.LogErr($"[Serializer] Failed to open file for writing '{path}'");
+            Console.LogErr($"[Serializer] Failed to open file for writing '{path}'");
         }
         var s = JsonSerializer.Serialize(data, Options);
         file.StoreString(s);
