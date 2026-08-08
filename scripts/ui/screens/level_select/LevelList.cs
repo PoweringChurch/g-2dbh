@@ -38,7 +38,6 @@ public partial class LevelList : Control
         }
     }
 
-    private AudioStream buttonPressedSfx = AudioUtils.LoadAudio("res://data/sounds/button_pressed.wav");
     private void ShowLevel(LevelDataSchema schema, int index)
     {
         var btn = LevelButtonScene.Instantiate<Button>();
@@ -54,7 +53,7 @@ public partial class LevelList : Control
 
         btn.Pressed += () => 
         {
-            AudioUtils.Instance.PlayAudio(buttonPressedSfx, AudioUtils.SFXVolume);
+            AudioUtils.PlayAudio("res://data/sounds/ui/button_pressed.wav", AudioUtils.SFXVolume);
             LevelDisplay.ShowLevel(schema);
         };
         btn.MouseEntered += () => LevelButtonMouseEntered(btn);
@@ -139,11 +138,10 @@ public partial class LevelList : Control
         }
     }
     private const float hoverPushX = 70f;
-    private AudioStream buttonHoveredSfx = AudioUtils.LoadAudio("res://data/sounds/button_hovered.wav");
     private void LevelButtonMouseEntered(Button btn) 
     {
         btn.ZIndex = 1;
-        AudioUtils.Instance.PlayAudio(buttonHoveredSfx, AudioUtils.SFXVolume);
+        AudioUtils.PlayAudio("res://data/sounds/ui/button_hovered.wav", AudioUtils.SFXVolume);
         AnimateHoverAmount(btn, 1f);
     }
     private void LevelButtonMouseExited(Button btn) 

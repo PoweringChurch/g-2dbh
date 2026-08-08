@@ -9,8 +9,8 @@ public partial class GameSession : Node
     {
         get
         {
-            if (_director == null) return 0;
-            return _director.Elapsed;
+            if (director == null) return 0;
+            return director.Elapsed;
         }
     }
     private static string[] Characters =
@@ -21,15 +21,15 @@ public partial class GameSession : Node
     [Export] public GameAudioPlayer GAP { get; private set;}
     public Node2D GameRoot {get; private set;}
     private PackedScene charScene = ResourceLoader.Load<PackedScene>("res://data/scenes/player_character.tscn");
-    private PlayerCharacter _character;
-    private LevelDirector _director;
+    private PlayerCharacter character;
+    private LevelDirector director;
     private BulletRenderer _renderer;
     private UIManager ui => UIManager.Instance;
-    private RawLevelData _lastLevelData;
+    private RawLevelData lastLevelData;
     private PlayingField playingField;
-    private StartParams _lastStartParams;
+    private StartParams lastStartParams;
     private const int maxHealth = 3;
-    private int score, health, graze;
+    private int health, graze;
     private float duration;
     private bool running = false;
     public bool Running => running;
@@ -47,14 +47,14 @@ public partial class GameSession : Node
         SetProcess(false);
         GAP.Stop();
         GAP.Stream = null;
-        if (_director!=null)
-            _director.LevelFinished -= StopLevel;
-        _director = null;
+        if (director!=null)
+            director.LevelFinished -= StopLevel;
+        director = null;
         _renderer = null;
-        if (IsInstanceValid(_character))
+        if (IsInstanceValid(character))
         {
-            _character.OnHurt -= OnHurt;
-            _character.OnGraze -= OnGraze;
+            character.OnHurt -= OnHurt;
+            character.OnGraze -= OnGraze;
         }
         if (IsInstanceValid(GameRoot))
             GameRoot.QueueFree();
@@ -68,7 +68,7 @@ public partial class GameSession : Node
         SetProcess(false);
         if (IsInstanceValid(GameRoot))
             GameRoot.QueueFree();
-        return StartLevel(_lastLevelData, _lastStartParams);
+        return StartLevel(lastLevelData, lastStartParams);
     }
     public bool StartLevel(RawLevelData levelData, StartParams startParams)
     {
@@ -81,17 +81,16 @@ public partial class GameSession : Node
         var compiled = LevelCompiler.CompileLevel(levelData, GameRoot);
         if (compiled == null) return false;
         // setup character
-        _character = charScene.Instantiate<PlayerCharacter>();
-        _character.ApplyTextureOfName(Characters[levelData.Character]);
-        GameRoot.AddChild(_character);
+        character = charScene.Instantiate<PlayerCharacter>();
+        character.ApplyTextureOfName(Characters[levelData.Character]);
+        GameRoot.AddChild(character);
         var resolution = PlayingField.Resolutions[levelData.AspectRatio];
-        _character.ScreenResolution = resolution;
-        _character.Position = new Vector2(
+        character.ScreenResolution = resolution;
+        character.Position = new Vector2(
             resolution.X / 2, 
             resolution.Y * 0.9f);
         playingField.SetRatio(levelData.AspectRatio, GameRoot);
 
-        score = 0;
         graze = 0;
         duration = levelData.Duration;
         health = maxHealth;
@@ -100,15 +99,21 @@ public partial class GameSession : Node
         
         // setup ui
         ui.HUD.SetHealth(health);
-        ui.HUD.SetGraze(0);
+        ui.HUD.SetGraze(graze);
+        ui.HUD.SetCompletion(0);
+        ui.HUD.SetElapsed(0);
+
         ui.HUD.SetLevelName(levelData.Name);
         ui.HUD.SetMods(startParams);
-        _character.OnHurt += OnHurt;
-        _character.OnGraze += OnGraze;
+
+        character.OnHurt += OnHurt;
+        character.OnGraze += OnGraze;
+
+        ui.ResetScoreSummary();
         ui.ShowHUD();
         // start
-        _lastLevelData = levelData;
-        _lastStartParams = startParams;
+        lastLevelData = levelData;
+        lastStartParams = startParams;
         _renderer = new BulletRenderer(compiled.Projectiles, PlayingField.Resolutions[levelData.AspectRatio], GameRoot);
 
         float multiplier = 1f;
@@ -120,11 +125,11 @@ public partial class GameSession : Node
         GAP.PitchScale = multiplier;
         PlaylistHandler.Instance.FadeOut();
         
-        _director = new LevelDirector();
-        _director.LevelFinished += StopLevel;
+        director = new LevelDirector();
+        director.LevelFinished += StopLevel;
 
         Input.MouseMode = Input.MouseModeEnum.ConfinedHidden;
-        _director.StartLevel(compiled, _character, multiplier, StartDelay*multiplier);
+        director.StartLevel(compiled, character, multiplier, StartDelay*multiplier);
         GAP.PlayAfterDelay(StartDelay*multiplier);
         SetPhysicsProcess(true);
         SetProcess(true);
@@ -133,45 +138,42 @@ public partial class GameSession : Node
     }
     public void StopLevel()
     {
+        ui.ShowScoreSummary((float)(director.Elapsed/duration), health, graze, lastLevelData.Name, lastLevelData.Author);
         Abort();
-        ui.ScoreSummary.SetHP(health);
-        ui.ScoreSummary.SetScore(score);
-        ui.ScoreSummary.SetGraze(graze);
-        ui.ScoreSummary.Visible = true;
     }
-    private AudioStream grazeSfx = AudioUtils.LoadAudio("res://data/sounds/graze.wav");
-    private AudioStream hurtSfx = AudioUtils.LoadAudio("res://data/sounds/hurt.wav");
     public void OnHurt()
     {
         health--;
-        if (!_lastStartParams.Paranoid) score -= Math.Max((int)(100*(health+1)/maxHealth), 0);
         ui.HUD.SetHealth(health);
         if (health <= 0)
             StopLevel();
-        AudioUtils.Instance.PlayAudio(hurtSfx, AudioUtils.SFXVolume);
+        AudioUtils.PlayAudio("res://data/sounds/player/hurt.wav", AudioUtils.SFXVolume);
     }
     public void OnGraze()
     {
-        graze++;
-        if (_lastStartParams.Paranoid && _character.Hurt() && !ConfigHelper.Current.NoHit)
+        if (lastStartParams.Paranoid && character.Hurt() && !ConfigHelper.Current.NoHit)
             return;
-        score += (int)(100*health/maxHealth);
+        graze++;
         ui.HUD.SetGraze(graze);
-        AudioUtils.Instance.PlayAudio(grazeSfx, AudioUtils.SFXVolume);
+        AudioUtils.PlayAudio("res://data/sounds/player/graze.wav", AudioUtils.SFXVolume);
     }
     public override void _PhysicsProcess(double dt)
     {
         if (!running) return;
-        _character.Movement(dt);
-        if (_director.Elapsed >= 0) { ui.HUD.SetCompletion((float)(_director.Elapsed/duration)); ui.HUD.SetElapsed((float)_director.Elapsed); }
-        _director.Tick(dt);
-        _character.VisualFeedback();
+        character.Movement(dt);
+        if (director.Elapsed >= 0) 
+        { 
+            ui.HUD.SetCompletion((float)(director.Elapsed/duration)); 
+            ui.HUD.SetElapsed((float)director.Elapsed); 
+        }
+        director.Tick(dt);
+        character.VisualFeedback();
     }
     public override void _Process(double dt)
     {
-        Overlay.Inst.SyncInfo(-1, _director.QueuedCount, _director.ActiveCount);
+        Overlay.Inst.SyncInfo(-1, director.QueuedCount, director.ActiveCount);
         if (!running) return;
-        _renderer.Sync(ref _director.ActiveProjectiles, _director.ActiveCount, _director.Elapsed);
+        _renderer.Sync(ref director.ActiveProjectiles, director.ActiveCount, director.Elapsed);
         if (Elapsed >= duration - FadeOutTime)
         {
             float t = (float)Math.Max(0, duration - Elapsed) / FadeOutTime;

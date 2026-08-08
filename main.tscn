@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" uid="uid://b3qh0jjrqph47" path="res://scripts/ui/PlaylistHandler.cs" id="1_gngh3"]
 [ext_resource type="Script" uid="uid://bpcx5qyxrct03" path="res://scripts/ui/UIManager.cs" id="1_pjyto"]
-[ext_resource type="AudioStream" uid="uid://cfn0mimeu7b5e" path="res://data/music/main-menu/a-snowy-night.mp3" id="2_0n3wm"]
+[ext_resource type="AudioStream" uid="uid://cfn0mimeu7b5e" path="res://data/music/main_menu/a-snowy-night.mp3" id="2_0n3wm"]
 [ext_resource type="Script" uid="uid://diraw7nitfwgi" path="res://scripts/ui/screens/HUD.cs" id="2_dg77c"]
 [ext_resource type="Theme" uid="uid://dq7qa8sty0ce0" path="res://data/other/themes/default_ui.tres" id="2_ryguw"]
 [ext_resource type="Script" uid="uid://d1qeihctsvcv0" path="res://scripts/ui/screens/MainMenu.cs" id="2_ycdy4"]
-[ext_resource type="AudioStream" uid="uid://dcxikbmbdtm6" path="res://data/music/main-menu/luminous-river.mp3" id="3_qnost"]
+[ext_resource type="AudioStream" uid="uid://dcxikbmbdtm6" path="res://data/music/main_menu/luminous-river.mp3" id="3_qnost"]
 [ext_resource type="Script" uid="uid://dcf3xb5eiahfx" path="res://scripts/ui/screens/PauseMenu.cs" id="3_ycdy4"]
 [ext_resource type="Script" uid="uid://6foji7orqknm" path="res://scripts/ui/screens/level_select/LevelSelect.cs" id="4_vivmo"]
-[ext_resource type="AudioStream" uid="uid://c6dk38uue44ea" path="res://data/music/main-menu/sunrise-tree-branch.mp3" id="4_wnkbs"]
+[ext_resource type="AudioStream" uid="uid://c6dk38uue44ea" path="res://data/music/main_menu/sunrise-tree-branch.mp3" id="4_wnkbs"]
 [ext_resource type="Texture2D" uid="uid://bi5soxhucmn8d" path="res://data/other/themes/default_ui_assets/svgs/faster.svg" id="5_d2t1y"]
 [ext_resource type="Script" uid="uid://h8lkb7lxcmyv" path="res://scripts/editor/modules/projectile_creator/ProjectileCreator.cs" id="5_w48qg"]
 [ext_resource type="Script" uid="uid://x86wa1cywjgs" path="res://scripts/editor/modules/level_data/LevelMetadata.cs" id="5_ycdy4"]
@@ -25,6 +25,7 @@
 [ext_resource type="Script" uid="uid://7a6jo6fmtk3r" path="res://scripts/editor/modules/preview/timeline/Timeline.cs" id="8_yaehf"]
 [ext_resource type="Texture2D" uid="uid://cuxbi5ummugjk" path="res://data/other/themes/default_ui_assets/svgs/paranoid.svg" id="9_wnkbs"]
 [ext_resource type="Script" uid="uid://dt773ymqw2vko" path="res://scripts/editor/modules/preview/LevelPreview.cs" id="10_074og"]
+[ext_resource type="FontFile" uid="uid://b86iggl0of1c1" path="res://data/other/fonts/xolonium/Xolonium-Regular.otf" id="10_vieuh"]
 [ext_resource type="Script" uid="uid://bwj0kla3iaqvo" path="res://scripts/editor/modules/level_data/ModelLibrary.cs" id="11_ryguw"]
 [ext_resource type="Script" uid="uid://cyjxaw52qbrhg" path="res://scripts/ui/screens/level_select/Modifiers.cs" id="12_come4"]
 [ext_resource type="Script" uid="uid://crtp5d7sobtha" path="res://scripts/game/runtime/GameAudioPlayer.cs" id="13_0n3wm"]
@@ -36,7 +37,7 @@
 [ext_resource type="Script" uid="uid://dmdlj62bpoixt" path="res://scripts/editor/modules/level_data/custom_variables/CustomVariables.cs" id="18_4k2k6"]
 [ext_resource type="PackedScene" uid="uid://co1vtkdhkdbc1" path="res://data/scenes/ui/definition_ui.tscn" id="19_4k2k6"]
 [ext_resource type="Texture2D" uid="uid://dmc2si7qq4qf1" path="res://data/images/title/backroung.png" id="19_34ol3"]
-[ext_resource type="FontFile" uid="uid://dd6whtbkdqd28" path="res://data/other/fonts/babel_sans/BabelSans-Bold.ttf" id="20_ppx11"]
+[ext_resource type="FontFile" uid="uid://bdb6gh0bdrb2h" path="res://data/other/fonts/xolonium/Xolonium-Regular.ttf" id="19_yvsr8"]
 [ext_resource type="Script" uid="uid://cm1st1hgkbfwd" path="res://scripts/ui/screens/SettingsMenu.cs" id="21_getpj"]
 [ext_resource type="StyleBox" uid="uid://b064jq80gcy5h" path="res://data/other/themes/default_ui_assets/button/stylized_menu_button/normal.tres" id="21_n5t1e"]
 [ext_resource type="PackedScene" uid="uid://buu1cvem8gb5u" path="res://data/scenes/ui/point_ui.tscn" id="22_0rl1p"]
@@ -95,8 +96,11 @@
 [ext_resource type="Texture2D" uid="uid://d1ptdnaxryor8" path="res://data/images/portraits/placeholder0.png" id="75_f1p13"]
 [ext_resource type="LabelSettings" uid="uid://xb02ma8uqhqa" path="res://data/other/label_settings/dialogue/speaker.tres" id="76_4obbf"]
 [ext_resource type="LabelSettings" uid="uid://qqi3l08l7b3u" path="res://data/other/label_settings/dialogue/text.tres" id="77_ovcoh"]
+[ext_resource type="Material" uid="uid://c4mev86t4e3g6" path="res://shaders/rainbow_gradiant_material.tres" id="81_0arob"]
+[ext_resource type="Texture2D" uid="uid://cjfp8j1281ac2" path="res://data/other/themes/default_ui_assets/svgs/reset-forward-svgrepo-com.svg" id="81_inymm"]
 [ext_resource type="StyleBox" uid="uid://bx6oweyc3m26k" path="res://data/other/themes/default_ui_assets/label/label_messagebox_normal.tres" id="82_4obbf"]
 [ext_resource type="Texture2D" uid="uid://crenhtau611uy" path="res://data/stories/snowswept_castle/snow_world_concept_art.png" id="82_jbvwl"]
+[ext_resource type="Texture2D" uid="uid://be6im4ijqjbui" path="res://data/other/themes/default_ui_assets/svgs/reset-svgrepo-com(3).svg" id="82_jcxqu"]
 [ext_resource type="PackedScene" uid="uid://dgiqwavlvhy8v" path="res://data/scenes/ui/popup_ui.tscn" id="95_jbvwl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h6isl"]
@@ -114,6 +118,57 @@ shadow_color = Color(0.011764706, 0.043137256, 0.050980393, 0.78431374)
 shadow_size = 5
 
 [sub_resource type="LabelSettings" id="LabelSettings_lwnsi"]
+
+[sub_resource type="Shader" id="Shader_fjkcv"]
+code = "shader_type canvas_item;
+
+uniform float speed : hint_range(0.05, 5.0) = 0.1;
+
+vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void fragment() {
+    float hue = mod(TIME * speed, 1.0);
+	float gradient = UV.y;
+    COLOR = vec4(hsv2rgb(vec3(hue, 0.4, gradient)), 0.5);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_inymm"]
+shader = SubResource("Shader_fjkcv")
+shader_parameter/speed = 0.1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vieuh"]
+bg_color = Color(0.38133374, 0.11900445, 0.13640967, 1)
+skew = Vector2(0.3, 0)
+border_color = Color(0.5245508, 0, 0.100766584, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_0arob"]
+line_spacing = 0.0
+font = ExtResource("10_vieuh")
+font_size = 40
+
+[sub_resource type="LabelSettings" id="LabelSettings_yjja3"]
+font_size = 20
+font_color = Color(0.74509805, 0.74509805, 0.74509805, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dij0e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k1udn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wat4s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywjan"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_m74q3"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tko6h"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ywjan"]
 bg_color = Color(0.29992345, 0.5819148, 0.70807624, 1)
@@ -226,10 +281,10 @@ script = ExtResource("61_rm4vd")
 Svp = NodePath("../HUD/Sort/SubViewportContainer/SubViewport")
 GAP = NodePath("../HUD/GameAudioPlayer")
 
-[node name="UIManager" type="Node" parent="." unique_id=480312317 node_paths=PackedStringArray("HUD", "ScoreSummary", "_settings", "_pause", "_mainMenu", "_levelSelect", "_campaign", "dialogueHandler")]
+[node name="UIManager" type="Node" parent="." unique_id=480312317 node_paths=PackedStringArray("HUD", "scoreSummary", "_settings", "_pause", "_mainMenu", "_levelSelect", "_campaign", "dialogueHandler")]
 script = ExtResource("1_pjyto")
 HUD = NodePath("../HUD")
-ScoreSummary = NodePath("../ScoreSummary")
+scoreSummary = NodePath("../ScoreSummary")
 _settings = NodePath("../Settings")
 _pause = NodePath("../PauseMenu")
 _mainMenu = NodePath("../MainMenu")
@@ -251,6 +306,7 @@ script = ExtResource("22_ryguw")
 volume_db = 17.851
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2000837202 node_paths=PackedStringArray("LevelName", "Health", "Graze", "Completion", "Elapsed", "faster", "slower", "hearty", "perfect", "paranoid")]
+visible = false
 script = ExtResource("2_dg77c")
 LevelName = NodePath("Sort/PanelContainer/Sort/LevelName")
 Health = NodePath("Sort/PanelContainer/Sort/Stack/Health/HP")
@@ -291,7 +347,7 @@ layout_mode = 2
 [node name="SubViewport" type="SubViewport" parent="HUD/Sort/SubViewportContainer" unique_id=1965502961]
 handle_input_locally = false
 size = Vector2i(531, 900)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="BackgroundColor" type="ColorRect" parent="HUD/Sort/SubViewportContainer/SubViewport" unique_id=1148617783]
 z_index = -129
@@ -312,10 +368,13 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="LevelName" type="Label" parent="HUD/Sort/PanelContainer/Sort" unique_id=1125105104]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("10_vieuh")
 theme_override_font_sizes/font_size = 32
 text = "Level"
 horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="Stack" type="VBoxContainer" parent="HUD/Sort/PanelContainer/Sort" unique_id=1118011550]
 layout_mode = 2
@@ -543,14 +602,14 @@ stretch_mode = 4
 [node name="Campaign" type="Button" parent="MainMenu/Control" unique_id=833321538]
 z_index = 3
 layout_mode = 0
-offset_left = -224.0
-offset_top = 475.1
+offset_left = -400.0
+offset_top = 475.0
 offset_right = 568.0
-offset_bottom = 548.1
+offset_bottom = 554.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 focus_mode = 0
-theme_override_fonts/font = ExtResource("20_ppx11")
+theme_override_fonts/font = ExtResource("19_yvsr8")
 theme_override_font_sizes/font_size = 65
 theme_override_styles/normal = ExtResource("21_n5t1e")
 theme_override_styles/pressed = ExtResource("22_h6isl")
@@ -564,14 +623,14 @@ alignment = 2
 [node name="Custom" type="Button" parent="MainMenu/Control" unique_id=1872407800]
 z_index = 2
 layout_mode = 0
-offset_left = -224.0
-offset_top = 552.1
+offset_left = -471.0
+offset_top = 560.0
 offset_right = 531.0
-offset_bottom = 620.1
+offset_bottom = 633.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 focus_mode = 0
-theme_override_fonts/font = ExtResource("20_ppx11")
+theme_override_fonts/font = ExtResource("19_yvsr8")
 theme_override_font_sizes/font_size = 60
 theme_override_styles/normal = ExtResource("21_n5t1e")
 theme_override_styles/pressed = ExtResource("22_h6isl")
@@ -585,14 +644,14 @@ alignment = 2
 [node name="Settings" type="Button" parent="MainMenu/Control" unique_id=1153225555]
 z_index = 1
 layout_mode = 0
-offset_left = -224.0
-offset_top = 624.1
+offset_left = -539.0
+offset_top = 640.0
 offset_right = 496.0
-offset_bottom = 686.1
+offset_bottom = 707.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 focus_mode = 0
-theme_override_fonts/font = ExtResource("20_ppx11")
+theme_override_fonts/font = ExtResource("19_yvsr8")
 theme_override_font_sizes/font_size = 55
 theme_override_styles/normal = ExtResource("21_n5t1e")
 theme_override_styles/pressed = ExtResource("22_h6isl")
@@ -605,14 +664,14 @@ alignment = 2
 
 [node name="Quit" type="Button" parent="MainMenu/Control" unique_id=130927533]
 layout_mode = 0
-offset_left = -229.0
-offset_top = 691.0
+offset_left = -588.0
+offset_top = 715.0
 offset_right = 461.0
-offset_bottom = 753.0
+offset_bottom = 782.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 focus_mode = 0
-theme_override_fonts/font = ExtResource("20_ppx11")
+theme_override_fonts/font = ExtResource("19_yvsr8")
 theme_override_font_sizes/font_size = 55
 theme_override_styles/normal = ExtResource("21_n5t1e")
 theme_override_styles/pressed = ExtResource("22_h6isl")
@@ -1304,7 +1363,7 @@ tab_1/title = "Select"
 [node name="ModelEdit" type="ScrollContainer" parent="Editor/ModelEditor/Tabs/ProjectileEditor/Sort/Info" unique_id=2055832255]
 layout_mode = 2
 size_flags_vertical = 3
-scroll_vertical = 349
+scroll_vertical = 100
 horizontal_scroll_mode = 0
 metadata/_tab_index = 0
 metadata/_tab_name = "Edit"
@@ -3173,7 +3232,6 @@ script = ExtResource("53_jx0wj")
 NotificationLabelSettings = Array[LabelSettings]([ExtResource("54_kkkcx")])
 
 [node name="LevelSelect" type="CanvasLayer" parent="." unique_id=2141416188 node_paths=PackedStringArray("LevelList", "ReturnBtn", "NewLevelBtn")]
-visible = false
 script = ExtResource("4_vivmo")
 LevelList = NodePath("LevelList")
 ReturnBtn = NodePath("Return")
@@ -3382,7 +3440,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 
 [node name="Play" type="Button" parent="LevelSelect/LevelDisplay/Sort/Buttons" unique_id=1109397313]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(250, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -3533,144 +3591,249 @@ text = "Return "
 process_mode = 3
 visible = false
 script = ExtResource("3_ycdy4")
-_resumeButton = NodePath("Panel/VBoxContainer/Resume")
-_resetButton = NodePath("Panel/VBoxContainer/Reset")
-_quitButton = NodePath("Panel/VBoxContainer/Quit")
+_resumeButton = NodePath("Stack/Resume")
+_resetButton = NodePath("Stack/Reset")
+_quitButton = NodePath("Stack/Quit")
 
-[node name="Dim" type="ColorRect" parent="PauseMenu" unique_id=1166834549]
+[node name="Color" type="ColorRect" parent="PauseMenu" unique_id=144947681]
+material = SubResource("ShaderMaterial_inymm")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.3137255)
 
-[node name="Panel" type="PanelContainer" parent="PauseMenu" unique_id=360039679]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -104.5
-offset_right = 100.0
-offset_bottom = 104.5
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Stack" type="VBoxContainer" parent="PauseMenu" unique_id=193199972]
+offset_left = 860.0
+offset_top = 435.5
+offset_right = 1060.0
+offset_bottom = 644.5
 theme = ExtResource("2_ryguw")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Panel" unique_id=193199972]
-layout_mode = 2
-
-[node name="Resume" type="Button" parent="PauseMenu/Panel/VBoxContainer" unique_id=1688782785]
+[node name="Resume" type="Button" parent="PauseMenu/Stack" unique_id=1688782785]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
+theme_override_font_sizes/font_size = 35
 text = "Resume"
 
-[node name="Reset" type="Button" parent="PauseMenu/Panel/VBoxContainer" unique_id=406887569]
+[node name="Reset" type="Button" parent="PauseMenu/Stack" unique_id=406887569]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
+theme_override_font_sizes/font_size = 35
 text = "Reset"
 
-[node name="Quit" type="Button" parent="PauseMenu/Panel/VBoxContainer" unique_id=771573111]
+[node name="Quit" type="Button" parent="PauseMenu/Stack" unique_id=771573111]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
+theme_override_font_sizes/font_size = 35
 text = "Quit"
 
-[node name="ScoreSummary" type="CanvasLayer" parent="." unique_id=492281522 node_paths=PackedStringArray("Score", "Graze", "HP", "ResetButton", "QuitButton")]
+[node name="ScoreSummary" type="CanvasLayer" parent="." unique_id=492281522 node_paths=PackedStringArray("CompletionHolder", "Completion", "GrazeHolder", "Graze", "HpHolder", "HP", "LevelName", "LevelAuthor", "ResetButton", "QuitButton")]
 process_mode = 3
-visible = false
 script = ExtResource("17_cegan")
-Score = NodePath("Panel/VBoxContainer/Score/Score")
-Graze = NodePath("Panel/VBoxContainer/Graze/Graze")
-HP = NodePath("Panel/VBoxContainer/HP/HP")
-ResetButton = NodePath("Panel/VBoxContainer/Reset")
-QuitButton = NodePath("Panel/VBoxContainer/Quit")
+CompletionHolder = NodePath("ScorePanel/Completion")
+Completion = NodePath("ScorePanel/Completion/CompletionField")
+GrazeHolder = NodePath("ScorePanel/Graze")
+Graze = NodePath("ScorePanel/HP/HPField")
+HpHolder = NodePath("ScorePanel/HP")
+HP = NodePath("ScorePanel/Graze/GrazeField")
+LevelName = NodePath("ScorePanel/LevelName")
+LevelAuthor = NodePath("ScorePanel/CreatorName")
+ResetButton = NodePath("ScorePanel/Reset")
+QuitButton = NodePath("ScorePanel/Return")
 
-[node name="Dim" type="ColorRect" parent="ScoreSummary" unique_id=1138527261]
+[node name="Color" type="ColorRect" parent="ScoreSummary" unique_id=1138527261]
+material = ExtResource("81_0arob")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.3137255)
 
-[node name="Panel" type="PanelContainer" parent="ScoreSummary" unique_id=415145686]
+[node name="ScorePanel" type="Panel" parent="ScoreSummary" unique_id=9249774]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -104.5
-offset_right = 100.0
-offset_bottom = 104.5
+offset_left = -275.5
+offset_top = -276.0
+offset_right = 275.5
+offset_bottom = 276.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_ryguw")
+theme_override_styles/panel = SubResource("StyleBoxFlat_vieuh")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ScoreSummary/Panel" unique_id=1170531105]
-layout_mode = 2
+[node name="LevelName" type="Label" parent="ScoreSummary/ScorePanel" unique_id=412780981]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 0
+offset_left = 6.5
+offset_top = 7.0
+offset_right = 606.5
+offset_bottom = 108.0
+text = "Awesome level that took me so long to name"
+label_settings = SubResource("LabelSettings_0arob")
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 2
+text_overrun_behavior = 3
 
-[node name="Score" type="HBoxContainer" parent="ScoreSummary/Panel/VBoxContainer" unique_id=1459456131]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="CreatorName" type="Label" parent="ScoreSummary/ScorePanel" unique_id=1855966909]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 0
+offset_left = 288.5
+offset_top = 114.0
+offset_right = 588.5
+offset_bottom = 139.0
+theme_override_fonts/font = ExtResource("10_vieuh")
+text = "by awesome creator"
+label_settings = SubResource("LabelSettings_yjja3")
+horizontal_alignment = 2
+autowrap_mode = 2
 
-[node name="Label" type="Label" parent="ScoreSummary/Panel/VBoxContainer/Score" unique_id=513804898]
-layout_mode = 2
+[node name="Completion" type="Control" parent="ScoreSummary/ScorePanel" unique_id=1720508237]
+anchors_preset = 0
+offset_left = -113.5
+offset_top = 118.0
+offset_right = -73.5
+offset_bottom = 158.0
+
+[node name="CompletionLabel" type="Label" parent="ScoreSummary/ScorePanel/Completion" unique_id=513804898]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 10.0
+offset_right = 285.0
+offset_bottom = 50.0
 size_flags_horizontal = 2
-text = "Score"
+theme_override_font_sizes/font_size = 40
+text = "Completion"
+
+[node name="CompletionField" type="Label" parent="ScoreSummary/ScorePanel/Completion" unique_id=1779743829]
+layout_mode = 0
+offset_left = 111.0
+offset_top = 52.0
+offset_right = 416.0
+offset_bottom = 125.0
+size_flags_horizontal = 10
+theme_override_fonts/font = ExtResource("10_vieuh")
+theme_override_font_sizes/font_size = 60
+text = "100.00%"
+
+[node name="HP" type="Control" parent="ScoreSummary/ScorePanel" unique_id=1722665275]
+anchors_preset = 0
+offset_left = -113.5
+offset_top = 118.0
+offset_right = -73.5
+offset_bottom = 158.0
+
+[node name="HPLabel" type="Label" parent="ScoreSummary/ScorePanel/HP" unique_id=488587187]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 124.0
+offset_right = 339.0
+offset_bottom = 164.0
+size_flags_horizontal = 2
+theme_override_font_sizes/font_size = 40
+text = "Remaining  Lives"
+
+[node name="HPField" type="Label" parent="ScoreSummary/ScorePanel/HP" unique_id=575868624]
+layout_mode = 0
+offset_left = 71.0
+offset_top = 166.0
+offset_right = 361.0
+offset_bottom = 239.0
+size_flags_horizontal = 10
+theme_override_fonts/font = ExtResource("10_vieuh")
+theme_override_font_sizes/font_size = 60
+text = "3"
 horizontal_alignment = 1
 
-[node name="Score" type="Label" parent="ScoreSummary/Panel/VBoxContainer/Score" unique_id=1779743829]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "000"
+[node name="Graze" type="Control" parent="ScoreSummary/ScorePanel" unique_id=1042440770]
+anchors_preset = 0
+offset_left = -113.5
+offset_top = 118.0
+offset_right = -73.5
+offset_bottom = 158.0
 
-[node name="Graze" type="HBoxContainer" parent="ScoreSummary/Panel/VBoxContainer" unique_id=923359729]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="ScoreSummary/Panel/VBoxContainer/Graze" unique_id=603425759]
-layout_mode = 2
+[node name="GrazeLabel" type="Label" parent="ScoreSummary/ScorePanel/Graze" unique_id=1036955006]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 223.0
+offset_right = 216.0
+offset_bottom = 263.0
 size_flags_horizontal = 2
+theme_override_font_sizes/font_size = 40
 text = "Graze"
+
+[node name="GrazeField" type="Label" parent="ScoreSummary/ScorePanel/Graze" unique_id=654965738]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 265.0
+offset_right = 332.0
+offset_bottom = 338.0
+size_flags_horizontal = 10
+theme_override_fonts/font = ExtResource("10_vieuh")
+theme_override_font_sizes/font_size = 60
+text = "100"
 horizontal_alignment = 1
 
-[node name="Graze" type="Label" parent="ScoreSummary/Panel/VBoxContainer/Graze" unique_id=156378895]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "0"
-
-[node name="HP" type="HBoxContainer" parent="ScoreSummary/Panel/VBoxContainer" unique_id=849329539]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="ScoreSummary/Panel/VBoxContainer/HP" unique_id=354266767]
-layout_mode = 2
-size_flags_horizontal = 2
-text = "HP"
-horizontal_alignment = 1
-
-[node name="HP" type="Label" parent="ScoreSummary/Panel/VBoxContainer/HP" unique_id=1590717472]
-layout_mode = 2
-size_flags_horizontal = 10
-text = "0"
-
-[node name="Reset" type="Button" parent="ScoreSummary/Panel/VBoxContainer" unique_id=2106562924]
-layout_mode = 2
+[node name="Reset" type="Button" parent="ScoreSummary/ScorePanel" unique_id=2106562924]
+layout_mode = 0
+offset_left = -97.099976
+offset_top = 494.0
+offset_right = 200.50003
+offset_bottom = 544.0
+size_flags_horizontal = 3
 size_flags_vertical = 3
 focus_mode = 0
-text = "Reset"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dij0e")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k1udn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wat4s")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ywjan")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_m74q3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tko6h")
 
-[node name="Quit" type="Button" parent="ScoreSummary/Panel/VBoxContainer" unique_id=1641779004]
-layout_mode = 2
+[node name="TextureRect" type="TextureRect" parent="ScoreSummary/ScorePanel/Reset" unique_id=1072217940]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("81_inymm")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Return" type="Button" parent="ScoreSummary/ScorePanel" unique_id=1097563056]
+layout_mode = 0
+offset_left = 201.0
+offset_top = 494.0
+offset_right = 480.0
+offset_bottom = 544.0
+size_flags_horizontal = 3
 size_flags_vertical = 3
 focus_mode = 0
-text = "Quit"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dij0e")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_k1udn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wat4s")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ywjan")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_m74q3")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_tko6h")
+
+[node name="TextureRect" type="TextureRect" parent="ScoreSummary/ScorePanel/Return" unique_id=2017117243]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("82_jcxqu")
+expand_mode = 3
+stretch_mode = 5
 
 [node name="Settings" type="CanvasLayer" parent="." unique_id=2025677163 node_paths=PackedStringArray("_saveButton", "_openDataButton", "_returnButton", "_fieldContainer")]
 process_mode = 3
@@ -3860,7 +4023,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 575.0
 offset_top = 488.0
-offset_right = 775.0
+offset_right = 825.0
 offset_bottom = 528.0
 script = ExtResource("50_uypp3")
 CharacterPosition = Vector2(75, -50)
@@ -3871,6 +4034,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -10.5
+offset_right = 10.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Dance of the Fairies"
@@ -3881,7 +4046,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 636.0
 offset_top = 885.0
-offset_right = 786.0
+offset_right = 836.0
 offset_bottom = 925.0
 script = ExtResource("50_uypp3")
 CharacterPosition = Vector2(75, -50)
@@ -3923,7 +4088,7 @@ vertical_alignment = 1
 layout_mode = 0
 offset_left = 1177.0
 offset_top = 139.0
-offset_right = 1427.0
+offset_right = 1477.0
 offset_bottom = 179.0
 script = ExtResource("50_uypp3")
 CharacterPosition = Vector2(75, -50)
@@ -3938,7 +4103,7 @@ offset_left = -22.5
 offset_right = 22.5
 grow_horizontal = 2
 grow_vertical = 2
-text = "Duel in the Snowswept Castle"
+text = "Duel in the Frozen Castle"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -3976,7 +4141,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 30
-text = "Tale of the Snowswept Castle"
+text = "The Snowswept Castle"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true

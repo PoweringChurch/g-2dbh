@@ -19,6 +19,7 @@ public partial class CampaignLevelDisplay : Control
             dialogueHandler.DialogueFinished += () => 
             {
                 Console.Log($"[CampaignLevelDisplay] Started campaign level '{schema.Name}', data: '{schema.Data}')");
+                AudioUtils.PlayAudio("res://data/sounds/ui/info_notification.mp3", AudioUtils.SFXVolume);
                 gs.StartLevel(raw, new());
                 dialogueHandler.DisconnectEvents();
             };

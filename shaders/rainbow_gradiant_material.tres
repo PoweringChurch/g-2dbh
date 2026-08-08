@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c4mev86t4e3g6"]
+
+[ext_resource type="Shader" uid="uid://cav4gotb3fqa3" path="res://shaders/rainbow_gradiant.gdshader" id="1_doumb"]
+
+[resource]
+shader = ExtResource("1_doumb")
+shader_parameter/speed = 0.1

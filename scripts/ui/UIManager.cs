@@ -7,7 +7,7 @@ public partial class UIManager : Node
 {
     public static UIManager Instance;
     [Export] public HUD HUD { get; private set; }
-    [Export] public ScoreSummary ScoreSummary { get; private set;}
+    [Export] ScoreSummary scoreSummary;
     [Export] SettingsMenu _settings;
     [Export] PauseMenu _pause;
     [Export] MainMenu _mainMenu;
@@ -16,7 +16,7 @@ public partial class UIManager : Node
     [Export] DialogueHandler dialogueHandler;
     GameSession gs => GameSession.Instance;
     Editor e => Editor.Instance;
-    private bool _canPause = false;
+    private bool canPause = false;
     private List<CanvasLayer> uiPath = new();
     public override void _EnterTree() =>
         Instance = this;
@@ -26,8 +26,8 @@ public partial class UIManager : Node
         _pause.RequestReset += Reset;
         _pause.RequestReturn += Return;
 
-        ScoreSummary.RequestReset += Reset;
-        ScoreSummary.RequestReturn  += Return;
+        scoreSummary.RequestReset += Reset;
+        scoreSummary.RequestReturn  += Return;
 
         _mainMenu.RequestCampaign += () => Open(_campaign);
         _mainMenu.RequestLevelSelect += () => Open(_levelSelect);
@@ -43,7 +43,7 @@ public partial class UIManager : Node
     {
         if (e.IsActionPressed("return"))
         {
-            if (_canPause)
+            if (canPause)
                 TogglePause(true);
             else if (uiPath.Count > 1)
                 Return();
@@ -51,6 +51,12 @@ public partial class UIManager : Node
     }
     public void ShowEditor() => Open(e);
     public void ShowHUD() => Open(HUD);
+    public void ShowScoreSummary(float completion, int graze, int hp, string levelName, string authorName)
+    {
+        scoreSummary.AnimateScoreSummary(completion, graze, hp, levelName, authorName);
+        Open(scoreSummary, false);
+    }
+    public void ResetScoreSummary() => scoreSummary.ResetHolders();
     private void TogglePause(bool on)
     {
         if (!on) // when unpausing
@@ -72,21 +78,21 @@ public partial class UIManager : Node
         GetTree().Paused = on;
         _pause.Visible = on;
     }
-    void Open(CanvasLayer show, bool addToPath = true)
+    private void Open(CanvasLayer show, bool addToPath = true)
     {
-        foreach (var layer in new CanvasLayer[] { HUD, _settings, _pause, _mainMenu, _levelSelect, e, ScoreSummary, _campaign })
+        foreach (var layer in new CanvasLayer[] { HUD, _settings, _pause, _mainMenu, _levelSelect, e, scoreSummary, _campaign })
         {
             layer.Visible = layer == show;
         }
-        _canPause = false;
+        canPause = false;
         if (show == HUD)
         {
             _pause.ToggleReset(true);
-            _canPause = true;
+            canPause = true;
         } else if (show == e)
         {
             _pause.ToggleReset(false);
-            _canPause = true;
+            canPause = true;
         } else if (show == _levelSelect)
         {
             _levelSelect.PopulateList();
@@ -96,11 +102,15 @@ public partial class UIManager : Node
     }
     void Return()
     {
-        if (uiPath[^1] == e)
+        var current = uiPath[^1];
+        // special behavior
+        if (current == e)
         {
             e.SetPlaying(false);
             PlaylistHandler.Instance.FadeIn();
-        }
+        } else if (current == scoreSummary && uiPath[^2] == HUD)
+            uiPath.RemoveAt(uiPath.Count-2);
+        // clear duplicates 
         if (uiPath.Count > 1)
             for (int i = uiPath.Count-1; i > 0; i--)
                 if (uiPath[i] == uiPath[i-1])
@@ -114,9 +124,10 @@ public partial class UIManager : Node
         }
         if (gs.Running)
             gs.Abort();
+        
         dialogueHandler.CancelDialogue();
         TogglePause(false);
-        ScoreSummary.Visible = false;
+
         uiPath.RemoveAt(uiPath.Count-1);
         Open(uiPath[^1], false);
     }

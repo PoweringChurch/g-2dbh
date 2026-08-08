@@ -21,7 +21,6 @@ public partial class StoryInfoUi : Control
             LevelSelected?.Invoke(null, Vector2.Zero);
     }
 
-    private AudioStream buttonPressedSfx = AudioUtils.LoadAudio("res://data/sounds/button_pressed.wav");
     public void PressButton(int idx, bool snap = false)
     {
         var btn = LevelButtons[idx];
@@ -29,7 +28,7 @@ public partial class StoryInfoUi : Control
         var pos = btn.PositionAsOffset ? btn.Position+btn.CharacterPosition
             : btn.CharacterPosition;
         var brCorner = btn.Position+btn.Size;
-        AudioUtils.Instance.PlayAudio(buttonPressedSfx, AudioUtils.SFXVolume);
+        AudioUtils.PlayAudio("res://data/sounds/ui/button_pressed.wav", AudioUtils.SFXVolume);
         LevelSelected?.Invoke(level, brCorner);
         if (snap)
             CharacterDisplay.SnapTo(pos);

@@ -25,7 +25,7 @@
 [ext_resource type="StyleBox" uid="uid://dpop3twtseaal" path="res://data/other/themes/default_ui_assets/tabs/tab_selected.tres" id="21_2c3xh"]
 [ext_resource type="StyleBox" uid="uid://vp646jccmy13" path="res://data/other/themes/default_ui_assets/tabs/tab_unselected.tres" id="22_e50j5"]
 [ext_resource type="StyleBox" uid="uid://chgkjwjul8l6d" path="res://data/other/themes/default_ui_assets/tabs/tabbar_background.tres" id="23_bsep5"]
-[ext_resource type="FontFile" uid="uid://carmnmbooel4e" path="res://data/other/fonts/babel_sans/BabelSans.ttf" id="26_0hayp"]
+[ext_resource type="FontFile" uid="uid://cfumxgu8km5nl" path="res://data/other/fonts/lt_wave/LTWave-Regular.otf" id="26_0hayp"]
 
 [resource]
 default_font = ExtResource("26_0hayp")

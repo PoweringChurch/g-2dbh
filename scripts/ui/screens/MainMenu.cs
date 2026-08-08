@@ -23,15 +23,18 @@ public partial class MainMenu : CanvasLayer
         SetupButton(settingsButton, RequestSettings);
         SetupButton(quitButton, RequestReturn);
     }
-    private AudioStream buttonPressedSfx = AudioUtils.LoadAudio("res://data/sounds/button_hovered.wav");
     private void SetupButton(Button button, Action action)
     {
         if (button == null) return;
         if (action != null)
             button.Pressed += action.Invoke;
         originalXPositions[button] = button.Position.X;
-        button.MouseEntered += () => { AudioUtils.Instance.PlayAudio(buttonPressedSfx, AudioUtils.SFXVolume); AnimateButton(button, true); };
-        button.MouseExited += () => { AnimateButton(button, false); };
+        button.MouseEntered += () => 
+        { 
+            AudioUtils.PlayAudio("res://data/sounds/ui/button_hovered.wav", AudioUtils.SFXVolume); 
+            AnimateButton(button, true); 
+        };
+        button.MouseExited += () => AnimateButton(button, false);
     }
     private void AnimateButton(Button button, bool isHovered)
     {

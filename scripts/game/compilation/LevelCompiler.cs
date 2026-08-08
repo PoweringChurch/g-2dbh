@@ -11,13 +11,14 @@ public class LevelCompiler
         new() {TextureName = "Snow", TexturePath = "res://data/images/backgrounds/snow-scroller.png"},
         new() {TextureName = "Storm", TexturePath = "res://data/images/backgrounds/storm-scroller.png"},
     };
+    private const string SnowsweptCastleSongFolder = "res://data/music/snowswept_castle/";
     public readonly static SongData[] SongData =
     {
-        new() {SongName = "Freezing Adventure", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/freezing-adventure.mp3"},
-        new() {SongName = "A Snowy Night", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/a-snowy-night-2026.mp3"},
-        new() {SongName = "Raspberry and Purple", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/raspberry-and-purple.mp3"},
-        new() {SongName = "Witching Hour", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/witching-hour.mp3"},
-        new() {SongName = "The Final Voyage (MANIA Mix)", Author = "Seigamantic", StreamPath = "res://data/music/ice-story/the-final-voyage.mp3"},
+        new() { SongName = "Freezing Adventure", Author = "Seigamantic", StreamPath = $"{SnowsweptCastleSongFolder}freezing-adventure.mp3"},
+        new() { SongName = "A Snowy Night", Author = "Seigamantic", StreamPath = $"{SnowsweptCastleSongFolder}a-snowy-night-2026.mp3"},
+        new() { SongName = "Raspberry and Purple", Author = "Seigamantic", StreamPath = $"{SnowsweptCastleSongFolder}raspberry-and-purple.mp3"},
+        new() { SongName = "Witching Hour", Author = "Seigamantic", StreamPath = $"{SnowsweptCastleSongFolder}witching-hour.mp3"},
+        new() { SongName = "The Final Voyage (MANIA Mix)", Author = "Seigamantic", StreamPath = $"{SnowsweptCastleSongFolder}the-final-voyage.mp3"},
     };
     public static CompiledLevel CompileLevel(RawLevelData level, Node2D gameRoot)
     {
@@ -75,22 +76,22 @@ public class LevelCompiler
     public static void CompileProjectile(ProjectileModel model)
     {
         if (model == null)
-			return;
+            return;
         model.fnx = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionX));
-		model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
+        model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
         model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
     }
     public static void CompilePattern(PatternModel model)
     {
         if (model == null)
-			return;
-		model.fnx = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionX));
-		model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
-		model.fnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
-		model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
+            return;
+        model.fnx = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionX));
+        model.fny = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionY));
+        model.fnt = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionT));
+        model.fnf = ExpressionHandler.Compile(ExpressionHandler.Parse(model.FunctionF));
     }
-    public static SpatialReference EditorToSpatialReference(EditorReference r) => 
-        new() 
+    public static SpatialReference EditorToSpatialReference(EditorReference r) =>
+        new()
         {
             SpawnPos = new Vector2(r.SpawnX, r.SpawnY),
             Pos = new Vector2(r.SpawnX, r.SpawnY),
@@ -98,7 +99,7 @@ public class LevelCompiler
             F = r.SpawnF,
             T = r.T,
             Type = r.Type,
-            ProjectileId = r.Id,
-            Depth = 0, 
+            ModelId = r.Id,
+            Depth = 0,
         };
 }

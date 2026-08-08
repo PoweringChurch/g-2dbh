@@ -53,11 +53,12 @@ public partial class Console : CanvasLayer
     private void Log(object message, Color color)
     {
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
-        string formattedMessage = $"({timestamp}) {message}\n";
+        string formattedMessage = $"({timestamp}) {message}";
         var settings = new LabelSettings() {FontColor = color};
         labelSettingsCache[color] = settings;
         var label = new Label() { Text = formattedMessage, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, CustomMinimumSize = new(100,0), AutowrapMode = TextServer.AutowrapMode.Arbitrary, LabelSettings = settings};
         LabelHolder.AddChild(label);
+        GD.Print(formattedMessage);
         consoleText += $" \n{formattedMessage}";
     }
     private void OnSaveButtonPressed()

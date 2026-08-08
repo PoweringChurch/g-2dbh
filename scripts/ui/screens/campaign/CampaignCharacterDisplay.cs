@@ -2,7 +2,6 @@ using Godot;
 
 public partial class CampaignCharacterDisplay : Control
 {
-    private AudioStream pokeSfx = AudioUtils.LoadAudio("res://data/sounds/poke.wav");
     public override void _Ready()
     {
         PivotOffset = Size / 2;
@@ -35,6 +34,6 @@ public partial class CampaignCharacterDisplay : Control
         tween.TweenProperty(this, "scale", originalScale, 0.15f)
              .SetTrans(Tween.TransitionType.Elastic)
              .SetEase(Tween.EaseType.Out);
-        AudioUtils.Instance.PlayAudio(pokeSfx, AudioUtils.SFXVolume);
+        AudioUtils.PlayAudio("res://data/sounds/ui/poke.wav", AudioUtils.SFXVolume);
     }
 }

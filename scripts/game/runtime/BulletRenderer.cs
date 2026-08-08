@@ -39,7 +39,7 @@ public class BulletRenderer
     }
     private bool IsOutOfBounds(ref SpatialReference r)
     {
-        var proj = projectileModels[r.ProjectileId];
+        var proj = projectileModels[r.ModelId];
         if (proj.Persistant) return false;
         var bounds = RenderingUtils.Rects[proj.TextureName].Size*RenderingUtils.AtlasSize;
         bool isOutOfBounds = r.Pos.X < -bounds.X * proj.RenderScale.X
@@ -66,7 +66,7 @@ public class BulletRenderer
         {
             SpatialReference r = active[i];
             if (IsOutOfBounds(ref r)) { culled++; continue; }
-            var proj = projectileModels[r.ProjectileId];
+            var proj = projectileModels[r.ModelId];
             var scale = proj.RenderScale;
             double t = elapsed - r.T;
             float alpha = 1;
@@ -124,7 +124,7 @@ public class BulletRenderer
         {
             ref SpatialReference r = ref __active[i];
             if (r.Type != ModelType.Projectile) continue;
-            var proj = projectileModels[r.ProjectileId];
+            var proj = projectileModels[r.ModelId];
             double t = __elapsed - r.T;
             bool show = (t > proj.TelegraphTime) && proj.CanCollide;
             if (!show) continue;

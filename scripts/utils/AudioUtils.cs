@@ -1,38 +1,42 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 public partial class AudioUtils : Node
 {
+    private static AudioUtils Instance;
     public static float SFXVolume => ConfigHelper.Current.SoundFXVolume*AudioVolumeMultipler;
     public static float MusicVolume => ConfigHelper.Current.MusicVolume*AudioVolumeMultipler;
     public const float AudioVolumeMultipler = 0.5f;
     private static readonly string[] first = [string.Empty];
-    public static AudioUtils Instance { get; private set; }
-    public override void _Ready()
+    public override void _EnterTree()
     {
         Instance = this;
     }
-    public AudioStreamPlayer PlayAudio(AudioStream audio, float volume = 1, float time = 0)
+    public static AudioStreamPlayer PlayAudio(string audioPath, float volume = 1, float delay = 0, float time = 0) =>
+        PlayAudio(LoadAudio(audioPath), volume, delay, time);
+    public static AudioStreamPlayer PlayAudio(AudioStream audio, float volume = 1, float delay = 0, float time = 0)
     {
         if (audio == null)
             return null;
         AudioStreamPlayer player = new() { Stream = audio, VolumeLinear = volume};
-        AddChild(player);
-        if (time <= audio.GetLength())
-        {
+        Instance.AddChild(player);
+        time = (float)Math.Clamp(time, 0, audio.GetLength());
+        if (delay <= 0)
             player.Play(time);
-        }
         else
-        {
-            player.Play(0);
-        }
+            Instance.GetTree().CreateTimer(delay).Timeout += () =>
+            {
+                if (IsInstanceValid(player) && player.IsInsideTree())
+                    player.Play(time);
+            };
         player.Finished += player.QueueFree;
         return player;
     }
-    private static Dictionary<string, AudioStream> _audioCache = [];
+    private static readonly Dictionary<string, AudioStream> audioCache = [];
     public static AudioStream LoadAudio(string path)
     {
-        if (_audioCache.TryGetValue(path, out var cached))
+        if (audioCache.TryGetValue(path, out var cached))
             return cached;
         foreach (string ext in first.Concat(ValidExtensions.Audio))
         {
@@ -48,7 +52,7 @@ public partial class AudioUtils : Node
             }
             if (stream == null)
                 continue;
-            _audioCache[path] = stream;
+            audioCache[path] = stream;
             return stream;
         }
         return null;
