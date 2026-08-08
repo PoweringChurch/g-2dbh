@@ -41,7 +41,7 @@ public static class RenderingUtils
     {
         get
         {
-            rects ??= GD.Load<AtlasRectTable>("res://data/images/atlases/projectile_rects.tres").Rects;
+            rects ??= GD.Load<AtlasRectTable>(projectileRectsPath).Rects;
             return rects;
         }
     }
@@ -67,8 +67,6 @@ public static class RenderingUtils
             Console.LogErr("[RenderingUtils] Cannot get projectile names from source in a release build");
             return null;
         }
-        if (projectileNames != null)
-            return projectileNames;
         System.Collections.Generic.List<string> names = [];
         var dir = DirAccess.Open(projectilesFolderPath);
         dir.ListDirBegin();

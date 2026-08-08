@@ -26,6 +26,8 @@ public partial class Overlay : CanvasLayer
             ShowHitboxes = !ShowHitboxes;
         if (@event.IsActionPressed("build_sprite_atlas"))
             RenderingUtils.BuildProjectileAtlas();
+        if (@event.IsActionPressed("build_gamesfx_table"))
+            AudioUtils.BuildGameSFXTable();
     }
     public override void _Process(double dt)
     {

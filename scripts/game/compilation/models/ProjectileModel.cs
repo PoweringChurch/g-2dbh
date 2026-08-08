@@ -22,12 +22,14 @@ public class ProjectileModel : IEditorModel
     public Vector2 RenderScale { get; set; } = Vector2.One;
     public bool LockRotation { get; set; } = false;
     public float TelegraphTime { get; set; } = 0.5f;
+    // Audio
+    public string SFXName {get; set;} = "none";
+    public float SoundVolume {get; set;} = 1;
     // Collision & Lifetime
     public float Radius { get; set; } = 12.5f;
     public double Lifetime { get; set; } = 10;
     public bool CanCollide { get; set; } = true;
     public bool Persistant { get; set; } = false;
-    public bool FacePlayer { get; set; }
     // Custom Collision Shape
     public bool UseShape { get; set; } = false;
     public List<Vector2> Shape { get; set; } = new();
@@ -57,6 +59,9 @@ public class ProjectileModel : IEditorModel
         TelegraphTime = other.TelegraphTime;
         LockRotation = other.LockRotation;
         Tint = other.Tint;
+        // Audio
+        SFXName = other.SFXName;
+        SoundVolume = other.SoundVolume;
         // Collision & Lifetime
         Radius = other.Radius;
         Lifetime = other.Lifetime;

@@ -5,6 +5,10 @@ public class PatternModel : IEditorModel
 {
     public int Id { get; set; } = 0;
     public string Name { get; set; } = "unnamed";
+
+    public string SFXName {get; set;} = "none";
+    public float SoundVolume {get; set;} = 1;
+
     public int SpawningId { get; set; } = 0;
     public ModelType SpawningType { get; set; } = ModelType.Projectile;
     public string FunctionX { get; set; } = "0";
@@ -12,7 +16,6 @@ public class PatternModel : IEditorModel
     public string FunctionT { get; set; } = "0";
     public string FunctionF { get; set; } = "0";
     public int Count { get; set; } = 1;
-    public bool FacePlayer { get; set; } = false;
     // game only
     [JsonIgnore] public Func<EvalContext, double> fnx;
     [JsonIgnore] public Func<EvalContext, double> fny;
@@ -29,11 +32,12 @@ public class PatternModel : IEditorModel
         Name = other.Name;
         SpawningId = other.SpawningId;
         SpawningType = other.SpawningType;
+        SFXName = other.SFXName;
+        SoundVolume = other.SoundVolume;
         FunctionX = other.FunctionX;
         FunctionY = other.FunctionY;
         FunctionT = other.FunctionT;
         FunctionF = other.FunctionF;
         Count = other.Count;
-        FacePlayer = other.FacePlayer;
     }
 }

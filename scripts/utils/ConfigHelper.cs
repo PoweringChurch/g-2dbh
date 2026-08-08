@@ -14,8 +14,6 @@ public partial class ConfigHelper : Node
         {
             DirAccess.MakeDirRecursiveAbsolute("user://data");
             DirAccess.MakeDirAbsolute("user://data/levels");
-            DirAccess.MakeDirAbsolute("user://data/characters");
-            DirAccess.MakeDirAbsolute("user://data/sounds");
             DirAccess.MakeDirAbsolute("user://data/logs");
             SerializationUtils.WriteJson(_configPath, new Config());
         }

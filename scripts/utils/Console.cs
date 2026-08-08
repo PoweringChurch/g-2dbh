@@ -10,14 +10,21 @@ public partial class Console : CanvasLayer
     [Export] Button Save;
     [Export] Button LogsFolder;
     private string consoleText = GetPcSpecsString();
+    public override void _EnterTree() =>
+        Inst = this;
     public override void _Ready()
     {
-        Inst = this;
         Save.Pressed += OnSaveButtonPressed;
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
-        Log($"Started game, {timestamp} {TimeZoneInfo.Local.DisplayName}");
+        Log($"Started Danmaku Mania, {timestamp} ({TimeZoneInfo.Local.StandardName})");
         
         LogsFolder.Pressed += () => OS.ShellOpen(ProjectSettings.GlobalizePath(savePath));
+
+        if (!DirAccess.DirExistsAbsolute(savePath))
+        {
+            DirAccess.MakeDirAbsolute(savePath);
+            Log("Created logs folder");
+        }
     }
     private static string GetPcSpecsString()
     {
@@ -41,6 +48,8 @@ public partial class Console : CanvasLayer
     }
     public static void Log(object message) =>
         Inst.Log(message, Colors.White);
+    public static void LogMinor(object message) =>
+        Inst.Log(message, Colors.WebGray);
     public static void LogErr(object message) =>
         Inst.Log(message, Colors.PaleVioletRed);
     public static void LogSuccess(object message) =>
@@ -50,16 +59,34 @@ public partial class Console : CanvasLayer
     public static void LogDebug(object message) =>
         Inst.Log(message, Colors.RebeccaPurple);
     private readonly Dictionary<Color, LabelSettings> labelSettingsCache = new();
+    private static Label lastLabel;
+    private static string lastMessage;
+    private static long repeatCount = 1;
     private void Log(object message, Color color)
     {
-        string timestamp = DateTime.Now.ToString("HH:mm:ss");
+        string timestamp = DateTime.Now.ToString("HH:mm:ss:FF");
         string formattedMessage = $"({timestamp}) {message}";
+        consoleText += $" \n{formattedMessage}";
+
+        // merge repeats
+        if (lastMessage == message.ToString())
+        {
+            repeatCount++;
+            var labelText = $"{formattedMessage} (x{repeatCount})";
+            lastLabel.Text = labelText;
+            return;
+        }
+
         var settings = new LabelSettings() {FontColor = color};
         labelSettingsCache[color] = settings;
         var label = new Label() { Text = formattedMessage, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, CustomMinimumSize = new(100,0), AutowrapMode = TextServer.AutowrapMode.Arbitrary, LabelSettings = settings};
         LabelHolder.AddChild(label);
+
+        lastLabel = label;
+        repeatCount = 1;
+        lastMessage = message.ToString();
+
         GD.Print(formattedMessage);
-        consoleText += $" \n{formattedMessage}";
     }
     private void OnSaveButtonPressed()
     {

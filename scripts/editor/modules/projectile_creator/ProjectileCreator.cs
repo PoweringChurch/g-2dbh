@@ -6,6 +6,7 @@ public partial class ProjectileCreator : Control
     public ProjectileModel Model {get; private set;}
     [Export] ProjectileCollisionEditor Collision;
     [Export] ProjectileVisuals Visuals;
+    [Export] ProjectileAudio Audio;
     [Export] ProjectileMovementEditor MovementInspector;
     [Export] ProjectileTint Tint;
     [Export] ProjectileInfo Info;
@@ -40,6 +41,7 @@ public partial class ProjectileCreator : Control
         MovementInspector.Load(Model);
         Collision.Load(Model);
         Visuals.Load(Model);
+        Audio.Load(Model);
         Tint.Load(Model);
         Info.Load(Model);
         SpawnEditor.Load(Model);

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="GameSFXTable" format=3 uid="uid://bg3vi0cu61cfl"]
+
+[ext_resource type="Script" uid="uid://b6cnap8cfqhra" path="res://scripts/utils/GameSFXTable.cs" id="1_oumh8"]
+
+[resource]
+script = ExtResource("1_oumh8")
+Paths = Dictionary[String, String]({
+"deep_shot0": "res://data/sounds/game/deep_shot0.wav",
+"deep_shot1": "res://data/sounds/game/deep_shot1.wav",
+"deep_shot2": "res://data/sounds/game/deep_shot2.wav",
+"shot0": "res://data/sounds/game/shot0.wav",
+"shot1": "res://data/sounds/game/shot1.wav",
+"shot2": "res://data/sounds/game/shot2.wav"
+})

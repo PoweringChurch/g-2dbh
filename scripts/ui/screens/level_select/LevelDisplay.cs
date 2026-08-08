@@ -81,7 +81,6 @@ public partial class LevelDisplay : Control
     {
         if (toPlay == null) return;
         var converted = LevelDataConverter.FromSchema(toPlay);
-        Console.Log($"[LevelDisplay] Started level '{toPlay.Name}' by '{toPlay.Author}', data: '{toPlay.Data}')");
         AudioUtils.PlayAudio("res://data/sounds/ui/info_notification.mp3", AudioUtils.SFXVolume);
         gs.StartLevel(converted, Mods.GetStartParams());
     }

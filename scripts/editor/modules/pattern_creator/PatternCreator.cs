@@ -6,6 +6,7 @@ public partial class PatternCreator : Control
     [Export] public PatternPreview PatternPreview;
     public PatternModel Model {get; private set;}
     [Export] PatternInfo Info;
+    [Export] PatternAudio Audio;
     [Export] PatternSpawnConditions Spawning;
     [Export] PackedScene PatternModelUi;
     [Export] VBoxContainer ModelList;
@@ -42,6 +43,7 @@ public partial class PatternCreator : Control
         newModel ??= new();
         Model = new PatternModel(newModel);
         Spawning.Load(Model);
+        Audio.Load(Model);
         Info.Load(Model);
         PatternPreview.Load(Model);
     }

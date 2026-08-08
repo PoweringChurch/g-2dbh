@@ -109,6 +109,8 @@ public partial class LevelDirector
             return;
         // spawn children
         var proj = level.Projectiles[r.ModelId];
+        if (proj.SFXName != "none")
+            AudioUtils.PlayAudio(AudioUtils.GameSFXPaths[proj.SFXName], AudioUtils.SFXVolume*proj.SoundVolume);
         
         for (int j = 0; j < proj.Spawns.Count; j++)
         {
@@ -132,9 +134,6 @@ public partial class LevelDirector
                 Depth = r.Depth + 1
             });
         }
-        // face player
-        if (proj.FacePlayer)
-            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X);
         // add projectile
         activeReferences[activeCount++] = r;
         _hasGrazed[activeCount-1] = false;
@@ -142,9 +141,9 @@ public partial class LevelDirector
     public void SpawnPattern(ref SpatialReference r)
     {
         var patt = level.Patterns[r.ModelId];
+        if (patt.SFXName != "none")
+            AudioUtils.PlayAudio(AudioUtils.GameSFXPaths[patt.SFXName], AudioUtils.SFXVolume*patt.SoundVolume);
         var lctx = new EvalContext {N = patt.Count > 1 ? patt.Count - 1 : 1, Unique = GetUnique(r.ModelId, (int)r.Type, r.SpawnPos, r.SpawnF, r.T)};
-        if (patt.FacePlayer)
-            r.F = Math.Atan2(_character.Position.Y - r.SpawnPos.Y, _character.Position.X - r.SpawnPos.X);
         for (int j = 0; j < patt.Count; j++)
         {
             lctx.I = j;

@@ -37,7 +37,7 @@ public partial class ScoreSummary : CanvasLayer
     }
     public void AnimateScoreSummary(float completion, int graze, int hp, string levelName, string creatorName)
     {
-        Completion.Text = $"{completion:P2}";
+        Completion.Text = $"{Math.Min(completion,1):P2}";
         Graze.Text = graze.ToString();
         HP.Text = hp.ToString();
         
